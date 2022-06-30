@@ -729,6 +729,7 @@ private slots:
   void show_aeeg_dock();
   void show_hypnogram();
   void page_3cmsec();
+  void page_6cmsec();
   void page_25mmsec();
   void page_50mmsec();
   void reduce_signals();

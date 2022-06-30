@@ -3692,6 +3692,25 @@ void UI_Mainwindow::page_3cmsec()
 }
 
 
+void UI_Mainwindow::page_6cmsec()
+{
+  double mm;
+
+  if(auto_dpi)
+  {
+    mm = maincurve->widthMM();
+
+    pagetime = mm * 666666.6666;
+  }
+  else
+  {
+    pagetime = (long long)((((double)maincurve->width()) / (1.0 / x_pixelsizefactor) / 6.0) * TIME_DIMENSION);
+  }
+
+  setup_viewbuf();
+}
+
+
 void UI_Mainwindow::page_25mmsec()
 {
   double mm;

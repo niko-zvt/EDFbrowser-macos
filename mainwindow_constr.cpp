@@ -612,6 +612,7 @@ UI_Mainwindow::UI_Mainwindow()
   displaymenu->setTitle("&Timescale");
 
   displaymenu->addAction("3 cm/sec",  this, SLOT(page_3cmsec()));
+  displaymenu->addAction("6 cm/sec",  this, SLOT(page_6cmsec()));
   displaymenu->addAction("25 mm/sec", this, SLOT(page_25mmsec()));
   displaymenu->addAction("50 mm/sec", this, SLOT(page_50mmsec()));
 
