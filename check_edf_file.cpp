@@ -47,6 +47,16 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
 
 /***************** check header ******************************/
 
+  fseeko(inputfile, 0LL, SEEK_END);
+  l_tmp = ftello(inputfile);
+  if(l_tmp < 512LL)
+  {
+    snprintf(txt_string, txt_len, "Error, filesize is less than 512 bytes");
+    return NULL;
+  }
+
+/***************** check header ******************************/
+
   edf_hdr = (char *)calloc(1, 256);
   if(edf_hdr==NULL)
   {
@@ -65,7 +75,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   rewind(inputfile);
   if(fread(edf_hdr, 256, 1, inputfile)!=1)
   {
-    snprintf(txt_string, txt_len, "Error, reading file");
+    snprintf(txt_string, txt_len, "Error, cannot read 256 bytes from file");
     free(edf_hdr);
     free(edfhdr);
     return NULL;
