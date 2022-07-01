@@ -728,10 +728,14 @@ private slots:
   void show_cdsa_dock();
   void show_aeeg_dock();
   void show_hypnogram();
-  void page_3cmsec();
-  void page_6cmsec();
+  void page_5mmsec();
+  void page_10mmsec();
+  void page_15mmsec();
   void page_25mmsec();
+  void page_30mmsec();
   void page_50mmsec();
+  void page_60mmsec();
+  void page_120mmsec();
   void reduce_signals();
   void edit_header();
   void biosemi2bdfplus_converter();

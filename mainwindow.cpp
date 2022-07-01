@@ -3673,7 +3673,7 @@ void UI_Mainwindow::show_about_dialog()
 }
 
 
-void UI_Mainwindow::page_3cmsec()
+void UI_Mainwindow::page_5mmsec()
 {
   double mm;
 
@@ -3681,18 +3681,18 @@ void UI_Mainwindow::page_3cmsec()
   {
     mm = maincurve->widthMM();
 
-    pagetime = mm * 333333.3333;
+    pagetime = mm * 2000000;
   }
   else
   {
-    pagetime = (long long)((((double)maincurve->width()) / (1.0 / x_pixelsizefactor) / 3.0) * TIME_DIMENSION);
+    pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * 2;
   }
 
   setup_viewbuf();
 }
 
 
-void UI_Mainwindow::page_6cmsec()
+void UI_Mainwindow::page_10mmsec()
 {
   double mm;
 
@@ -3700,11 +3700,30 @@ void UI_Mainwindow::page_6cmsec()
   {
     mm = maincurve->widthMM();
 
-    pagetime = mm * 666666.6666;
+    pagetime = mm * 1000000;
   }
   else
   {
-    pagetime = (long long)((((double)maincurve->width()) / (1.0 / x_pixelsizefactor) / 6.0) * TIME_DIMENSION);
+    pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION;
+  }
+
+  setup_viewbuf();
+}
+
+
+void UI_Mainwindow::page_15mmsec()
+{
+  double mm;
+
+  if(auto_dpi)
+  {
+    mm = maincurve->widthMM();
+
+    pagetime = mm * 666666.666667;
+  }
+  else
+  {
+    pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 1.5;
   }
 
   setup_viewbuf();
@@ -3719,11 +3738,30 @@ void UI_Mainwindow::page_25mmsec()
   {
     mm = maincurve->widthMM();
 
-    pagetime = mm * 400000.0;
+    pagetime = mm * 400000;
   }
   else
   {
-    pagetime = (long long)((((double)maincurve->width()) / (1.0 / x_pixelsizefactor) / 2.5) * TIME_DIMENSION);
+    pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 2.5;
+  }
+
+  setup_viewbuf();
+}
+
+
+void UI_Mainwindow::page_30mmsec()
+{
+  double mm;
+
+  if(auto_dpi)
+  {
+    mm = maincurve->widthMM();
+
+    pagetime = mm * 333333.333333;
+  }
+  else
+  {
+    pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 3.0;
   }
 
   setup_viewbuf();
@@ -3738,11 +3776,49 @@ void UI_Mainwindow::page_50mmsec()
   {
     mm = maincurve->widthMM();
 
-    pagetime = mm * 200000.0;
+    pagetime = mm * 200000;
   }
   else
   {
-    pagetime = (long long)((((double)maincurve->width()) / (1.0 / x_pixelsizefactor) / 5.0) * TIME_DIMENSION);
+    pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 5.0;
+  }
+
+  setup_viewbuf();
+}
+
+
+void UI_Mainwindow::page_60mmsec()
+{
+  double mm;
+
+  if(auto_dpi)
+  {
+    mm = maincurve->widthMM();
+
+    pagetime = mm * 166666.666667;
+  }
+  else
+  {
+    pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 6.0;
+  }
+
+  setup_viewbuf();
+}
+
+
+void UI_Mainwindow::page_120mmsec()
+{
+  double mm;
+
+  if(auto_dpi)
+  {
+    mm = maincurve->widthMM();
+
+    pagetime = mm * 83333.333333;
+  }
+  else
+  {
+    pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 12.0;
   }
 
   setup_viewbuf();

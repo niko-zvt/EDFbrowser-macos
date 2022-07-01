@@ -611,10 +611,14 @@ UI_Mainwindow::UI_Mainwindow()
   displaymenu = new QMenu(this);
   displaymenu->setTitle("&Timescale");
 
-  displaymenu->addAction("3 cm/sec",  this, SLOT(page_3cmsec()));
-  displaymenu->addAction("6 cm/sec",  this, SLOT(page_6cmsec()));
-  displaymenu->addAction("25 mm/sec", this, SLOT(page_25mmsec()));
-  displaymenu->addAction("50 mm/sec", this, SLOT(page_50mmsec()));
+  displaymenu->addAction("  5 mm/sec", this, SLOT(page_5mmsec()));
+  displaymenu->addAction(" 10 mm/sec", this, SLOT(page_10mmsec()));
+  displaymenu->addAction(" 15 mm/sec", this, SLOT(page_15mmsec()));
+  displaymenu->addAction(" 25 mm/sec", this, SLOT(page_25mmsec()));
+  displaymenu->addAction(" 30 mm/sec", this, SLOT(page_30mmsec()));
+  displaymenu->addAction(" 50 mm/sec", this, SLOT(page_50mmsec()));
+  displaymenu->addAction(" 60 mm/sec", this, SLOT(page_60mmsec()));
+  displaymenu->addAction("120 mm/sec", this, SLOT(page_120mmsec()));
 
   displaymenu->addSeparator();
 
