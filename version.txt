@@ -6,6 +6,8 @@
 
  - Pagetime indicator: show also "mm/sec". This option can be disabled in the options menu.
 
+ - Timescale menu: User defined: added the possibility to set the timescale in mm per sec.
+
 
  version 1.94      June 19, 2022
  --------------
