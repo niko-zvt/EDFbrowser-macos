@@ -34,6 +34,8 @@
 
 #include "qt_headers.h"
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "global.h"
@@ -66,6 +68,10 @@ QTimeEdit    *timeEdit1;
 
 QTime        time1;
 
+QSpinBox     *ScaleBox;
+
+QRadioButton *r_button_1,
+             *r_button_2;
 
 private slots:
 

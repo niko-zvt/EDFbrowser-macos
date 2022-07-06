@@ -36,7 +36,7 @@ UI_Userdefined_timepage_Dialog::UI_Userdefined_timepage_Dialog(QWidget *w_parent
   mainwindow = (UI_Mainwindow *)w_parent;
 
   set_diplaytime_dialog = new QDialog(w_parent);
-  set_diplaytime_dialog->setMinimumSize(250 * mainwindow->w_scaling, 150 * mainwindow->h_scaling);
+  set_diplaytime_dialog->setMinimumSize(250 * mainwindow->w_scaling, 200 * mainwindow->h_scaling);
   set_diplaytime_dialog->setWindowTitle("Set timescale");
   set_diplaytime_dialog->setModal(true);
   set_diplaytime_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -48,20 +48,46 @@ UI_Userdefined_timepage_Dialog::UI_Userdefined_timepage_Dialog(QWidget *w_parent
   timeEdit1->setDisplayFormat("hh:mm:ss.zzz");
   timeEdit1->setMinimumTime(QTime(0, 0, 0, 0));
 
+  ScaleBox = new QSpinBox;
+  ScaleBox->setRange(1, 100000);
+  ScaleBox->setSuffix(" mm/sec");
+  ScaleBox->setValue(60);
+
+  r_button_1 = new QRadioButton;
+  r_button_1->setChecked(true);
+  r_button_2 = new QRadioButton;
+
   OKButton = new QPushButton;
-  OKButton->setText("OK");
+  OKButton->setText("Apply");
 
   CloseButton = new QPushButton;
-  CloseButton->setText("Cancel");
+  CloseButton->setText("Close");
+
+  QHBoxLayout *hlayout4 = new QHBoxLayout;
+  hlayout4->addSpacing(20);
+  hlayout4->addWidget(label1);
+  hlayout4->addStretch(1000);
 
   QHBoxLayout *hlayout1 = new QHBoxLayout;
   hlayout1->addWidget(OKButton);
   hlayout1->addStretch(1000);
   hlayout1->addWidget(CloseButton);
 
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(r_button_1);
+  hlayout2->addWidget(timeEdit1);
+  hlayout2->addStretch(1000);
+
+  QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addWidget(r_button_2);
+  hlayout3->addWidget(ScaleBox);
+  hlayout3->addStretch(1000);
+
   QVBoxLayout *vlayout1 = new QVBoxLayout;
-  vlayout1->addWidget(label1);
-  vlayout1->addWidget(timeEdit1);
+  vlayout1->addLayout(hlayout4);
+  vlayout1->addLayout(hlayout2);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout3);
   vlayout1->addStretch(1000);
   vlayout1->addSpacing(20);
   vlayout1->addLayout(hlayout1);
@@ -81,26 +107,29 @@ void UI_Userdefined_timepage_Dialog::okbutton_pressed()
 
   if(!mainwindow->files_open)
   {
-    set_diplaytime_dialog->close();
-
     return;
   }
 
-  milliseconds = (long long)(timeEdit1->time().hour()) * 3600000LL;
-  milliseconds += (long long)(timeEdit1->time().minute()) * 60000LL;
-  milliseconds += (long long)(timeEdit1->time().second()) * 1000LL;
-  milliseconds += (long long)(timeEdit1->time().msec());
-
-  if(milliseconds < 1)
+  if(r_button_1->isChecked() == true)
   {
-    return;
-  }
+    milliseconds = (long long)(timeEdit1->time().hour()) * 3600000LL;
+    milliseconds += (long long)(timeEdit1->time().minute()) * 60000LL;
+    milliseconds += (long long)(timeEdit1->time().second()) * 1000LL;
+    milliseconds += (long long)(timeEdit1->time().msec());
 
-  mainwindow->pagetime = milliseconds * (TIME_DIMENSION / 1000);
+    if(milliseconds < 1)
+    {
+      return;
+    }
+
+    mainwindow->pagetime = milliseconds * (TIME_DIMENSION / 1000);
+  }
+  else
+  {
+    mainwindow->pagetime = mainwindow->maincurve->width() * mainwindow->x_pixelsizefactor * TIME_DIMENSION * (10.0 / ScaleBox->value());
+  }
 
   mainwindow->setup_viewbuf();
-
-  set_diplaytime_dialog->close();
 }
 
 
