@@ -1274,6 +1274,23 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   flayout4_2->addRow("Viewtime / fileposition indicator", hlayout_tmp);
   QObject::connect(combobox4_2, SIGNAL(currentIndexChanged(int)), this, SLOT(combobox4_2IndexChanged(int)));
 
+  checkbox4_7 = new QCheckBox;
+  checkbox4_7->setTristate(false);
+  if(mainwindow->display_pagetime_mmsec)
+  {
+    checkbox4_7->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox4_7->setCheckState(Qt::Unchecked);
+  }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(checkbox4_7);
+  hlayout_tmp->addStretch(1000);
+  flayout4_2->addRow("Pagetime: show mm/sec.", hlayout_tmp);
+  QObject::connect(checkbox4_7, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_7Clicked(int)));
+
   combobox4_3 = new QComboBox;
   combobox4_3->addItem("Subject info");
   combobox4_3->addItem("Filename");
@@ -2152,6 +2169,21 @@ void UI_OptionsDialog::checkbox4_13Clicked(int state)
                              "it will only be accessible from this system.\n"
                              "\nYou need to restart EDFbrowser for the changes to take effect.");
   }
+}
+
+
+void UI_OptionsDialog::checkbox4_7Clicked(int state)
+{
+  if(state==Qt::Checked)
+  {
+    mainwindow->display_pagetime_mmsec = 1;
+  }
+  else
+  {
+    mainwindow->display_pagetime_mmsec = 0;
+  }
+
+  mainwindow->setup_viewbuf();
 }
 
 

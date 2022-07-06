@@ -4,6 +4,8 @@
 
  - Added an EEG powerline interference subtraction filter.
 
+ - Pagetime indicator: show also "mm/sec". This option can be disabled in the options menu.
+
 
  version 1.94      June 19, 2022
  --------------

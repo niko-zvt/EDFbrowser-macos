@@ -2830,6 +2830,20 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "display_pagetime_mmsec", 0)))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    display_pagetime_mmsec = atoi(result);
+    if(display_pagetime_mmsec != 0)  display_pagetime_mmsec = 1;
+
+    xml_go_up(xml_hdl);
+  }
+
   if(!(xml_goto_nth_element_inside(xml_hdl, "mainwindow_title_type", 0)))
   {
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
@@ -3555,6 +3569,8 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "    <check_for_updates>%i</check_for_updates>\n", check_for_updates);
 
     fprintf(cfgfile, "    <viewtime_indicator_type>%i</viewtime_indicator_type>\n", viewtime_indicator_type);
+
+    fprintf(cfgfile, "    <display_pagetime_mmsec>%i</display_pagetime_mmsec>\n", display_pagetime_mmsec);
 
     fprintf(cfgfile, "    <mainwindow_title_type>%i</mainwindow_title_type>\n", mainwindow_title_type);
 

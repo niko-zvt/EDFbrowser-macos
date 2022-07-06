@@ -286,7 +286,8 @@ public:
       session_start_video,
       session_video_seek,
       session_relative_paths,
-      video_pause_requested;
+      video_pause_requested,
+      display_pagetime_mmsec;
 
 volatile int rc_cmd_in_progress;
 
@@ -305,7 +306,7 @@ long long annot_editor_user_button_epoch_len,
 
   char *viewbuf,
        viewtime_string[128],
-       pagetime_string[64],
+       pagetime_string[128],
        recent_montagedir[MAX_PATH_LENGTH],
        recent_savedir[MAX_PATH_LENGTH],
        recent_opendir[MAX_PATH_LENGTH],
