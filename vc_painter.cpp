@@ -58,6 +58,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   double dtmp=0;
 
+  static int old_w=100;
+
   struct signalcompblock **signalcomp=NULL;
 
   struct annotation_list *annot_list=NULL;
@@ -1326,8 +1328,32 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 //    painter->fillRect(5, h - (4 + font_pixel_height), strlen(mainwindow->viewtime_string) * font_pixel_width, (4 + font_pixel_height), backgroundcolor);
     painter->drawText(8, h - 4, mainwindow->viewtime_string);
 //    painter->fillRect(w - 63, h - (4 + font_pixel_height), 60, (4 + font_pixel_height), backgroundcolor);
-    painter->drawText(w - strlen(mainwindow->pagetime_string) * font_pixel_width, h - 4, mainwindow->pagetime_string);
+    if((old_w == w) || (!mainwindow->display_pagetime_mmsec))
+    {
+      painter->drawText(w - strlen(mainwindow->pagetime_string) * font_pixel_width, h - 4, mainwindow->pagetime_string);
+    }
+    else
+    {
+      if((mainwindow->pagetime >= TIME_DIMENSION) && (mainwindow->pagetime <= (300LL * TIME_DIMENSION)))
+      {
+        for(int r=0; r<64; r++)
+        {
+          if(mainwindow->pagetime_string[r] == 0)  break;
+
+          if(mainwindow->pagetime_string[r] == '(')
+          {
+            snprintf(mainwindow->pagetime_string + r, 64, "(%i mm/sec)",
+                     (int)((w * mainwindow->x_pixelsizefactor * 10) / (((double)mainwindow->pagetime) / TIME_DIMENSION) + 0.5));
+            break;
+          }
+        }
+      }
+
+      painter->drawText(w - strlen(mainwindow->pagetime_string) * font_pixel_width, h - 4, mainwindow->pagetime_string);
+    }
   }
+
+  old_w = w;
 }
 
 
