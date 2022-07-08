@@ -1731,8 +1731,8 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
   unsigned long long s, s2, total_samples_processed;
 
-  double dig_value=0.0,
-         f_tmp=0.0;
+  double dig_value=0,
+         f_tmp=0;
 
   struct signalcompblock **signalcomp;
 
@@ -1747,13 +1747,8 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
   if(mainwindow->exit_in_progress)
   {
-    if(graphicBuf!=NULL)
-    {
-      free(graphicBuf);
-
-      graphicBuf = NULL;
-    }
-
+    free(graphicBuf);
+    graphicBuf = NULL;
     return;
   }
 
@@ -1767,15 +1762,15 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
   viewbuf = mainwindow->viewbuf;
   linear_interpol = mainwindow->linear_interpol;
 
-  painter_pixelsizefactor = 1.0 / mainwindow->y_pixelsizefactor;
+  painter_pixelsizefactor = 1 / mainwindow->y_pixelsizefactor;
 
   if(!w_width||!w_height)
   {
     w = width();
     h = height();
 
-    printsize_x_factor = 1.0;
-    printsize_y_factor = 1.0;
+    printsize_x_factor = 1;
+    printsize_y_factor = 1;
 
     printing = 0;
   }
@@ -1799,24 +1794,15 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
   if((viewbuf==NULL)||(screensamples==NULL)||(!signalcomps))
   {
-    if(graphicBuf!=NULL)
-    {
-      free(graphicBuf);
-
-      graphicBuf = NULL;
-    }
-
+    free(graphicBuf);
+    graphicBuf = NULL;
     update();
-
     return;
   }
 
   if((graphicBuf==NULL)||(graphicBufWidth!=w))
   {
-    if(graphicBuf!=NULL)
-    {
-      free(graphicBuf);
-    }
+    free(graphicBuf);
 
     graphicBuf = (struct graphicBufStruct *)malloc(sizeof(struct graphicBufStruct) * w * 2 + 4);
 
@@ -1872,13 +1858,13 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
   {
     for(i=0; i<signalcomps; i++)
     {
-      signalcomp[i]->max_dig_value = -2147483647;
-      signalcomp[i]->min_dig_value = 2147483647;
+      signalcomp[i]->max_dig_value = 0x80000000;
+      signalcomp[i]->min_dig_value = 0x7fffffff;
       signalcomp[i]->stat_cnt = 0;
       signalcomp[i]->stat_zero_crossing_cnt = 0;
-      signalcomp[i]->stat_sum = 0.0;
-      signalcomp[i]->stat_sum_sqr = 0.0;
-      signalcomp[i]->stat_sum_rectified = 0.0;
+      signalcomp[i]->stat_sum = 0;
+      signalcomp[i]->stat_sum_sqr = 0;
+      signalcomp[i]->stat_sum_rectified = 0;
 
       baseline = h / (signalcomps + 1);
       baseline *= (i + 1);
@@ -1889,7 +1875,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
       {
         if(s>=signalcomp[i]->sample_stop)  break;
 
-        dig_value = 0.0;
+        dig_value = 0;
         s2 = s + signalcomp[i]->sample_timeoffset - signalcomp[i]->sample_start;
 
         for(j=0; j<signalcomp[i]->num_of_signals; j++)
@@ -2432,17 +2418,17 @@ void drawCurve_stage_1_thread::run()
 // printf("i is %i   signalcomp is %08X      screensamples is %08X\n",
 //        i, (int)signalcomp, (int)screensamples);
 
-    f_tmp = 0.0;
-    dig_value=0.0;
+    f_tmp = 0;
+    dig_value=0;
     stat_zero_crossing=0;
 
-    signalcomp->max_dig_value = -2147483647;
-    signalcomp->min_dig_value = 2147483647;
+    signalcomp->max_dig_value = 0x80000000;
+    signalcomp->min_dig_value = 0x7fffffff;
     signalcomp->stat_cnt = 0;
     signalcomp->stat_zero_crossing_cnt = 0;
-    signalcomp->stat_sum = 0.0;
-    signalcomp->stat_sum_sqr = 0.0;
-    signalcomp->stat_sum_rectified = 0.0;
+    signalcomp->stat_sum = 0;
+    signalcomp->stat_sum_sqr = 0;
+    signalcomp->stat_sum_rectified = 0;
 
     baseline = h / (signalcomps + 1);
     baseline *= (i + 1);
@@ -2453,7 +2439,7 @@ void drawCurve_stage_1_thread::run()
     {
       if(s>=signalcomp->sample_stop)  break;
 
-      dig_value = 0.0;
+      dig_value = 0;
       s2 = s + signalcomp->sample_timeoffset - signalcomp->sample_start;
 
       for(j=0; j<signalcomp->num_of_signals; j++)
