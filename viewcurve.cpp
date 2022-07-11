@@ -60,6 +60,10 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
 
   active_markers = (struct active_markersblock *)calloc(1, sizeof(struct active_markersblock));
 
+  scroll_h_offset = 0;
+
+  scrollbar_h_value = 0;
+
   annot_marker_moving = 0;
 
   active_marker_context_menu_request_idx = 0;
@@ -665,8 +669,9 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
     {
       for(i=0; i<signalcomps; i++)
       {
-        baseline = h / (signalcomps + 1);
+        baseline = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
         baseline *= (i + 1);
+        baseline -= scroll_h_offset;
 
         if(signalcomp[i]->alias[0] != 0)
         {
@@ -716,8 +721,9 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
     for(i=0; i<signalcomps; i++)
     {
-      baseline = h / (signalcomps + 1);
+      baseline = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
       baseline *= (i + 1);
+      baseline -= scroll_h_offset;
 
       if(signalcomp[i]->alias[0] != 0)
       {
@@ -901,7 +907,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 //                 printf("draw_rectangle_sum_cnt: %i   draw_rectangle_sum_y: %i\n",
 //                        signalcomp[i]->draw_rectangle_sum_cnt, signalcomp[i]->draw_rectangle_sum_y / signalcomp[i]->draw_rectangle_sum_cnt);
 //
-//                 baseline = h / (signalcomps + 1);
+//                 baseline = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
 //                 baseline *= (i + 1);
 //                 baseline += signalcomp[i]->screen_offset;
 
@@ -962,8 +968,8 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
             for(i=0; i<signalcomps; i++)
             {
-              mainwindow->signalcomp[i]->screen_offset = mainwindow->signalcomp[i]->screen_offset * zoomfactor;
-              mainwindow->signalcomp[i]->screen_offset += (((double)h * (zoomfactor - 1.0) * (double)(i + 1)) / (double)(signalcomps + 1));
+              mainwindow->signalcomp[i]->screen_offset *= zoomfactor;
+              mainwindow->signalcomp[i]->screen_offset += ((h * mainwindow->mc_v_scrollarea_ratio * (zoomfactor - 1.0) * (double)(i + 1)) / (double)(signalcomps + 1));
               mainwindow->signalcomp[i]->screen_offset -= ((double)mouse_press_coordinate_y * zoomfactor);
               mainwindow->signalcomp[i]->voltpercm /= ((double)h / (double)(m_y - mouse_press_coordinate_y));
               mainwindow->signalcomp[i]->sensitivity *= ((double)h / (double)(m_y - mouse_press_coordinate_y));
@@ -998,8 +1004,9 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
     for(i=0; i<signalcomps; i++)
     {
-      baseline = h / (signalcomps + 1);
+      baseline = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
       baseline *= (i + 1);
+      baseline -= scroll_h_offset;
 
       if(signalcomp[i]->alias[0] != 0)
       {
@@ -1767,7 +1774,9 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
   if(!w_width||!w_height)
   {
     w = width();
-    h = height();
+    h = height() * mainwindow->mc_v_scrollarea_ratio;
+
+    scroll_h_offset = height() * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
 
     printsize_x_factor = 1;
     printsize_y_factor = 1;
@@ -3965,6 +3974,13 @@ void ViewCurve::average_annot(bool)
   UI_AveragerWindow average_wndw(mainwindow, active_markers->list[idx]);
 }
 
+
+void ViewCurve::set_vertical_scroll_value(int val)
+{
+  scrollbar_h_value = val;
+
+  scroll_h_offset = height() * (mainwindow->mc_v_scrollarea_ratio - 1) * (val / 100000.0);
+}
 
 
 

@@ -3667,6 +3667,8 @@ void UI_Mainwindow::close_all_files()
 
   close_filemenu->clear();
 
+  mc_v_scrollbar->setValue(0);
+
   if(!exit_in_progress)
   {
     setup_viewbuf();
@@ -5811,6 +5813,13 @@ void UI_Mainwindow::screen_changed(QScreen *)
   desktop_resized(0);
 }
 
+
+void UI_Mainwindow::mc_v_scrollbar_changed(int val)
+{
+  maincurve->set_vertical_scroll_value(val);
+
+  maincurve->drawCurve_stage_1();
+}
 
 
 

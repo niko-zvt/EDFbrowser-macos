@@ -89,6 +89,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     w = width();
     h = height();
 
+    scroll_h_offset = h * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
+
     painter->setFont(*mainwindow->myfont);
 
     printing = 0;
@@ -119,7 +121,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     signalcomp[i]->draw_rectangle_sum_cnt = 0;
   }
 
-  vertical_distance = h / (signalcomps + 1);
+  vertical_distance = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
 
   painter->fillRect(0, 0, w, h, backgroundcolor);
 
@@ -193,11 +195,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
                         if(annot->selected_in_dock)
                         {
-                          painter->fillRect(marker_x, baseline - (vertical_distance / 2), marker_x2, vertical_distance, annot_duration_color_selected);
+                          painter->fillRect(marker_x, baseline - (vertical_distance / 2) - scroll_h_offset, marker_x2, vertical_distance, annot_duration_color_selected);
                         }
                         else
                         {
-                          painter->fillRect(marker_x, baseline - (vertical_distance / 2), marker_x2, vertical_distance, annot_duration_color);
+                          painter->fillRect(marker_x, baseline - (vertical_distance / 2) - scroll_h_offset, marker_x2, vertical_distance, annot_duration_color);
                         }
 
                         break;
@@ -609,7 +611,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   if(mainwindow->show_baselines)
   {
-    vertical_distance = h / (signalcomps + 1);
+    vertical_distance = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
 
     painter->setPen(baseline_color);
 
@@ -617,7 +619,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     {
       baseline = vertical_distance * (i + 1);
 
-      painter->drawLine(0, baseline, w, baseline);
+      painter->drawLine(0, baseline - scroll_h_offset, w, baseline - scroll_h_offset);
 
       dtmp = fabs(signalcomp[i]->voltpercm);
 
@@ -648,13 +650,13 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
       strlcat(str2, signalcomp[i]->physdimension, 32);
 
-      for(j=1; j<18; j++)
+      for(j=1; j<24; j++)
       {
         vert_ruler_offset = j * painter_pixelsizefactor;
 
         if(signalcomps!=1)
         {
-          if(vert_ruler_offset>((vertical_distance / 2)) - 8)
+          if(vert_ruler_offset>((vertical_distance / 2) - 8))
           {
             break;
           }
@@ -674,18 +676,17 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
         else
         {
-          if((baseline + vert_ruler_offset)>(h - 15))
+          if((baseline + vert_ruler_offset)>((h * mainwindow->mc_v_scrollarea_ratio) - 15))
           {
             break;
           }
-
-          if((baseline - vert_ruler_offset)<15)
-          {
-            break;
-          }
+          else if((baseline - vert_ruler_offset)<15)
+            {
+              break;
+            }
         }
 
-        painter->drawLine(0, baseline - vert_ruler_offset, w, baseline - vert_ruler_offset);
+        painter->drawLine(0, baseline - vert_ruler_offset - scroll_h_offset, w, baseline - vert_ruler_offset - scroll_h_offset);
 
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 
@@ -700,9 +701,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / painter_pixelsizefactor)) * (double)signalcomp[i]->polarity);
         }
 
-        painter->drawText(5 * printsize_x_factor, baseline - vert_ruler_offset - (4 * printsize_y_factor), string);
+        painter->drawText(5 * printsize_x_factor, baseline - vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, string);
 
-        painter->drawLine(0, baseline + vert_ruler_offset, w, baseline + vert_ruler_offset);
+        painter->drawLine(0, baseline + vert_ruler_offset - scroll_h_offset, w, baseline + vert_ruler_offset - scroll_h_offset);
 
         if(printing)
         {
@@ -717,7 +718,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
 #pragma GCC diagnostic warning "-Wformat-nonliteral"
 
-        painter->drawText(5 * printsize_x_factor, baseline + vert_ruler_offset - (4 * printsize_y_factor), string);
+        painter->drawText(5 * printsize_x_factor, baseline + vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, string);
       }
     }
   }
@@ -795,7 +796,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                     {
                       baseline = (vertical_distance * (k + 1)) + signalcomp[k]->screen_offset;
 
-                      painter->drawLine(marker_x, baseline + (vertical_distance / 2), marker_x, baseline - (vertical_distance / 2));
+                      painter->drawLine(marker_x, baseline + (vertical_distance / 2) - scroll_h_offset, marker_x, baseline - (vertical_distance / 2) - scroll_h_offset);
 
                       break;
                     }
@@ -1009,14 +1010,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   {
     painter->setClipping(true);
 
-    vertical_distance = h / (signalcomps + 1);
+    vertical_distance = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
   }
 
   for(i=0; i<signalcomps; i++)
   {
     if(mainwindow->clip_to_pane)
     {
-      painter->setClipRect(0, vertical_distance * i + (vertical_distance / 2), w, vertical_distance);
+      painter->setClipRect(0, vertical_distance * i + (vertical_distance / 2) - scroll_h_offset, w, vertical_distance);
     }
 
     if(printing)
@@ -1033,9 +1034,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     for(j=0; j<screensamples[i]; j++)
     {
       painter->drawLine(graphicBuf[j].graphicLine[i].x1,
-                        graphicBuf[j].graphicLine[i].y1,
+                        graphicBuf[j].graphicLine[i].y1 - scroll_h_offset,
                         graphicBuf[j].graphicLine[i].x2,
-                        graphicBuf[j].graphicLine[i].y2);
+                        graphicBuf[j].graphicLine[i].y2 - scroll_h_offset);
 
       if(draw_zoom_rectangle && use_move_events)
       {
@@ -1054,7 +1055,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   for(i=0; i<signalcomps; i++)
   {
-    baseline = h / (signalcomps + 1);
+    baseline = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
     baseline *= (i + 1);
 
     painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
@@ -1091,12 +1092,12 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         painter->setPen((Qt::GlobalColor)crosshair_1.color);
         if(crosshair_1.has_hor_line)
         {
-          painter->drawLine(0, crosshair_1.y_value, w, crosshair_1.y_value);
+          painter->drawLine(0, crosshair_1.y_value - scroll_h_offset, w, crosshair_1.y_value - scroll_h_offset);
         }
         if(crosshair_1.dot_sz)
         {
           painter->setBrush(QBrush((Qt::GlobalColor)crosshair_1.color));
-          painter->drawEllipse(crosshair_1.x_position - crosshair_1.dot_sz, crosshair_1.y_value - crosshair_1.dot_sz, crosshair_1.dot_sz * 2 + 1, crosshair_1.dot_sz * 2 + 1);
+          painter->drawEllipse(crosshair_1.x_position - crosshair_1.dot_sz, crosshair_1.y_value - crosshair_1.dot_sz - scroll_h_offset, crosshair_1.dot_sz * 2 + 1, crosshair_1.dot_sz * 2 + 1);
         }
         painter->drawLine(crosshair_1.x_position, 0, crosshair_1.x_position, h);
         snprintf(string, 128, "%+f %s",
@@ -1185,12 +1186,12 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         painter->setPen((Qt::GlobalColor)crosshair_2.color);
         if(crosshair_2.has_hor_line)
         {
-          painter->drawLine(0, crosshair_2.y_value, w, crosshair_2.y_value);
+          painter->drawLine(0, crosshair_2.y_value - scroll_h_offset, w, crosshair_2.y_value - scroll_h_offset);
         }
         if(crosshair_2.dot_sz)
         {
           painter->setBrush(QBrush((Qt::GlobalColor)crosshair_2.color));
-          painter->drawEllipse(crosshair_2.x_position - crosshair_2.dot_sz, crosshair_2.y_value - crosshair_2.dot_sz, crosshair_2.dot_sz * 2 + 1, crosshair_2.dot_sz * 2 + 1);
+          painter->drawEllipse(crosshair_2.x_position - crosshair_2.dot_sz, crosshair_2.y_value - crosshair_2.dot_sz - scroll_h_offset, crosshair_2.dot_sz * 2 + 1, crosshair_2.dot_sz * 2 + 1);
         }
         painter->drawLine(crosshair_2.x_position, 0, crosshair_2.x_position, h);
         snprintf(string, 128, "%+f %s",
@@ -1256,9 +1257,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       snprintf(string, 128, "offset: %f %s",
         -signalcomp[i]->screen_offset * mainwindow->y_pixelsizefactor * signalcomp[i]->voltpercm,
         signalcomp[i]->physdimension);
-      painter->fillRect(132 * w_scaling, baseline - (2 * h_scaling), 190 * w_scaling, -15 * h_scaling, backgroundcolor);
+      painter->fillRect(132 * w_scaling, baseline - (2 * h_scaling) - scroll_h_offset, 190 * w_scaling, -15 * h_scaling, backgroundcolor);
       painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
-      painter->drawText(135 * w_scaling, baseline - (5 * h_scaling), string);
+      painter->drawText(135 * w_scaling, baseline - (5 * h_scaling) - scroll_h_offset, string);
     }
 
     if(signalcomp[i]->hasgaintracking)
@@ -1266,13 +1267,13 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       snprintf(string, 128, "amplitude: %f %s/cm",
         signalcomp[i]->voltpercm,
         signalcomp[i]->physdimension);
-      painter->fillRect(132 * w_scaling, baseline - (2 * h_scaling), 190 * w_scaling, -15 * h_scaling, backgroundcolor);
+      painter->fillRect(132 * w_scaling, baseline - (2 * h_scaling) - scroll_h_offset, 190 * w_scaling, -15 * h_scaling, backgroundcolor);
       painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
-      painter->drawText(135 * w_scaling, baseline - (5 * h_scaling), string);
+      painter->drawText(135 * w_scaling, baseline - (5 * h_scaling) - scroll_h_offset, string);
     }
   }
 
-  vertical_distance = h / (signalcomps + 1);
+  vertical_distance = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
 
   for(i=0; i<signalcomps; i++)
   {
@@ -1280,22 +1281,22 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     if(signalcomp[i]->alias[0] != 0)
     {
-      painter->fillRect(2 * w_scaling, baseline - (2 * h_scaling), strlen(signalcomp[i]->alias) * 8 * w_scaling, -15 * h_scaling, backgroundcolor);
+      painter->fillRect(2 * w_scaling, baseline - (2 * h_scaling) - scroll_h_offset, strlen(signalcomp[i]->alias) * 8 * w_scaling, -15 * h_scaling, backgroundcolor);
     }
     else
     {
-      painter->fillRect(2 * w_scaling, baseline - (2 * h_scaling), strlen(signalcomp[i]->signallabel) * 8 * w_scaling, -15 * h_scaling, backgroundcolor);
+      painter->fillRect(2 * w_scaling, baseline - (2 * h_scaling) - scroll_h_offset, strlen(signalcomp[i]->signallabel) * 8 * w_scaling, -15 * h_scaling, backgroundcolor);
     }
 
     painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
 
     if(signalcomp[i]->alias[0] != 0)
     {
-      painter->drawText(5 * w_scaling, baseline - (5 * h_scaling), signalcomp[i]->alias);
+      painter->drawText(5 * w_scaling, baseline - (5 * h_scaling) - scroll_h_offset, signalcomp[i]->alias);
     }
     else
     {
-      painter->drawText(5 * w_scaling, baseline - (5 * h_scaling), signalcomp[i]->signallabel);
+      painter->drawText(5 * w_scaling, baseline - (5 * h_scaling) - scroll_h_offset, signalcomp[i]->signallabel);
     }
 
     if(signalcomp[i]->hasruler)

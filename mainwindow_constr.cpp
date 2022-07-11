@@ -171,6 +171,12 @@ UI_Mainwindow::UI_Mainwindow()
   window_width_sav_rest = 0;
   window_height_sav_rest = 0;
 
+  mc_v_scrollarea_ratio = 1;
+
+  mc_v_scrollarea_auto = 0;
+
+  mc_v_scrollarea_max_signals = 0;
+
   for(i=0; i<8; i++)
   {
     annot_edit_user_button_enabled[i] = 0;
@@ -524,7 +530,36 @@ UI_Mainwindow::UI_Mainwindow()
   playback_realtime_timer->setTimerType(Qt::PreciseTimer);
 #endif
 
-  setCentralWidget(maincurve);
+  mc_v_scrollbar = new QScrollBar;
+  mc_v_scrollbar->setOrientation(Qt::Vertical);
+  mc_v_scrollbar->setMinimum(0);
+  mc_v_scrollbar->setMaximum(100000);
+  if(mc_v_scrollarea_ratio < 2)
+  {
+    mc_v_scrollbar->setVisible(false);
+  }
+  else
+  {
+    mc_v_scrollbar->setPageStep(100000 / (mc_v_scrollarea_ratio - 1));
+  }
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addWidget(maincurve, 1000);
+  hlayout1->addWidget(mc_v_scrollbar);
+  hlayout1->setSpacing(0);
+  hlayout1->setContentsMargins(0, 0, 0, 0);
+
+  QFrame *frame1 = new QFrame;
+  frame1->setFrameStyle(QFrame::NoFrame);
+  frame1->setFrameShape(QFrame::NoFrame);
+  frame1->setLineWidth(0);
+  frame1->setMidLineWidth(0);
+  frame1->setContentsMargins(0, 0, 0, 0);
+  frame1->setLayout(hlayout1);
+
+  setCentralWidget(frame1);
+
+  connect(mc_v_scrollbar, SIGNAL(valueChanged(int)), this, SLOT(mc_v_scrollbar_changed(int)));
 
   menubar = menuBar();
 

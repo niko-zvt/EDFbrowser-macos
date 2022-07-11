@@ -287,7 +287,10 @@ public:
       session_video_seek,
       session_relative_paths,
       video_pause_requested,
-      display_pagetime_mmsec;
+      display_pagetime_mmsec,
+      mc_v_scrollarea_ratio,
+      mc_v_scrollarea_auto,
+      mc_v_scrollarea_max_signals;
 
 volatile int rc_cmd_in_progress;
 
@@ -447,6 +450,8 @@ long long annot_editor_user_button_epoch_len,
   QTcpServer   *rc_host_server;
 
   QTcpSocket   *rc_host_sock;
+
+  QScrollBar *mc_v_scrollbar;
 
 signals:
      void file_position_changed(long long);
@@ -767,6 +772,7 @@ private slots:
   void rc_host_sock_disconnected_handler();
   void desktop_resized(int);
   void screen_changed(QScreen *);
+  void mc_v_scrollbar_changed(int);
 //  void search_pattern();
 
 protected:

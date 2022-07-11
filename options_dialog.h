@@ -98,6 +98,7 @@ QSpinBox       *spinbox1_1,
                *spinbox4_2,
                *spinbox4_3,
                *spinbox4_5,
+               *spinbox4_6,
                *spinbox5_1,
                *spinbox5_2,
                *spinbox7_1,
@@ -241,6 +242,7 @@ void combobox4_3IndexChanged(int);
 void spinBox4_2ValueChanged(int);
 void spinBox4_3ValueChanged(int);
 void spinbox4_5ValueChanged(int);
+void spinbox4_6ValueChanged(int);
 void saveColorSchemaButtonClicked();
 void loadColorSchemaButtonClicked();
 void loadColorSchema_NK();

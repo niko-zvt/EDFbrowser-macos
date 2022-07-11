@@ -1221,6 +1221,19 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   checkbox4_15->setToolTip("If enabled, the type prefix of a signal will be stripped from the label e.g. EEG FP1 becomes FP1, ECG V2 becomes V2\n"
                            "Remove and re-load the signals in order to take the changes into effect.");
 
+  spinbox4_6 = new QSpinBox;
+  spinbox4_6->setMinimum(1);
+  spinbox4_6->setMaximum(64);
+  spinbox4_6->setSingleStep(1);
+  spinbox4_6->setValue(mainwindow->mc_v_scrollarea_ratio);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(spinbox4_6);
+  hlayout_tmp->addStretch(1000);
+  flayout4_1->addRow("Scroll area\n"
+                     "(1 is no scroll)", hlayout_tmp);
+  QObject::connect(spinbox4_6, SIGNAL(valueChanged(int)), this, SLOT(spinbox4_6ValueChanged(int)));
+
   QFormLayout *flayout4_2 = new QFormLayout;
   flayout4_2->setSpacing(20);
 
@@ -3537,6 +3550,25 @@ void UI_OptionsDialog::def_amp_radio_group_clicked(int id)
 void UI_OptionsDialog::spinbox4_5ValueChanged(int val)
 {
   mainwindow->default_amplitude_physmax_div = val;
+}
+
+
+void UI_OptionsDialog::spinbox4_6ValueChanged(int val)
+{
+  mainwindow->mc_v_scrollarea_ratio = val;
+
+  if(mainwindow->mc_v_scrollarea_ratio > 1)
+  {
+    mainwindow->mc_v_scrollbar->setPageStep(100000 / (mainwindow->mc_v_scrollarea_ratio - 1));
+
+    mainwindow->mc_v_scrollbar->setVisible(true);
+  }
+  else
+  {
+    mainwindow->mc_v_scrollbar->setVisible(false);
+  }
+
+  mainwindow->maincurve->drawCurve_stage_1();
 }
 
 
