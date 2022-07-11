@@ -2580,7 +2580,9 @@ void UI_Mainwindow::open_new_file()
       }
 
       free(edfhdr->edfparam);
+      edfhdr->edfparam = NULL;
       free(edfhdr);
+      edfhdr = NULL;
       fclose(newfile);
       newfile = NULL;
       rc_file_open_requested = 0;
@@ -3458,7 +3460,9 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
   edfplus_annotation_empty_list(&edfheaderlist[file_n]->annot_list);
   fclose(edfheaderlist[file_n]->file_hdl);
   free(edfheaderlist[file_n]->edfparam);
+  edfheaderlist[file_n]->edfparam = NULL;
   free(edfheaderlist[file_n]);
+  edfheaderlist[file_n] = NULL;
 
   if(annotations_dock[file_n] != NULL)
   {
@@ -3594,7 +3598,9 @@ void UI_Mainwindow::close_all_files()
     }
     edfplus_annotation_empty_list(&edfheaderlist[files_open]->annot_list);
     free(edfheaderlist[files_open]->edfparam);
+    edfheaderlist[files_open]->edfparam = NULL;
     free(edfheaderlist[files_open]);
+    edfheaderlist[files_open] = NULL;
 
     if(annotations_dock[files_open] != NULL)
     {
@@ -3604,6 +3610,7 @@ void UI_Mainwindow::close_all_files()
     }
 
     delete sel_viewtime_act[files_open];
+    sel_viewtime_act[files_open] = NULL;
   }
 
   if(annotationlist_backup != NULL)
@@ -5144,6 +5151,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     {
       QMessageBox::critical(this, "Error", "malloc() error");
       free(newsignalcomp);
+      newsignalcomp = NULL;
       return NULL;
     }
   }
@@ -5155,6 +5163,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     {
       QMessageBox::critical(this, "Error", "malloc() error");
       free(newsignalcomp);
+      newsignalcomp = NULL;
       return NULL;
     }
   }
@@ -5168,6 +5177,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     {
       QMessageBox::critical(this, "Error", "malloc() error");
       free(newsignalcomp);
+      newsignalcomp = NULL;
       return NULL;
     }
   }
@@ -5181,6 +5191,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     {
       QMessageBox::critical(this, "Error", "malloc() error");
       free(newsignalcomp);
+      newsignalcomp = NULL;
       return NULL;
     }
   }
@@ -5192,6 +5203,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     {
       QMessageBox::critical(this, "Error", "malloc() error");
       free(newsignalcomp);
+      newsignalcomp = NULL;
       return NULL;
     }
   }
@@ -5203,6 +5215,7 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     {
       QMessageBox::critical(this, "Error", "malloc() error");
       free(newsignalcomp);
+      newsignalcomp = NULL;
       return NULL;
     }
   }
@@ -5299,7 +5312,9 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     {
       QMessageBox::critical(this, "Error", err);
       free(err);
+      err = NULL;
       free(newsignalcomp);
+      newsignalcomp = NULL;
       return NULL;
     }
 
