@@ -172,10 +172,8 @@ UI_Mainwindow::UI_Mainwindow()
   window_height_sav_rest = 0;
 
   mc_v_scrollarea_ratio = 1;
-
   mc_v_scrollarea_auto = 0;
-
-  mc_v_scrollarea_max_signals = 0;
+  mc_v_scrollarea_max_signals = 5;
 
   for(i=0; i<8; i++)
   {
@@ -534,13 +532,9 @@ UI_Mainwindow::UI_Mainwindow()
   mc_v_scrollbar->setOrientation(Qt::Vertical);
   mc_v_scrollbar->setMinimum(0);
   mc_v_scrollbar->setMaximum(100000);
-  if(mc_v_scrollarea_ratio < 2)
+  if(!mc_v_scrollarea_auto)
   {
-    mc_v_scrollbar->setVisible(false);
-  }
-  else
-  {
-    mc_v_scrollbar->setPageStep(100000 / (mc_v_scrollarea_ratio - 1));
+   mc_v_scrollbar->setVisible(false);
   }
 
   QHBoxLayout *hlayout1 = new QHBoxLayout;

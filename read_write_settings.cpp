@@ -2844,20 +2844,6 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
-  if(!(xml_goto_nth_element_inside(xml_hdl, "mc_v_scrollarea_ratio", 0)))
-  {
-    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
-    {
-      xml_close(xml_hdl);
-      return;
-    }
-
-    mc_v_scrollarea_ratio = atoi(result);
-    if((mc_v_scrollarea_ratio < 1) || (mc_v_scrollarea_ratio > 64))  mc_v_scrollarea_ratio = 1;
-
-    xml_go_up(xml_hdl);
-  }
-
   if(!(xml_goto_nth_element_inside(xml_hdl, "mc_v_scrollarea_auto", 0)))
   {
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
@@ -2867,8 +2853,7 @@ void UI_Mainwindow::read_general_settings()
     }
 
     mc_v_scrollarea_auto = atoi(result);
-    if(mc_v_scrollarea_auto > 64)  mc_v_scrollarea_auto = 64;
-    if(mc_v_scrollarea_auto < 0)  mc_v_scrollarea_auto = 0;
+    if(mc_v_scrollarea_auto != 1)  mc_v_scrollarea_auto = 0;
 
     xml_go_up(xml_hdl);
   }
@@ -2883,7 +2868,7 @@ void UI_Mainwindow::read_general_settings()
 
     mc_v_scrollarea_max_signals = atoi(result);
     if(mc_v_scrollarea_max_signals > 64)  mc_v_scrollarea_max_signals = 64;
-    if(mc_v_scrollarea_max_signals < 0)  mc_v_scrollarea_max_signals = 0;
+    if(mc_v_scrollarea_max_signals < 1)  mc_v_scrollarea_max_signals = 1;
 
     xml_go_up(xml_hdl);
   }
@@ -3615,8 +3600,6 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "    <viewtime_indicator_type>%i</viewtime_indicator_type>\n", viewtime_indicator_type);
 
     fprintf(cfgfile, "    <display_pagetime_mmsec>%i</display_pagetime_mmsec>\n", display_pagetime_mmsec);
-
-    fprintf(cfgfile, "    <mc_v_scrollarea_ratio>%i</mc_v_scrollarea_ratio>\n", mc_v_scrollarea_ratio);
 
     fprintf(cfgfile, "    <mc_v_scrollarea_auto>%i</mc_v_scrollarea_auto>\n", mc_v_scrollarea_auto);
 

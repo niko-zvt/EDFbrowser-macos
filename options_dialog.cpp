@@ -1221,17 +1221,40 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   checkbox4_15->setToolTip("If enabled, the type prefix of a signal will be stripped from the label e.g. EEG FP1 becomes FP1, ECG V2 becomes V2\n"
                            "Remove and re-load the signals in order to take the changes into effect.");
 
+  checkbox4_16 = new QCheckBox;
+  checkbox4_16->setTristate(false);
+  checkbox4_16->setToolTip("If enabled, max. n signals will be visible at a time, the other signals can be reached using a vertical scrollbar");
+  if(mainwindow->mc_v_scrollarea_auto)
+  {
+    checkbox4_16->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox4_16->setCheckState(Qt::Unchecked);
+  }
   spinbox4_6 = new QSpinBox;
   spinbox4_6->setMinimum(1);
   spinbox4_6->setMaximum(64);
   spinbox4_6->setSingleStep(1);
-  spinbox4_6->setValue(mainwindow->mc_v_scrollarea_ratio);
+  spinbox4_6->setSuffix(" signals");
+  spinbox4_6->setValue(mainwindow->mc_v_scrollarea_max_signals);
+  spinbox4_6->setToolTip("If enabled, max. n signals will be visible at a time, the other signals can be reached using a vertical scrollbar");
+  if(mainwindow->mc_v_scrollarea_auto)
+  {
+    spinbox4_6->setEnabled(true);
+  }
+  else
+  {
+    spinbox4_6->setEnabled(false);
+  }
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(checkbox4_16);
   hlayout_tmp->addWidget(spinbox4_6);
   hlayout_tmp->addStretch(1000);
-  flayout4_1->addRow("Scroll area\n"
-                     "(1 is no scroll)", hlayout_tmp);
+  flayout4_1->addRow("Enable a vertical scrollbar and show max.", hlayout_tmp);
+  flayout4_1->labelForField(hlayout_tmp)->setToolTip("If enabled, max. n signals will be visible at a time, the other signals can be reached using a vertical scrollbar");
+  QObject::connect(checkbox4_16, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_16Clicked(int)));
   QObject::connect(spinbox4_6, SIGNAL(valueChanged(int)), this, SLOT(spinbox4_6ValueChanged(int)));
 
   QFormLayout *flayout4_2 = new QFormLayout;
@@ -2159,6 +2182,29 @@ void UI_OptionsDialog::checkbox4_15Clicked(int state)
   {
     mainwindow->strip_label_types = 0;
   }
+}
+
+
+void UI_OptionsDialog::checkbox4_16Clicked(int state)
+{
+  if(state==Qt::Checked)
+  {
+    mainwindow->mc_v_scrollarea_auto = 1;
+
+    spinbox4_6->setEnabled(true);
+
+    mainwindow->mc_v_scrollbar->setVisible(true);
+  }
+  else
+  {
+    mainwindow->mc_v_scrollarea_auto = 0;
+
+    spinbox4_6->setEnabled(false);
+
+    mainwindow->mc_v_scrollbar->setVisible(false);
+  }
+
+  mainwindow->maincurve->drawCurve_stage_1();
 }
 
 
@@ -3555,18 +3601,7 @@ void UI_OptionsDialog::spinbox4_5ValueChanged(int val)
 
 void UI_OptionsDialog::spinbox4_6ValueChanged(int val)
 {
-  mainwindow->mc_v_scrollarea_ratio = val;
-
-  if(mainwindow->mc_v_scrollarea_ratio > 1)
-  {
-    mainwindow->mc_v_scrollbar->setPageStep(100000 / (mainwindow->mc_v_scrollarea_ratio - 1));
-
-    mainwindow->mc_v_scrollbar->setVisible(true);
-  }
-  else
-  {
-    mainwindow->mc_v_scrollbar->setVisible(false);
-  }
+  mainwindow->mc_v_scrollarea_max_signals = val;
 
   mainwindow->maincurve->drawCurve_stage_1();
 }

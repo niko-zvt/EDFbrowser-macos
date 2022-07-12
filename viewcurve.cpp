@@ -915,7 +915,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
                 baseline = signalcomp[i]->draw_rectangle_sum_y / signalcomp[i]->draw_rectangle_sum_cnt;
 
-                dist2 = baseline - ((mouse_press_coordinate_y + m_y) / 2);
+                dist2 = baseline - ((mouse_press_coordinate_y + m_y) / 2) - scroll_h_offset;
                 if(dist2 < 0)
                 {
                   dist2 *= -1;
@@ -1784,6 +1784,30 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
   if(!w_width||!w_height)
   {
+    if(mainwindow->mc_v_scrollarea_auto)
+    {
+      mainwindow->mc_v_scrollarea_ratio = signalcomps / mainwindow->mc_v_scrollarea_max_signals;
+
+      if(signalcomps % mainwindow->mc_v_scrollarea_max_signals)
+      {
+        mainwindow->mc_v_scrollarea_ratio++;
+      }
+
+      if(!mainwindow->mc_v_scrollarea_ratio)
+      {
+        mainwindow->mc_v_scrollarea_ratio++;
+      }
+
+      if(mainwindow->mc_v_scrollarea_ratio > 1)
+      {
+        mainwindow->mc_v_scrollbar->setPageStep(100000 / (mainwindow->mc_v_scrollarea_ratio - 1));
+      }
+    }
+    else
+    {
+      mainwindow->mc_v_scrollarea_ratio = 1;
+    }
+
     w = width();
     h = height() * mainwindow->mc_v_scrollarea_ratio;
 
