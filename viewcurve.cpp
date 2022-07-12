@@ -815,7 +815,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
       m_y,
       signallabel_strlen=1;
 
-  double zoomfactor;
+  double v_zoomfactor=1;
 
   struct signalcompblock **signalcomp;
 
@@ -964,15 +964,26 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
             mainwindow->pagetime = (long long)((double)mainwindow->pagetime / ((double)w / (double)(m_x - mouse_press_coordinate_x)));
             if(mainwindow->pagetime<1)  mainwindow->pagetime = 1;
 
-            zoomfactor = (double)h / (double)(m_y - mouse_press_coordinate_y);
+            v_zoomfactor = h / ((double)(m_y - mouse_press_coordinate_y));
+
+//             printf("m_y: %i\n"
+//                    "mouse_press_coordinate_y: %i\n"
+//                    "v_zoomfactor: %.1f\n"
+//                    "mc_v_scrollarea_ratio: %i\n"
+//                    "h: %i\n",
+//                    m_y,
+//                    mouse_press_coordinate_y,
+//                    v_zoomfactor,
+//                    mainwindow->mc_v_scrollarea_ratio,
+//                    h);
 
             for(i=0; i<signalcomps; i++)
             {
-              mainwindow->signalcomp[i]->screen_offset *= zoomfactor;
-              mainwindow->signalcomp[i]->screen_offset += ((h * mainwindow->mc_v_scrollarea_ratio * (zoomfactor - 1.0) * (double)(i + 1)) / (double)(signalcomps + 1));
-              mainwindow->signalcomp[i]->screen_offset -= ((double)mouse_press_coordinate_y * zoomfactor);
-              mainwindow->signalcomp[i]->voltpercm /= ((double)h / (double)(m_y - mouse_press_coordinate_y));
-              mainwindow->signalcomp[i]->sensitivity *= ((double)h / (double)(m_y - mouse_press_coordinate_y));
+              mainwindow->signalcomp[i]->screen_offset *= v_zoomfactor;
+              mainwindow->signalcomp[i]->screen_offset += ((h * mainwindow->mc_v_scrollarea_ratio * (v_zoomfactor - 1) * (double)(i + 1)) / (signalcomps + 1));
+              mainwindow->signalcomp[i]->screen_offset -= (mouse_press_coordinate_y * v_zoomfactor) + (scroll_h_offset * (v_zoomfactor - 1));
+              mainwindow->signalcomp[i]->voltpercm /= v_zoomfactor;
+              mainwindow->signalcomp[i]->sensitivity *= v_zoomfactor;
             }
 
             mainwindow->zoomhistory->history_size_tail++;
