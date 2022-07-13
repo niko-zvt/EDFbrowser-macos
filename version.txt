@@ -8,8 +8,8 @@
 
  - Timescale menu: User defined: added the possibility to set the timescale in mm per sec.
 
- - Signals window: added the possibility to enable a vertical scrollbar and to limit the maximum
-   number of signals plotted (use the scrollbar to display all signals.
+ - Signals window: added the possibility to enable a vertical scrollbar for the signal window so that
+   the signals will be distributed over more vertical space.
    This can be enabled and setup in Settings -> Options -> Other.
 
 

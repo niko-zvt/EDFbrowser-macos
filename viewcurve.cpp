@@ -1801,11 +1801,19 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
       if(mainwindow->mc_v_scrollarea_ratio > 1)
       {
         mainwindow->mc_v_scrollbar->setPageStep(100000 / (mainwindow->mc_v_scrollarea_ratio - 1));
+
+        mainwindow->mc_v_scrollbar->setEnabled(true);
+      }
+      else
+      {
+        mainwindow->mc_v_scrollbar->setEnabled(false);
       }
     }
     else
     {
       mainwindow->mc_v_scrollarea_ratio = 1;
+
+      mainwindow->mc_v_scrollbar->setEnabled(false);
     }
 
     w = width();

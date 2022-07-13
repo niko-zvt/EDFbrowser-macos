@@ -532,6 +532,7 @@ UI_Mainwindow::UI_Mainwindow()
   mc_v_scrollbar->setOrientation(Qt::Vertical);
   mc_v_scrollbar->setMinimum(0);
   mc_v_scrollbar->setMaximum(100000);
+  mc_v_scrollbar->setEnabled(false);
   if(!mc_v_scrollarea_auto)
   {
    mc_v_scrollbar->setVisible(false);

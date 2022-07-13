@@ -1223,7 +1223,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   checkbox4_16 = new QCheckBox;
   checkbox4_16->setTristate(false);
-  checkbox4_16->setToolTip("If enabled, max. n signals will be visible at a time, the other signals can be reached using a vertical scrollbar");
+  checkbox4_16->setToolTip("If enabled, max. N signals will be visible at a time, the other signals can be reached using a vertical scrollbar");
   if(mainwindow->mc_v_scrollarea_auto)
   {
     checkbox4_16->setCheckState(Qt::Checked);
@@ -1238,7 +1238,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   spinbox4_6->setSingleStep(1);
   spinbox4_6->setSuffix(" signals");
   spinbox4_6->setValue(mainwindow->mc_v_scrollarea_max_signals);
-  spinbox4_6->setToolTip("If enabled, max. n signals will be visible at a time, the other signals can be reached using a vertical scrollbar");
+  spinbox4_6->setToolTip("If enabled, max. N signals will be visible at a time, the other signals can be reached using a vertical scrollbar");
   if(mainwindow->mc_v_scrollarea_auto)
   {
     spinbox4_6->setEnabled(true);
@@ -1253,7 +1253,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp->addWidget(spinbox4_6);
   hlayout_tmp->addStretch(1000);
   flayout4_1->addRow("Enable a vertical scrollbar and show max.", hlayout_tmp);
-  flayout4_1->labelForField(hlayout_tmp)->setToolTip("If enabled, max. n signals will be visible at a time, the other signals can be reached using a vertical scrollbar");
+  flayout4_1->labelForField(hlayout_tmp)->setToolTip("If enabled, max. N signals will be visible at a time, the other signals can be reached using a vertical scrollbar");
   QObject::connect(checkbox4_16, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_16Clicked(int)));
   QObject::connect(spinbox4_6, SIGNAL(valueChanged(int)), this, SLOT(spinbox4_6ValueChanged(int)));
 
