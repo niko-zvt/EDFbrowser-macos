@@ -1,5 +1,5 @@
 
- version 1.95      to be defined
+ version 1.95      July 16, 2022
  --------------
 
  - Added an EEG powerline interference subtraction filter.
