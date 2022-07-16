@@ -35,10 +35,10 @@
 
 #include "edflib.h"
 
-#define EDFLIB_VERSION  (121)
+#define EDFLIB_VERSION  (122)
 #define EDFLIB_MAXFILES  (64)
 
-#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__HAIKU__)
+#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__HAIKU__) || defined(__ANDROID__)
 
 #define fopeno fopen
 
@@ -106,6 +106,9 @@ struct edfhdrblock{
         char      plus_patientcode[81];
         char      plus_gender[16];
         char      plus_birthdate[16];
+        int       plus_birthdate_day;
+        int       plus_birthdate_month;
+        int       plus_birthdate_year;
         char      plus_patient_name[81];
         char      plus_patient_additional[81];
         char      plus_startdate[16];
@@ -148,6 +151,7 @@ struct edfhdrblock{
 
 static struct edf_annotationblock{
         long long onset;
+        long long duration_l;
         char duration[16];
         char annotation[EDFLIB_MAX_ANNOTATION_LEN + 1];
        } *annotationslist[EDFLIB_MAXFILES];
@@ -370,6 +374,9 @@ int edfopen_file_readonly(const char *path, struct edf_hdr_struct *edfhdr, int r
     edfhdr->patientcode[0] = 0;
     edfhdr->gender[0] = 0;
     edfhdr->birthdate[0] = 0;
+    edfhdr->birthdate_day = 0;
+    edfhdr->birthdate_month = 0;
+    edfhdr->birthdate_year = 0;
     edfhdr->patient_name[0] = 0;
     edfhdr->patient_additional[0] = 0;
     edfhdr->admincode[0] = 0;
@@ -384,6 +391,9 @@ int edfopen_file_readonly(const char *path, struct edf_hdr_struct *edfhdr, int r
     edflib_strlcpy(edfhdr->patientcode, hdr->plus_patientcode, 81);
     edflib_strlcpy(edfhdr->gender, hdr->plus_gender, 16);
     edflib_strlcpy(edfhdr->birthdate, hdr->plus_birthdate, 16);
+    edfhdr->birthdate_day = hdr->plus_birthdate_day;
+    edfhdr->birthdate_month = hdr->plus_birthdate_month;
+    edfhdr->birthdate_year = hdr->plus_birthdate_year;
     edflib_strlcpy(edfhdr->patient_name, hdr->plus_patient_name, 81);
     edflib_strlcpy(edfhdr->patient_additional, hdr->plus_patient_additional, 81);
     edflib_strlcpy(edfhdr->admincode, hdr->plus_admincode, 81);
@@ -1267,6 +1277,7 @@ int edf_get_annotation(int handle, int n, struct edf_annotation_struct *annot)
   }
 
   annot->onset = (annotationslist[handle] + n)->onset;
+  annot->duration_l = (annotationslist[handle] + n)->duration_l;
   edflib_strlcpy(annot->duration, (annotationslist[handle] + n)->duration, 16);
   edflib_strlcpy(annot->annotation, (annotationslist[handle] + n)->annotation, EDFLIB_MAX_ANNOTATION_LEN + 1);
 
@@ -2385,6 +2396,9 @@ static struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_erro
     if(edfhdr->patient[p]=='X')
     {
       edfhdr->plus_birthdate[0] = 0;
+      edfhdr->plus_birthdate_day = 0;
+      edfhdr->plus_birthdate_month = 0;
+      edfhdr->plus_birthdate_year = 0;
       p += 2;
     }
     else
@@ -2404,6 +2418,60 @@ static struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_erro
       edfhdr->plus_birthdate[6] = ' ';
       edfhdr->plus_birthdate[11] = 0;
       p += i + 1;
+      edfhdr->plus_birthdate_day = edflib_atoi_nonlocalized(edfhdr->plus_birthdate);
+      if(!strncmp(edfhdr->plus_birthdate + 3, "jan", 3))
+      {
+        edfhdr->plus_birthdate_month = 1;
+      }
+      else if(!strncmp(edfhdr->plus_birthdate + 3, "feb", 3))
+        {
+          edfhdr->plus_birthdate_month = 2;
+        }
+        else if(!strncmp(edfhdr->plus_birthdate + 3, "mar", 3))
+          {
+            edfhdr->plus_birthdate_month = 3;
+          }
+          else if(!strncmp(edfhdr->plus_birthdate + 3, "apr", 3))
+            {
+              edfhdr->plus_birthdate_month = 4;
+            }
+            else if(!strncmp(edfhdr->plus_birthdate + 3, "may", 3))
+              {
+                edfhdr->plus_birthdate_month = 5;
+              }
+              else if(!strncmp(edfhdr->plus_birthdate + 3, "jun", 3))
+                {
+                  edfhdr->plus_birthdate_month = 6;
+                }
+                else if(!strncmp(edfhdr->plus_birthdate + 3, "jul", 3))
+                  {
+                    edfhdr->plus_birthdate_month = 7;
+                  }
+                  else if(!strncmp(edfhdr->plus_birthdate + 3, "aug", 3))
+                    {
+                      edfhdr->plus_birthdate_month = 8;
+                    }
+                    else if(!strncmp(edfhdr->plus_birthdate + 3, "sep", 3))
+                      {
+                        edfhdr->plus_birthdate_month = 9;
+                      }
+                      else if(!strncmp(edfhdr->plus_birthdate + 3, "oct", 3))
+                        {
+                          edfhdr->plus_birthdate_month = 10;
+                        }
+                        else if(!strncmp(edfhdr->plus_birthdate + 3, "nov", 3))
+                          {
+                            edfhdr->plus_birthdate_month = 11;
+                          }
+                          else if(!strncmp(edfhdr->plus_birthdate + 3, "dec", 3))
+                            {
+                              edfhdr->plus_birthdate_month = 12;
+                            }
+                            else
+                            {
+                              edfhdr->plus_birthdate_month = 0;
+                            }
+      edfhdr->plus_birthdate_year = edflib_atoi_nonlocalized(edfhdr->plus_birthdate + 7);
     }
 
     for(i=0; i<(80-p);i++)
@@ -3169,8 +3237,16 @@ static int edflib_get_annotations(struct edfhdrblock *edfhdr, int hdl, int read_
 
                 new_annotation->annotation[0] = 0;
 
-                if(duration)  edflib_strlcpy(new_annotation->duration, duration_in_txt, 16);
-                else  new_annotation->duration[0] = 0;
+                if(duration)
+                {
+                  edflib_strlcpy(new_annotation->duration, duration_in_txt, 16);
+                  new_annotation->duration_l = edflib_get_long_time(duration_in_txt);
+                }
+                else
+                {
+                  new_annotation->duration[0] = 0;
+                  new_annotation->duration_l = -EDFLIB_TIME_DIMENSION;
+                }
 
                 for(j=0; j<n; j++)
                 {

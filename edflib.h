@@ -166,6 +166,7 @@ struct edf_param_struct{         /* this structure contains all the relevant EDF
 
 struct edf_annotation_struct{                           /* this structure is used for annotations */
         long long onset;                                /* onset time of the event, expressed in units of 100 nanoSeconds and relative to the start of the file */
+        long long duration_l;                           /* duration time, expressed in units of 100 nanoSeconds, a value of -10000000 means unused (duration not present) */
         char duration[16];                              /* duration time, this is a null-terminated ASCII text-string */
         char annotation[EDFLIB_MAX_ANNOTATION_LEN + 1]; /* description of the event in UTF-8, this is a null terminated string */
        };
@@ -187,6 +188,9 @@ struct edf_hdr_struct{            /* this structure contains all the relevant ED
   char      patientcode[81];                              /* null-terminated string, is always empty when filetype is EDF or BDF */
   char      gender[16];                                   /* null-terminated string, is always empty when filetype is EDF or BDF */
   char      birthdate[16];                                /* null-terminated string, is always empty when filetype is EDF or BDF */
+  int       birthdate_day;                                /* 1 - 31 */
+  int       birthdate_month;                              /* 1 - 12 */
+  int       birthdate_year;
   char      patient_name[81];                             /* null-terminated string, is always empty when filetype is EDF or BDF */
   char      patient_additional[81];                       /* null-terminated string, is always empty when filetype is EDF or BDF */
   char      admincode[81];                                /* null-terminated string, is always empty when filetype is EDF or BDF */

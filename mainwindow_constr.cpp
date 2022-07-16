@@ -1455,7 +1455,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   update_checker = NULL;
 
-  if(edflib_version() != 121)
+  if(edflib_version() != 122)
   {
     cmdlineargument = 0;
 
