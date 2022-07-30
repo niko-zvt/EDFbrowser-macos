@@ -133,7 +133,7 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   flayout2->addRow("Subject", line_edit1a);
   flayout2->addRow("Recording", line_edit2a);
   flayout2->addRow("Start", line_edit3a);
-  flayout1->addRow("End", line_edit23a);
+  flayout2->addRow("End", line_edit23a);
   flayout2->addRow("Duration", line_edit4a);
   flayout2->addRow("Reserved", line_edit5a);
   flayout2->addRow("Datarecord duration", line_edit20a);
