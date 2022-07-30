@@ -76,7 +76,8 @@ private:
                *label3,
                *label4,
                *label5,
-               *label6;
+               *label6,
+               *label7;
 
   QPushButton  *CloseButton,
                *SelectAllButton,

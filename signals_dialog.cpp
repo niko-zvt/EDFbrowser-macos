@@ -103,6 +103,8 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
   label6 = new QLabel;
   label6->setText("Signal Composition (derivation)");
 
+  label7 = new QLabel;
+
   signallist = new QListWidget;
   signallist->setFont(*mainwindow->monofont);
   signallist->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -175,6 +177,8 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
 
   QHBoxLayout *hlayout3 = new QHBoxLayout;
   hlayout3->addWidget(label3);
+  hlayout3->addStretch(100);
+  hlayout3->addWidget(label7);
   hlayout3->addStretch(100);
   hlayout3->addWidget(label4);
   hlayout3->addStretch(900);
@@ -695,20 +699,20 @@ void UI_Signalswindow::show_signals(int row)
 
   if((mainwindow->edfheaderlist[row]->edfplus)||(mainwindow->edfheaderlist[row]->bdfplus))
   {
-    strlcpy(str, "Subject    ", 256);
+    strlcpy(str, "Subject:  ", 256);
     strlcat(str, mainwindow->edfheaderlist[row]->plus_patient_name, 256);
     strlcat(str, "  ", 256);
     strlcat(str, mainwindow->edfheaderlist[row]->plus_birthdate, 256);
     strlcat(str, "  ", 256);
     strlcat(str, mainwindow->edfheaderlist[row]->plus_patientcode, 256);
     label1->setText(str);
-    strlcpy(str, "Recording  ", 256);
+    strlcpy(str, "Recording:  ", 256);
     strlcat(str, mainwindow->edfheaderlist[row]->plus_admincode, 256);
     label2->setText(str);
   }
   else
   {
-    strlcpy(str, "Subject    ", 256);
+    strlcpy(str, "Subject:  ", 256);
     strlcat(str, mainwindow->edfheaderlist[row]->patient, 256);
     len = strlen(str);
     for(j=0; j<len; j++)
@@ -719,7 +723,7 @@ void UI_Signalswindow::show_signals(int row)
       }
     }
     label1->setText(str);
-    strlcpy(str, "Recording  ", 256);
+    strlcpy(str, "Recording:  ", 256);
     strlcat(str, mainwindow->edfheaderlist[row]->recording, 256);
     len = strlen(str);
     for(j=0; j<len; j++)
@@ -738,7 +742,7 @@ void UI_Signalswindow::show_signals(int row)
   date_time.month_str[1] += 32;
   date_time.month_str[2] += 32;
 
-  snprintf(str, 256, "Start      %i %s %i   %2i:%02i:%02i",
+  snprintf(str, 256, "Start:  %i %s %i   %2i:%02i:%02i",
           date_time.day,
           date_time.month_str,
           date_time.year,
@@ -748,26 +752,31 @@ void UI_Signalswindow::show_signals(int row)
 
   label3->setText(str);
 
-  strlcpy(str, "Duration   ", 256);
   file_duration = mainwindow->edfheaderlist[row]->long_data_record_duration * mainwindow->edfheaderlist[row]->datarecords;
-  if((file_duration / TIME_DIMENSION) / 10)
-  {
-    snprintf(str + 11, 240,
-            "%2i:%02i:%02i",
-            (int)((file_duration / TIME_DIMENSION)/ 3600LL),
-            (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
-            (int)((file_duration / TIME_DIMENSION) % 60LL));
-  }
-  else
-  {
-    snprintf(str + 11, 240,
-            "%2i:%02i:%02i.%06i",
-            (int)((file_duration / TIME_DIMENSION)/ 3600LL),
-            (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
-            (int)((file_duration / TIME_DIMENSION) % 60LL),
-            (int)((file_duration % TIME_DIMENSION) / 10LL));
-  }
+  snprintf(str, 256,
+          "Duration:  %2i:%02i:%02i.%06i",
+          (int)((file_duration / TIME_DIMENSION)/ 3600LL),
+          (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
+          (int)((file_duration / TIME_DIMENSION) % 60LL),
+          (int)((file_duration % TIME_DIMENSION) / 10LL));
+  remove_trailing_zeros(str);
   label4->setText(str);
+
+  utc_to_date_time(mainwindow->edfheaderlist[row]->utc_starttime + (file_duration / TIME_DIMENSION), &date_time);
+
+  date_time.month_str[0] += 32;
+  date_time.month_str[1] += 32;
+  date_time.month_str[2] += 32;
+
+  snprintf(str, 256, "End:  %i %s %i   %2i:%02i:%02i",
+          date_time.day,
+          date_time.month_str,
+          date_time.year,
+          date_time.hour,
+          date_time.minute,
+          date_time.second);
+
+  label7->setText(str);
 
   skip = 0;
 

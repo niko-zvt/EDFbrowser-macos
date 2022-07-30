@@ -95,7 +95,9 @@ QLineEdit *line_edit1,
           *line_edit21,
           *line_edit21a,
           *line_edit22,
-          *line_edit22a;
+          *line_edit22a,
+          *line_edit23,
+          *line_edit23a;
 
 private slots:
 

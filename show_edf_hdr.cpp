@@ -105,11 +105,16 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   line_edit22->setReadOnly(true);
   line_edit22a = new QLineEdit;
   line_edit22a->setReadOnly(true);
+  line_edit23 = new QLineEdit;
+  line_edit23->setReadOnly(true);
+  line_edit23a = new QLineEdit;
+  line_edit23a->setReadOnly(true);
 
   QFormLayout *flayout1 = new QFormLayout;
   flayout1->addRow("Subject code", line_edit1);
   flayout1->addRow("Sex", line_edit2);
   flayout1->addRow("Start", line_edit3);
+  flayout1->addRow("End", line_edit23);
   flayout1->addRow("Duration", line_edit4);
   flayout1->addRow("Reserved", line_edit5);
   flayout1->addRow("Birthdate", line_edit6);
@@ -128,6 +133,7 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   flayout2->addRow("Subject", line_edit1a);
   flayout2->addRow("Recording", line_edit2a);
   flayout2->addRow("Start", line_edit3a);
+  flayout1->addRow("End", line_edit23a);
   flayout2->addRow("Duration", line_edit4a);
   flayout2->addRow("Reserved", line_edit5a);
   flayout2->addRow("Datarecord duration", line_edit20a);
@@ -292,26 +298,45 @@ void UI_EDFhdrwindow::show_params(int row)
 
   file_duration = mainwindow->edfheaderlist[row]->long_data_record_duration * mainwindow->edfheaderlist[row]->datarecords;
 
-  if((file_duration / TIME_DIMENSION) / 10)
-  {
-    snprintf(str, 512,
-            "%2i:%02i:%02i",
-            (int)((file_duration / TIME_DIMENSION)/ 3600LL),
-            (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
-            (int)((file_duration / TIME_DIMENSION) % 60LL));
-  }
-  else
-  {
-    snprintf(str, 512,
-            "%2i:%02i:%02i.%06i",
-            (int)((file_duration / TIME_DIMENSION)/ 3600LL),
-            (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
-            (int)((file_duration / TIME_DIMENSION) % 60LL),
-            (int)((file_duration % TIME_DIMENSION) / 10LL));
-  }
+  snprintf(str, 512,
+          "%2i:%02i:%02i.%06i",
+          (int)((file_duration / TIME_DIMENSION)/ 3600LL),
+          (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
+          (int)((file_duration / TIME_DIMENSION) % 60LL),
+          (int)((file_duration % TIME_DIMENSION) / 10LL));
+
+  remove_trailing_zeros(str);
 
   line_edit4->setText(str);
   line_edit4a->setText(str);
+
+  utc_to_date_time(mainwindow->edfheaderlist[row]->utc_starttime + (file_duration / TIME_DIMENSION), &date_time);
+
+  date_time.month_str[0] += 32;
+  date_time.month_str[1] += 32;
+  date_time.month_str[2] += 32;
+
+  snprintf(str, 400, "%i %s %i  %2i:%02i:%02i",
+          date_time.day,
+          date_time.month_str,
+          date_time.year,
+          date_time.hour,
+          date_time.minute,
+          date_time.second);
+
+  if(mainwindow->edfheaderlist[row]->starttime_offset != 0LL)
+  {
+#ifdef Q_OS_WIN32
+    __mingw_snprintf(str + strlen(str), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_offset);
+#else
+    snprintf(str + strlen(str), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_offset);
+#endif
+
+    remove_trailing_zeros(str);
+  }
+
+  line_edit23->setText(str);
+  line_edit23a->setText(str);
 
   line_edit5->setText(mainwindow->edfheaderlist[row]->reserved);
   if(mainwindow->edf_debug)  line_edit5->setToolTip("0xc0");
