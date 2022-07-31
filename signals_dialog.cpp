@@ -750,19 +750,31 @@ void UI_Signalswindow::show_signals(int row)
           date_time.minute,
           date_time.second);
 
+  if(mainwindow->edfheaderlist[row]->starttime_offset != 0LL)
+  {
+#ifdef Q_OS_WIN32
+    __mingw_snprintf(str + strlen(str), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_offset);
+#else
+    snprintf(str + strlen(str), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_offset);
+#endif
+
+    remove_trailing_zeros(str);
+  }
+
   label3->setText(str);
 
   file_duration = mainwindow->edfheaderlist[row]->long_data_record_duration * mainwindow->edfheaderlist[row]->datarecords;
   snprintf(str, 256,
-          "Duration:  %2i:%02i:%02i.%06i",
-          (int)((file_duration / TIME_DIMENSION)/ 3600LL),
+          "Duration:  %2i:%02i:%02i.%07i",
+          (int)((file_duration / TIME_DIMENSION) / 3600LL),
           (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
           (int)((file_duration / TIME_DIMENSION) % 60LL),
-          (int)((file_duration % TIME_DIMENSION) / 10LL));
+          (int)(file_duration % TIME_DIMENSION));
   remove_trailing_zeros(str);
   label4->setText(str);
 
-  utc_to_date_time(mainwindow->edfheaderlist[row]->utc_starttime + (file_duration / TIME_DIMENSION), &date_time);
+  utc_to_date_time(mainwindow->edfheaderlist[row]->utc_starttime +
+   ((file_duration + mainwindow->edfheaderlist[row]->starttime_offset) / TIME_DIMENSION), &date_time);
 
   date_time.month_str[0] += 32;
   date_time.month_str[1] += 32;
@@ -775,6 +787,12 @@ void UI_Signalswindow::show_signals(int row)
           date_time.hour,
           date_time.minute,
           date_time.second);
+#ifdef Q_OS_WIN32
+  __mingw_snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_offset + file_duration) % TIME_DIMENSION);
+#else
+  snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_offset + file_duration) % TIME_DIMENSION);
+#endif
+  remove_trailing_zeros(str);
 
   label7->setText(str);
 
