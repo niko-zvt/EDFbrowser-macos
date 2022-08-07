@@ -421,7 +421,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       view_session_format_error(__FILE__, __LINE__, xml_hdl);
       return;
     }
-    snprintf(edf_path, 2048, "File: %s", result);
+    snprintf(edf_path, 2048, "File: %.2000s", result);
     xml_go_up(xml_hdl);
 
     if(xml_goto_nth_element_inside(xml_hdl, "num_of_signals", 0))
@@ -1569,7 +1569,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "Stage %i name: %s", j + 1, result);
+      snprintf(str2, 2048, "Stage %i name: %.2000s", j + 1, result);
 
       xml_go_up(xml_hdl);
 
