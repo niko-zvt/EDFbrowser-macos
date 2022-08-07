@@ -464,7 +464,8 @@ private:
   QMenu        *filemenu,
                *sessionmenu,
                *signalmenu,
-               *displaymenu,
+               *timescalemenu,
+               *timescale_mmsec_menu,
                *amplitudemenu,
                *toolsmenu,
                *settingsmenu,
@@ -734,6 +735,11 @@ private slots:
   void show_cdsa_dock();
   void show_aeeg_dock();
   void show_hypnogram();
+  void page_10mmmin();
+  void page_15mmmin();
+  void page_30mmmin();
+  void page_1mmsec();
+  void page_2mmsec();
   void page_5mmsec();
   void page_10mmsec();
   void page_15mmsec();
@@ -742,6 +748,8 @@ private slots:
   void page_50mmsec();
   void page_60mmsec();
   void page_120mmsec();
+  void page_250mmsec();
+  void page_500mmsec();
   void reduce_signals();
   void edit_header();
   void biosemi2bdfplus_converter();

@@ -1335,7 +1335,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
     else
     {
-      if((mainwindow->pagetime >= TIME_DIMENSION) && (mainwindow->pagetime <= (300LL * TIME_DIMENSION)))
+      if((mainwindow->pagetime >= (TIME_DIMENSION / 10)) && (mainwindow->pagetime < (3600LL * TIME_DIMENSION)))
       {
         for(int r=0; r<64; r++)
         {
@@ -1343,8 +1343,24 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
           if(mainwindow->pagetime_string[r] == '(')
           {
-            snprintf(mainwindow->pagetime_string + r, 64, "(%i mm/sec)",
-                     (int)((w * mainwindow->x_pixelsizefactor * 10) / (((double)mainwindow->pagetime) / TIME_DIMENSION) + 0.5));
+            if(mainwindow->pagetime > (600LL * TIME_DIMENSION))
+            {
+              snprintf(mainwindow->pagetime_string + r, 64, "(%i mm/min)",
+                      (int)((w * mainwindow->x_pixelsizefactor * 600) / (((double)mainwindow->pagetime) / TIME_DIMENSION) + 0.5));
+            }
+            else if(mainwindow->pagetime >= (60LL * TIME_DIMENSION))
+              {
+                snprintf(mainwindow->pagetime_string + r, 64, "(%.1f mm/sec)",
+                        (w * mainwindow->x_pixelsizefactor * 10) / (((double)mainwindow->pagetime) / TIME_DIMENSION));
+              }
+              else
+              {
+                snprintf(mainwindow->pagetime_string + r, 64, "(%i mm/sec)",
+                        (int)((w * mainwindow->x_pixelsizefactor * 10) / (((double)mainwindow->pagetime) / TIME_DIMENSION) + 0.5));
+              }
+
+            remove_trailing_zeros(mainwindow->pagetime_string);
+
             break;
           }
         }

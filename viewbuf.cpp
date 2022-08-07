@@ -868,12 +868,23 @@ void UI_Mainwindow::setup_viewbuf()
               ((int)(pagetime / TIME_DIMENSION)) % 60,
               (int)((pagetime % TIME_DIMENSION) / 1000LL));
     }
-    else if(pagetime > (300LL * TIME_DIMENSION))
+    else if(pagetime > (600LL * TIME_DIMENSION))
       {
-        snprintf(pagetime_string, 128, "%i:%02i.%04i",
-                ((int)(pagetime / TIME_DIMENSION)) / 60,
-                ((int)(pagetime / TIME_DIMENSION)) % 60,
-                (int)((pagetime % TIME_DIMENSION) / 1000LL));
+        if(display_pagetime_mmsec)
+        {
+          snprintf(pagetime_string, 128, "%i:%02i.%04i  (%i mm/min)",
+                  ((int)(pagetime / TIME_DIMENSION)) / 60,
+                  ((int)(pagetime / TIME_DIMENSION)) % 60,
+                  (int)((pagetime % TIME_DIMENSION) / 1000LL),
+                  (int)((maincurve->width() * x_pixelsizefactor * 600) / (((double)pagetime) / TIME_DIMENSION) + 0.5));
+        }
+        else
+        {
+          snprintf(pagetime_string, 128, "%i:%02i.%04i",
+                  ((int)(pagetime / TIME_DIMENSION)) / 60,
+                  ((int)(pagetime / TIME_DIMENSION)) % 60,
+                  (int)((pagetime % TIME_DIMENSION) / 1000LL));
+        }
       }
       else if(pagetime >= (60LL * TIME_DIMENSION))
         {
@@ -914,6 +925,12 @@ void UI_Mainwindow::setup_viewbuf()
             convert_to_metric_suffix(pagetime_string, (double)pagetime / TIME_DIMENSION, 3, 64);
 
             strlcat(pagetime_string, "S", 64);
+
+            if((pagetime >= (TIME_DIMENSION / 10)) && display_pagetime_mmsec)
+            {
+              snprintf(pagetime_string + strlen(pagetime_string), 128 - strlen(pagetime_string), "  (%i mm/sec)",
+                      (int)((maincurve->width() * x_pixelsizefactor * 10) / (((double)pagetime) / TIME_DIMENSION) + 0.5));
+            }
           }
 
     remove_trailing_zeros(viewtime_string);

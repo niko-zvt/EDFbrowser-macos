@@ -640,136 +640,147 @@ UI_Mainwindow::UI_Mainwindow()
   signalmenu->addAction("Remove all", this, SLOT(remove_all_signals()));
   menubar->addMenu(signalmenu);
 
-  displaymenu = new QMenu(this);
-  displaymenu->setTitle("&Timescale");
+  timescale_mmsec_menu = new QMenu(this);
+  timescale_mmsec_menu->setTitle("mm/sec");
+  timescale_mmsec_menu->addAction(" 10 mm/min", this, SLOT(page_10mmmin()));
+  timescale_mmsec_menu->addAction(" 15 mm/min", this, SLOT(page_15mmmin()));
+  timescale_mmsec_menu->addAction(" 30 mm/min", this, SLOT(page_30mmmin()));
+  timescale_mmsec_menu->addAction("  1 mm/sec", this, SLOT(page_1mmsec()));
+  timescale_mmsec_menu->addAction("  2 mm/sec", this, SLOT(page_2mmsec()));
+  timescale_mmsec_menu->addAction("  5 mm/sec", this, SLOT(page_5mmsec()));
+  timescale_mmsec_menu->addAction(" 10 mm/sec", this, SLOT(page_10mmsec()));
+  timescale_mmsec_menu->addAction(" 15 mm/sec", this, SLOT(page_15mmsec()));
+  timescale_mmsec_menu->addAction(" 25 mm/sec", this, SLOT(page_25mmsec()));
+  timescale_mmsec_menu->addAction(" 30 mm/sec", this, SLOT(page_30mmsec()));
+  timescale_mmsec_menu->addAction(" 50 mm/sec", this, SLOT(page_50mmsec()));
+  timescale_mmsec_menu->addAction(" 60 mm/sec", this, SLOT(page_60mmsec()));
+  timescale_mmsec_menu->addAction("120 mm/sec", this, SLOT(page_120mmsec()));
+  timescale_mmsec_menu->addAction("250 mm/sec", this, SLOT(page_250mmsec()));
+  timescale_mmsec_menu->addAction("500 mm/sec", this, SLOT(page_500mmsec()));
+  timescale_mmsec_menu->addSeparator();
+  timescale_mmsec_menu->addAction("user defined", this, SLOT(set_user_defined_display_time()));
 
-  displaymenu->addAction("  5 mm/sec", this, SLOT(page_5mmsec()));
-  displaymenu->addAction(" 10 mm/sec", this, SLOT(page_10mmsec()));
-  displaymenu->addAction(" 15 mm/sec", this, SLOT(page_15mmsec()));
-  displaymenu->addAction(" 25 mm/sec", this, SLOT(page_25mmsec()));
-  displaymenu->addAction(" 30 mm/sec", this, SLOT(page_30mmsec()));
-  displaymenu->addAction(" 50 mm/sec", this, SLOT(page_50mmsec()));
-  displaymenu->addAction(" 60 mm/sec", this, SLOT(page_60mmsec()));
-  displaymenu->addAction("120 mm/sec", this, SLOT(page_120mmsec()));
-
-  displaymenu->addSeparator();
+  timescalemenu = new QMenu(this);
+  timescalemenu->setTitle("&Timescale");
+  timescalemenu->addMenu(timescale_mmsec_menu);
+  timescalemenu->addSeparator();
 
   page_10u = new QAction("10 uSec/page", this);
-  displaymenu->addAction(page_10u);
+  timescalemenu->addAction(page_10u);
 
   page_20u = new QAction("20 uSec/page", this);
-  displaymenu->addAction(page_20u);
+  timescalemenu->addAction(page_20u);
 
   page_50u = new QAction("50 uSec/page", this);
-  displaymenu->addAction(page_50u);
+  timescalemenu->addAction(page_50u);
 
   page_100u = new QAction("100 uSec/page", this);
-  displaymenu->addAction(page_100u);
+  timescalemenu->addAction(page_100u);
 
   page_200u = new QAction("200 uSec/page", this);
-  displaymenu->addAction(page_200u);
+  timescalemenu->addAction(page_200u);
 
   page_500u = new QAction("500 uSec/page", this);
-  displaymenu->addAction(page_500u);
+  timescalemenu->addAction(page_500u);
 
   page_1m = new QAction("1 mSec/page", this);
-  displaymenu->addAction(page_1m);
+  timescalemenu->addAction(page_1m);
 
   page_2m = new QAction("2 mSec/page", this);
-  displaymenu->addAction(page_2m);
+  timescalemenu->addAction(page_2m);
 
   page_5m = new QAction("5 mSec/page", this);
-  displaymenu->addAction(page_5m);
+  timescalemenu->addAction(page_5m);
 
   page_10m = new QAction("10 mSec/page", this);
-  displaymenu->addAction(page_10m);
+  timescalemenu->addAction(page_10m);
 
   page_20m = new QAction("20 mSec/page", this);
-  displaymenu->addAction(page_20m);
+  timescalemenu->addAction(page_20m);
 
   page_50m = new QAction("50 mSec/page", this);
-  displaymenu->addAction(page_50m);
+  timescalemenu->addAction(page_50m);
 
   page_100m = new QAction("100 mSec/page", this);
-  displaymenu->addAction(page_100m);
+  timescalemenu->addAction(page_100m);
 
   page_200m = new QAction("200 mSec/page", this);
-  displaymenu->addAction(page_200m);
+  timescalemenu->addAction(page_200m);
 
   page_500m = new QAction("500 mSec/page", this);
-  displaymenu->addAction(page_500m);
+  timescalemenu->addAction(page_500m);
 
   page_1 = new QAction("1 Sec/page", this);
-  displaymenu->addAction(page_1);
+  timescalemenu->addAction(page_1);
 
   page_2 = new QAction("2 Sec/page", this);
-  displaymenu->addAction(page_2);
+  timescalemenu->addAction(page_2);
 
   page_5 = new QAction("5 Sec/page", this);
-  displaymenu->addAction(page_5);
+  timescalemenu->addAction(page_5);
 
   page_10 = new QAction("10 Sec/page", this);
-  displaymenu->addAction(page_10);
+  timescalemenu->addAction(page_10);
 
   page_15 = new QAction("15 Sec/page", this);
-  displaymenu->addAction(page_15);
+  timescalemenu->addAction(page_15);
 
   page_20 = new QAction("20 Sec/page", this);
-  displaymenu->addAction(page_20);
+  timescalemenu->addAction(page_20);
 
   page_30 = new QAction("30 Sec/page", this);
   page_30->setChecked(true);
-  displaymenu->addAction(page_30);
+  timescalemenu->addAction(page_30);
 
   page_60 = new QAction("60 Sec/page", this);
-  displaymenu->addAction(page_60);
+  timescalemenu->addAction(page_60);
 
   page_300 = new QAction("5 min/page", this);
-  displaymenu->addAction(page_300);
+  timescalemenu->addAction(page_300);
 
   page_1200 = new QAction("20 min/page", this);
-  displaymenu->addAction(page_1200);
+  timescalemenu->addAction(page_1200);
 
   page_3600 = new QAction("1 hour/page", this);
-  displaymenu->addAction(page_3600);
+  timescalemenu->addAction(page_3600);
 
   page_8h = new QAction("8 hour/page", this);
-  displaymenu->addAction(page_8h);
+  timescalemenu->addAction(page_8h);
 
   page_12h = new QAction("12 hour/page", this);
-  displaymenu->addAction(page_12h);
+  timescalemenu->addAction(page_12h);
 
   page_24h = new QAction("24 hour/page", this);
-  displaymenu->addAction(page_24h);
+  timescalemenu->addAction(page_24h);
 
   page_48h = new QAction("48 hour/page", this);
-  displaymenu->addAction(page_48h);
+  timescalemenu->addAction(page_48h);
 
-  displaymenu->addSeparator();
+  timescalemenu->addSeparator();
 
   page_div2 = new QAction("Timescale / 2", this);
   page_div2->setShortcut(QKeySequence::ZoomIn);
   connect(page_div2, SIGNAL(triggered()), this, SLOT(set_page_div2()));
-  displaymenu->addAction(page_div2);
+  timescalemenu->addAction(page_div2);
 
   page_mult2 = new QAction("Timescale x 2", this);
   page_mult2->setShortcut(QKeySequence::ZoomOut);
   connect(page_mult2, SIGNAL(triggered()), this, SLOT(set_page_mult2()));
-  displaymenu->addAction(page_mult2);
+  timescalemenu->addAction(page_mult2);
 
-  displaymenu->addSeparator();
+  timescalemenu->addSeparator();
 
   page_user_defined = new QAction("user defined", this);
   connect(page_user_defined, SIGNAL(triggered()), this, SLOT(set_user_defined_display_time()));
-  displaymenu->addAction(page_user_defined);
+  timescalemenu->addAction(page_user_defined);
 
-  displaymenu->addSeparator();
+  timescalemenu->addSeparator();
 
   page_whole_rec = new QAction("whole recording", this);
   connect(page_whole_rec, SIGNAL(triggered()), this, SLOT(set_display_time_whole_rec()));
-  displaymenu->addAction(page_whole_rec);
+  timescalemenu->addAction(page_whole_rec);
 
-  menubar->addMenu(displaymenu);
+  menubar->addMenu(timescalemenu);
 
   DisplayGroup = new QActionGroup(this);
   DisplayGroup->addAction(page_10u);

@@ -3682,6 +3682,46 @@ void UI_Mainwindow::show_about_dialog()
 }
 
 
+void UI_Mainwindow::page_10mmmin()
+{
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * 60;
+
+  setup_viewbuf();
+}
+
+
+void UI_Mainwindow::page_15mmmin()
+{
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * 40;
+
+  setup_viewbuf();
+}
+
+
+void UI_Mainwindow::page_30mmmin()
+{
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * 20;
+
+  setup_viewbuf();
+}
+
+
+void UI_Mainwindow::page_1mmsec()
+{
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * 10;
+
+  setup_viewbuf();
+}
+
+
+void UI_Mainwindow::page_2mmsec()
+{
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * 5;
+
+  setup_viewbuf();
+}
+
+
 void UI_Mainwindow::page_5mmsec()
 {
   pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * 2;
@@ -3741,6 +3781,22 @@ void UI_Mainwindow::page_60mmsec()
 void UI_Mainwindow::page_120mmsec()
 {
   pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 12.0;
+
+  setup_viewbuf();
+}
+
+
+void UI_Mainwindow::page_250mmsec()
+{
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 25.0;
+
+  setup_viewbuf();
+}
+
+
+void UI_Mainwindow::page_500mmsec()
+{
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 50.0;
 
   setup_viewbuf();
 }
@@ -3926,130 +3982,130 @@ void UI_Mainwindow::set_display_time(QAction *action)
 
     timescale_doubler = 10;
   }
-  if(action==page_20u)
+  else if(action==page_20u)
   {
     pagetime = TIME_DIMENSION / 50000;
 
     timescale_doubler = 20;
   }
-  if(action==page_50u)
+  else if(action==page_50u)
   {
     pagetime = TIME_DIMENSION / 20000;
 
     timescale_doubler = 50;
   }
-  if(action==page_100u)
+  else if(action==page_100u)
   {
     pagetime = TIME_DIMENSION / 10000;
 
     timescale_doubler = 10;
   }
-  if(action==page_200u)
+  else if(action==page_200u)
   {
     pagetime = TIME_DIMENSION / 5000;
 
     timescale_doubler = 20;
   }
-  if(action==page_500u)
+  else if(action==page_500u)
   {
     pagetime = TIME_DIMENSION / 2000;
 
     timescale_doubler = 50;
   }
-  if(action==page_1m)
+  else if(action==page_1m)
   {
     pagetime = TIME_DIMENSION / 1000;
 
     timescale_doubler = 10;
   }
-  if(action==page_2m)
+  else if(action==page_2m)
   {
     pagetime = TIME_DIMENSION / 500;
 
     timescale_doubler = 20;
   }
-  if(action==page_5m)
+  else if(action==page_5m)
   {
     pagetime = TIME_DIMENSION / 200;
 
     timescale_doubler = 50;
   }
-  if(action==page_10m)
+  else if(action==page_10m)
   {
     pagetime = TIME_DIMENSION / 100;
 
     timescale_doubler = 10;
   }
-  if(action==page_20m)
+  else if(action==page_20m)
   {
     pagetime = TIME_DIMENSION / 50;
 
     timescale_doubler = 20;
   }
-  if(action==page_50m)
+  else if(action==page_50m)
   {
     pagetime = TIME_DIMENSION / 20;
 
     timescale_doubler = 50;
   }
-  if(action==page_100m)
+  else if(action==page_100m)
   {
     pagetime = TIME_DIMENSION / 10;
 
     timescale_doubler = 10;
   }
-  if(action==page_200m)
+  else if(action==page_200m)
   {
     pagetime = TIME_DIMENSION / 5;
 
     timescale_doubler = 20;
   }
-  if(action==page_500m)
+  else if(action==page_500m)
   {
     pagetime = TIME_DIMENSION / 2;
 
     timescale_doubler = 50;
   }
-  if(action==page_1)
+  else if(action==page_1)
   {
     pagetime = TIME_DIMENSION;
 
     timescale_doubler = 10;
   }
-  if(action==page_2)
+  else if(action==page_2)
   {
     pagetime = TIME_DIMENSION * 2;
 
     timescale_doubler = 20;
   }
-  if(action==page_5)
+  else if(action==page_5)
   {
     pagetime = TIME_DIMENSION * 5;
 
     timescale_doubler = 50;
   }
-  if(action==page_10)
+  else if(action==page_10)
   {
     pagetime = TIME_DIMENSION * 10;
 
     timescale_doubler = 10;
   }
-  if(action==page_15)    pagetime = TIME_DIMENSION * 15;
-  if(action==page_20)
+  else if(action==page_15)    pagetime = TIME_DIMENSION * 15;
+  else if(action==page_20)
   {
     pagetime = TIME_DIMENSION * 20;
 
     timescale_doubler = 20;
   }
-  if(action==page_30)    pagetime = TIME_DIMENSION * 30;
-  if(action==page_60)    pagetime = TIME_DIMENSION * 60;
-  if(action==page_300)   pagetime = TIME_DIMENSION * 300;
-  if(action==page_1200)  pagetime = TIME_DIMENSION * 1200;
-  if(action==page_3600)  pagetime = TIME_DIMENSION * 3600;
-  if(action==page_8h)    pagetime = TIME_DIMENSION * 3600 * 8;
-  if(action==page_12h)   pagetime = TIME_DIMENSION * 3600 * 12;
-  if(action==page_24h)   pagetime = TIME_DIMENSION * 3600 * 24;
-  if(action==page_48h)   pagetime = TIME_DIMENSION * 3600 * 48;
+  else if(action==page_30)    pagetime = TIME_DIMENSION * 30;
+  else if(action==page_60)    pagetime = TIME_DIMENSION * 60;
+  else if(action==page_300)   pagetime = TIME_DIMENSION * 300;
+  else if(action==page_1200)  pagetime = TIME_DIMENSION * 1200;
+  else if(action==page_3600)  pagetime = TIME_DIMENSION * 3600;
+  else if(action==page_8h)    pagetime = TIME_DIMENSION * 3600 * 8;
+  else if(action==page_12h)   pagetime = TIME_DIMENSION * 3600 * 12;
+  else if(action==page_24h)   pagetime = TIME_DIMENSION * 3600 * 24;
+  else if(action==page_48h)   pagetime = TIME_DIMENSION * 3600 * 48;
 
   setup_viewbuf();
 }
