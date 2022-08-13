@@ -29,6 +29,10 @@ int main(int argc, char *argv[])
 #error "unsupported char size"
 #endif
 
+#if __BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__
+#error "system is not little endian!"
+#endif
+
   union
   {
     char four[4];
