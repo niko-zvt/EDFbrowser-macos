@@ -136,6 +136,7 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(QWidget *w_parent, char *recent_dir, char *save
 
   GoButton = new QPushButton;
   GoButton->setText("Start");
+  GoButton->setToolTip("Select input file and start the conversion");
 
   CloseButton = new QPushButton;
   CloseButton->setText("Close");
