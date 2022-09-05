@@ -34,9 +34,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "global.h"
 #include "utils.h"
+#include "mainwindow.h"
 
 
 
@@ -45,11 +47,13 @@ class Check_for_updates : public QObject
   Q_OBJECT
 
 public:
-  Check_for_updates();
+  Check_for_updates(UI_Mainwindow *);
 
 private:
 
   QNetworkAccessManager *manager;
+
+  UI_Mainwindow *mainwindow;
 
 private slots:
 

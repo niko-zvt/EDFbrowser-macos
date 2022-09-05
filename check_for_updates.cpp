@@ -33,10 +33,12 @@
 
 
 
-Check_for_updates::Check_for_updates()
+Check_for_updates::Check_for_updates(UI_Mainwindow *mw)
 {
   QNetworkRequest request;
   QNetworkReply *reply;
+
+  mainwindow = mw;
 
   manager = new QNetworkAccessManager(this);
 
@@ -101,6 +103,8 @@ void Check_for_updates::replyFinished()
   {
     return;
   }
+
+  mainwindow->last_check_for_updates_time = time(NULL);
 
   if(is_integer_number(buf + 27))
   {

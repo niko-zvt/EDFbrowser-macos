@@ -84,6 +84,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   check_for_updates = 1;
 
+  last_check_for_updates_time = 0LL;
+
   use_threads = 1;
 
   auto_dpi = 1;
@@ -1464,8 +1466,6 @@ UI_Mainwindow::UI_Mainwindow()
     messagewindow.exec();
   }
 
-  update_checker = NULL;
-
   if(edflib_version() != 122)
   {
     cmdlineargument = 0;
@@ -1480,9 +1480,14 @@ UI_Mainwindow::UI_Mainwindow()
     return;
   }
 
+  update_checker = NULL;
+
   if(check_for_updates)
   {
-    update_checker = new Check_for_updates;
+    if((time(NULL) - last_check_for_updates_time) > (24LL * 3600LL))
+    {
+      update_checker = new Check_for_updates(this);
+    }
   }
 
   if(cmdlineoption)

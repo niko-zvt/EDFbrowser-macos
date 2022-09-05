@@ -2816,6 +2816,20 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "last_check_for_updates_time", 0)))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    last_check_for_updates_time = atoll(result);
+    if(last_check_for_updates_time < 0LL)  last_check_for_updates_time = 0LL;
+
+    xml_go_up(xml_hdl);
+  }
+
   if(!(xml_goto_nth_element_inside(xml_hdl, "viewtime_indicator_type", 0)))
   {
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
@@ -3596,7 +3610,11 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "    </annotfilter_var>\n");
 
     fprintf(cfgfile, "    <check_for_updates>%i</check_for_updates>\n", check_for_updates);
-
+#ifdef Q_OS_WIN32
+    __mingw_fprintf(cfgfile, "    <last_check_for_updates_time>%lli</last_check_for_updates_time>\n", last_check_for_updates_time);
+#else
+    fprintf(cfgfile, "    <last_check_for_updates_time>%lli</last_check_for_updates_time>\n", last_check_for_updates_time);
+#endif
     fprintf(cfgfile, "    <viewtime_indicator_type>%i</viewtime_indicator_type>\n", viewtime_indicator_type);
 
     fprintf(cfgfile, "    <display_pagetime_mmsec>%i</display_pagetime_mmsec>\n", display_pagetime_mmsec);

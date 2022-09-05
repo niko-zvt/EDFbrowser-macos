@@ -161,6 +161,7 @@ class UI_cdsa_dock;
 class UI_aeeg_dock;
 class UI_hypnogram_dock;
 class UI_hrv_dock;
+class Check_for_updates;
 
 
 #define CMD_PARSE_STR_LEN    (64)
@@ -297,7 +298,8 @@ volatile int rc_cmd_in_progress;
 long long annot_editor_user_button_epoch_len,
           annot_editor_user_button_page_len,
           hypnogram_epoch_len_threshold,
-          session_video_starttime;
+          session_video_starttime,
+          last_check_for_updates_time;
 
   QColor hrvdock_trace_color,
          annot_list_edited_txt_color;
