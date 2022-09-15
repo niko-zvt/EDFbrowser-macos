@@ -2071,12 +2071,9 @@ void UI_Mainwindow::show_annotations()
       }
     }
 
-    if(edfplus_annotation_size(&edfheaderlist[i]->annot_list) > 0)
+    if(annotations_dock[i] != NULL)
     {
-      if(annotations_dock[i] != NULL)
-      {
-        annotations_dock[i]->docklist->show();
-      }
+      annotations_dock[i]->docklist->show();
     }
   }
 }
