@@ -73,6 +73,7 @@ struct import_annotations_var_block
   double triggerlevel;
   int ignoreconsecutive;
   int ascii_txt_encoding;
+  int csv_equal_filename;
 };
 
 
@@ -129,7 +130,8 @@ QCheckBox      *IgnoreConsecutiveCheckBox,
                *DurationCheckBox,
                *StopTimeCheckBox,
                *importStandardCheckBox,
-               *importAuxCheckBox;
+               *importAuxCheckBox,
+               *equalFilenameCheckBox;
 
 QPushButton    *CloseButton,
                *ImportButton,
@@ -153,6 +155,7 @@ void descriptionRadioButtonClicked(bool);
 void DCEventSignalChanged(int);
 void DurationCheckBoxChanged(int);
 void StopTimeCheckBoxChanged(int);
+void equalFilenameCheckBoxChanged(int);
 void TabChanged(int);
 void helpbuttonpressed();
 

@@ -217,6 +217,11 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   StopTimeCheckBox->setCheckState(Qt::Unchecked);
   StopTimeCheckBox->setToolTip("Use the column for the stop time of the event");
 
+  equalFilenameCheckBox = new QCheckBox;
+  equalFilenameCheckBox->setTristate(false);
+  equalFilenameCheckBox->setCheckState(Qt::Unchecked);
+  equalFilenameCheckBox->setToolTip("Only accept CSV files with the same filename as the EDF/BDF file and extension .csv");
+
   QHBoxLayout *asciiSettingsHBoxLayout1 = new QHBoxLayout;
   asciiSettingsHBoxLayout1->addWidget(DescriptionColumnRadioButton);
   asciiSettingsHBoxLayout1->addWidget(DescriptionColumnSpinBox, 10);
@@ -248,6 +253,8 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   asciiSettingsflayout->addRow("Data starts at line", DatastartSpinbox);
   asciiSettingsflayout->addRow("Onset time coding is", RelativeTimeComboBox);
   asciiSettingsflayout->addRow("Text encoding", text_encoding_combobox);
+  asciiSettingsflayout->addRow("Must have equal filename", equalFilenameCheckBox);
+  asciiSettingsflayout->labelForField(equalFilenameCheckBox)->setToolTip("Only accept CSV files with the same filename as the EDF/BDF file and extension .csv");
 
   QHBoxLayout *asciiSettingsHBoxLayout20 = new QHBoxLayout;
   asciiSettingsHBoxLayout20->addLayout(asciiSettingsflayout);
@@ -445,6 +452,15 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
     IgnoreConsecutiveCheckBox->setCheckState(Qt::Unchecked);
   }
 
+  if(mainwindow->import_annotations_var->csv_equal_filename == 1)
+  {
+    equalFilenameCheckBox->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    equalFilenameCheckBox->setCheckState(Qt::Unchecked);
+  }
+
   if(mainwindow->import_annotations_var->format == EDFPLUS_FORMAT)
   {
     IgnoreConsecutiveCheckBox->setEnabled(false);
@@ -459,6 +475,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   QObject::connect(UseManualDescriptionRadioButton, SIGNAL(toggled(bool)),            this,               SLOT(descriptionRadioButtonClicked(bool)));
   QObject::connect(DurationCheckBox,                SIGNAL(stateChanged(int)),        this,               SLOT(DurationCheckBoxChanged(int)));
   QObject::connect(StopTimeCheckBox,                SIGNAL(stateChanged(int)),        this,               SLOT(StopTimeCheckBoxChanged(int)));
+  QObject::connect(equalFilenameCheckBox,           SIGNAL(stateChanged(int)),        this,               SLOT(equalFilenameCheckBoxChanged(int)));
   QObject::connect(tabholder,                       SIGNAL(currentChanged(int)),      this,               SLOT(TabChanged(int)));
   QObject::connect(helpButton,                      SIGNAL(clicked()),                this,               SLOT(helpbuttonpressed()));
 
@@ -496,6 +513,19 @@ void UI_ImportAnnotationswindow::StopTimeCheckBoxChanged(int state)
     DurationColumnSpinBox->setEnabled(false);
 
     DurationCheckBox->setCheckState(Qt::Unchecked);
+  }
+}
+
+
+void UI_ImportAnnotationswindow::equalFilenameCheckBoxChanged(int state)
+{
+  if(state == Qt::Unchecked)
+  {
+    mainwindow->import_annotations_var->csv_equal_filename = 0;
+  }
+  else
+  {
+    mainwindow->import_annotations_var->csv_equal_filename = 1;
   }
 }
 
@@ -1176,7 +1206,9 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
        last_description[256]={""},
        duration[32]={""},
        *charpntr=NULL,
-       *saveptr=NULL;
+       *saveptr=NULL,
+       tmp_str[4096]={""},
+       filechooser_filter_str[4096]={""};
 
   long long onset=0LL,
             last_onset=0LL;
@@ -1357,7 +1389,20 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   txt_encoding = text_encoding_combobox->currentIndex();
   mainwindow->import_annotations_var->ascii_txt_encoding = txt_encoding;
 
-  strlcpy(path, QFileDialog::getOpenFileName(0, "Open ASCII file", QString::fromLocal8Bit(mainwindow->recent_opendir), "ASCII files (*.txt *.TXT *.csv *.CSV *.tsv *.TSV);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
+  if(mainwindow->import_annotations_var->csv_equal_filename)
+  {
+    get_filename_from_path(tmp_str, mainwindow->edfheaderlist[0]->filename, 4096);
+
+    remove_extension_from_filename(tmp_str);
+
+    snprintf(filechooser_filter_str, 4096, "CSV file (%.4000s.csv)", tmp_str);
+
+    strlcpy(path, QFileDialog::getOpenFileName(0, "Open CSV file", QString::fromLocal8Bit(mainwindow->recent_opendir), filechooser_filter_str).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  }
+  else
+  {
+    strlcpy(path, QFileDialog::getOpenFileName(0, "Open ASCII file", QString::fromLocal8Bit(mainwindow->recent_opendir), "ASCII files (*.txt *.TXT *.csv *.CSV *.tsv *.TSV);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
+  }
 
   if(!strcmp(path, ""))
   {
