@@ -68,7 +68,7 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
         " git repo: https://gitlab.com/Teuniz/EDFbrowser\n"
         " email: teuniz@protonmail.com\n"
         "\n Disclaimer:\n"
-        " Despite this software is intend to be useful, there is no warranty, use this software at your own risk!\n"
+        " Despite this software is intended to be useful, there is no warranty, use this software at your own risk!\n"
         " EDFbrowser may NOT be used in safety-critical applications, such as life-support medical systems.\n"
         " The author is NOT responsible for any consequences. For research and educational purpose only.\n");
   textedit1->append(str);
