@@ -4,7 +4,7 @@
 
  - Signals dialog & File -> Info: show also the end time of the recording.
 
- - Re-ordered the the timescale menu and added some more entries.
+ - Re-ordered the timescale menu and added some more entries.
 
  - Import annotations/events: from ASCII/CSV: added the option to accept only annotation files that have
    the same name as the EDF/BDF file and have the extension .txt, .csv or .tsv.
