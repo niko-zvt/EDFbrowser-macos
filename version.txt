@@ -7,7 +7,7 @@
  - Re-ordered the the timescale menu and added some more entries.
 
  - Import annotations/events: from ASCII/CSV: added the option to accept only annotation files that have
-   the same name as the EDF/BDF file and with extension .csv.
+   the same name as the EDF/BDF file and have the extension .txt, .csv or .tsv.
 
 
  version 1.95      July 16, 2022

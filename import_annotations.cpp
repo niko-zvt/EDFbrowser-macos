@@ -220,7 +220,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   equalFilenameCheckBox = new QCheckBox;
   equalFilenameCheckBox->setTristate(false);
   equalFilenameCheckBox->setCheckState(Qt::Unchecked);
-  equalFilenameCheckBox->setToolTip("Only accept CSV files with the same filename as the EDF/BDF file and extension .csv");
+  equalFilenameCheckBox->setToolTip("Only accept ASCII files with the same name as the EDF/BDF file and extension .csv, .tsv or .txt");
 
   QHBoxLayout *asciiSettingsHBoxLayout1 = new QHBoxLayout;
   asciiSettingsHBoxLayout1->addWidget(DescriptionColumnRadioButton);
@@ -254,7 +254,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   asciiSettingsflayout->addRow("Onset time coding is", RelativeTimeComboBox);
   asciiSettingsflayout->addRow("Text encoding", text_encoding_combobox);
   asciiSettingsflayout->addRow("Must have equal filename", equalFilenameCheckBox);
-  asciiSettingsflayout->labelForField(equalFilenameCheckBox)->setToolTip("Only accept CSV files with the same filename as the EDF/BDF file and extension .csv");
+  asciiSettingsflayout->labelForField(equalFilenameCheckBox)->setToolTip("Only accept ASCII files with the same name as the EDF/BDF file and extension .csv, .tsv or .txt");
 
   QHBoxLayout *asciiSettingsHBoxLayout20 = new QHBoxLayout;
   asciiSettingsHBoxLayout20->addLayout(asciiSettingsflayout);
@@ -1178,7 +1178,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
 int UI_ImportAnnotationswindow::import_from_ascii(void)
 {
-  int j,
+  int i, j,
       column,
       line_nr,
       startline=1,
@@ -1395,9 +1395,12 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
     remove_extension_from_filename(tmp_str);
 
-    snprintf(filechooser_filter_str, 4096, "CSV file (%.4000s.csv)", tmp_str);
+//     snprintf(filechooser_filter_str, 4096, "CSV file (%.1000s.csv);;TSV file (%.1000s.tsv);;TXT file (%.1000s.txt)",
+//              tmp_str, tmp_str, tmp_str);
 
-    strlcpy(path, QFileDialog::getOpenFileName(0, "Open CSV file", QString::fromLocal8Bit(mainwindow->recent_opendir), filechooser_filter_str).toLocal8Bit().data(), MAX_PATH_LENGTH);
+    snprintf(filechooser_filter_str, 4096, "ASCII files (%.1000s.*)", tmp_str);
+
+    strlcpy(path, QFileDialog::getOpenFileName(0, "Open ASCII file", QString::fromLocal8Bit(mainwindow->recent_opendir), filechooser_filter_str).toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
   else
   {
@@ -1410,6 +1413,49 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   }
 
   get_directory_from_path(mainwindow->recent_opendir, path, MAX_PATH_LENGTH);
+
+  for(i=strlen(path)-1; i>=0; i--)
+  {
+    if(path[i] == '.')
+    {
+      if((!strcmp(path + i, ".edf")) ||
+         (!strcmp(path + i, ".EDF")) ||
+         (!strcmp(path + i, ".bdf")) ||
+         (!strcmp(path + i, ".BDF")))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "The ASCII/CSV/TXT importer cannot import annotations from EDF/BDF files.\n"
+                                                                  "Use the tab \"EDF+ / BDF+\" instead.");
+        messagewindow.exec();
+        return 1;
+      }
+
+      break;
+    }
+  }
+
+  if(mainwindow->import_annotations_var->csv_equal_filename)
+  {
+    for(i=strlen(path)-1; i>=0; i--)
+    {
+      if(path[i] == '.')
+      {
+        if((strcmp(path + i, ".txt")) &&
+           (strcmp(path + i, ".TXT")) &&
+           (strcmp(path + i, ".csv")) &&
+           (strcmp(path + i, ".CSV")) &&
+           (strcmp(path + i, ".tsv")) &&
+           (strcmp(path + i, ".TSV")))
+        {
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", "You selected a file with an unknown extension.\n"
+                                                                    "Filename extension must be \".txt\", \".csv\" or \".tsv\".");
+          messagewindow.exec();
+          return 1;
+        }
+
+        break;
+      }
+    }
+  }
 
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
