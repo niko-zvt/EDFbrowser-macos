@@ -85,7 +85,7 @@
 #define ACMAX 49  /* value of largest valid annot code (must be < 50) */
 
 
-static char annotdescrlist[42][48]=
+static char annotdescrlist[42][64]=
   {"not-QRS","normal beat",
   "left bundle branch block beat", "right bundle branch block beat",
   "aberrated atrial premature beat", "premature ventricular contraction",
@@ -136,7 +136,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   }
 
   ImportAnnotsDialog = new QDialog;
-  ImportAnnotsDialog->setMinimumSize(550 * mainwindow->w_scaling, 400 * mainwindow->h_scaling);
+  ImportAnnotsDialog->setMinimumSize(550 * mainwindow->w_scaling, 470 * mainwindow->h_scaling);
   ImportAnnotsDialog->setWindowTitle("Import annotations/events");
   ImportAnnotsDialog->setModal(true);
   ImportAnnotsDialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -239,6 +239,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   asciiSettingsHBoxLayout4->addWidget(StopColumnSpinBox, 10);
 
   QFormLayout *asciiSettingsflayout = new QFormLayout;
+  asciiSettingsflayout->addRow(" ", (QWidget *)NULL);
   asciiSettingsflayout->addRow("Column separator", SeparatorLineEdit);
   asciiSettingsflayout->addRow("Onset column", OnsetColumnSpinBox);
   asciiSettingsflayout->labelForField(OnsetColumnSpinBox)->setToolTip("Start time of the event");
