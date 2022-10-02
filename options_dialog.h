@@ -179,6 +179,7 @@ void update_interface(void);
 private slots:
 
 void def_amp_radio_group_clicked(int);
+void def_amp_radio_group_clicked(QAbstractButton *);
 void BgColorButtonClicked(SpecialButton *);
 void SrColorButtonClicked(SpecialButton *);
 void BrColorButtonClicked(SpecialButton *);

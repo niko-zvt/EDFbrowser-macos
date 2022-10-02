@@ -1584,8 +1584,8 @@ UI_Mainwindow::UI_Mainwindow()
 #if QT_VERSION < 0x060000
   QObject::connect(QApplication::desktop(),        SIGNAL(resized(int)),            this, SLOT(desktop_resized(int)));
 #else
-  QObject::connect(QGuiApplication::primaryScreen(), SIGNAL(geometryChanged(QRect)),  this, SLOT(desktop_resized()));
-  QObject::connect(QGuiApplication::primaryScreen(), SIGNAL(primaryScreenChanged(QScreen *)),  this, SLOT(desktop_resized()));
+  QObject::connect(QGuiApplication::primaryScreen(), SIGNAL(geometryChanged(QRect)),  this, SLOT(desktop_resized()));  //FIXME
+  QObject::connect(QGuiApplication::primaryScreen(), SIGNAL(primaryScreenChanged(QScreen *)),  this, SLOT(desktop_resized()));  //FIXME
 #endif
 }
 

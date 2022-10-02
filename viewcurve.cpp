@@ -1105,7 +1105,7 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
     mouse_y = move_event->y();
 #else
     mouse_x = move_event->position().x();
-    mouse_x = move_event->position().y();
+    mouse_y = move_event->position().y();
 #endif
     if(pressed_on_label)
     {

@@ -1344,8 +1344,11 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   def_amp_radio_group = new QButtonGroup(this);
   def_amp_radio_group->addButton(def_amp_radio_button0, 0);
   def_amp_radio_group->addButton(def_amp_radio_button1, 1);
+#if QT_VERSION < 0x060000
   QObject::connect(def_amp_radio_group, SIGNAL(buttonClicked(int)), this, SLOT(def_amp_radio_group_clicked(int)));
-
+#else
+  QObject::connect(def_amp_radio_group, SIGNAL(buttonClicked(QAbstractButton *)), this, SLOT(def_amp_radio_group_clicked(QAbstractButton *)));
+#endif
   dspinbox4_4 = new QDoubleSpinBox;
   dspinbox4_4->setMinimum(0.001);
   dspinbox4_4->setMaximum(10000000);
@@ -3579,6 +3582,23 @@ void UI_OptionsDialog::tab7_settings_changed()
 void UI_OptionsDialog::def_amp_radio_group_clicked(int id)
 {
   if(id == 1)
+  {
+    dspinbox4_4->setEnabled(false);
+    spinbox4_5->setEnabled(true);
+    mainwindow->default_amplitude_use_physmax_div = 1;
+  }
+  else
+  {
+    spinbox4_5->setEnabled(false);
+    dspinbox4_4->setEnabled(true);
+    mainwindow->default_amplitude_use_physmax_div = 0;
+  }
+}
+
+
+void UI_OptionsDialog::def_amp_radio_group_clicked(QAbstractButton *b)
+{
+  if(def_amp_radio_group->id(b) == 1)
   {
     dspinbox4_4->setEnabled(false);
     spinbox4_5->setEnabled(true);
