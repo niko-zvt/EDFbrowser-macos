@@ -85,7 +85,9 @@ int main(int argc, char *argv[])
 #endif
 
 #if QT_VERSION >= 0x050600
+#if QT_VERSION < 0x060000
   QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
+#endif
 #endif
   QApplication app(argc, argv);
 

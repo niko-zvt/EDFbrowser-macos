@@ -34,6 +34,11 @@ CONFIG += static
 CONFIG += largefile
 QT += network
 
+contains(QT_MAJOR_VERSION, 6) {
+QT += widgets
+QT += printsupport
+}
+
 contains(QT_MAJOR_VERSION, 5) {
 QT += widgets
 QT += printsupport

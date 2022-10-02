@@ -34,7 +34,11 @@
 #if QT_VERSION < 0x050000
 #include <QPrinter>
 #else
+#if QT_VERSION < 0x060000
 #include <QtPrintSupport>
+#else
+#include <QPrintDialog>
+#endif
 #endif
 #if QT_VERSION >= 0x050D00
 #include <QPageSize>

@@ -14,7 +14,9 @@
 #include <QtGlobal>
 #include <QObject>
 #include <QApplication>
+#if QT_VERSION < 0x060000
 #include <QDesktopWidget>
+#endif
 #if QT_VERSION >= 0x050000
 #include <QGuiApplication>
 #endif

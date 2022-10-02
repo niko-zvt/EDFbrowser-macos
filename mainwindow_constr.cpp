@@ -579,14 +579,18 @@ UI_Mainwindow::UI_Mainwindow()
 
   printmenu = new QMenu(this);
   printmenu->setTitle("Print");
-  printmenu->addAction("to Printer",    maincurve, SLOT(print_to_printer()), QKeySequence::Print);
+#if QT_VERSION < 0x060000
+  printmenu->addAction("to Printer",    maincurve, SLOT(print_to_printer()), QKeySequence::Print);  // Qt6 deprecated
+#else
+  filemenu->addAction("to Printer", QKeySequence::Print, maincurve, SLOT(print_to_printer()));
+#endif
 #if QT_VERSION < 0x050000
   printmenu->addAction("to PostScript", maincurve, SLOT(print_to_postscript()));
 #endif
   printmenu->addAction("to PDF",        maincurve, SLOT(print_to_pdf()));
   printmenu->addMenu(print_img_menu);
-  printmenu->addAction("to EDF",        this,      SLOT(print_to_edf()));
-  printmenu->addAction("to BDF",        this,      SLOT(print_to_bdf()));
+  printmenu->addAction("to EDF",        this, SLOT(print_to_edf()));
+  printmenu->addAction("to BDF",        this, SLOT(print_to_bdf()));
 
   save_act = new QAction("Save as", this);
   save_act->setShortcut(QKeySequence::Save);
@@ -599,21 +603,38 @@ UI_Mainwindow::UI_Mainwindow()
 
   filemenu = new QMenu(this);
   filemenu->setTitle("&File");
-  filemenu->addAction("Open",         this, SLOT(open_new_file()), QKeySequence::Open);
+#if QT_VERSION < 0x060000
+  filemenu->addAction("Open",         this, SLOT(open_new_file()), QKeySequence::Open);  // Qt6 deprecated
+#else
+  filemenu->addAction("Open", QKeySequence::Open, this, SLOT(open_new_file()));
+#endif
   filemenu->addSeparator();
-  filemenu->addAction("Open stream",  this, SLOT(open_stream()), QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));
+#if QT_VERSION < 0x060000
+  filemenu->addAction("Open stream",  this, SLOT(open_stream()), QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));  // Qt6 deprecated
+#else
+  filemenu->addAction("Open stream", QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_O), this, SLOT(open_stream()));
+#endif
   filemenu->addSeparator();
   filemenu->addAction(video_act);
   filemenu->addSeparator();
-  filemenu->addAction("Playback file", this, SLOT(playback_file()), QKeySequence("Ctrl+Space"));
+#if QT_VERSION < 0x060000
+  filemenu->addAction("Playback file", this, SLOT(playback_file()), QKeySequence("Ctrl + Space"));
+#else
+  filemenu->addAction("Playback file", QKeySequence("Ctrl | Space"), this, SLOT(playback_file()));
+#endif
   filemenu->addSeparator();
   filemenu->addAction(save_act);
   filemenu->addMenu(recent_filesmenu);
   filemenu->addMenu(printmenu);
   filemenu->addAction("Info",         this, SLOT(show_file_info()));
   filemenu->addMenu(close_filemenu);
+#if QT_VERSION < 0x060000
   filemenu->addAction("Close all",    this, SLOT(close_all_files()), QKeySequence::Close);
   filemenu->addAction("Exit",         this, SLOT(exit_program()), QKeySequence::Quit);
+#else
+  filemenu->addAction("Close all", QKeySequence::Close, this, SLOT(close_all_files()));
+  filemenu->addAction("Exit",      QKeySequence::Quit,  this, SLOT(exit_program()));
+#endif
   menubar->addMenu(filemenu);
 
   recent_session_menu = new QMenu(this);
@@ -1111,8 +1132,13 @@ UI_Mainwindow::UI_Mainwindow()
 
   timemenu = new QMenu(this);
   timemenu->setTitle("T&imesync");
+#if QT_VERSION < 0x060000
   timemenu->addAction("Go to start of file", this, SLOT(jump_to_start()), QKeySequence::MoveToStartOfDocument);
   timemenu->addAction("Go to end of file", this, SLOT(jump_to_end()), QKeySequence::MoveToEndOfDocument);
+#else
+  timemenu->addAction("Go to start of file", QKeySequence::MoveToStartOfDocument, this, SLOT(jump_to_start()));
+  timemenu->addAction("Go to end of file", QKeySequence::MoveToEndOfDocument, this, SLOT(jump_to_end()));
+#endif
   timemenu->addAction("Jump to", this, SLOT(jump_to_dialog()));
   timemenu->addSeparator()->setText("Timelock");
   timemenu->addAction(no_timesync_act);
@@ -1223,7 +1249,11 @@ UI_Mainwindow::UI_Mainwindow()
   maincurve->addAction(Escape_act);
 
   next_crosshair = new QAction("Next Crosshair", this);
+#if QT_VERSION < 0x060000
   next_crosshair->setShortcut(Qt::ALT + Qt::SHIFT + Qt::Key_C);
+#else
+  next_crosshair->setShortcut(Qt::ALT | Qt::SHIFT | Qt::Key_C);
+#endif
   connect(next_crosshair, SIGNAL(triggered()), maincurve, SLOT(next_crosshair_triggered()));
   maincurve->addAction(next_crosshair);
 
@@ -1551,7 +1581,12 @@ UI_Mainwindow::UI_Mainwindow()
 #if QT_VERSION >= 0x050000
   QObject::connect(this->window()->windowHandle(), SIGNAL(screenChanged(QScreen*)), this, SLOT(screen_changed(QScreen*)));
 #endif
+#if QT_VERSION < 0x060000
   QObject::connect(QApplication::desktop(),        SIGNAL(resized(int)),            this, SLOT(desktop_resized(int)));
+#else
+  QObject::connect(QGuiApplication::primaryScreen(), SIGNAL(geometryChanged(QRect)),  this, SLOT(desktop_resized()));
+  QObject::connect(QGuiApplication::primaryScreen(), SIGNAL(primaryScreenChanged(QScreen *)),  this, SLOT(desktop_resized()));
+#endif
 }
 
 
