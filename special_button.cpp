@@ -47,9 +47,10 @@ void SpecialButton::paintEvent(QPaintEvent *)
 
   QPainter painter(this);
 #if QT_VERSION >= 0x050000
-  painter.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#if QT_VERSION < 0x060000
+    painter.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
-
+#endif
   painter.save();
 
   w = width();

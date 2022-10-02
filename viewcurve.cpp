@@ -544,8 +544,13 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
   signalcomps = mainwindow->signalcomps;
   signalcomp = mainwindow->signalcomp;
+#if QT_VERSION < 0x060000
   m_x = press_event->x();
   m_y = press_event->y();
+#else
+  m_x = press_event->position().x();
+  m_y = press_event->position().y();
+#endif
 
   mouse_press_coordinate_x = m_x;
   mouse_press_coordinate_y = m_y;
@@ -824,8 +829,13 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
   signalcomps = mainwindow->signalcomps;
   signalcomp = mainwindow->signalcomp;
+#if QT_VERSION < 0x060000
   m_x = release_event->x();
   m_y = release_event->y();
+#else
+  m_x = release_event->position().x();
+  m_y = release_event->position().y();
+#endif
 
   mouse_release_coordinate_x = m_x;
 
@@ -1090,9 +1100,13 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
   {
     signalcomps = mainwindow->signalcomps;
     signalcomp = mainwindow->signalcomp;
+#if QT_VERSION < 0x060000
     mouse_x = move_event->x();
     mouse_y = move_event->y();
-
+#else
+    mouse_x = move_event->position().x();
+    mouse_x = move_event->position().y();
+#endif
     if(pressed_on_label)
     {
       if((mouse_y > (label_press_y_position + 10)) || (mouse_y < (label_press_y_position - 10)))
@@ -1245,9 +1259,10 @@ void ViewCurve::paintEvent(QPaintEvent *)
 {
   QPainter paint(this);
 #if QT_VERSION >= 0x050000
+#if QT_VERSION < 0x060000
   paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
-
+#endif
   drawCurve_stage_2(&paint);
 
   if(mainwindow->dig_min_max_overflow && (!mainwindow->dig_min_max_overflow_warning_showed))
@@ -1300,7 +1315,9 @@ void ViewCurve::print_to_printer()
 #endif
     QPainter paint(&print);
 #if QT_VERSION >= 0x050000
+#if QT_VERSION < 0x060000
     paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
 #endif
     paint.translate(0, (int)(260.0 * height_factor));
 #if QT_VERSION >= 0x050D00
@@ -1552,7 +1569,9 @@ void ViewCurve::print_to_pdf()
 #endif
   QPainter paint(&print);
 #if QT_VERSION >= 0x050000
-  paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#if QT_VERSION < 0x060000
+    paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
 #endif
   paint.translate(0, (int)(260.0 * height_factor));
 #if QT_VERSION >= 0x050D00
@@ -1664,9 +1683,10 @@ void ViewCurve::print_to_image(int w_img, int h_img)
 
   QPainter paint(&pixmap);
 #if QT_VERSION >= 0x050000
-  paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#if QT_VERSION < 0x060000
+    paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
-
+#endif
   paint.fillRect(0, 0, w_img, h_img, backgroundcolor);
 
   paint.translate(0, 25);

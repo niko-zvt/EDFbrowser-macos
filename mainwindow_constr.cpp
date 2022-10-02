@@ -582,7 +582,7 @@ UI_Mainwindow::UI_Mainwindow()
 #if QT_VERSION < 0x060000
   printmenu->addAction("to Printer",    maincurve, SLOT(print_to_printer()), QKeySequence::Print);  // Qt6 deprecated
 #else
-  filemenu->addAction("to Printer", QKeySequence::Print, maincurve, SLOT(print_to_printer()));
+  printmenu->addAction("to Printer", QKeySequence::Print, maincurve, SLOT(print_to_printer()));
 #endif
 #if QT_VERSION < 0x050000
   printmenu->addAction("to PostScript", maincurve, SLOT(print_to_postscript()));
@@ -629,7 +629,7 @@ UI_Mainwindow::UI_Mainwindow()
   filemenu->addAction("Info",         this, SLOT(show_file_info()));
   filemenu->addMenu(close_filemenu);
 #if QT_VERSION < 0x060000
-  filemenu->addAction("Close all",    this, SLOT(close_all_files()), QKeySequence::Close);
+  filemenu->addAction("Close all",    this, SLOT(close_all_files()), QKeySequence::Close);  // Qt6 deprecated
   filemenu->addAction("Exit",         this, SLOT(exit_program()), QKeySequence::Quit);
 #else
   filemenu->addAction("Close all", QKeySequence::Close, this, SLOT(close_all_files()));

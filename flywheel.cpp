@@ -194,9 +194,10 @@ void UI_Flywheel::paintEvent(QPaintEvent *)
 
   QPainter painter(this);
 #if QT_VERSION >= 0x050000
-  painter.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#if QT_VERSION < 0x060000
+    painter.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
-
+#endif
   w = width();
   h = height();
   h_2 = h / 2;
@@ -292,9 +293,11 @@ void UI_Flywheel::mousePressEvent(QMouseEvent *press_event)
     dial_speed = 0;
 
     t1->stop();
-
+#if QT_VERSION < 0x060000
     mouse_old_y = press_event->y();
-
+#else
+    mouse_old_y = press_event->position().y();
+#endif
     gettimeofday(&tv, NULL);
 
     time_old = tv.tv_usec;
@@ -342,10 +345,13 @@ void UI_Flywheel::mouseMoveEvent(QMouseEvent *move_event)
 
   if(use_move_events)
   {
-    mouse_y = move_event->y();
-
+#if QT_VERSION < 0x060000
     mouse_x = move_event->x();
-
+    mouse_y = move_event->y();
+#else
+  mouse_x = move_event->position().x();
+  mouse_y = move_event->position().y();
+#endif
     mouse_delta_y = mouse_y - mouse_old_y;
 
     mouse_old_y = mouse_y;

@@ -159,8 +159,13 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
   w = width();
   h = height();
 
+#if QT_VERSION < 0x060000
   m_x = press_event->x() - bordersize;
   m_y = press_event->y() - bordersize;
+#else
+  m_x = press_event->position().x() - bordersize;
+  m_y = press_event->position().y() - bordersize;
+#endif
 
   if(m_x < 0 ||
      m_x > (w - (bordersize * 2)) ||
@@ -291,9 +296,13 @@ void SignalCurve::mouseMoveEvent(QMouseEvent *move_event)
     return;
   }
 
+#if QT_VERSION < 0x060000
   mouse_x = move_event->x() - bordersize;
   mouse_y = move_event->y() - bordersize;
-
+#else
+  mouse_x = move_event->position().x() - bordersize;
+  mouse_x = move_event->position().y() - bordersize;
+#endif
   if(crosshair_1_moving)
   {
     crosshair_1_x_position += (mouse_x - mouse_old_x);
@@ -745,7 +754,9 @@ void SignalCurve::print_to_pdf()
 
   QPainter paint(&curve_printer);
 #if QT_VERSION >= 0x050000
-  paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#if QT_VERSION < 0x060000
+    paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
 #endif
 #if QT_VERSION >= 0x050D00
   drawWidget_to_printer(&paint, curve_printer.pageLayout().paintRectPixels(curve_printer.resolution()).width(),
@@ -786,9 +797,10 @@ void SignalCurve::print_to_image()
 
   QPainter paint(&pixmap);
 #if QT_VERSION >= 0x050000
-  paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#if QT_VERSION < 0x060000
+    paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
-
+#endif
   drawWidget(&paint, width(), height());
 
   pixmap.save(path, "PNG", 90);
@@ -823,7 +835,9 @@ void SignalCurve::print_to_printer()
 
   QPainter paint(&curve_printer);
 #if QT_VERSION >= 0x050000
-  paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#if QT_VERSION < 0x060000
+    paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
 #endif
 #if QT_VERSION >= 0x050D00
   drawWidget_to_printer(&paint, curve_printer.pageLayout().paintRectPixels(curve_printer.resolution()).width(),
@@ -1379,9 +1393,10 @@ void SignalCurve::paintEvent(QPaintEvent *)
   {
     QPainter paint(this);
 #if QT_VERSION >= 0x050000
+#if QT_VERSION < 0x060000
     paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
-
+#endif
     drawWidget(&paint, width(), height());
 
     old_w = width();
