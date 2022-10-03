@@ -1462,7 +1462,9 @@ UI_Mainwindow::UI_Mainwindow()
   splash = new QSplashScreen(this, *splash_pixmap, Qt::WindowStaysOnTopHint);
 #endif
 
-  if((QT_VERSION < MINIMUM_QT4_VERSION) || ((QT_VERSION >= 0x050000) && (QT_VERSION < MINIMUM_QT5_VERSION)))
+  if( (QT_VERSION < MINIMUM_QT4_VERSION) ||
+     ((QT_VERSION >= 0x050000) && (QT_VERSION < MINIMUM_QT5_VERSION)) ||
+     ((QT_VERSION >= 0x060000) && (QT_VERSION < MINIMUM_QT6_VERSION)))
   {
     cmdlineargument = 0;
 

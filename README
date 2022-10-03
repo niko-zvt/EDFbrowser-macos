@@ -7,7 +7,12 @@ Qt4 minimum version 4.7.1 or later, preferable 4.8.7
 
 or
 
-Qt5 minimum version 5.9.1 or later, preferable 5.12.10
+Qt5 minimum version 5.9.1 or later, preferable 5.15.2 <- this is the recommended and supported version
+
+or
+
+Qt6 minimum version 6.4.0 or later (pay attention: generally, Qt6 is not yet considered ready for production use)
+
 
 EDFbrowser is a GNU/Linux & GCC & GNU Make project. Other tools or compilers are not supported.
 EDFbrowser requires a little-endian system. EDFbrowser does not work with a CPU with a big-endian architecture.

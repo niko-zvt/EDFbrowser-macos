@@ -69,13 +69,14 @@
 #define PROGRAM_NAME                "EDFbrowser"
 #define PROGRAM_VERSION                   "1.95"
 #define PROGRAM_BETA_SUFFIX                   ""
-#define MINIMUM_QT4_VERSION             0x040701
-#define MINIMUM_QT5_VERSION             0x050901
+#define MINIMUM_QT4_VERSION           (0x040701)
+#define MINIMUM_QT5_VERSION           (0x050901)
+#define MINIMUM_QT6_VERSION           (0x060400)
 #define MAXFILES                            (32)
 #define MAXSIGNALS                         (640)
 #define MAXFILTERS                          (16)
 #define MAXMATHFUNCS                        (16)
-#define TIME_DIMENSION                (10000000LL)
+#define TIME_DIMENSION              (10000000LL)
 #define MAX_ANNOTATION_LEN                 (512)
 #define MAX_UNIQUE_ANNOTATIONS              (64)
 #define VIEWTIME_SYNCED_OFFSET               (0)
