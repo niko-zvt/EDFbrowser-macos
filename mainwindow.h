@@ -780,8 +780,7 @@ private slots:
   void rc_host_server_new_connection();
   void rc_host_sock_rxdata_handler();
   void rc_host_sock_disconnected_handler();
-  void desktop_resized(int);
-  void screen_changed(QScreen *);
+  void desktop_resized();
   void mc_v_scrollbar_changed(int);
 //  void search_pattern();
 

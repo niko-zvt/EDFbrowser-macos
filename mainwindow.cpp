@@ -5815,7 +5815,7 @@ void UI_Mainwindow::signalcomp_invert(int inv, int n)
 }
 
 
-void UI_Mainwindow::desktop_resized(int)
+void UI_Mainwindow::desktop_resized()
 {
   QFontMetrics fm(*myfont);
 
@@ -5858,12 +5858,6 @@ void UI_Mainwindow::desktop_resized(int)
   }
 
   maincurve->update();
-}
-
-
-void UI_Mainwindow::screen_changed(QScreen *)
-{
-  desktop_resized(0);
 }
 
 
