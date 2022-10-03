@@ -301,7 +301,7 @@ void SignalCurve::mouseMoveEvent(QMouseEvent *move_event)
   mouse_y = move_event->y() - bordersize;
 #else
   mouse_x = move_event->position().x() - bordersize;
-  mouse_x = move_event->position().y() - bordersize;
+  mouse_y = move_event->position().y() - bordersize;
 #endif
   if(crosshair_1_moving)
   {
