@@ -14,7 +14,9 @@ or
 Qt6 minimum version 6.4.0 or later (pay attention: generally, Qt6 is not yet considered ready for production use)
 
 
-EDFbrowser is a GNU/Linux & GCC & GNU Make project. Other tools or compilers are not supported.
+EDFbrowser is a GNU/Linux & GCC & GNU Make project. Other platforms, tools or compilers are not supported.
+This is not going to change. I mean it!
+
 EDFbrowser requires a little-endian system. EDFbrowser does not work with a CPU with a big-endian architecture.
 
 
