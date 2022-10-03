@@ -9,6 +9,8 @@
  - Import annotations/events: from ASCII/CSV: added the option to accept only annotation files that have
    the same name as the EDF/BDF file and have the extension .txt, .csv or .tsv.
 
+ - Added support for Qt6.
+
 
  version 1.95      July 16, 2022
  --------------
