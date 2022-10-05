@@ -1579,15 +1579,15 @@ UI_Mainwindow::UI_Mainwindow()
     }
   }
 
-  QObject::connect(maincurve,                      SIGNAL(file_dropped()),          this, SLOT(open_new_file()));
+  QObject::connect(maincurve,                        SIGNAL(file_dropped()),                  this, SLOT(open_new_file()));
 #if QT_VERSION >= 0x050000
-  QObject::connect(this->window()->windowHandle(), SIGNAL(screenChanged(QScreen*)), this, SLOT(desktop_resized()));
+  QObject::connect(this->window()->windowHandle(),   SIGNAL(screenChanged(QScreen*)),         this, SLOT(desktop_resized()));
 #endif
 #if QT_VERSION < 0x060000
-  QObject::connect(QApplication::desktop(),        SIGNAL(resized(int)),            this, SLOT(desktop_resized()));
+  QObject::connect(QApplication::desktop(),          SIGNAL(resized(int)),                    this, SLOT(desktop_resized()));
 #else
-  QObject::connect(QGuiApplication::primaryScreen(), SIGNAL(geometryChanged(QRect)),  this, SLOT(desktop_resized()));
-//  QObject::connect(QGuiApplication(), SIGNAL(primaryScreenChanged(QScreen *)),  this, SLOT(desktop_resized()));  //FIXME
+  QObject::connect(QGuiApplication::primaryScreen(), SIGNAL(geometryChanged(QRect)),          this, SLOT(desktop_resized()));
+  QObject::connect(qGuiApp,                          SIGNAL(primaryScreenChanged(QScreen *)), this, SLOT(desktop_resized()));
 #endif
 }
 
