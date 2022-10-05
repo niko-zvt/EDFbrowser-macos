@@ -46,10 +46,8 @@ void SpecialButton::paintEvent(QPaintEvent *)
   int w, h;
 
   QPainter painter(this);
-#if QT_VERSION >= 0x050000
-#if QT_VERSION < 0x060000
-    painter.setRenderHint(QPainter::Qt4CompatiblePainting, true);
-#endif
+#if (QT_VERSION >= 0x050000) && (QT_VERSION < 0x060000)
+  painter.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
   painter.save();
 

@@ -580,7 +580,7 @@ UI_Mainwindow::UI_Mainwindow()
   printmenu = new QMenu(this);
   printmenu->setTitle("Print");
 #if QT_VERSION < 0x060000
-  printmenu->addAction("to Printer",    maincurve, SLOT(print_to_printer()), QKeySequence::Print);  // Qt6 deprecated
+  printmenu->addAction("to Printer",    maincurve, SLOT(print_to_printer()), QKeySequence::Print);
 #else
   printmenu->addAction("to Printer", QKeySequence::Print, maincurve, SLOT(print_to_printer()));
 #endif
@@ -604,13 +604,13 @@ UI_Mainwindow::UI_Mainwindow()
   filemenu = new QMenu(this);
   filemenu->setTitle("&File");
 #if QT_VERSION < 0x060000
-  filemenu->addAction("Open",         this, SLOT(open_new_file()), QKeySequence::Open);  // Qt6 deprecated
+  filemenu->addAction("Open",         this, SLOT(open_new_file()), QKeySequence::Open);
 #else
   filemenu->addAction("Open", QKeySequence::Open, this, SLOT(open_new_file()));
 #endif
   filemenu->addSeparator();
 #if QT_VERSION < 0x060000
-  filemenu->addAction("Open stream",  this, SLOT(open_stream()), QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));  // Qt6 deprecated
+  filemenu->addAction("Open stream",  this, SLOT(open_stream()), QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));
 #else
   filemenu->addAction("Open stream", QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_O), this, SLOT(open_stream()));
 #endif
@@ -629,7 +629,7 @@ UI_Mainwindow::UI_Mainwindow()
   filemenu->addAction("Info",         this, SLOT(show_file_info()));
   filemenu->addMenu(close_filemenu);
 #if QT_VERSION < 0x060000
-  filemenu->addAction("Close all",    this, SLOT(close_all_files()), QKeySequence::Close);  // Qt6 deprecated
+  filemenu->addAction("Close all",    this, SLOT(close_all_files()), QKeySequence::Close);
   filemenu->addAction("Exit",         this, SLOT(exit_program()), QKeySequence::Quit);
 #else
   filemenu->addAction("Close all", QKeySequence::Close, this, SLOT(close_all_files()));
@@ -1134,10 +1134,10 @@ UI_Mainwindow::UI_Mainwindow()
   timemenu->setTitle("T&imesync");
 #if QT_VERSION < 0x060000
   timemenu->addAction("Go to start of file", this, SLOT(jump_to_start()), QKeySequence::MoveToStartOfDocument);
-  timemenu->addAction("Go to end of file", this, SLOT(jump_to_end()), QKeySequence::MoveToEndOfDocument);
+  timemenu->addAction("Go to end of file",   this, SLOT(jump_to_end()), QKeySequence::MoveToEndOfDocument);
 #else
   timemenu->addAction("Go to start of file", QKeySequence::MoveToStartOfDocument, this, SLOT(jump_to_start()));
-  timemenu->addAction("Go to end of file", QKeySequence::MoveToEndOfDocument, this, SLOT(jump_to_end()));
+  timemenu->addAction("Go to end of file",   QKeySequence::MoveToEndOfDocument,   this, SLOT(jump_to_end()));
 #endif
   timemenu->addAction("Jump to", this, SLOT(jump_to_dialog()));
   timemenu->addSeparator()->setText("Timelock");
@@ -1490,7 +1490,9 @@ UI_Mainwindow::UI_Mainwindow()
     v_nr += atoi(v_str + 5);
   }
 
-  if((v_nr < MINIMUM_QT4_VERSION) || ((v_nr >= 0x050000) && (v_nr < MINIMUM_QT5_VERSION)))
+  if((v_nr < MINIMUM_QT4_VERSION) ||
+    ((v_nr >= 0x050000) && (v_nr < MINIMUM_QT5_VERSION)) ||
+    ((v_nr >= 0x060000) && (v_nr < MINIMUM_QT6_VERSION)))
   {
     cmdlineargument = 0;
 
