@@ -57,15 +57,16 @@ const char rc_cmd_key_lst[RC_CMD_LIST_SZ][32]=
   "INVERT",     /* 21 */
   "REMOVE",     /* 22 */
   "TIMESCALE",  /* 23 */
-  "VIEWTIME",   /* 24 */
-  "TIMELOCK",   /* 25 */
-  "REFERENCE",  /* 26 */
-  "SYSTEM",     /* 27 */
-  "LOCKED",     /* 28 */
-  "MODE",       /* 29 */
-  "SESSION",    /* 30 */
-  "PLAY",       /* 31 */
-  "STOP"        /* 32 */
+  "MMSECOND",   /* 24 */
+  "VIEWTIME",   /* 25 */
+  "TIMELOCK",   /* 26 */
+  "REFERENCE",  /* 27 */
+  "SYSTEM",     /* 28 */
+  "LOCKED",     /* 29 */
+  "MODE",       /* 30 */
+  "SESSION",    /* 31 */
+  "PLAY",       /* 32 */
+  "STOP"        /* 33 */
 };
 
 
@@ -1160,10 +1161,33 @@ int UI_Mainwindow::process_rc_cmd_timescale(const char *cmd_args, int *cmds_pars
       setup_viewbuf();
       return 0;
     }
-    else
-    {
-      return 202;
-    }
+    else if((n_sub_cmds == 2) && (cmds_parsed_key[0] == RC_CMD_TIMESCALE) && (cmds_parsed_key[1] == (RC_CMD_MMSECOND | RC_CMD_QUERY)))
+      {
+        if(strlen(cmd_args))
+        {
+          return 203;
+        }
+        len = snprintf(tx_msg_str, 1024, "%f\n", (maincurve->width() * x_pixelsizefactor * 10) / (((double)pagetime) / TIME_DIMENSION));
+        rc_host_sock->write(tx_msg_str, len);
+        return 0;
+      }
+      else if((n_sub_cmds == 2) && (cmds_parsed_key[0] == RC_CMD_TIMESCALE) && (cmds_parsed_key[1] == RC_CMD_MMSECOND))
+        {
+          if(!strlen(cmd_args))
+          {
+            return 204;
+          }
+          if(is_number(cmd_args))  return 203;
+          ltmp = atoll_x(cmd_args, TIME_DIMENSION);
+          if((ltmp < 100LL) || (ltmp > (100000LL * TIME_DIMENSION)))  return 208;
+          pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * ((10.0 * TIME_DIMENSION) / ltmp);
+          setup_viewbuf();
+          return 0;
+        }
+        else
+        {
+          return 202;
+        }
 
   return 202;
 }
