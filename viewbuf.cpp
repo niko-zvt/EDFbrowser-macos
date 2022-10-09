@@ -240,21 +240,27 @@ void UI_Mainwindow::setup_viewbuf()
     }
 
 //    printf("debug: totalsize is: %llu\n", totalsize);
-    if(totalsize >= UINT_MAX)  // 4.2GB on 32-bit systems, muuuuch bigger on 64-bit systems
+#if defined(__LP64__) || defined(__MINGW64__)
+    if(totalsize >= (UINT_MAX * 32LL))
     {
       live_stream_active = 0;
-#if defined(__LP64__) || defined(__MINGW64__)
+
       QMessageBox::critical(this, "Error", "Somehow you hit the memory limit...\n"
                                            "Decrease the timescale and/or number of traces and try again.");
-#else
-      QMessageBox::critical(this, "Error", "You have hit the memory limit of 4.2GB.\n"
-                                           "Decrease the timescale and/or number of traces and try again.\n"
-                                           "Consider switching to the 64-bit version.");
-#endif
       remove_all_signals();
       return;
     }
-
+#else
+    if(totalsize >= UINT_MAX)
+    {
+      live_stream_active = 0;
+      QMessageBox::critical(this, "Error", "You have hit the memory limit of 4.2GB.\n"
+                                           "Decrease the timescale and/or number of traces and try again.\n"
+                                           "Consider switching to the 64-bit version.");
+      remove_all_signals();
+      return;
+    }
+#endif
     viewbuf = (char *)malloc(totalsize);
     if(viewbuf==NULL)
     {
@@ -622,22 +628,28 @@ void UI_Mainwindow::setup_viewbuf()
 
   if(totalsize)
   {
-//    printf("debug: totalsize is: %llu\n", totalsize);
-    if(totalsize >= UINT_MAX)  // 4.2GB on 32-bit systems, muuuuch bigger on 64-bit systems
+//    printf("debug: totalsize is: %llu\n", totalsize;
+#if defined(__LP64__) || defined(__MINGW64__)
+    if(totalsize >= (0xffffffffULL * 32ULL))
     {
       live_stream_active = 0;
-#if defined(__LP64__) || defined(__MINGW64__)
+
       QMessageBox::critical(this, "Error", "Somehow you hit the memory limit...\n"
                                            "Decrease the timescale and/or number of traces and try again.");
-#else
-      QMessageBox::critical(this, "Error", "You have hit the memory limit of 4.2GB.\n"
-                                           "Decrease the timescale and/or number of traces and try again.\n"
-                                           "Consider switching to the 64-bit version.");
-#endif
       remove_all_signals();
       return;
     }
-
+#else
+    if(totalsize >= 0xffffffffULL)
+    {
+      live_stream_active = 0;
+      QMessageBox::critical(this, "Error", "You have hit the memory limit of 4.2GB.\n"
+                                           "Decrease the timescale and/or number of traces and try again.\n"
+                                           "Consider switching to the 64-bit version.");
+      remove_all_signals();
+      return;
+    }
+#endif
     viewbuf = (char *)malloc(totalsize);
     if(viewbuf==NULL)
     {
