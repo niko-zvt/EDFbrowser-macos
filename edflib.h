@@ -91,7 +91,18 @@
  * This will limit the timeresolution to 100 nanoSeconds. To calculate the amount of seconds, divide
  * the timevalue by 10000000 or use the macro EDFLIB_TIME_DIMENSION which is declared in edflib.h.
  * The following variables use this scaling when you open a file in read mode: "file_duration", "starttime_subsecond" and "onset".
+ *
+ * EDFlib and thread-safety
+ * ========================
+ * The following functions are always MT-unsafe:
+ * edfopen_file_readonly()   (race condition)
+ * edfclose_file()           (race condition)
+ * edflib_get_handle()       (race condition)
+ *
+ * When writing to or reading from the same file, all EDFlib functions are MT-unsafe (race condition).
+ *
  */
+
 
 /* compile with options "-D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE" */
 
@@ -122,7 +133,7 @@
 
 /* when this error occurs, try to open the file with EDFbrowser,
    it will give you full details about the cause of the error. */
-#define EDFLIB_FILE_CONTAINS_FORMAT_ERRORS  -3
+#define EDFLIB_FILE_CONTAINS_FORMAT_ERRORS  (-3)
 
 #define EDFLIB_MAXFILES_REACHED             (-4)
 #define EDFLIB_FILE_READ_ERROR              (-5)
@@ -132,6 +143,7 @@
 #define EDFLIB_NUMBER_OF_SIGNALS_INVALID    (-9)
 #define EDFLIB_FILE_IS_DISCONTINUOUS       (-10)
 #define EDFLIB_INVALID_READ_ANNOTS_VALUE   (-11)
+#define EDFLIB_ARCH_ERROR                  (-12)
 
 /* values for annotations */
 #define EDFLIB_DO_NOT_READ_ANNOTATIONS  (0)
@@ -308,6 +320,7 @@ int edfopen_file_writeonly(const char *path, int filetype, int number_of_signals
  * EDFLIB_MAXFILES_REACHED
  * EDFLIB_FILE_ALREADY_OPENED
  * EDFLIB_NUMBER_OF_SIGNALS_INVALID
+ * EDFLIB_ARCH_ERROR
  * This function is required if you want to write a file (or use edfopen_file_writeonly_with_params())
  */
 
@@ -330,6 +343,7 @@ int edfopen_file_writeonly_with_params(const char *path, int filetype, int numbe
  * EDFLIB_MAXFILES_REACHED
  * EDFLIB_FILE_ALREADY_OPENED
  * EDFLIB_NUMBER_OF_SIGNALS_INVALID
+ * EDFLIB_ARCH_ERROR
  * This function is required if you want to write a file (or use edfopen_file_writeonly())
  */
 
