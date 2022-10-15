@@ -1,5 +1,5 @@
 
- version 1.96      to be defined
+ version 1.96      October 15, 2022
  --------------
 
  - Signals dialog & File -> Info: show also the end time of the recording.
