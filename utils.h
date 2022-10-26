@@ -48,6 +48,8 @@ void trim_spaces(char *);
 /* removes trailing zero's from one or more occurrences of a decimal fraction in a string */
 void remove_trailing_zeros(char *);
 void convert_trailing_zeros_to_spaces(char *);
+void remove_leading_chars(char *, int);
+void remove_trailing_chars(char *, int);
 
 /* Inserts a copy of substr into str. The substring is the portion of substr that begins at */
 /* the character position subpos and spans sublen characters (or until the end of substr */

@@ -2292,6 +2292,53 @@ int strlcat(char *dst, const char *src, int sz)
 #endif
 
 
+void remove_leading_chars(char *str, int n)
+{
+  int i, len;
+
+  if(str == NULL)  return;
+
+  if(n < 1)  return;
+
+  len = strlen(str);
+
+  if(n >= len)
+  {
+    str[0] = 0;
+
+    return;
+  }
+
+  for(i=0; i<(len-n); i++)
+  {
+    str[i] = str[i + n];
+  }
+
+  str[i] = 0;
+}
+
+
+void remove_trailing_chars(char *str, int n)
+{
+  int len;
+
+  if(str == NULL)  return;
+
+  if(n < 1)  return;
+
+  len = strlen(str);
+
+  if(n >= len)
+  {
+    str[0] = 0;
+
+    return;
+  }
+
+  str[len - n] = 0;
+}
+
+
 void str_insert_substr(char *str, int pos, int len, const char *substr, int subpos, int sublen)
 {
   int i, slen;
