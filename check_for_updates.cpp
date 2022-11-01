@@ -46,8 +46,8 @@ Check_for_updates::Check_for_updates(UI_Mainwindow *mw)
   request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " OS_UNKNOWN " THIS_APP_BITS_W);
 #ifdef Q_OS_LINUX
   request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_LINUX " THIS_APP_BITS_W);
-#elif defined (Q_OS_MAC)
-  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_MAC " THIS_APP_BITS_W);
+#elif defined (Q_OS_MACOS)
+  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_MACOS " THIS_APP_BITS_W);
 #elif defined (Q_OS_WIN32)
   request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_WIN32 " THIS_APP_BITS_W);
 #else

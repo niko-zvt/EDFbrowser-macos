@@ -211,7 +211,7 @@ void UI_Mainwindow::start_stop_video()
 #else
     arguments << "-I" << "rc" << "--rc-host" << str << "--video-on-top" << "--width" << "150" << "--height" << "150" << "--ignore-config";
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     video_process->start("/Applications/VLC.app/Contents/MacOS/VLC", arguments);
 #else
     video_process->start("vlc", arguments);
@@ -329,7 +329,7 @@ void UI_Mainwindow::start_stop_video()
                    "  or\n "
                    "  \n C:\\Program Files (x86)\\VideoLAN\\VLC\\\n ");
 #else
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     msgbox.setText("  \n Cannot start the video player. \n  "
                    "  \n Check if VLC is installed in /Applications/. \n  ");
 #else
