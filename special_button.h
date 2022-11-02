@@ -49,6 +49,7 @@ public:
 
   QSize sizeHint() const {return minimumSizeHint(); }
   QSize minimumSizeHint() const;
+  int heightForWidth(int) const;
 
 public slots:
   void setColor(QColor);
@@ -56,7 +57,6 @@ public slots:
   void setGlobalColor(int);
   int globalColor();
   void setText(const char *);
-  int heightForWidth(int);
 
 protected:
   void paintEvent(QPaintEvent *);

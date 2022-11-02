@@ -76,7 +76,7 @@ void SpecialButton::paintEvent(QPaintEvent *)
 }
 
 
-int SpecialButton::heightForWidth(int w)
+int SpecialButton::heightForWidth(int w) const
 {
   return w;
 }
