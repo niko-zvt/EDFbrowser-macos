@@ -30,75 +30,109 @@
 #include "mit2edf.h"
 
 
-#define NOTQRS  0 /* not-QRS (not a getann/putann code) */
-#define NORMAL  1 /* normal beat */
-#define LBBB  2 /* left bundle branch block beat */
-#define RBBB  3 /* right bundle branch block beat */
-#define ABERR 4 /* aberrated atrial premature beat */
-#define PVC 5 /* premature ventricular contraction */
-#define FUSION  6 /* fusion of ventricular and normal beat */
-#define NPC 7 /* nodal (junctional) premature beat */
-#define APC 8 /* atrial premature contraction */
-#define SVPB  9 /* premature or ectopic supraventricular beat */
-#define VESC  10  /* ventricular escape beat */
-#define NESC  11  /* nodal (junctional) escape beat */
-#define PACE  12  /* paced beat */
-#define UNKNOWN 13  /* unclassifiable beat */
-#define NOISE 14  /* signal quality change */
-#define ARFCT 16  /* isolated QRS-like artifact */
-#define STCH  18  /* ST change */
-#define TCH 19  /* T-wave change */
-#define SYSTOLE 20  /* systole */
-#define DIASTOLE 21 /* diastole */
-#define NOTE  22  /* comment annotation */
-#define MEASURE 23  /* measurement annotation */
-#define PWAVE 24  /* P-wave peak */
-#define BBB 25  /* left or right bundle branch block */
-#define PACESP  26  /* non-conducted pacer spike */
-#define TWAVE 27  /* T-wave peak */
-#define RHYTHM  28  /* rhythm change */
-#define UWAVE 29  /* U-wave peak */
-#define LEARN 30  /* learning */
-#define FLWAV 31  /* ventricular flutter wave */
-#define VFON  32  /* start of ventricular flutter/fibrillation */
-#define VFOFF 33  /* end of ventricular flutter/fibrillation */
-#define AESC  34  /* atrial escape beat */
-#define SVESC 35  /* supraventricular escape beat */
-#define LINK    36  /* link to external data (aux contains URL) */
-#define NAPC  37  /* non-conducted P-wave (blocked APB) */
-#define PFUS  38  /* fusion of paced and normal beat */
-#define WFON  39  /* waveform onset */
-#define PQ  WFON  /* PQ junction (beginning of QRS) */
-#define WFOFF 40  /* waveform end */
-#define JPT WFOFF /* J point (end of QRS) */
-#define RONT  41  /* R-on-T premature ventricular contraction */
+#define NOTQRS     (0)  /* not-QRS (not a getann/putann code) */
+#define NORMAL     (1)  /* normal beat */
+#define LBBB       (2)  /* left bundle branch block beat */
+#define RBBB       (3)  /* right bundle branch block beat */
+#define ABERR      (4)  /* aberrated atrial premature beat */
+#define PVC        (5)  /* premature ventricular contraction */
+#define FUSION     (6)  /* fusion of ventricular and normal beat */
+#define NPC        (7)  /* nodal (junctional) premature beat */
+#define APC        (8)  /* atrial premature contraction */
+#define SVPB       (9)  /* premature or ectopic supraventricular beat */
+#define VESC      (10)  /* ventricular escape beat */
+#define NESC      (11)  /* nodal (junctional) escape beat */
+#define PACE      (12)  /* paced beat */
+#define UNKNOWN   (13)  /* unclassifiable beat */
+#define NOISE     (14)  /* signal quality change */
+#define ARFCT     (16)  /* isolated QRS-like artifact */
+#define STCH      (18)  /* ST change */
+#define TCH       (19)  /* T-wave change */
+#define SYSTOLE   (20)  /* systole */
+#define DIASTOLE  (21)  /* diastole */
+#define NOTE      (22)  /* comment annotation */
+#define MEASURE   (23)  /* measurement annotation */
+#define PWAVE     (24)  /* P-wave peak */
+#define BBB       (25)  /* left or right bundle branch block */
+#define PACESP    (26)  /* non-conducted pacer spike */
+#define TWAVE     (27)  /* T-wave peak */
+#define RHYTHM    (28)  /* rhythm change */
+#define UWAVE     (29)  /* U-wave peak */
+#define LEARN     (30)  /* learning */
+#define FLWAV     (31)  /* ventricular flutter wave */
+#define VFON      (32)  /* start of ventricular flutter/fibrillation */
+#define VFOFF     (33)  /* end of ventricular flutter/fibrillation */
+#define AESC      (34)  /* atrial escape beat */
+#define SVESC     (35)  /* supraventricular escape beat */
+#define LINK      (36)  /* link to external data (aux contains URL) */
+#define NAPC      (37)  /* non-conducted P-wave (blocked APB) */
+#define PFUS      (38)  /* fusion of paced and normal beat */
+#define WFON      (39)  /* waveform onset */
+#define PQ        WFON  /* PQ junction (beginning of QRS) */
+#define WFOFF     (40)  /* waveform end */
+#define JPT       WFOFF /* J point (end of QRS) */
+#define RONT      (41)  /* R-on-T premature ventricular contraction */
 
 /* ... annotation codes between RONT+1 and ACMAX inclusive are user-defined */
 
-#define ACMAX 49  /* value of largest valid annot code (must be < 50) */
+#define ACMAX     (49)  /* value of largest valid annot code (must be < 50) */
 
 
-static char annotdescrlist[42][48]=
-  {"not-QRS","normal beat",
-  "left bundle branch block beat", "right bundle branch block beat",
-  "aberrated atrial premature beat", "premature ventricular contraction",
-  "fusion of ventricular and normal beat", "nodal (junctional) premature beat",
-  "atrial premature contraction", "premature or ectopic supraventricular beat",
-  "ventricular escape beat", "nodal (junctional) escape beat",
-  "paced beat", "unclassifiable beat",
-  "signal quality change", "isolated QRS-like artifact",
-  "ST change", "T-wave change",
-  "systole", "diastole",
-  "comment annotation", "measurement annotation",
-  "P-wave peak", "left or right bundle branch block",
-  "non-conducted pacer spike", "T-wave peak",
-  "rhythm change", "U-wave peak",
-  "learning", "ventricular flutter wave",
-  "start of ventricular flutter/fibrillation", "end of ventricular flutter/fibrillation",
-  "atrial escape beat", "supraventricular escape beat",
-  "link to external data (aux contains URL)", "non-conducted P-wave (blocked APB)",
-  "fusion of paced and normal beat", "waveform onset",
-  "waveform end", "R-on-T premature ventricular contraction"};
+static char annotdescrlist[52][64]=
+{
+  "not-QRS",                                      /*  0 */
+  "normal beat",                                  /*  1 */
+  "left bundle branch block beat",                /*  2 */
+  "right bundle branch block beat",               /*  3 */
+  "aberrated atrial premature beat",              /*  4 */
+  "premature ventricular contraction",            /*  5 */
+  "fusion of ventricular and normal beat",        /*  6 */
+  "nodal (junctional) premature beat",            /*  7 */
+  "atrial premature contraction",                 /*  8 */
+  "premature or ectopic supraventricular beat",   /*  9 */
+  "ventricular escape beat",                      /* 10 */
+  "nodal (junctional) escape beat",               /* 11 */
+  "paced beat",                                   /* 12 */
+  "unclassifiable beat",                          /* 13 */
+  "signal quality change",                        /* 14 */
+  "",                                             /* 15 */
+  "isolated QRS-like artifact",                   /* 16 */
+  "",                                             /* 17 */
+  "ST change",                                    /* 18 */
+  "T-wave change",                                /* 19 */
+  "systole",                                      /* 20 */
+  "diastole",                                     /* 21 */
+  "comment annotation",                           /* 22 */
+  "measurement annotation",                       /* 23 */
+  "P-wave peak",                                  /* 24 */
+  "left or right bundle branch block",            /* 25 */
+  "non-conducted pacer spike",                    /* 26 */
+  "T-wave peak",                                  /* 27 */
+  "rhythm change",                                /* 28 */
+  "U-wave peak",                                  /* 29 */
+  "learning",                                     /* 30 */
+  "ventricular flutter wave",                     /* 31 */
+  "start of ventricular flutter/fibrillation",    /* 32 */
+  "end of ventricular flutter/fibrillation",      /* 33 */
+  "atrial escape beat",                           /* 34 */
+  "supraventricular escape beat",                 /* 35 */
+  "link to external data (aux contains URL)",     /* 36 */
+  "non-conducted P-wave (blocked APB)",           /* 37 */
+  "fusion of paced and normal beat",              /* 38 */
+  "waveform onset",                               /* 39 */
+  "waveform end",                                 /* 40 */
+  "R-on-T premature ventricular contraction"      /* 41 */
+  "",      /* 42 */
+  "",      /* 43 */
+  "",      /* 44 */
+  "",      /* 45 */
+  "",      /* 46 */
+  "",      /* 47 */
+  "",      /* 48 */
+  "",      /* 49 */
+  "",      /* 50 */
+  ""       /* 51 */
+};
 
 
 
