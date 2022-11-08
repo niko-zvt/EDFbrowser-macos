@@ -142,7 +142,6 @@ static char annotdescrlist[52][64]=
 };
 
 
-#define ANNOT_EXT_CNT   8
 
 //#define IMPORT_ANNOTS_DEBUG
 
@@ -810,7 +809,8 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
 
   sampletime = TIME_DIMENSION / SampleTimeSpinbox->value();
 
-  strlcpy(path, QFileDialog::getOpenFileName(0, "Open MIT WFDB annotation file", QString::fromLocal8Bit(mainwindow->recent_opendir), "MIT annotation files (*.ari *.ecg *.trigger *.qrs *.atr *.apn *.st *.pwave);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcpy(path, QFileDialog::getOpenFileName(0, "Open MIT WFDB annotation file", QString::fromLocal8Bit(mainwindow->recent_opendir),
+                                             "MIT annotation files (*.ari *.ecg *.trigger *.qrs *.atr *.apn *.st *.pwave *.marker *.seizures);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
   if(!strcmp(path, ""))
   {

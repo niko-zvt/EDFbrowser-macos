@@ -136,22 +136,23 @@ static char annotdescrlist[52][64]=
 
 
 
+#define ANNOT_EXT_NUM       (10)
 #define ANNOT_EXT_STR_LEN   (16)
 
-static char annotextlist[][ANNOT_EXT_STR_LEN]=
-  {
-    ".ari",
-    ".ecg",
-    ".trigger",
-    ".qrs",
-    ".atr",
-    ".apn",
-    ".st",
-    ".pwave",
-    ".marker",
-  };
+static char annotextlist[ANNOT_EXT_NUM][ANNOT_EXT_STR_LEN]=
+{
+  ".ari",
+  ".ecg",
+  ".trigger",
+  ".qrs",
+  ".atr",
+  ".apn",
+  ".st",
+  ".pwave",
+  ".marker",
+  ".seizures",
+};
 
-#define ANNOT_EXT_CNT     ((int)(sizeof(annotextlist) / sizeof(char[ANNOT_EXT_STR_LEN])))
 
 
 UI_MIT2EDFwindow::UI_MIT2EDFwindow(QWidget *w_parent, char *recent_dir, char *save_dir)
@@ -1224,7 +1225,7 @@ OUT1:
 
   get_filename_from_path(filename_x, annot_filename, MAX_PATH_LENGTH);
 
-  for(k=0; k<ANNOT_EXT_CNT; k++)
+  for(k=0; k<ANNOT_EXT_NUM; k++)
   {
     tc = 0LL;
 

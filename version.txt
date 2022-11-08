@@ -1,4 +1,14 @@
 
+ version 1.97      to be defined
+ --------------
+
+ - Mit to EDF+ converter: fixed a bug in the annotation description list.
+
+ - Import annotations tool: MIT/WFDB: fixed a bug in the annotation description list.
+
+ - Fixed some compiler warnings (MacOS).
+
+
  version 1.96      October 15, 2022
  --------------
 
