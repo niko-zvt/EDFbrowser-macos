@@ -128,7 +128,7 @@ static char annotdescrlist[52][64]=
   "fusion of paced and normal beat",              /* 38 */
   "waveform onset",                               /* 39 */
   "waveform end",                                 /* 40 */
-  "R-on-T premature ventricular contraction"      /* 41 */
+  "R-on-T premature ventricular contraction",     /* 41 */
   "",      /* 42 */
   "",      /* 43 */
   "",      /* 44 */

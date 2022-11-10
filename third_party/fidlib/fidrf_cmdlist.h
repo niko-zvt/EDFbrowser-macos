@@ -261,7 +261,11 @@ fid_run_new(FidFilter *filt, double (**funcpp)(void *,double)) {
 	    filt= FFNEXT(filt);
 	 }
       } else
+      {
 	 error("Internal error: fid_run_new can only handle IIR + FIR types");
+   n_iir = 0;
+   n_fir = 0;
+      }
 
       // Okay, we now have an IIR/FIR pair to process, possibly with
       // n_iir or n_fir == 0 if one half is missing

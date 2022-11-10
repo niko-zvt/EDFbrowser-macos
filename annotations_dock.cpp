@@ -216,14 +216,15 @@ void UI_Annotationswindow::delete_annots()
     return;
   }
 
-  annot_list = &(edf_hdr->annot_list);
-  if(annot_list == NULL)
+  if(edf_hdr == NULL)
   {
     snprintf(str, 4096, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
     messagewindow.exec();
     return;
   }
+
+  annot_list = &(edf_hdr->annot_list);
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, list->currentRow());
   if(annot == NULL)
@@ -265,7 +266,7 @@ void UI_Annotationswindow::delete_all_annots()
     return;
   }
 
-  if(&edf_hdr->annot_list == NULL)
+  if(edf_hdr == NULL)
   {
     snprintf(str, 4096, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
@@ -329,14 +330,15 @@ void UI_Annotationswindow::rename_all()
     return;
   }
 
-  annot_list = &(edf_hdr->annot_list);
-  if(annot_list == NULL)
+  if(edf_hdr == NULL)
   {
     snprintf(str, 4096, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
     messagewindow.exec();
     return;
   }
+
+  annot_list = &(edf_hdr->annot_list);
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, list->currentRow());
   if(annot == NULL)
@@ -384,14 +386,15 @@ void UI_Annotationswindow::show_heart_rate(bool)
     return;
   }
 
-  annot_list = &(edf_hdr->annot_list);
-  if(annot_list == NULL)
+  if(edf_hdr == NULL)
   {
     snprintf(str, 4096, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
     messagewindow.exec();
     return;
   }
+
+  annot_list = &(edf_hdr->annot_list);
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, row);
   if(annot == NULL)
@@ -466,14 +469,15 @@ void UI_Annotationswindow::show_stats(bool)
     return;
   }
 
-  annot_list = &(edf_hdr->annot_list);
-  if(annot_list == NULL)
+  if(edf_hdr == NULL)
   {
     snprintf(str, 4096, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
     messagewindow.exec();
     return;
   }
+
+  annot_list = &(edf_hdr->annot_list);
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, list->currentRow());
   if(annot == NULL)
@@ -509,6 +513,14 @@ void UI_Annotationswindow::filt_ival_time(bool)
 
   if(list->count() < 1)
   {
+    return;
+  }
+
+  if(edf_hdr == NULL)
+  {
+    snprintf(str, 4096, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    messagewindow.exec();
     return;
   }
 
@@ -1072,14 +1084,15 @@ void UI_Annotationswindow::average_annot(bool)
     return;
   }
 
-  annot_list = &(edf_hdr->annot_list);
-  if(annot_list == NULL)
+  if(edf_hdr == NULL)
   {
     snprintf(str, 4096, "Nullpointer returned: file: %s line %i", __FILE__, __LINE__);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
     messagewindow.exec();
     return;
   }
+
+  annot_list = &(edf_hdr->annot_list);
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, list->currentRow());
   if(annot == NULL)
