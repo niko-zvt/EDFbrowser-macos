@@ -95,9 +95,9 @@ static char annotdescrlist[52][64]=
   "paced beat",                                   /* 12 */
   "unclassifiable beat",                          /* 13 */
   "signal quality change",                        /* 14 */
-  "",                                             /* 15 */
+  "<empty description>",                          /* 15 */
   "isolated QRS-like artifact",                   /* 16 */
-  "",                                             /* 17 */
+  "<empty description>",                          /* 17 */
   "ST change",                                    /* 18 */
   "T-wave change",                                /* 19 */
   "systole",                                      /* 20 */
@@ -122,16 +122,16 @@ static char annotdescrlist[52][64]=
   "waveform onset",                               /* 39 */
   "waveform end",                                 /* 40 */
   "R-on-T premature ventricular contraction",     /* 41 */
-  "",      /* 42 */
-  "",      /* 43 */
-  "",      /* 44 */
-  "",      /* 45 */
-  "",      /* 46 */
-  "",      /* 47 */
-  "",      /* 48 */
-  "",      /* 49 */
-  "",      /* 50 */
-  ""       /* 51 */
+  "<empty description>",      /* 42 */
+  "<empty description>",      /* 43 */
+  "<empty description>",      /* 44 */
+  "<empty description>",      /* 45 */
+  "<empty description>",      /* 46 */
+  "<empty description>",      /* 47 */
+  "<empty description>",      /* 48 */
+  "<empty description>",      /* 49 */
+  "<empty description>",      /* 50 */
+  "<empty description>"       /* 51 */
 };
 
 
