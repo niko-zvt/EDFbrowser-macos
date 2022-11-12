@@ -44,7 +44,14 @@ UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, struct edfhdrblock *
 
   QHBoxLayout *hlayout_tmp=NULL;
 
-  myobjectDialog->setMinimumSize(400 * mainwindow->w_scaling, 400 * mainwindow->h_scaling);
+  if(mainwindow->hypnogram_use_overlays)
+  {
+    myobjectDialog->setMinimumSize(400 * mainwindow->w_scaling, 700 * mainwindow->h_scaling);
+  }
+  else
+  {
+    myobjectDialog->setMinimumSize(400 * mainwindow->w_scaling, 400 * mainwindow->h_scaling);
+  }
   myobjectDialog->setWindowTitle("Hypnogram");
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -84,6 +91,38 @@ UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, struct edfhdrblock *
   annot6_edit = new QLineEdit;
   annot6_edit->setToolTip("The annotation that will be mapped to the label in the left column");
 
+  annot1_ov_edit = new QLineEdit;
+  annot1_ov_edit->setToolTip("The annotation that will be used for the overlay");
+  annot2_ov_edit = new QLineEdit;
+  annot2_ov_edit->setToolTip("The annotation that will be used for the overlay");
+  annot3_ov_edit = new QLineEdit;
+  annot3_ov_edit->setToolTip("The annotation that will be used for the overlay");
+  annot4_ov_edit = new QLineEdit;
+  annot4_ov_edit->setToolTip("The annotation that will be used for the overlay");
+  annot5_ov_edit = new QLineEdit;
+  annot5_ov_edit->setToolTip("The annotation that will be used for the overlay");
+  annot6_ov_edit = new QLineEdit;
+  annot6_ov_edit->setToolTip("The annotation that will be used for the overlay");
+
+  ov_color_button1 = new SpecialButton;
+  ov_color_button1->setColor(mainwindow->hypnogram_annot_ov_color[0]);
+  ov_color_button1->setToolTip("Click to change the overlay color");
+  ov_color_button2 = new SpecialButton;
+  ov_color_button2->setColor(mainwindow->hypnogram_annot_ov_color[1]);
+  ov_color_button2->setToolTip("Click to change the overlay color");
+  ov_color_button3 = new SpecialButton;
+  ov_color_button3->setColor(mainwindow->hypnogram_annot_ov_color[2]);
+  ov_color_button3->setToolTip("Click to change the overlay color");
+  ov_color_button4 = new SpecialButton;
+  ov_color_button4->setColor(mainwindow->hypnogram_annot_ov_color[3]);
+  ov_color_button4->setToolTip("Click to change the overlay color");
+  ov_color_button5 = new SpecialButton;
+  ov_color_button5->setColor(mainwindow->hypnogram_annot_ov_color[4]);
+  ov_color_button5->setToolTip("Click to change the overlay color");
+  ov_color_button6 = new SpecialButton;
+  ov_color_button6->setColor(mainwindow->hypnogram_annot_ov_color[5]);
+  ov_color_button6->setToolTip("Click to change the overlay color");
+
   close_button = new QPushButton;
   close_button->setText("Close");
 
@@ -106,6 +145,13 @@ UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, struct edfhdrblock *
   annot4_edit->setText(mainwindow->hypnogram_annot_name[3]);
   annot5_edit->setText(mainwindow->hypnogram_annot_name[4]);
   annot6_edit->setText(mainwindow->hypnogram_annot_name[5]);
+
+  annot1_ov_edit->setText(mainwindow->hypnogram_annot_ov_name[0]);
+  annot2_ov_edit->setText(mainwindow->hypnogram_annot_ov_name[1]);
+  annot3_ov_edit->setText(mainwindow->hypnogram_annot_ov_name[2]);
+  annot4_ov_edit->setText(mainwindow->hypnogram_annot_ov_name[3]);
+  annot5_ov_edit->setText(mainwindow->hypnogram_annot_ov_name[4]);
+  annot6_ov_edit->setText(mainwindow->hypnogram_annot_ov_name[5]);
 
   QVBoxLayout *vlayout2 = new QVBoxLayout;
   vlayout2->addWidget(stage_label);
@@ -157,6 +203,87 @@ UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, struct edfhdrblock *
                                                    "If disabled, it will draw from onset to the next onset.");
   QObject::connect(use_epoch_len_checkbox, SIGNAL(stateChanged(int)), this, SLOT(use_epoch_len_checkbox_changed(int)));
 
+  use_overlays_checkbox = new QCheckBox;
+  use_overlays_checkbox->setTristate(false);
+  if(mainwindow->hypnogram_use_overlays)
+  {
+    use_overlays_checkbox->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    use_overlays_checkbox->setCheckState(Qt::Unchecked);
+  }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(use_overlays_checkbox);
+  hlayout_tmp->addStretch(1000);
+  flayout1->addRow("Add overlays", hlayout_tmp);
+  QObject::connect(use_overlays_checkbox, SIGNAL(stateChanged(int)), this, SLOT(use_overlays_checkbox_changed(int)));
+
+  QFormLayout *flayout2 = new QFormLayout;
+  flayout2->setSpacing(20);
+
+  flayout2->addRow(" ", (QWidget *)NULL);
+
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(annot1_ov_edit);
+  hlayout_tmp->addStretch(100);
+  hlayout_tmp->addWidget(ov_color_button1);
+  hlayout_tmp->addStretch(1000);
+  flayout2->addRow("Overlay", hlayout_tmp);
+
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(annot2_ov_edit);
+  hlayout_tmp->addStretch(100);
+  hlayout_tmp->addWidget(ov_color_button2);
+  hlayout_tmp->addStretch(1000);
+  flayout2->addRow("Overlay", hlayout_tmp);
+
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(annot3_ov_edit);
+  hlayout_tmp->addStretch(100);
+  hlayout_tmp->addWidget(ov_color_button3);
+  hlayout_tmp->addStretch(1000);
+  flayout2->addRow("Overlay", hlayout_tmp);
+
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(annot4_ov_edit);
+  hlayout_tmp->addStretch(100);
+  hlayout_tmp->addWidget(ov_color_button4);
+  hlayout_tmp->addStretch(1000);
+  flayout2->addRow("Overlay", hlayout_tmp);
+
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(annot5_ov_edit);
+  hlayout_tmp->addStretch(100);
+  hlayout_tmp->addWidget(ov_color_button5);
+  hlayout_tmp->addStretch(1000);
+  flayout2->addRow("Overlay", hlayout_tmp);
+
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(annot6_ov_edit);
+  hlayout_tmp->addStretch(100);
+  hlayout_tmp->addWidget(ov_color_button6);
+  hlayout_tmp->addStretch(1000);
+  flayout2->addRow("Overlay", hlayout_tmp);
+
+  flayout2widget = new QWidget;
+  flayout2widget->setLayout(flayout2);
+  if(mainwindow->hypnogram_use_overlays)
+  {
+    flayout2widget->setVisible(true);
+  }
+  else
+  {
+    flayout2widget->setVisible(false);
+  }
+
   QHBoxLayout *hlayout1 = new QHBoxLayout;
   hlayout1->addWidget(close_button);
   hlayout1->addStretch(1000);
@@ -167,17 +294,47 @@ UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, struct edfhdrblock *
   QVBoxLayout *vlayout1 = new QVBoxLayout;
   vlayout1->addLayout(hlayout2);
   vlayout1->addLayout(flayout1);
+  vlayout1->addWidget(flayout2widget);
   vlayout1->addStretch(1000);
-  vlayout1->addSpacing(20);
+  vlayout1->addSpacing(30);
   vlayout1->addLayout(hlayout1);
 
   myobjectDialog->setLayout(vlayout1);
 
-  QObject::connect(close_button,   SIGNAL(clicked()), myobjectDialog, SLOT(close()));
-  QObject::connect(default_button, SIGNAL(clicked()),           this, SLOT(default_button_clicked()));
-  QObject::connect(start_button,   SIGNAL(clicked()),           this, SLOT(start_button_clicked()));
+  QObject::connect(close_button,     SIGNAL(clicked()),                myobjectDialog, SLOT(close()));
+  QObject::connect(default_button,   SIGNAL(clicked()),                this,           SLOT(default_button_clicked()));
+  QObject::connect(start_button,     SIGNAL(clicked()),                this,           SLOT(start_button_clicked()));
+  QObject::connect(ov_color_button1, SIGNAL(clicked(SpecialButton *)), this,           SLOT(ov_color_button1_clicked(SpecialButton *)));
+  QObject::connect(ov_color_button2, SIGNAL(clicked(SpecialButton *)), this,           SLOT(ov_color_button2_clicked(SpecialButton *)));
+  QObject::connect(ov_color_button3, SIGNAL(clicked(SpecialButton *)), this,           SLOT(ov_color_button3_clicked(SpecialButton *)));
+  QObject::connect(ov_color_button4, SIGNAL(clicked(SpecialButton *)), this,           SLOT(ov_color_button4_clicked(SpecialButton *)));
+  QObject::connect(ov_color_button5, SIGNAL(clicked(SpecialButton *)), this,           SLOT(ov_color_button5_clicked(SpecialButton *)));
+  QObject::connect(ov_color_button6, SIGNAL(clicked(SpecialButton *)), this,           SLOT(ov_color_button6_clicked(SpecialButton *)));
 
   myobjectDialog->exec();
+}
+
+
+void UI_hypnogram_window::use_overlays_checkbox_changed(int state)
+{
+  if(state==Qt::Checked)
+  {
+    mainwindow->hypnogram_use_overlays = 1;
+
+    flayout2widget->setVisible(true);
+
+    myobjectDialog->setMinimumSize(400 * mainwindow->w_scaling, 700 * mainwindow->h_scaling);
+  }
+  else
+  {
+    mainwindow->hypnogram_use_overlays = 0;
+
+    flayout2widget->setVisible(false);
+
+    myobjectDialog->setMinimumSize(400 * mainwindow->w_scaling, 400 * mainwindow->h_scaling);
+  }
+
+  myobjectDialog->adjustSize();
 }
 
 
@@ -209,6 +366,22 @@ void UI_hypnogram_window::default_button_clicked()
   annot4_edit->setText("N2");
   annot5_edit->setText("N3");
   annot6_edit->setText("N4");
+
+  annot1_ov_edit->clear();
+  annot2_ov_edit->clear();
+  annot3_ov_edit->clear();
+  annot4_ov_edit->clear();
+  annot5_ov_edit->clear();
+  annot6_ov_edit->clear();
+
+  ov_color_button1->setColor(QColor(0, 128, 0, 32));
+  ov_color_button2->setColor(QColor(0, 0, 128, 32));
+  ov_color_button3->setColor(QColor(128, 128, 0, 32));
+  ov_color_button4->setColor(QColor(128, 0, 128, 32));
+  ov_color_button5->setColor(QColor(0, 64, 192, 32));
+  ov_color_button6->setColor(QColor(128, 192, 64, 32));
+
+  use_overlays_checkbox->setCheckState(Qt::Unchecked);
 }
 
 
@@ -226,12 +399,12 @@ void UI_hypnogram_window::start_button_clicked()
 
   dock_param.mainwindow = mainwindow;
 
-  strlcpy(dock_param.stage_name[0], stage1_edit->text().toLatin1().data(), 32);
-  strlcpy(dock_param.stage_name[1], stage2_edit->text().toLatin1().data(), 32);
-  strlcpy(dock_param.stage_name[2], stage3_edit->text().toLatin1().data(), 32);
-  strlcpy(dock_param.stage_name[3], stage4_edit->text().toLatin1().data(), 32);
-  strlcpy(dock_param.stage_name[4], stage5_edit->text().toLatin1().data(), 32);
-  strlcpy(dock_param.stage_name[5], stage6_edit->text().toLatin1().data(), 32);
+  strlcpy(dock_param.stage_name[0], stage1_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.stage_name[1], stage2_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.stage_name[2], stage3_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.stage_name[3], stage4_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.stage_name[4], stage5_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.stage_name[5], stage6_edit->text().toUtf8().data(), 32);
 
   for(i=0; i<HYPNOGRAM_STAGENUM; i++)
   {
@@ -240,12 +413,12 @@ void UI_hypnogram_window::start_button_clicked()
     strlcpy(mainwindow->hypnogram_stage_name[i], dock_param.stage_name[i], 32);
   }
 
-  strlcpy(dock_param.annot_name[0], annot1_edit->text().toLatin1().data(), 32);
-  strlcpy(dock_param.annot_name[1], annot2_edit->text().toLatin1().data(), 32);
-  strlcpy(dock_param.annot_name[2], annot3_edit->text().toLatin1().data(), 32);
-  strlcpy(dock_param.annot_name[3], annot4_edit->text().toLatin1().data(), 32);
-  strlcpy(dock_param.annot_name[4], annot5_edit->text().toLatin1().data(), 32);
-  strlcpy(dock_param.annot_name[5], annot6_edit->text().toLatin1().data(), 32);
+  strlcpy(dock_param.annot_name[0], annot1_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.annot_name[1], annot2_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.annot_name[2], annot3_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.annot_name[3], annot4_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.annot_name[4], annot5_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.annot_name[5], annot6_edit->text().toUtf8().data(), 32);
 
   for(i=0; i<HYPNOGRAM_STAGENUM; i++)
   {
@@ -253,6 +426,26 @@ void UI_hypnogram_window::start_button_clicked()
 
     strlcpy(mainwindow->hypnogram_annot_name[i], dock_param.annot_name[i], 32);
   }
+
+  strlcpy(dock_param.annot_ov_name[0], annot1_ov_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.annot_ov_name[1], annot2_ov_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.annot_ov_name[2], annot3_ov_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.annot_ov_name[3], annot4_ov_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.annot_ov_name[4], annot5_ov_edit->text().toUtf8().data(), 32);
+  strlcpy(dock_param.annot_ov_name[5], annot6_ov_edit->text().toUtf8().data(), 32);
+
+  for(i=0; i<HYPNOGRAM_OVNUM; i++)
+  {
+    trim_spaces(dock_param.annot_ov_name[i]);
+
+    strlcpy(mainwindow->hypnogram_annot_ov_name[i], dock_param.annot_ov_name[i], 32);
+
+    dock_param.annot_ov_color[i] = mainwindow->hypnogram_annot_ov_color[i];
+  }
+
+  dock_param.use_epoch_len = mainwindow->hypnogram_use_epoch_len;
+
+  dock_param.use_overlays = mainwindow->hypnogram_use_overlays;
 
   mainwindow->hypnogram_dock[instance_num] = new UI_hypnogram_dock(mainwindow, dock_param);
 
@@ -268,7 +461,82 @@ void UI_hypnogram_window::start_button_clicked()
 }
 
 
+void UI_hypnogram_window::ov_color_button1_clicked(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->hypnogram_annot_ov_color[0], myobjectDialog, "Select Color", QColorDialog::ShowAlphaChannel);
 
+  if(temp.isValid())
+  {
+    mainwindow->hypnogram_annot_ov_color[0] = temp;
+
+    b->setColor(temp);
+  }
+}
+
+
+void UI_hypnogram_window::ov_color_button2_clicked(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->hypnogram_annot_ov_color[1], myobjectDialog, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    mainwindow->hypnogram_annot_ov_color[1] = temp;
+
+    b->setColor(temp);
+  }
+}
+
+
+void UI_hypnogram_window::ov_color_button3_clicked(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->hypnogram_annot_ov_color[2], myobjectDialog, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    mainwindow->hypnogram_annot_ov_color[2] = temp;
+
+    b->setColor(temp);
+  }
+}
+
+
+void UI_hypnogram_window::ov_color_button4_clicked(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->hypnogram_annot_ov_color[3], myobjectDialog, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    mainwindow->hypnogram_annot_ov_color[3] = temp;
+
+    b->setColor(temp);
+  }
+}
+
+
+void UI_hypnogram_window::ov_color_button5_clicked(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->hypnogram_annot_ov_color[4], myobjectDialog, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    mainwindow->hypnogram_annot_ov_color[4] = temp;
+
+    b->setColor(temp);
+  }
+}
+
+
+void UI_hypnogram_window::ov_color_button6_clicked(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->hypnogram_annot_ov_color[5], myobjectDialog, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    mainwindow->hypnogram_annot_ov_color[5] = temp;
+
+    b->setColor(temp);
+  }
+}
 
 
 

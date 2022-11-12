@@ -265,6 +265,7 @@ public:
       annot_editor_user_button_stay_on_epoch_boundary,
       channel_linked_annotations,
       hypnogram_use_epoch_len,
+      hypnogram_use_overlays,
       dig_min_max_overflow,
       dig_min_max_overflow_warning_showed,
       options_dialog_idx,
@@ -302,7 +303,8 @@ long long annot_editor_user_button_epoch_len,
           last_check_for_updates_time;
 
   QColor hrvdock_trace_color,
-         annot_list_edited_txt_color;
+         annot_list_edited_txt_color,
+         hypnogram_annot_ov_color[6];
 
   unsigned long long pagetime,
                      maxfilesize_to_readin_annotations,
@@ -325,6 +327,7 @@ long long annot_editor_user_button_epoch_len,
        drop_path[MAX_PATH_LENGTH],
        hypnogram_stage_name[6][32],
        hypnogram_annot_name[6][32],
+       hypnogram_annot_ov_name[6][32],
        ecg_qrs_rpeak_descr[32],
        annot_edit_user_button_name[8][64],
        annot_by_rect_draw_description[MAX_ANNOTEDIT_SIDE_MENU_ANNOTS][32];

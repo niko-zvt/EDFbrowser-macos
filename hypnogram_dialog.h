@@ -38,6 +38,7 @@
 #include "mainwindow.h"
 #include "utils.h"
 #include "hypnogram_dock.h"
+#include "special_button.h"
 
 
 
@@ -75,19 +76,42 @@ private:
                 *annot3_edit,
                 *annot4_edit,
                 *annot5_edit,
-                *annot6_edit;
+                *annot6_edit,
+                *annot1_ov_edit,
+                *annot2_ov_edit,
+                *annot3_ov_edit,
+                *annot4_ov_edit,
+                *annot5_ov_edit,
+                *annot6_ov_edit;
 
   QPushButton   *close_button,
                 *start_button,
                 *default_button;
 
-  QCheckBox     *use_epoch_len_checkbox;
+  QCheckBox     *use_epoch_len_checkbox,
+                *use_overlays_checkbox;
+
+  SpecialButton *ov_color_button1,
+                *ov_color_button2,
+                *ov_color_button3,
+                *ov_color_button4,
+                *ov_color_button5,
+                *ov_color_button6;
+
+  QWidget       *flayout2widget;
 
 private slots:
 
   void start_button_clicked();
   void default_button_clicked();
   void use_epoch_len_checkbox_changed(int);
+  void use_overlays_checkbox_changed(int);
+  void ov_color_button1_clicked(SpecialButton *);
+  void ov_color_button2_clicked(SpecialButton *);
+  void ov_color_button3_clicked(SpecialButton *);
+  void ov_color_button4_clicked(SpecialButton *);
+  void ov_color_button5_clicked(SpecialButton *);
+  void ov_color_button6_clicked(SpecialButton *);
 
 };
 

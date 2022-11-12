@@ -92,6 +92,34 @@ UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, struct hypnogram_dock_pa
   QObject::connect(hypnogram_dock, SIGNAL(destroyed(QObject *)),             this, SLOT(hypnogram_dock_destroyed(QObject *)));
 
   file_pos_changed(0);
+
+//   printf("mainwindow: %p\n"
+//          "instance_num: %i\n"
+//          "use_epoch_len: %i\n"
+//          "use_overlay: %i\n"
+//          "stage_name[0]: %s\n"
+//          "stage_name[1]: %s\n"
+//          "stage_name[2]: %s\n"
+//          "annot_name[0]: %s\n"
+//          "annot_name[1]: %s\n"
+//          "annot_name[2]: %s\n"
+//          "annot_ov_name[0]: %s\n"
+//          "annot_ov_name[1]: %s\n"
+//          "annot_ov_name[2]: %s\n",
+//          mainwindow,
+//          param.instance_num,
+//          param.use_epoch_len,
+//          param.use_overlays,
+//          param.stage_name[0],
+//          param.stage_name[1],
+//          param.stage_name[2],
+//          param.annot_name[0],
+//          param.annot_name[1],
+//          param.annot_name[2],
+//          param.annot_ov_name[0],
+//          param.annot_ov_name[1],
+//          param.annot_ov_name[2]
+//          );
 }
 
 
@@ -310,18 +338,17 @@ void hypnogram_curve_widget::set_params(struct hypnogram_dock_param_struct *parm
 
 void hypnogram_curve_widget::paintEvent(QPaintEvent *)
 {
-  int w, h, i, j, n, pos_x1=0, pos_x2=0, stage=0, tmp1, tmp2;
+  int w, h, i, j, k, n, pos_x1=0, pos_x2=0, stage=0, tmp1, tmp2;
 
   double pixel_per_unit,
          pixel_per_sec,
          offset;
 
-  long long annot_duration=-1LL,
-            annot_end=0LL,
+  long long annot_end=0LL,
             prev_annot_end=0x7fffffffffffffffLL,
             tdiff=0LL;
 
-  char str[64];
+  char str[64]={""};
 
   struct annotation_list *annot_list;
 
@@ -359,7 +386,60 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
 
   n = edfplus_annotation_size(annot_list);
 
-  for(i=0; i<n; i++)
+  if(param.use_overlays)
+  {
+    for(i=0, k=0; i<n; i++)
+    {
+      annot = edfplus_annotation_get_item(annot_list, i);
+
+      strlcpy(str, annot->description, 48);
+      trim_spaces(str);
+
+      for(j=0; j<HYPNOGRAM_OVNUM; j++)
+      {
+        if(!strcmp(str, param.annot_ov_name[j]))
+        {
+          pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_DIMENSION;
+
+          if(param.use_epoch_len)
+          {
+            pos_x1 = ((double)(annot->long_duration) * pixel_per_sec) / TIME_DIMENSION;
+
+            painter.fillRect(pos_x2, 0, pos_x1, h, param.annot_ov_color[j]);
+          }
+          else
+          {
+            if(k)
+            {
+              painter.fillRect(pos_x1, 0, pos_x2 - pos_x1, h, param.annot_ov_color[stage]);
+            }
+
+            pos_x1 = pos_x2;
+          }
+
+          stage = j;
+
+          k++;
+
+          break;
+        }
+      }
+    }
+
+    if(!param.use_epoch_len)
+    {
+      if(k)
+      {
+        painter.fillRect(pos_x1, 0, w - pos_x1, h, param.annot_ov_color[stage]);
+      }
+    }
+  }
+
+  pos_x1=0;
+  pos_x2=0;
+  stage=0;
+
+  for(i=0, k=0; i<n; i++)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
 
@@ -372,9 +452,7 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
       {
         pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_DIMENSION;
 
-        annot_duration = annot->long_duration;
-
-        if(mainwindow->hypnogram_use_epoch_len)
+        if(param.use_epoch_len)
         {
           annot_end = annot->onset + annot->long_duration;
 
@@ -383,21 +461,24 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
           painter.drawLine(pos_x1, offset + (j * pixel_per_unit) + 0.5,
                            pos_x2, offset + (j * pixel_per_unit) + 0.5);
         }
-        else if(i && (!mainwindow->hypnogram_use_epoch_len))
+        else
+        {
+          if(k)
           {
             painter.drawLine(pos_x1, offset + (stage * pixel_per_unit) + 0.5,
                              pos_x2, offset + (stage * pixel_per_unit) + 0.5);
-
-            pos_x1 = pos_x2;
           }
 
-        if(i)
+          pos_x1 = pos_x2;
+        }
+
+        if(k)
         {
           painter.drawLine(pos_x2, offset + (stage * pixel_per_unit) + 0.5,
                            pos_x2, offset + (j * pixel_per_unit) + 0.5);
         }
 
-        if(mainwindow->hypnogram_use_epoch_len)
+        if(param.use_epoch_len)
         {
           if(prev_annot_end != 0x7fffffffffffffff)
           {
@@ -426,27 +507,19 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
 
         stage = j;
 
+        k++;
+
         break;
       }
     }
   }
 
-  if(!mainwindow->hypnogram_use_epoch_len)
+  if(!param.use_epoch_len)
   {
-    if(pos_x1)
+    if(k)
     {
-      if(annot_duration > 0)
-      {
-        pos_x2 = (((double)annot_duration * pixel_per_sec) / TIME_DIMENSION) + pos_x1;
-
-        painter.drawLine(pos_x1, offset + (stage * pixel_per_unit) + 0.5,
-                         pos_x2, offset + (stage * pixel_per_unit) + 0.5);
-      }
-      else
-      {
-        painter.drawLine(pos_x1, offset + (stage * pixel_per_unit) + 0.5,
-                         w, offset + (stage * pixel_per_unit) + 0.5);
-      }
+      painter.drawLine(pos_x1, offset + (stage * pixel_per_unit) + 0.5,
+                       w, offset + (stage * pixel_per_unit) + 0.5);
     }
   }
 }

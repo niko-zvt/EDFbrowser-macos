@@ -2143,6 +2143,42 @@ int UI_Mainwindow::read_session_file(const char *path_session)
         xml_go_up(xml_hdl);
       }
 
+      if(!xml_goto_nth_element_inside(xml_hdl, "hypnogram_use_epoch_len", 0))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return session_format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        hypnogram_param.use_epoch_len = atoi(result);
+        if(hypnogram_param.use_epoch_len != 1)
+        {
+          hypnogram_param.use_epoch_len = 0;
+        }
+
+        hypnogram_use_epoch_len = hypnogram_param.use_epoch_len;
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(!xml_goto_nth_element_inside(xml_hdl, "use_overlays", 0))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return session_format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        hypnogram_param.use_overlays = atoi(result);
+        if(hypnogram_param.use_overlays != 1)
+        {
+          hypnogram_param.use_overlays = 0;
+        }
+
+        hypnogram_use_overlays = hypnogram_param.use_overlays;
+
+        xml_go_up(xml_hdl);
+      }
+
       for(j=0; j<HYPNOGRAM_STAGENUM; j++)
       {
         if(xml_goto_nth_element_inside(xml_hdl, "stage_name", j))
@@ -2156,6 +2192,8 @@ int UI_Mainwindow::read_session_file(const char *path_session)
         }
 
         strlcpy(hypnogram_param.stage_name[j], result, 32);
+
+        strlcpy(hypnogram_stage_name[j], hypnogram_param.stage_name[j], 32);
 
         xml_go_up(xml_hdl);
       }
@@ -2174,8 +2212,36 @@ int UI_Mainwindow::read_session_file(const char *path_session)
 
         strlcpy(hypnogram_param.annot_name[j], result, 32);
 
+        strlcpy(hypnogram_annot_name[j], hypnogram_param.annot_name[j], 32);
+
         xml_go_up(xml_hdl);
       }
+
+      for(j=0; j<HYPNOGRAM_OVNUM; j++)
+      {
+        if(!xml_goto_nth_element_inside(xml_hdl, "annot_ov_name", j))
+        {
+          if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+          {
+            return session_format_error(__FILE__, __LINE__, NULL, xml_hdl);
+          }
+
+          strlcpy(hypnogram_param.annot_ov_name[j], result, 32);
+
+          strlcpy(hypnogram_annot_ov_name[j], hypnogram_param.annot_ov_name[j], 32);
+
+          xml_go_up(xml_hdl);
+        }
+      }
+
+      for(j=0; j<HYPNOGRAM_OVNUM; j++)
+      {
+        get_rgbcolor_settings(xml_hdl, "annot_ov_color", j, &hypnogram_param.annot_ov_color[j]);
+
+        hypnogram_annot_ov_color[j] = hypnogram_param.annot_ov_color[j] ;
+      }
+
+      hypnogram_param.mainwindow = this;
 
       hypnogram_dock[hypnogram_param.instance_num] = new UI_hypnogram_dock(this, hypnogram_param);
 

@@ -2001,6 +2001,27 @@ void UI_Mainwindow::read_general_settings()
       }
     }
 
+    for(i=0; i<6; i++)
+    {
+      if(!(xml_goto_nth_element_inside(xml_hdl, "annot_ov_name", i)))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          xml_close(xml_hdl);
+          return;
+        }
+
+        strlcpy(hypnogram_annot_ov_name[i], result, 32);
+
+        xml_go_up(xml_hdl);
+      }
+    }
+
+    for(i=0; i<6; i++)
+    {
+      get_rgbcolor_settings(xml_hdl, "annot_ov_color", i, &hypnogram_annot_ov_color[i]);
+    }
+
     if(!(xml_goto_nth_element_inside(xml_hdl, "hypnogram_use_epoch_len", 0)))
     {
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
@@ -2013,6 +2034,23 @@ void UI_Mainwindow::read_general_settings()
       if(hypnogram_use_epoch_len != 1)
       {
         hypnogram_use_epoch_len = 0;
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(!(xml_goto_nth_element_inside(xml_hdl, "use_overlays", 0)))
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        xml_close(xml_hdl);
+        return;
+      }
+
+      hypnogram_use_overlays = atoi(result);
+      if(hypnogram_use_overlays != 1)
+      {
+        hypnogram_use_overlays = 0;
       }
 
       xml_go_up(xml_hdl);
@@ -3467,7 +3505,27 @@ void UI_Mainwindow::write_settings()
 
       fprintf(cfgfile, "      <annot_name>%s</annot_name>\n", str);
     }
+    for(i=0; i<6; i++)
+    {
+      xml_strlcpy_encode_entity(str, hypnogram_annot_ov_name[i], 1024);
+
+      fprintf(cfgfile, "      <annot_ov_name>%s</annot_ov_name>\n", str);
+    }
+    for(i=0; i<6; i++)
+    {
+      fprintf(cfgfile, "      <annot_ov_color>\n"
+                      "        <red>%i</red>\n"
+                      "        <green>%i</green>\n"
+                      "        <blue>%i</blue>\n"
+                      "        <alpha>%i</alpha>\n"
+                      "      </annot_ov_color>\n",
+                      hypnogram_annot_ov_color[i].red(),
+                      hypnogram_annot_ov_color[i].green(),
+                      hypnogram_annot_ov_color[i].blue(),
+                      hypnogram_annot_ov_color[i].alpha());
+    }
     fprintf(cfgfile, "      <hypnogram_use_epoch_len>%i</hypnogram_use_epoch_len>\n", hypnogram_use_epoch_len);
+    fprintf(cfgfile, "      <use_overlays>%i</use_overlays>\n", hypnogram_use_overlays);
     fprintf(cfgfile, "    </hypnogram>\n");
 
     fprintf(cfgfile, "    <ecg_qrs>\n");

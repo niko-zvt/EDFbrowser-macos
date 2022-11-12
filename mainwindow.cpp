@@ -833,6 +833,31 @@ void UI_Mainwindow::save_session()
       fprintf(pro_file, "</annot_name>\n");
     }
 
+    for(j=0; j<HYPNOGRAM_OVNUM; j++)
+    {
+      fprintf(pro_file, "    <annot_ov_name>");
+      xml_fwrite_encode_entity(pro_file, hypnogram_dock[i]->param.annot_ov_name[j]);
+      fprintf(pro_file, "</annot_ov_name>\n");
+    }
+
+    for(j=0; j<HYPNOGRAM_OVNUM; j++)
+    {
+      fprintf(pro_file, "    <annot_ov_color>\n"
+                        "      <red>%i</red>\n"
+                        "      <green>%i</green>\n"
+                        "      <blue>%i</blue>\n"
+                        "      <alpha>%i</alpha>\n"
+                        "    </annot_ov_color>\n",
+                        hypnogram_dock[i]->param.annot_ov_color[j].red(),
+                        hypnogram_dock[i]->param.annot_ov_color[j].green(),
+                        hypnogram_dock[i]->param.annot_ov_color[j].blue(),
+                        hypnogram_dock[i]->param.annot_ov_color[j].alpha());
+    }
+
+    fprintf(pro_file, "    <hypnogram_use_epoch_len>%i</hypnogram_use_epoch_len>\n", hypnogram_dock[i]->param.use_epoch_len);
+
+    fprintf(pro_file, "    <use_overlays>%i</use_overlays>\n", hypnogram_dock[i]->param.use_overlays);
+
     fprintf(pro_file, "    <hdr_idx>%i</hdr_idx>\n", hdr_idx);
 
     fprintf(pro_file, "  </hypnogram>\n");

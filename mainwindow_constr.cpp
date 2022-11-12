@@ -154,6 +154,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   hypnogram_use_epoch_len = 0;
 
+  hypnogram_use_overlays = 0;
+
   channel_linked_annotations = 1;
 
   use_diverse_signal_colors = 1;
@@ -401,6 +403,18 @@ UI_Mainwindow::UI_Mainwindow()
   strlcpy(hypnogram_annot_name[3], "N2", 32);
   strlcpy(hypnogram_annot_name[4], "N3", 32);
   strlcpy(hypnogram_annot_name[5], "N4", 32);
+
+  for(i=0; i<6; i++)
+  {
+    hypnogram_annot_ov_name[i][0] = 0;
+  }
+
+  hypnogram_annot_ov_color[0] = QColor(0, 128, 0, 32);
+  hypnogram_annot_ov_color[1] = QColor(0, 0, 128, 32);
+  hypnogram_annot_ov_color[2] = QColor(128, 128, 0, 32);
+  hypnogram_annot_ov_color[3] = QColor(128, 0, 128, 32);
+  hypnogram_annot_ov_color[4] = QColor(0, 64, 192, 32);
+  hypnogram_annot_ov_color[5] = QColor(128, 192, 64, 32);
 
   strlcpy(ecg_qrs_rpeak_descr, "R-peak", 32);
 

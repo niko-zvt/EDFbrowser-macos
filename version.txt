@@ -6,7 +6,13 @@
 
  - Import annotations tool: MIT/WFDB: fixed a bug in the annotation description list.
 
- - Fixed some compiler warnings (MacOS).
+ - Fixed compiler warnings on MacOS.
+
+ - Hypnogram: fixed a bug that caused the hypnogram to be empty when it was loaded from
+   a session file.
+
+ - Hypnogram: added the possibility to show user defined annotations using colored
+   overlays in the hypnogram.
 
 
  version 1.96      October 15, 2022
