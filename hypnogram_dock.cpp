@@ -84,12 +84,22 @@ UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, struct hypnogram_dock_pa
   hypnogram_dock = new QToolBar("Hypnogram", mainwindow);
   hypnogram_dock->setOrientation(Qt::Horizontal);
   hypnogram_dock->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
+  hypnogram_dock->setMinimumWidth(800);
   hypnogram_dock->addWidget(frame);
   hypnogram_dock->setAttribute(Qt::WA_DeleteOnClose, true);
+  hypnogram_dock->setContextMenuPolicy(Qt::CustomContextMenu);
 
-  QObject::connect(mainwindow,     SIGNAL(file_position_changed(long long)), this, SLOT(file_pos_changed(long long)));
-  QObject::connect(mainwindow,     SIGNAL(file_position_changed(long long)), this, SLOT(file_pos_changed(long long)));
-  QObject::connect(hypnogram_dock, SIGNAL(destroyed(QObject *)),             this, SLOT(hypnogram_dock_destroyed(QObject *)));
+  context_menu = new QMenu(hypnogram_dock);
+//  QAction *settings_act = new QAction("Settings", this);
+  QAction *close_act = new QAction("Close", this);
+//  context_menu->addAction(settings_act);
+  context_menu->addAction(close_act);
+
+  QObject::connect(mainwindow,     SIGNAL(file_position_changed(long long)),   this, SLOT(file_pos_changed(long long)));
+  QObject::connect(mainwindow,     SIGNAL(file_position_changed(long long)),   this, SLOT(file_pos_changed(long long)));
+  QObject::connect(hypnogram_dock, SIGNAL(destroyed(QObject *)),               this, SLOT(hypnogram_dock_destroyed(QObject *)));
+  QObject::connect(hypnogram_dock, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(show_context_menu(QPoint)));
+  QObject::connect(close_act,      SIGNAL(triggered(bool)),                    this, SLOT(close_dock(bool)));
 
   file_pos_changed(0);
 
@@ -138,6 +148,12 @@ UI_hypnogram_dock::~UI_hypnogram_dock()
 }
 
 
+void UI_hypnogram_dock::close_dock(bool)
+{
+  delete this;
+}
+
+
 void UI_hypnogram_dock::update_curve(void)
 {
   hypnogram_curve->update();
@@ -156,6 +172,12 @@ void UI_hypnogram_dock::hypnogram_dock_destroyed(QObject *)
   }
 
   delete this;
+}
+
+
+void UI_hypnogram_dock::show_context_menu(QPoint)
+{
+  context_menu->exec(QCursor::pos());
 }
 
 

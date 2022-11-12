@@ -86,6 +86,8 @@ public slots:
 
 private:
 
+  QMenu *context_menu;
+
   simple_tracking_indicator2 *trck_indic;
 
   simple_ruler_indicator2 *srl_indic;
@@ -98,6 +100,8 @@ private slots:
 
   void file_pos_changed(long long);
   void hypnogram_dock_destroyed(QObject *);
+  void close_dock(bool);
+  void show_context_menu(QPoint);
 
 };
 
