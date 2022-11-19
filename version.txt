@@ -1,5 +1,5 @@
 
- version 1.97      to be defined
+ version 1.97      November 19, 2022
  --------------
 
  - Mit to EDF+ converter: fixed a bug in the annotation description list.
