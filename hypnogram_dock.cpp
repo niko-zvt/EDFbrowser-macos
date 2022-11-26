@@ -425,9 +425,12 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
 
           if(param.use_epoch_len)
           {
-            pos_x1 = ((double)(annot->long_duration) * pixel_per_sec) / TIME_DIMENSION;
+            if(annot->long_duration > 0LL)
+            {
+              pos_x1 = ((double)(annot->long_duration) * pixel_per_sec) / TIME_DIMENSION;
 
-            painter.fillRect(pos_x2, 0, pos_x1, h, param.annot_ov_color[j]);
+              painter.fillRect(pos_x2, 0, pos_x1, h, param.annot_ov_color[j]);
+            }
           }
           else
           {
@@ -476,12 +479,15 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
 
         if(param.use_epoch_len)
         {
-          annot_end = annot->onset + annot->long_duration;
+          if(annot->long_duration > 0LL)
+          {
+            annot_end = annot->onset + annot->long_duration;
 
-          pos_x1 = ((double)(annot_end) * pixel_per_sec) / TIME_DIMENSION;
+            pos_x1 = ((double)(annot_end) * pixel_per_sec) / TIME_DIMENSION;
 
-          painter.drawLine(pos_x1, offset + (j * pixel_per_unit) + 0.5,
-                           pos_x2, offset + (j * pixel_per_unit) + 0.5);
+            painter.drawLine(pos_x1, offset + (j * pixel_per_unit) + 0.5,
+                             pos_x2, offset + (j * pixel_per_unit) + 0.5);
+          }
         }
         else
         {
