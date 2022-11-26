@@ -177,6 +177,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
                 *math_item_before=NULL,
                 *math_item_after=NULL;
 
+  QColor tmp_color;
+
   struct xml_handle *xml_hdl=NULL;
 
   struct date_time_struct dt;
@@ -1557,39 +1559,81 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
     for(j=0; j<HYPNOGRAM_STAGENUM; j++)
     {
-      if(xml_goto_nth_element_inside(xml_hdl, "stage_name", j))
+      if(!xml_goto_nth_element_inside(xml_hdl, "stage_name", j))
       {
-        view_session_format_error(__FILE__, __LINE__, xml_hdl);
-        return;
-      }
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          view_session_format_error(__FILE__, __LINE__, xml_hdl);
+          return;
+        }
 
+        snprintf(str2, 2048, "Stage %i name: %.2000s", j + 1, result);
+
+        xml_go_up(xml_hdl);
+
+        if(xml_goto_nth_element_inside(xml_hdl, "annot_name", j))
+        {
+          view_session_format_error(__FILE__, __LINE__, xml_hdl);
+          return;
+        }
+
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          view_session_format_error(__FILE__, __LINE__, xml_hdl);
+          return;
+        }
+
+        strlcat(str2, "   Annotation: ", 2048);
+        strlcat(str2, result, 2048);
+        hypnogramItem->appendRow(new QStandardItem(str2));
+
+        xml_go_up(xml_hdl);
+      }
+    }
+
+    if(!xml_goto_nth_element_inside(xml_hdl, "use_overlays", 0))
+    {
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         view_session_format_error(__FILE__, __LINE__, xml_hdl);
         return;
       }
 
-      snprintf(str2, 2048, "Stage %i name: %.2000s", j + 1, result);
-
-      xml_go_up(xml_hdl);
-
-      if(xml_goto_nth_element_inside(xml_hdl, "annot_name", j))
+      if(atoi(result) == 1)
       {
-        view_session_format_error(__FILE__, __LINE__, xml_hdl);
-        return;
+        hypnogramItem->appendRow(new QStandardItem(" use overlays: yes"));
+      }
+      else
+      {
+        hypnogramItem->appendRow(new QStandardItem(" use overlays: no"));
       }
 
-      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
-      {
-        view_session_format_error(__FILE__, __LINE__, xml_hdl);
-        return;
-      }
-
-      strlcat(str2, "   Annotation: ", 2048);
-      strlcat(str2, result, 2048);
-      hypnogramItem->appendRow(new QStandardItem(str2));
-
       xml_go_up(xml_hdl);
+    }
+
+    for(j=0; j<HYPNOGRAM_OVNUM; j++)
+    {
+      if(!xml_goto_nth_element_inside(xml_hdl, "annot_ov_name", j))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          view_session_format_error(__FILE__, __LINE__, xml_hdl);
+          return;
+        }
+
+        xml_go_up(xml_hdl);
+
+        snprintf(str2, 2048, "Overlay annotation: %s", result);
+        tmp_item = new QStandardItem(str2);
+
+        mainwindow->get_rgbcolor_settings(xml_hdl, "annot_ov_color", j, &tmp_color);
+        if(tmp_color.isValid() == true)
+        {
+          tmp_item->setBackground(QBrush(tmp_color));
+        }
+
+        hypnogramItem->appendRow(tmp_item);
+      }
     }
 
     xml_go_up(xml_hdl);

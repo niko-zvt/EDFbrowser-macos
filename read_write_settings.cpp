@@ -1985,7 +1985,7 @@ void UI_Mainwindow::read_general_settings()
       }
     }
 
-    for(i=0; i<6; i++)
+    for(i=0; i<HYPNOGRAM_STAGENUM; i++)
     {
       if(!(xml_goto_nth_element_inside(xml_hdl, "annot_name", i)))
       {
@@ -2001,7 +2001,7 @@ void UI_Mainwindow::read_general_settings()
       }
     }
 
-    for(i=0; i<6; i++)
+    for(i=0; i<HYPNOGRAM_STAGENUM; i++)
     {
       if(!(xml_goto_nth_element_inside(xml_hdl, "annot_ov_name", i)))
       {
@@ -2017,7 +2017,7 @@ void UI_Mainwindow::read_general_settings()
       }
     }
 
-    for(i=0; i<6; i++)
+    for(i=0; i<HYPNOGRAM_OVNUM; i++)
     {
       get_rgbcolor_settings(xml_hdl, "annot_ov_color", i, &hypnogram_annot_ov_color[i]);
     }
@@ -3493,25 +3493,25 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "    </aeeg>\n");
 
     fprintf(cfgfile, "    <hypnogram>\n");
-    for(i=0; i<6; i++)
+    for(i=0; i<HYPNOGRAM_STAGENUM; i++)
     {
       xml_strlcpy_encode_entity(str, hypnogram_stage_name[i], 1024);
 
       fprintf(cfgfile, "      <stage_name>%s</stage_name>\n", str);
     }
-    for(i=0; i<6; i++)
+    for(i=0; i<HYPNOGRAM_STAGENUM; i++)
     {
       xml_strlcpy_encode_entity(str, hypnogram_annot_name[i], 1024);
 
       fprintf(cfgfile, "      <annot_name>%s</annot_name>\n", str);
     }
-    for(i=0; i<6; i++)
+    for(i=0; i<HYPNOGRAM_OVNUM; i++)
     {
       xml_strlcpy_encode_entity(str, hypnogram_annot_ov_name[i], 1024);
 
       fprintf(cfgfile, "      <annot_ov_name>%s</annot_ov_name>\n", str);
     }
-    for(i=0; i<6; i++)
+    for(i=0; i<HYPNOGRAM_OVNUM; i++)
     {
       fprintf(cfgfile, "      <annot_ov_color>\n"
                       "        <red>%i</red>\n"
