@@ -4232,7 +4232,14 @@ void UI_Mainwindow::fit_signals_to_pane(int n)
 
   if(!signalcomps)  return;
 
-  pane_size = maincurve->height() / (signalcomps + 1);
+  if(mc_v_scrollarea_auto && (signalcomps > mc_v_scrollarea_max_signals))
+  {
+    pane_size = maincurve->height() / (mc_v_scrollarea_max_signals + 1);
+  }
+  else
+  {
+    pane_size = maincurve->height() / (signalcomps + 1);
+  }
 
   for(i=0; i<signalcomps; i++)
   {
