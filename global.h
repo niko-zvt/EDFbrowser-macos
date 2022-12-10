@@ -174,6 +174,15 @@
 #include "filt/math_func.h"
 
 
+struct t_rgba_color_struct
+{
+  int r;
+  int g;
+  int b;
+  int a;
+};
+
+
 struct edfparamblock{
         char   label[17];
         char   transducer[81];

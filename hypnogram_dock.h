@@ -58,7 +58,7 @@ struct hypnogram_dock_param_struct
   char stage_name[HYPNOGRAM_STAGENUM][32];
   char annot_name[HYPNOGRAM_STAGENUM][32];
   char annot_ov_name[HYPNOGRAM_OVNUM][32];
-  QColor annot_ov_color[HYPNOGRAM_OVNUM];
+  struct t_rgba_color_struct annot_ov_color[HYPNOGRAM_OVNUM];
   struct edfhdrblock *edfhdr;
   UI_Mainwindow  *mainwindow;
 };
@@ -186,6 +186,8 @@ protected:
 private:
 
   struct hypnogram_dock_param_struct param;
+
+  QColor annot_ov_q_color[HYPNOGRAM_OVNUM];
 };
 
 

@@ -352,9 +352,16 @@ hypnogram_curve_widget::hypnogram_curve_widget(QWidget *w_parent) : QWidget(w_pa
 
 void hypnogram_curve_widget::set_params(struct hypnogram_dock_param_struct *parms)
 {
+  int i;
+
   param = *parms;
 
   mainwindow = param.mainwindow;
+
+  for(i=0; i<HYPNOGRAM_OVNUM; i++)
+  {
+    annot_ov_q_color[i] = QColor(param.annot_ov_color[i].r, param.annot_ov_color[i].g, param.annot_ov_color[i].b, param.annot_ov_color[i].a);
+  }
 }
 
 
@@ -429,14 +436,14 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
             {
               pos_x1 = ((double)(annot->long_duration) * pixel_per_sec) / TIME_DIMENSION;
 
-              painter.fillRect(pos_x2, 0, pos_x1, h, param.annot_ov_color[j]);
+              painter.fillRect(pos_x2, 0, pos_x1, h, annot_ov_q_color[j]);
             }
           }
           else
           {
             if(k)
             {
-              painter.fillRect(pos_x1, 0, pos_x2 - pos_x1, h, param.annot_ov_color[stage]);
+              painter.fillRect(pos_x1, 0, pos_x2 - pos_x1, h, annot_ov_q_color[stage]);
             }
 
             pos_x1 = pos_x2;
@@ -455,7 +462,7 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
     {
       if(k)
       {
-        painter.fillRect(pos_x1, 0, w - pos_x1, h, param.annot_ov_color[stage]);
+        painter.fillRect(pos_x1, 0, w - pos_x1, h, annot_ov_q_color[stage]);
       }
     }
   }

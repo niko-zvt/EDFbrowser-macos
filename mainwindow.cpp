@@ -848,10 +848,10 @@ void UI_Mainwindow::save_session()
                         "      <blue>%i</blue>\n"
                         "      <alpha>%i</alpha>\n"
                         "    </annot_ov_color>\n",
-                        hypnogram_dock[i]->param.annot_ov_color[j].red(),
-                        hypnogram_dock[i]->param.annot_ov_color[j].green(),
-                        hypnogram_dock[i]->param.annot_ov_color[j].blue(),
-                        hypnogram_dock[i]->param.annot_ov_color[j].alpha());
+                        hypnogram_dock[i]->param.annot_ov_color[j].r,
+                        hypnogram_dock[i]->param.annot_ov_color[j].g,
+                        hypnogram_dock[i]->param.annot_ov_color[j].b,
+                        hypnogram_dock[i]->param.annot_ov_color[j].a);
     }
 
     fprintf(pro_file, "    <hypnogram_use_epoch_len>%i</hypnogram_use_epoch_len>\n", hypnogram_dock[i]->param.use_epoch_len);

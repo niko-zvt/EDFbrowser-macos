@@ -434,13 +434,23 @@ void UI_hypnogram_window::start_button_clicked()
   strlcpy(dock_param.annot_ov_name[4], annot5_ov_edit->text().toUtf8().data(), 32);
   strlcpy(dock_param.annot_ov_name[5], annot6_ov_edit->text().toUtf8().data(), 32);
 
+  mainwindow->hypnogram_annot_ov_color[0] = ov_color_button1->color();
+  mainwindow->hypnogram_annot_ov_color[1] = ov_color_button2->color();
+  mainwindow->hypnogram_annot_ov_color[2] = ov_color_button3->color();
+  mainwindow->hypnogram_annot_ov_color[3] = ov_color_button4->color();
+  mainwindow->hypnogram_annot_ov_color[4] = ov_color_button5->color();
+  mainwindow->hypnogram_annot_ov_color[5] = ov_color_button6->color();
+
   for(i=0; i<HYPNOGRAM_OVNUM; i++)
   {
     trim_spaces(dock_param.annot_ov_name[i]);
 
     strlcpy(mainwindow->hypnogram_annot_ov_name[i], dock_param.annot_ov_name[i], 32);
 
-    dock_param.annot_ov_color[i] = mainwindow->hypnogram_annot_ov_color[i];
+    dock_param.annot_ov_color[i].r = mainwindow->hypnogram_annot_ov_color[i].red();
+    dock_param.annot_ov_color[i].g = mainwindow->hypnogram_annot_ov_color[i].green();
+    dock_param.annot_ov_color[i].b = mainwindow->hypnogram_annot_ov_color[i].blue();
+    dock_param.annot_ov_color[i].a = mainwindow->hypnogram_annot_ov_color[i].alpha();
   }
 
   dock_param.use_epoch_len = mainwindow->hypnogram_use_epoch_len;

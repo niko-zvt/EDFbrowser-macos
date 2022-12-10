@@ -79,7 +79,6 @@ int UI_Mainwindow::read_session_file(const char *path_session)
          dthreshold,
          fir_vars[1000];
 
-
   struct xml_handle *xml_hdl=NULL;
 
   struct signalcompblock *newsignalcomp=NULL;
@@ -2236,9 +2235,12 @@ int UI_Mainwindow::read_session_file(const char *path_session)
 
       for(j=0; j<HYPNOGRAM_OVNUM; j++)
       {
-        get_rgbcolor_settings(xml_hdl, "annot_ov_color", j, &hypnogram_param.annot_ov_color[j]);
+        get_rgbcolor_settings(xml_hdl, "annot_ov_color", j, &hypnogram_annot_ov_color[j]);
 
-        hypnogram_annot_ov_color[j] = hypnogram_param.annot_ov_color[j] ;
+        hypnogram_param.annot_ov_color[j].r = hypnogram_annot_ov_color[j].red();
+        hypnogram_param.annot_ov_color[j].g = hypnogram_annot_ov_color[j].green();
+        hypnogram_param.annot_ov_color[j].b = hypnogram_annot_ov_color[j].blue();
+        hypnogram_param.annot_ov_color[j].a = hypnogram_annot_ov_color[j].alpha();
       }
 
       hypnogram_param.mainwindow = this;
