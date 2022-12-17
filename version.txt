@@ -1,5 +1,5 @@
 
- version 1.98      to be defined
+ version 1.98      December 17, 2022
  --------------
 
  - Amplitude -> Fit to pane: fixed calculation in case the verticall scrollbar is enabled
