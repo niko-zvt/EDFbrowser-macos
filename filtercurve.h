@@ -60,6 +60,7 @@ public:
   void setV_RasterSize(int);
   void drawCurve(double *, int, double, double);
   void drawCurve(double *, int, double, double, double *, int, double, double, int mrkr1 = 0, int mrkr2 = 0);
+  void clear(void);
 
 public slots:
 

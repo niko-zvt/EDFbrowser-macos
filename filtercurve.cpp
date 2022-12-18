@@ -241,6 +241,14 @@ void FilterCurve::paintEvent(QPaintEvent *)
 }
 
 
+void FilterCurve::clear(void)
+{
+  drawCurve(NULL, 0, 0, 0);
+
+  update();
+}
+
+
 void FilterCurve::drawCurve(double *samplebuf, int bsize, double max_val, double min_val)
 {
   buf1 = samplebuf;
@@ -252,6 +260,8 @@ void FilterCurve::drawCurve(double *samplebuf, int bsize, double max_val, double
   min_value1 = min_val;
 
   buf2 = NULL;
+
+  bufsize2 = 0;
 
   marker_1 = 0;
 
