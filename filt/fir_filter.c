@@ -29,6 +29,12 @@
 #include "fir_filter.h"
 
 
+#define atan_deg(x)   (atan(x) * (180 / M_PI))
+
+
+static void rect_to_polar(double, double, double *, double *);
+
+
 struct fir_filter_settings * create_fir_filter(double *vars, int sz)
 {
   struct fir_filter_settings *settings;
@@ -188,6 +194,119 @@ void fir_filter_restore_buf(struct fir_filter_settings *settings)
   }
 
   settings->idx = settings->idx_sav;
+}
+
+
+/*
+ *  Calculates the frequency and phase response of a FIR filter.
+ *  h_arr is a pointer to an array with filter taps.
+ *  n_taps is the length of the array of filter taps.
+ *  z is a pointer to an array of size pnts where the frequency response will be stored.
+ *  deg is a pointer to an array of size pnts where the phase response will be stored.
+ *  pnts is the number of measuring points from 0 Hz to Nyquist,
+ *  so, frequency step (resolution) will be: (fs / 2) / pnts
+ */
+int fir_filter_freqz(double *h_arr, int n_taps, double *z, double *deg, int pnts)
+{
+  int i, j;
+
+  double w, *re=NULL, *im=NULL;
+
+  if((h_arr == NULL) || (z == NULL) || (deg == NULL) || (n_taps < 2) || (pnts < 2))  return -1;
+
+  re = (double *)malloc(sizeof(double) * pnts);
+  if(re == NULL)  return -2;
+
+  im = (double *)malloc(sizeof(double) * pnts);
+  if(im == NULL)  return -3;
+
+  w = M_PI / pnts;
+
+/*
+ *  H(jw)=h(0)[cos(0w) - jsin(0w)] + h(1)[cos(1w) - jsin(1w)] + ... h(N-1)[cos((N-1)w) - jsin((N-1)w)]
+ */
+  for(i=0; i<pnts; i++)
+  {
+    re[i] = 0;
+    im[i] = 0;
+
+    for(j=0; j<n_taps; j++)
+    {
+      re[i] += h_arr[j] * cos(j * i * w);
+      im[i] += h_arr[j] * sin(j * i * w);
+    }
+  }
+
+  for(i=0; i<pnts; i++)
+  {
+    rect_to_polar(re[i], im[i], &z[i], &deg[i]);
+
+    if(deg[i] > 180)  deg[i] -= 360;
+
+    deg[i] *= -1;
+
+//    printf("re: %f    im: %f    z: %f    deg: %f\n", re[i], im[i], z[i], deg[i]);
+  }
+
+  free(re);
+  free(im);
+
+  return 0;
+}
+
+
+static void rect_to_polar(double x, double y, double *v, double *g)
+{
+  if(!dblcmp(y, 0))
+  {
+    *v = fabs(x);
+
+    if(x < 0)
+    {
+      *g = 180;
+    }
+    else
+    {
+      *g = 0;
+    }
+
+    return;
+  }
+
+  if(!dblcmp(x, 0))
+  {
+    *v = fabs(y);
+
+    if(y < 0)
+    {
+      *g = 270;
+    }
+    else
+    {
+      *g = 90;
+    }
+
+    return;
+  }
+
+  *v = sqrt((x * x) + (y * y));
+
+  if((x < 0) && (y >= 0))
+  {
+    *g = atan_deg(y / x) + 180;
+  }
+  else if((x < 0) && (y < 0))
+    {
+      *g = atan_deg(y / x) + 180;
+    }
+    else if((x >= 0) && (y < 0))
+      {
+        *g = 360 + atan_deg(y / x);
+      }
+      else
+      {
+        *g = atan_deg(y / x);
+      }
 }
 
 

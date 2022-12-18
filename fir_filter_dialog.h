@@ -41,10 +41,11 @@
 #include "utils.h"
 
 #include "filt/fir_filter.h"
+#include "filtercurve.h"
 
 
-#define FIR_FILTER_MAX_TAPS       5000
-#define FIR_FILTER_MAX_BUFSZ    100000
+#define FIR_FILTER_MAX_TAPS           (5000)
+#define FIR_FILTER_MAX_BUFSZ        (100000)
 
 
 class UI_Mainwindow;
@@ -57,6 +58,7 @@ class UI_FIRFilterDialog : public QObject
 
 public:
   UI_FIRFilterDialog(char *recent_dir=NULL, char *save_dir=NULL, QWidget *parent=0);
+  ~UI_FIRFilterDialog();
 
   UI_Mainwindow *mainwindow;
 
@@ -75,11 +77,21 @@ QListWidget    *list;
 QPlainTextEdit *textEdit;
 
 QLabel         *listlabel,
-               *varsLabel;
+               *varsLabel,
+               *freqresplabel;
 
-int n_taps;
+QSpinBox       *db_min_spinbox,
+               *db_max_spinbox;
 
-double taps[FIR_FILTER_MAX_TAPS];
+FilterCurve    *curve1;
+
+int n_taps,
+    db_max_i,
+    db_min_i;
+
+double taps[FIR_FILTER_MAX_TAPS],
+       *z,
+       *deg;
 
 char textbuf[FIR_FILTER_MAX_BUFSZ + 64],
      *recent_opendir,
@@ -91,6 +103,8 @@ void ApplyButtonClicked();
 void check_text();
 void helpbuttonpressed();
 void filebuttonpressed();
+void db_min_spinbox_changed(int);
+void db_max_spinbox_changed(int);
 
 };
 

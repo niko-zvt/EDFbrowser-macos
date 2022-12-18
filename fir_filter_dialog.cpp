@@ -29,6 +29,7 @@
 #include "fir_filter_dialog.h"
 
 
+#define FIR_FILTER_MAX_MEAS_PNTS     (10000)
 
 
 
@@ -42,13 +43,19 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   n_taps = 0;
 
+  db_max_i = 10;
+  db_min_i = -100;
+
+  z = NULL;
+  deg = NULL;
+
   mainwindow = (UI_Mainwindow *)w_parent;
 
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 
   firfilterdialog = new QDialog;
-  firfilterdialog->setMinimumSize(400 * mainwindow->w_scaling, 400 * mainwindow->h_scaling);
+  firfilterdialog->setMinimumSize(800 * mainwindow->w_scaling, 400 * mainwindow->h_scaling);
   firfilterdialog->setWindowTitle("Add a Custom FIR filter");
   firfilterdialog->setModal(true);
   firfilterdialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -56,6 +63,9 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   varsLabel = new QLabel;
   varsLabel->setText("Filter taps: 0");
+
+  freqresplabel = new QLabel;
+  freqresplabel->setText("Frequency response:   (0Hz - Nyquist)");
 
   listlabel = new QLabel;
   listlabel->setText("Select signals:");
@@ -66,6 +76,22 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   list = new QListWidget;
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
   list->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+  curve1 = new FilterCurve;
+  curve1->setH_RasterSize(10);
+  curve1->setV_RasterSize(11);
+
+  db_max_spinbox = new QSpinBox;
+  db_max_spinbox->setRange(-200, 200);
+  db_max_spinbox->setSingleStep(10);
+  db_max_spinbox->setSuffix(" dB");
+  db_max_spinbox->setValue(10);
+
+  db_min_spinbox = new QSpinBox;
+  db_min_spinbox->setRange(-200, 200);
+  db_min_spinbox->setSingleStep(10);
+  db_min_spinbox->setSuffix(" dB");
+  db_min_spinbox->setValue(-100);
 
   CancelButton = new QPushButton;
   CancelButton->setText("&Close");
@@ -108,13 +134,25 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   vlayout2->addWidget(varsLabel);
   vlayout2->addWidget(textEdit, 1000);
 
+  QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addWidget(db_max_spinbox);
+  hlayout3->addStretch(100);
+  hlayout3->addWidget(db_min_spinbox);
+  hlayout3->addStretch(1000);
+
   QVBoxLayout *vlayout3 = new QVBoxLayout;
-  vlayout3->addWidget(listlabel);
-  vlayout3->addWidget(list, 1000);
+  vlayout3->addWidget(freqresplabel);
+  vlayout3->addWidget(curve1, 1000);
+  vlayout3->addLayout(hlayout3);
+
+  QVBoxLayout *vlayout4 = new QVBoxLayout;
+  vlayout4->addWidget(listlabel);
+  vlayout4->addWidget(list, 1000);
 
   QHBoxLayout *hlayout2 = new QHBoxLayout;
-  hlayout2->addLayout(vlayout2);
-  hlayout2->addLayout(vlayout3);
+  hlayout2->addLayout(vlayout2, 1);
+  hlayout2->addLayout(vlayout3, 2);
+  hlayout2->addLayout(vlayout4, 1);
 
   QHBoxLayout *hlayout1 = new QHBoxLayout;
   hlayout1->addWidget(CancelButton);
@@ -132,19 +170,51 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   firfilterdialog->setLayout(vlayout1);
 
-  QObject::connect(ApplyButton,  SIGNAL(clicked()),     this,            SLOT(ApplyButtonClicked()));
-  QObject::connect(CancelButton, SIGNAL(clicked()),     firfilterdialog, SLOT(close()));
-  QObject::connect(textEdit,     SIGNAL(textChanged()), this,            SLOT(check_text()));
-  QObject::connect(helpButton,   SIGNAL(clicked()),     this,            SLOT(helpbuttonpressed()));
-  QObject::connect(fileButton,   SIGNAL(clicked()),     this,            SLOT(filebuttonpressed()));
+  z   = (double *)malloc(sizeof(double) * FIR_FILTER_MAX_MEAS_PNTS);
+  deg = (double *)malloc(sizeof(double) * FIR_FILTER_MAX_MEAS_PNTS);
+
+  QObject::connect(ApplyButton,    SIGNAL(clicked()),         this,            SLOT(ApplyButtonClicked()));
+  QObject::connect(CancelButton,   SIGNAL(clicked()),         firfilterdialog, SLOT(close()));
+  QObject::connect(textEdit,       SIGNAL(textChanged()),     this,            SLOT(check_text()));
+  QObject::connect(helpButton,     SIGNAL(clicked()),         this,            SLOT(helpbuttonpressed()));
+  QObject::connect(fileButton,     SIGNAL(clicked()),         this,            SLOT(filebuttonpressed()));
+  QObject::connect(db_max_spinbox, SIGNAL(valueChanged(int)), this,            SLOT(db_max_spinbox_changed(int)));
+  QObject::connect(db_min_spinbox, SIGNAL(valueChanged(int)), this,            SLOT(db_min_spinbox_changed(int)));
 
   firfilterdialog->exec();
 }
 
 
+UI_FIRFilterDialog::~UI_FIRFilterDialog()
+{
+  free(z);
+  free(deg);
+}
+
+
+void UI_FIRFilterDialog::db_max_spinbox_changed(int val)
+{
+  db_max_i = val;
+
+  curve1->setV_RasterSize((db_max_i / 10) + (db_min_i / -10));
+  curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i, deg, FIR_FILTER_MAX_MEAS_PNTS, 180, -180, 0, 0);
+}
+
+
+void UI_FIRFilterDialog::db_min_spinbox_changed(int val)
+{
+  db_min_i = val;
+
+  curve1->setV_RasterSize((db_max_i / 10) + (db_min_i / -10));
+  curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i, deg, FIR_FILTER_MAX_MEAS_PNTS, 180, -180, 0, 0);
+}
+
+
 void UI_FIRFilterDialog::check_text()
 {
-  int i, len=0;
+  int i, len=0, err;
+
+  double db_max=-10000, db_min=10000;
 
   char *str=NULL,
        str2[512]="";
@@ -179,6 +249,45 @@ void UI_FIRFilterDialog::check_text()
   snprintf(str2, 256, "Filter taps: %i", n_taps);
 
   varsLabel->setText(str2);
+
+  if(n_taps < 2)
+  {
+    curve1->clear();
+    return;
+  }
+
+  err = fir_filter_freqz(taps, n_taps, z, deg, FIR_FILTER_MAX_MEAS_PNTS);
+  if(err)
+  {
+    snprintf(str2, 512, "fir_filter_freqz() error: %i", err);
+    QMessageBox::critical(firfilterdialog, "Error", str2);
+    return;
+  }
+
+  for(i=0; i<FIR_FILTER_MAX_MEAS_PNTS; i++)
+  {
+    if(z[i] > 1e-50)
+    {
+      z[i] = -20 * log10(1/z[i]);
+    }
+    else  /* avoid divide by zero */
+    {
+      z[i] = -1000;
+    }
+
+    if(db_max < z[i])  db_max = z[i];
+    if(db_min > z[i])  db_min = z[i];
+  }
+
+  db_max_i = (((int)(db_max / 10)) * 10) + 10;
+  db_min_i = (((int)(db_min / 10)) * 10) - 10;
+
+  curve1->setH_RasterSize(10);
+  curve1->setV_RasterSize((db_max_i / 10) + (db_min_i / -10));
+  curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i, deg, FIR_FILTER_MAX_MEAS_PNTS, 180, -180, 0, 0);
+
+  db_max_spinbox->setValue(db_max_i);
+  db_min_spinbox->setValue(db_min_i);
 }
 
 
@@ -196,8 +305,7 @@ void UI_FIRFilterDialog::ApplyButtonClicked()
 
   if(n_taps < 2)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Put at least two taps into the list.");
-    messagewindow.exec();
+    QMessageBox::critical(firfilterdialog, "Error", "Put at least two taps into the list.");
     return;
   }
 
@@ -216,8 +324,7 @@ void UI_FIRFilterDialog::ApplyButtonClicked()
     mainwindow->signalcomp[s]->fir_filter = create_fir_filter(taps, n_taps);
     if(mainwindow->signalcomp[s]->fir_filter == NULL)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while creating a FIR filter.");
-      messagewindow.exec();
+      QMessageBox::critical(firfilterdialog, "Error", "An error occurred while creating a FIR filter.");
     }
   }
 
@@ -258,8 +365,7 @@ void UI_FIRFilterDialog::filebuttonpressed()
 
   if(len < 2)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit("File too small."));
-    messagewindow.exec();
+    QMessageBox::critical(firfilterdialog, "Error", "File too small.");
     fclose(inputfile);
     return;
   }
@@ -270,8 +376,7 @@ void UI_FIRFilterDialog::filebuttonpressed()
 
   if(fread(textbuf, len, 1, inputfile) != 1)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit("Read error."));
-    messagewindow.exec();
+    QMessageBox::critical(firfilterdialog, "Error", "Read error.");
     fclose(inputfile);
     return;
   }

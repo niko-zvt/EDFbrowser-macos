@@ -32,7 +32,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
+#include "utils.h"
 
 
 #ifdef __cplusplus
@@ -60,6 +62,7 @@ int fir_filter_size(struct fir_filter_settings *);
 double fir_filter_tap(int, struct fir_filter_settings *);
 void fir_filter_restore_buf(struct fir_filter_settings *);
 void fir_filter_save_buf(struct fir_filter_settings *);
+int fir_filter_freqz(double *, int, double *, double *, int);
 
 
 #ifdef __cplusplus
