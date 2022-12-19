@@ -46,6 +46,8 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   db_max_i = 10;
   db_min_i = -100;
 
+  plot_phase = 0;
+
   z = NULL;
   deg = NULL;
 
@@ -70,8 +72,15 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   listlabel = new QLabel;
   listlabel->setText("Select signals:");
 
+  plotmaxminlabel = new QLabel;
+  plotmaxminlabel->setText("Plot max/min:");
+
+  plotphaselabel = new QLabel;
+  plotphaselabel->setText("Plot phase");
+
   textEdit = new QPlainTextEdit;
   textEdit->setReadOnly(false);
+  textEdit->setToolTip("Copy & paste your filter coefficients here");
 
   list = new QListWidget;
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -92,6 +101,10 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   db_min_spinbox->setSingleStep(10);
   db_min_spinbox->setSuffix(" dB");
   db_min_spinbox->setValue(-100);
+
+  plotphasecheckbox = new QCheckBox;
+  plotphasecheckbox->setCheckState(Qt::Unchecked);
+  plotphasecheckbox->setTristate(false);
 
   CancelButton = new QPushButton;
   CancelButton->setText("&Close");
@@ -135,9 +148,14 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   vlayout2->addWidget(textEdit, 1000);
 
   QHBoxLayout *hlayout3 = new QHBoxLayout;
+  hlayout3->addWidget(plotmaxminlabel);
+  hlayout3->addStretch(100);
   hlayout3->addWidget(db_max_spinbox);
   hlayout3->addStretch(100);
   hlayout3->addWidget(db_min_spinbox);
+  hlayout3->addStretch(200);
+  hlayout3->addWidget(plotphaselabel);
+  hlayout3->addWidget(plotphasecheckbox);
   hlayout3->addStretch(1000);
 
   QVBoxLayout *vlayout3 = new QVBoxLayout;
@@ -173,13 +191,14 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   z   = (double *)malloc(sizeof(double) * FIR_FILTER_MAX_MEAS_PNTS);
   deg = (double *)malloc(sizeof(double) * FIR_FILTER_MAX_MEAS_PNTS);
 
-  QObject::connect(ApplyButton,    SIGNAL(clicked()),         this,            SLOT(ApplyButtonClicked()));
-  QObject::connect(CancelButton,   SIGNAL(clicked()),         firfilterdialog, SLOT(close()));
-  QObject::connect(textEdit,       SIGNAL(textChanged()),     this,            SLOT(check_text()));
-  QObject::connect(helpButton,     SIGNAL(clicked()),         this,            SLOT(helpbuttonpressed()));
-  QObject::connect(fileButton,     SIGNAL(clicked()),         this,            SLOT(filebuttonpressed()));
-  QObject::connect(db_max_spinbox, SIGNAL(valueChanged(int)), this,            SLOT(db_max_spinbox_changed(int)));
-  QObject::connect(db_min_spinbox, SIGNAL(valueChanged(int)), this,            SLOT(db_min_spinbox_changed(int)));
+  QObject::connect(ApplyButton,       SIGNAL(clicked()),         this,            SLOT(ApplyButtonClicked()));
+  QObject::connect(CancelButton,      SIGNAL(clicked()),         firfilterdialog, SLOT(close()));
+  QObject::connect(textEdit,          SIGNAL(textChanged()),     this,            SLOT(check_text()));
+  QObject::connect(helpButton,        SIGNAL(clicked()),         this,            SLOT(helpbuttonpressed()));
+  QObject::connect(fileButton,        SIGNAL(clicked()),         this,            SLOT(filebuttonpressed()));
+  QObject::connect(db_max_spinbox,    SIGNAL(valueChanged(int)), this,            SLOT(db_max_spinbox_changed(int)));
+  QObject::connect(db_min_spinbox,    SIGNAL(valueChanged(int)), this,            SLOT(db_min_spinbox_changed(int)));
+  QObject::connect(plotphasecheckbox, SIGNAL(stateChanged(int)), this,            SLOT(plotphasecheckbox_changed(int)));
 
   firfilterdialog->exec();
 }
@@ -192,12 +211,36 @@ UI_FIRFilterDialog::~UI_FIRFilterDialog()
 }
 
 
+void UI_FIRFilterDialog::plotphasecheckbox_changed(int status)
+{
+  if(status == Qt::Checked)
+  {
+    plot_phase = 1;
+
+    curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i, deg, FIR_FILTER_MAX_MEAS_PNTS, 180, -180, 0, 0);
+  }
+  else
+  {
+    plot_phase = 0;
+
+    curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i);
+  }
+}
+
+
 void UI_FIRFilterDialog::db_max_spinbox_changed(int val)
 {
   db_max_i = val;
 
   curve1->setV_RasterSize((db_max_i / 10) + (db_min_i / -10));
-  curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i, deg, FIR_FILTER_MAX_MEAS_PNTS, 180, -180, 0, 0);
+  if(plot_phase)
+  {
+    curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i, deg, FIR_FILTER_MAX_MEAS_PNTS, 180, -180, 0, 0);
+  }
+  else
+  {
+    curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i);
+  }
 }
 
 
@@ -206,7 +249,14 @@ void UI_FIRFilterDialog::db_min_spinbox_changed(int val)
   db_min_i = val;
 
   curve1->setV_RasterSize((db_max_i / 10) + (db_min_i / -10));
-  curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i, deg, FIR_FILTER_MAX_MEAS_PNTS, 180, -180, 0, 0);
+  if(plot_phase)
+  {
+    curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i, deg, FIR_FILTER_MAX_MEAS_PNTS, 180, -180, 0, 0);
+  }
+  else
+  {
+    curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i);
+  }
 }
 
 
@@ -282,9 +332,19 @@ void UI_FIRFilterDialog::check_text()
   db_max_i = (((int)(db_max / 10)) * 10) + 10;
   db_min_i = (((int)(db_min / 10)) * 10) - 10;
 
+  if(db_max_i > 200)  db_max_i = 200;
+  if(db_min_i < -200)  db_min_i = -200;
+
   curve1->setH_RasterSize(10);
   curve1->setV_RasterSize((db_max_i / 10) + (db_min_i / -10));
-  curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i, deg, FIR_FILTER_MAX_MEAS_PNTS, 180, -180, 0, 0);
+  if(plot_phase)
+  {
+    curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i, deg, FIR_FILTER_MAX_MEAS_PNTS, 180, -180, 0, 0);
+  }
+  else
+  {
+    curve1->drawCurve(z, FIR_FILTER_MAX_MEAS_PNTS, db_max_i, db_min_i);
+  }
 
   db_max_spinbox->setValue(db_max_i);
   db_min_spinbox->setValue(db_min_i);

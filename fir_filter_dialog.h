@@ -78,16 +78,21 @@ QPlainTextEdit *textEdit;
 
 QLabel         *listlabel,
                *varsLabel,
-               *freqresplabel;
+               *freqresplabel,
+               *plotmaxminlabel,
+               *plotphaselabel;
 
 QSpinBox       *db_min_spinbox,
                *db_max_spinbox;
+
+QCheckBox      *plotphasecheckbox;
 
 FilterCurve    *curve1;
 
 int n_taps,
     db_max_i,
-    db_min_i;
+    db_min_i,
+    plot_phase;
 
 double taps[FIR_FILTER_MAX_TAPS],
        *z,
@@ -105,6 +110,7 @@ void helpbuttonpressed();
 void filebuttonpressed();
 void db_min_spinbox_changed(int);
 void db_max_spinbox_changed(int);
+void plotphasecheckbox_changed(int);
 
 };
 
