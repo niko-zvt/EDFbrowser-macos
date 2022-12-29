@@ -78,9 +78,7 @@ QPlainTextEdit *textEdit;
 
 QLabel         *listlabel,
                *varsLabel,
-               *freqresplabel,
-               *plotmaxminlabel,
-               *plotphaselabel;
+               *freqresplabel;
 
 QSpinBox       *db_min_spinbox,
                *db_max_spinbox;
@@ -111,6 +109,7 @@ void filebuttonpressed();
 void db_min_spinbox_changed(int);
 void db_max_spinbox_changed(int);
 void plotphasecheckbox_changed(int);
+void selected_signals_changed();
 
 };
 

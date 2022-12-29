@@ -35,6 +35,8 @@
 #include <QPainter>
 #include <QPen>
 
+#include "utils.h"
+
 
 
 
@@ -57,7 +59,11 @@ public:
   void setRasterColor(QColor);
   void setMarkerColor(QColor);
   void setH_RasterSize(int);
+  void setH_Range(double, double);
+  void setH_Range_Enabled(bool);
   void setV_RasterSize(int);
+  void setV_Range(double, double);
+  void setV_Range_Enabled(bool);
   void drawCurve(double *, int, double, double);
   void drawCurve(double *, int, double, double, double *, int, double, double, int mrkr1 = 0, int mrkr2 = 0);
   void clear(void);
@@ -80,7 +86,11 @@ private:
          *buf1,
          max_value2,
          min_value2,
-         *buf2;
+         *buf2,
+         h_range_start,
+         h_range_end,
+         v_range_start,
+         v_range_end;
 
   int bufsize1,
       bufsize2,
@@ -91,7 +101,9 @@ private:
       marker_1,
       marker_2,
       sz_hint_w,
-      sz_hint_h;
+      sz_hint_h,
+      h_val_enabled,
+      v_val_enabled;
 };
 
 

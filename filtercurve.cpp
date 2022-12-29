@@ -52,6 +52,14 @@ FilterCurve::FilterCurve(QWidget *w_parent) : QWidget(w_parent)
 
   sz_hint_w = 150;
   sz_hint_h = 100;
+
+  h_val_enabled = 0;
+  v_val_enabled = 0;
+
+  h_range_start = 1;
+  h_range_end = 2;
+  v_range_start = 1;
+  v_range_end = 2;
 }
 
 
@@ -70,6 +78,7 @@ void FilterCurve::paintEvent(QPaintEvent *)
          rasterstep,
          horizontal_marker_ratio;
 
+  char str[128]={""};
 
   w = width();
   h = height();
@@ -140,9 +149,25 @@ void FilterCurve::paintEvent(QPaintEvent *)
   {
     rasterstep = (double)w / h_rastersize;
 
-    for(i = 1; i < h_rastersize; i++)
+    for(i = 0; i < h_rastersize; i++)
     {
-      painter.drawLine(i * rasterstep, 0, i * rasterstep, h);
+      if(i)
+      {
+        painter.setPen(RasterColor);
+
+        painter.drawLine(i * rasterstep, 0, i * rasterstep, h);
+      }
+
+      if(h_val_enabled & (!(i%2)))
+      {
+        snprintf(str, 128, "%f", i * ((h_range_end - h_range_start) / h_rastersize));
+
+        remove_trailing_zeros(str);
+
+        painter.setPen(SignalColor1);
+
+        painter.drawText(i * rasterstep + 5, h - 5, str);
+      }
     }
   }
 
@@ -150,9 +175,25 @@ void FilterCurve::paintEvent(QPaintEvent *)
   {
     rasterstep = (double)h / v_rastersize;
 
-    for(i = 1; i < v_rastersize; i++)
+    for(i = 0; i < v_rastersize; i++)
     {
-      painter.drawLine(0, i * rasterstep, w, i * rasterstep);
+      if(i)
+      {
+        painter.setPen(RasterColor);
+
+        painter.drawLine(0, i * rasterstep, w, i * rasterstep);
+      }
+
+      if(v_val_enabled & (i%2))
+      {
+        snprintf(str, 128, "%f", v_range_start + (i * ((v_range_end - v_range_start) / v_rastersize)));
+
+        remove_trailing_zeros(str);
+
+        painter.setPen(SignalColor1);
+
+        painter.drawText(5, (i * rasterstep) - 5, str);
+      }
     }
   }
 
@@ -378,6 +419,56 @@ int FilterCurve::heightForWidth(int w) const
 {
   return w / 1.5;
 }
+
+
+void FilterCurve::setH_Range(double val1, double val2)
+{
+  h_range_start = val1;
+  h_range_end = val2;
+}
+
+
+void FilterCurve::setV_Range(double val1, double val2)
+{
+  v_range_start = val1;
+  v_range_end = val2;
+}
+
+
+void FilterCurve::setH_Range_Enabled(bool en)
+{
+  if(en == true)
+  {
+    h_val_enabled = 1;
+  }
+  else
+  {
+    h_val_enabled = 0;
+  }
+}
+
+
+void FilterCurve::setV_Range_Enabled(bool en)
+{
+  if(en == true)
+  {
+    v_val_enabled = 1;
+  }
+  else
+  {
+    v_val_enabled = 0;
+  }
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
