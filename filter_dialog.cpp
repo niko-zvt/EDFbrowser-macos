@@ -173,6 +173,8 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
 
   list->setCurrentRow(0);
 
+  selected_signals_changed();
+
   QVBoxLayout *vlayout3 = new QVBoxLayout;
   vlayout3->addWidget(typeboxlabel);
   vlayout3->addWidget(typebox);
@@ -233,6 +235,7 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   QObject::connect(modelbox,     SIGNAL(currentIndexChanged(int)), this,         SLOT(filtermodelboxvaluechanged(int)));
   QObject::connect(ripplebox,    SIGNAL(valueChanged(double)),     this,         SLOT(rippleboxvaluechanged(double)));
   QObject::connect(freq2box,     SIGNAL(valueChanged(double)),     this,         SLOT(freq2boxvaluechanged(double)));
+  QObject::connect(list,         SIGNAL(itemSelectionChanged()),   this,         SLOT(selected_signals_changed()));
 
   updatecurve();
 
@@ -992,6 +995,24 @@ void UI_FilterDialog::ApplyButtonClicked()
   filterdialog->close();
 
   mainwindow->setup_viewbuf();
+}
+
+
+void UI_FilterDialog::selected_signals_changed()
+{
+  int n;
+
+  char str[128]={""};
+
+  QList<QListWidgetItem *> selectedlist;
+
+  selectedlist = list->selectedItems();
+
+  n = selectedlist.size();
+
+  snprintf(str, 128, "Selected signals: %i", n);
+
+  listlabel->setText(str);
 }
 
 

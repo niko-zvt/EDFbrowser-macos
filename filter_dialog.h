@@ -118,6 +118,7 @@ void filtertypeboxvaluechanged(int);
 void filtermodelboxvaluechanged(int);
 void rippleboxvaluechanged(double);
 void freq2boxvaluechanged(double);
+void selected_signals_changed();
 
 };
 

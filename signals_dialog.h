@@ -113,6 +113,8 @@ private:
   void RemoveButtonClicked();
   void ColorButtonClicked(SpecialButton *);
   void HelpButtonClicked();
+  void selected_signals_changed();
+
 };
 
 

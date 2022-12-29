@@ -239,6 +239,7 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
   QObject::connect(RemoveButton,      SIGNAL(clicked()),                this,          SLOT(RemoveButtonClicked()));
   QObject::connect(ColorButton,       SIGNAL(clicked(SpecialButton *)), this,          SLOT(ColorButtonClicked(SpecialButton *)));
   QObject::connect(filelist,          SIGNAL(currentRowChanged(int)),   this,          SLOT(show_signals(int)));
+  QObject::connect(signallist,        SIGNAL(itemSelectionChanged()),   this,          SLOT(selected_signals_changed()));
 
   curve_color = mainwindow->maincurve->signal_color;
 
@@ -875,6 +876,22 @@ void UI_Signalswindow::HelpButtonClicked()
 }
 
 
+void UI_Signalswindow::selected_signals_changed()
+{
+  int n;
+
+  char str[128]={""};
+
+  QList<QListWidgetItem *> selectedlist;
+
+  selectedlist = signallist->selectedItems();
+
+  n = selectedlist.size();
+
+  snprintf(str, 128, "Signals in file:   (%i selected)", n);
+
+  label5->setText(str);
+}
 
 
 
