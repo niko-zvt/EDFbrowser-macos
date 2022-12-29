@@ -67,7 +67,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   varsLabel->setText("Filter taps: 0");
 
   freqresplabel = new QLabel;
-  freqresplabel->setText("Frequency response:   (0Hz - Nyquist)");
+  freqresplabel->setText("Frequency response: 0Hz - Fs/2 (Nyquist)");
 
   listlabel = new QLabel;
   listlabel->setText("Select signals:");
@@ -114,7 +114,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   fileButton = new QPushButton;
   fileButton->setText("&File");
-  fileButton->setToolTip("Load values from a text file");
+  fileButton->setToolTip("Load filter coefficients from a text file");
 
   ApplyButton = new QPushButton;
   ApplyButton->setText("&Apply");
