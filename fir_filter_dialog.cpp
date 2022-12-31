@@ -35,7 +35,7 @@
 
 UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget *w_parent)
 {
-  int i, n;
+  int i, n, max_len=4;
 
   QListWidgetItem *item;
 
@@ -79,6 +79,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   list = new QListWidget;
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
   list->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  list->setMinimumWidth(100 * mainwindow->w_scaling);
 
   curve1 = new FilterCurve;
   curve1->setH_RasterSize(10);
@@ -129,14 +130,26 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
     if(mainwindow->signalcomp[i]->alias[0] != 0)
     {
       item->setText(mainwindow->signalcomp[i]->alias);
+
+      if(max_len < (int)strlen(mainwindow->signalcomp[i]->alias))
+      {
+        max_len = strlen(mainwindow->signalcomp[i]->alias);
+      }
     }
     else
     {
       item->setText(mainwindow->signalcomp[i]->signallabel);
+
+      if(max_len < (int)strlen(mainwindow->signalcomp[i]->signallabel))
+      {
+        max_len = strlen(mainwindow->signalcomp[i]->signallabel);
+      }
     }
     item->setData(Qt::UserRole, QVariant(i));
     list->addItem(item);
   }
+
+  list->setMinimumWidth(max_len * 8 * mainwindow->w_scaling);
 
   n = list->count();
 
@@ -173,7 +186,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   QHBoxLayout *hlayout2 = new QHBoxLayout;
   hlayout2->addLayout(vlayout2, 1);
-  hlayout2->addLayout(vlayout3, 2);
+  hlayout2->addLayout(vlayout3, 100);
   hlayout2->addLayout(vlayout4, 1);
 
   QHBoxLayout *hlayout1 = new QHBoxLayout;
@@ -290,7 +303,7 @@ void UI_FIRFilterDialog::db_min_spinbox_changed(int val)
 
 void UI_FIRFilterDialog::check_text()
 {
-  int i, len=0, err;
+  int i, len=0, err, max_len=4;
 
   double db_max=-10000, db_min=10000;
 
@@ -319,6 +332,11 @@ void UI_FIRFilterDialog::check_text()
   {
     taps[n_taps++] = atof(str);
 
+    if(max_len < (int)strlen(str))
+    {
+      max_len = strlen(str);
+    }
+
     if(n_taps >= FIR_FILTER_MAX_TAPS)  break;
 
     str = strtok(NULL, "\r\n");
@@ -336,6 +354,8 @@ void UI_FIRFilterDialog::check_text()
     plotphasecheckbox->setEnabled(false);
     return;
   }
+
+  textEdit->setMinimumWidth(max_len * 8 * mainwindow->w_scaling);
 
   err = fir_filter_freqz(taps, n_taps, z, deg, FIR_FILTER_MAX_MEAS_PNTS);
   if(err)
