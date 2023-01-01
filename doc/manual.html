@@ -866,27 +866,20 @@
 
 <p>
   The Custom FIR filter can be used to create a customized FIR filter.<br>
-  Simply copy and paste a list of filter coefficients (so-called "filter taps") in the Filter taps list<br>
+  Simply copy and paste a list of filter coefficients (so-called "filter taps") into the Filter taps list<br>
   and select the signals which the filter needs to apply to (select/highlight them with the mouse).<br>
-  The maximum number of filter taps is limited to 5000.<br>
-  An easy way to create FIR filters is to use an online design tool like <a href="http://t-filter.engineerjs.com/">http://t-filter.engineerjs.com/</a><br>
-  It generates a list of filter coefficients which can be copy and pasted into EDFbrowser's Custom FIR filter dialog.<br>
-  For example, the following list of filter coefficients is equivalent to a moving average filter (boxcar filter) with 10 samples (filter taps):<br>
-  (You can copy and paste the following list into EDFbrowser as an example.)
+<br>
+  Or you can design your own filter coefficients by specifying the pass- and stopbands with their respective<br>
+  start- and stopfrequencies, gain and ripple. A passband usually has a gain of 1 (it must be more than zero).<br>
+  A stopband must have a gain of zero. Bandwidth must be at least 4% and the transition between bands must be<br>
+  at least 2%. After entering the filter specifications press the "Design" button.<br>
+  It uses the Parks-McClellan filter design algorithm.<br>
+<br>
+  Example:<br>
+  For a lowpass filter, specify a passband and a stopband (2 bands).<br>
+  For a highpass filter, specify a stopband and a passband (2 bands).<br>
+  For a bandpass filter, specify a stopband, a passband and a stopband (3 bands).<br>
 </p>
-
-<pre>
- 0.1
- 0.1
- 0.1
- 0.1
- 0.1
- 0.1
- 0.1
- 0.1
- 0.1
- 0.1
-</pre>
 
 <p><br></p>
 

@@ -41,6 +41,7 @@
 #include "utils.h"
 
 #include "filt/fir_filter.h"
+#include "filt/remez.h"
 #include "filtercurve.h"
 
 
@@ -50,6 +51,31 @@
 
 class UI_Mainwindow;
 
+
+class UI_FIRFilterRZ_thread : public QThread
+{
+public:
+
+struct rz_params_struct
+{
+  int band_num;
+  double sf;
+  double start_hz[32];
+  double stop_hz[32];
+  double gain[32];
+  double ripple[32];
+  double *f_taps;
+  int tap_num;
+}rz_params;
+
+UI_FIRFilterRZ_thread();
+~UI_FIRFilterRZ_thread();
+
+private:
+
+void run();
+
+};
 
 
 class UI_FIRFilterDialog : public QObject
@@ -70,7 +96,10 @@ QDialog        *firfilterdialog;
 QPushButton    *CancelButton,
                *ApplyButton,
                *helpButton,
-               *fileButton;
+               *fileButton,
+               *add_passband_button,
+               *add_stopband_button,
+               *design_button;
 
 QListWidget    *list;
 
@@ -83,9 +112,15 @@ QLabel         *listlabel,
 QSpinBox       *db_min_spinbox,
                *db_max_spinbox;
 
+QDoubleSpinBox *sf_spinbox;
+
 QCheckBox      *plotphasecheckbox;
 
+QTableWidget *param_table;
+
 FilterCurve    *curve1;
+
+UI_FIRFilterRZ_thread *thrd;
 
 int n_taps,
     db_max_i,
@@ -100,6 +135,8 @@ char textbuf[FIR_FILTER_MAX_BUFSZ + 64],
      *recent_opendir,
      *recent_savedir;
 
+int add_table_row(void);
+
 private slots:
 
 void ApplyButtonClicked();
@@ -110,6 +147,10 @@ void db_min_spinbox_changed(int);
 void db_max_spinbox_changed(int);
 void plotphasecheckbox_changed(int);
 void selected_signals_changed();
+void add_passband_button_pressed();
+void add_stopband_button_pressed();
+void design_button_pressed();
+void tabel_delete_pressed(int, int);
 
 };
 
