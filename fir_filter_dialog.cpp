@@ -413,6 +413,8 @@ void UI_FIRFilterDialog::check_text()
 
   strncpy(textbuf, textEdit->toPlainText().toLatin1().data(), FIR_FILTER_MAX_BUFSZ);
 
+  textbuf[FIR_FILTER_MAX_BUFSZ] = 0;
+
   len = strlen(textbuf);
 
   for(i=0; i<len; i++)
@@ -422,8 +424,6 @@ void UI_FIRFilterDialog::check_text()
       textbuf[i] = '.';
     }
   }
-
-  textbuf[FIR_FILTER_MAX_BUFSZ] = 0;
 
   str = strtok(textbuf, "\r\n");
 
