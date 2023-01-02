@@ -154,6 +154,7 @@ void add_stopband_button_pressed();
 void design_button_pressed();
 void tabel_delete_pressed(int, int);
 void predefined_cbox_changed(int);
+void paramtable_rowcount_changed();
 
 };
 

@@ -127,6 +127,8 @@
 #include <QPainterPath>
 #include <QShortcut>
 #include <QTcpServer>
+#include <QModelIndex>
+#include <QAbstractItemModel>
 #include <QMutex>
 #if QT_VERSION >= 0x050200
 #include <QFontDatabase>

@@ -193,6 +193,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   design_button = new QPushButton;
   design_button->setText("Design");
+  design_button->setEnabled(false);
 
   QHBoxLayout *hlayout5 = new QHBoxLayout;
   hlayout5->addWidget(predefined_cbox);
@@ -291,6 +292,9 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   QObject::connect(add_stopband_button, SIGNAL(clicked()),                this,            SLOT(add_stopband_button_pressed()));
   QObject::connect(param_table,         SIGNAL(cellClicked(int, int)),    this,            SLOT(tabel_delete_pressed(int, int)));
   QObject::connect(predefined_cbox,     SIGNAL(currentIndexChanged(int)), this,            SLOT(predefined_cbox_changed(int)));
+
+  QObject::connect(param_table->model(), SIGNAL(rowsInserted(const QModelIndex &, int, int)), this, SLOT(paramtable_rowcount_changed()));
+  QObject::connect(param_table->model(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)),  this, SLOT(paramtable_rowcount_changed()));
 
   firfilterdialog->exec();
 }
@@ -487,8 +491,6 @@ void UI_FIRFilterDialog::ApplyButtonClicked()
 {
   int i, s, n;
 
-  QListWidgetItem *item;
-
   QList<QListWidgetItem *> selectedlist;
 
   selectedlist = list->selectedItems();
@@ -503,8 +505,7 @@ void UI_FIRFilterDialog::ApplyButtonClicked()
 
   for(i=0; i<n; i++)
   {
-    item = selectedlist.at(i);
-    s = item->data(Qt::UserRole).toInt();
+    s = selectedlist.at(i)->data(Qt::UserRole).toInt();
 
     if(mainwindow->signalcomp[s]->fir_filter)
     {
@@ -617,11 +618,7 @@ void UI_FIRFilterDialog::selected_signals_changed()
 
   char str[128]={""};
 
-  QList<QListWidgetItem *> selectedlist;
-
-  selectedlist = list->selectedItems();
-
-  n = selectedlist.size();
+  n = list->selectedItems().size();
 
   snprintf(str, 128, "Selected signals: %i", n);
 
@@ -764,6 +761,19 @@ void UI_FIRFilterDialog::tabel_delete_pressed(int row, int column)
   if(column == 4)
   {
     param_table->removeRow(row);
+  }
+}
+
+
+void UI_FIRFilterDialog::paramtable_rowcount_changed()
+{
+  if(param_table->rowCount() < 2)
+  {
+    design_button->setEnabled(false);
+  }
+  else
+  {
+    design_button->setEnabled(true);
   }
 }
 
