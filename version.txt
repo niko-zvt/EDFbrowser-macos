@@ -1,4 +1,11 @@
 
+ version 1.99      to be defined
+ --------------
+
+ - FIR filter dialog: added a design tool to create filter coefficients using the
+   Parks-McClellan filter design algorithm.
+
+
  version 1.98      December 17, 2022
  --------------
 
