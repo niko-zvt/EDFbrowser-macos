@@ -214,7 +214,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   horizontallabels += "From";
   horizontallabels += "To";
   horizontallabels += "Gain";
-  horizontallabels += "Ripple";
+  horizontallabels += "Ripple/Att.";
   horizontallabels += "";
   param_table->setHorizontalHeaderLabels(horizontallabels);
   param_table->resizeColumnsToContents();
@@ -462,7 +462,7 @@ void UI_FIRFilterDialog::check_text()
   }
 
   db_max_i = (((int)(db_max / 10)) * 10) + 10;
-  db_min_i = (((int)(db_min / 10)) * 10) - 10;
+  db_min_i = (((int)(db_min / 10)) * 10) + 10;
 
   if(db_max_i > 200)  db_max_i = 200;
   if(db_min_i < -200)  db_min_i = -200;
