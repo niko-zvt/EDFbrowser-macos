@@ -701,6 +701,8 @@ void UI_FIRFilterDialog::design_button_pressed()
   char *str=NULL,
        txt_str[512]={""};
 
+  QEventLoop evlp;
+
   if(param_table->rowCount() < 2)  return;
 
   textEdit->clear();
@@ -763,11 +765,11 @@ void UI_FIRFilterDialog::design_button_pressed()
       break;
     }
 
-    if((thrd->rz_params.start_hz[i] / thrd->rz_params.stop_hz[i]) > 0.96)
+    if((thrd->rz_params.start_hz[i] / thrd->rz_params.stop_hz[i]) > 0.95)
     {
       err = 1;
 
-      snprintf(txt_str, 512, "Error in parameters for band %i: freq. \"From\" divided by freq. \"To\" must be <= 0.96", i + 1);
+      snprintf(txt_str, 512, "Error in parameters for band %i: freq. \"From\" divided by freq. \"To\" must be <= 0.95", i + 1);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_str);
       messagewindow.exec();
 
@@ -787,11 +789,11 @@ void UI_FIRFilterDialog::design_button_pressed()
         break;
       }
 
-      if((thrd->rz_params.stop_hz[i-1] / thrd->rz_params.start_hz[i]) > 0.98)
+      if((thrd->rz_params.stop_hz[i-1] / thrd->rz_params.start_hz[i]) > 0.95)
       {
         err = 1;
 
-        snprintf(txt_str, 512, "Error in parameters for band %i: freq. \"To\" of band %i divided by freq. \"From\" of band %i must be <= 0.98", i + 1, i, i + 1);
+        snprintf(txt_str, 512, "Error in parameters for band %i: freq. \"To\" of band %i divided by freq. \"From\" of band %i must be <= 0.95", i + 1, i, i + 1);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_str);
         messagewindow.exec();
 
@@ -816,13 +818,19 @@ void UI_FIRFilterDialog::design_button_pressed()
     return;
   }
 
+  firfilterdialog->setEnabled(false);
+
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
   thrd->start();
-  thrd->wait();
+
+  QObject::connect(thrd, SIGNAL(finished()), &evlp, SLOT(quit()));
+  evlp.exec();
 
   if((thrd->rz_params.tap_num < 2) || (thrd->rz_params.f_taps == NULL))
   {
+    firfilterdialog->setEnabled(true);
+
     QApplication::restoreOverrideCursor();
 
     QMessageBox::critical(mainwindow, "Error", "Cannot design filter, try changing parameters");
@@ -849,6 +857,8 @@ void UI_FIRFilterDialog::design_button_pressed()
     {
       textEdit->appendPlainText(str);
     }
+
+    firfilterdialog->setEnabled(true);
 
     QApplication::restoreOverrideCursor();
   }
