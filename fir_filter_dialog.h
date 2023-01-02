@@ -45,9 +45,6 @@
 #include "filtercurve.h"
 
 
-#define FIR_FILTER_MAX_TAPS           (5000)
-#define FIR_FILTER_MAX_BUFSZ        (100000)
-
 
 class UI_Mainwindow;
 
@@ -93,15 +90,19 @@ private:
 
 QDialog        *firfilterdialog;
 
+QTabWidget     *tabholder;
+
+QWidget        *pm_tab;
+
 QPushButton    *CancelButton,
                *ApplyButton,
                *helpButton,
                *fileButton,
-               *add_passband_button,
-               *add_stopband_button,
-               *design_button;
+               *pm_add_passband_button,
+               *pm_add_stopband_button,
+               *pm_design_button;
 
-QComboBox      *predefined_cbox;
+QComboBox      *pm_predefined_cbox;
 
 QListWidget    *list;
 
@@ -114,11 +115,11 @@ QLabel         *listlabel,
 QSpinBox       *db_min_spinbox,
                *db_max_spinbox;
 
-QDoubleSpinBox *sf_spinbox;
+QDoubleSpinBox *pm_sf_spinbox;
 
 QCheckBox      *plotphasecheckbox;
 
-QTableWidget *param_table;
+QTableWidget *pm_param_table;
 
 FilterCurve    *curve1;
 
@@ -129,15 +130,15 @@ int n_taps,
     db_min_i,
     plot_phase;
 
-double taps[FIR_FILTER_MAX_TAPS],
+double *taps,
        *z,
        *deg;
 
-char textbuf[FIR_FILTER_MAX_BUFSZ + 64],
+char *textbuf,
      *recent_opendir,
      *recent_savedir;
 
-int add_table_row(void);
+int pm_add_table_row(void);
 
 private slots:
 
@@ -149,12 +150,12 @@ void db_min_spinbox_changed(int);
 void db_max_spinbox_changed(int);
 void plotphasecheckbox_changed(int);
 void selected_signals_changed();
-void add_passband_button_pressed();
-void add_stopband_button_pressed();
-void design_button_pressed();
-void tabel_delete_pressed(int, int);
-void predefined_cbox_changed(int);
-void paramtable_rowcount_changed();
+void pm_add_passband_button_pressed();
+void pm_add_stopband_button_pressed();
+void pm_design_button_pressed();
+void pm_tabel_cell_pressed(int, int);
+void pm_predefined_cbox_changed(int);
+void pm_paramtable_rowcount_changed();
 
 };
 
