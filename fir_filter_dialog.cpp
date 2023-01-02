@@ -170,6 +170,13 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   add_stopband_button = new QPushButton;
   add_stopband_button->setText("Add stopband");
 
+  predefined_cbox = new QComboBox;
+  predefined_cbox->addItem("No predefined");
+  predefined_cbox->addItem("Lowpass");
+  predefined_cbox->addItem("Highpass");
+  predefined_cbox->addItem("Bandpass");
+  predefined_cbox->addItem("Bandstop");
+
   sf_spinbox = new QDoubleSpinBox;
   sf_spinbox->setRange(1e-3, 1e6);
   sf_spinbox->setPrefix("Fs: ");
@@ -188,6 +195,8 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   design_button->setText("Design");
 
   QHBoxLayout *hlayout5 = new QHBoxLayout;
+  hlayout5->addWidget(predefined_cbox);
+  hlayout5->addStretch(10);
   hlayout5->addWidget(add_passband_button);
   hlayout5->addStretch(10);
   hlayout5->addWidget(add_stopband_button);
@@ -268,19 +277,20 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   z   = (double *)malloc(sizeof(double) * FIR_FILTER_MAX_MEAS_PNTS);
   deg = (double *)malloc(sizeof(double) * FIR_FILTER_MAX_MEAS_PNTS);
 
-  QObject::connect(ApplyButton,         SIGNAL(clicked()),              this,            SLOT(ApplyButtonClicked()));
-  QObject::connect(CancelButton,        SIGNAL(clicked()),              firfilterdialog, SLOT(close()));
-  QObject::connect(textEdit,            SIGNAL(textChanged()),          this,            SLOT(check_text()));
-  QObject::connect(helpButton,          SIGNAL(clicked()),              this,            SLOT(helpbuttonpressed()));
-  QObject::connect(fileButton,          SIGNAL(clicked()),              this,            SLOT(filebuttonpressed()));
-  QObject::connect(db_max_spinbox,      SIGNAL(valueChanged(int)),      this,            SLOT(db_max_spinbox_changed(int)));
-  QObject::connect(db_min_spinbox,      SIGNAL(valueChanged(int)),      this,            SLOT(db_min_spinbox_changed(int)));
-  QObject::connect(plotphasecheckbox,   SIGNAL(stateChanged(int)),      this,            SLOT(plotphasecheckbox_changed(int)));
-  QObject::connect(list,                SIGNAL(itemSelectionChanged()), this,            SLOT(selected_signals_changed()));
-  QObject::connect(design_button,       SIGNAL(clicked()),              this,            SLOT(design_button_pressed()));
-  QObject::connect(add_passband_button, SIGNAL(clicked()),              this,            SLOT(add_passband_button_pressed()));
-  QObject::connect(add_stopband_button, SIGNAL(clicked()),              this,            SLOT(add_stopband_button_pressed()));
-  QObject::connect(param_table,         SIGNAL(cellClicked(int, int)),  this,            SLOT(tabel_delete_pressed(int, int)));
+  QObject::connect(ApplyButton,         SIGNAL(clicked()),                this,            SLOT(ApplyButtonClicked()));
+  QObject::connect(CancelButton,        SIGNAL(clicked()),                firfilterdialog, SLOT(close()));
+  QObject::connect(textEdit,            SIGNAL(textChanged()),            this,            SLOT(check_text()));
+  QObject::connect(helpButton,          SIGNAL(clicked()),                this,            SLOT(helpbuttonpressed()));
+  QObject::connect(fileButton,          SIGNAL(clicked()),                this,            SLOT(filebuttonpressed()));
+  QObject::connect(db_max_spinbox,      SIGNAL(valueChanged(int)),        this,            SLOT(db_max_spinbox_changed(int)));
+  QObject::connect(db_min_spinbox,      SIGNAL(valueChanged(int)),        this,            SLOT(db_min_spinbox_changed(int)));
+  QObject::connect(plotphasecheckbox,   SIGNAL(stateChanged(int)),        this,            SLOT(plotphasecheckbox_changed(int)));
+  QObject::connect(list,                SIGNAL(itemSelectionChanged()),   this,            SLOT(selected_signals_changed()));
+  QObject::connect(design_button,       SIGNAL(clicked()),                this,            SLOT(design_button_pressed()));
+  QObject::connect(add_passband_button, SIGNAL(clicked()),                this,            SLOT(add_passband_button_pressed()));
+  QObject::connect(add_stopband_button, SIGNAL(clicked()),                this,            SLOT(add_stopband_button_pressed()));
+  QObject::connect(param_table,         SIGNAL(cellClicked(int, int)),    this,            SLOT(tabel_delete_pressed(int, int)));
+  QObject::connect(predefined_cbox,     SIGNAL(currentIndexChanged(int)), this,            SLOT(predefined_cbox_changed(int)));
 
   firfilterdialog->exec();
 }
@@ -631,6 +641,8 @@ int UI_FIRFilterDialog::add_table_row(void)
 
   if(i >= 32)  return -1;
 
+  textEdit->clear();
+
   param_table->setRowCount(i + 1);
 
   tmp_box = new QDoubleSpinBox;
@@ -662,13 +674,78 @@ int UI_FIRFilterDialog::add_table_row(void)
 }
 
 
+void UI_FIRFilterDialog::predefined_cbox_changed(int idx)
+{
+  double sf = 2000;
+
+  if(!idx)  return;
+
+  param_table->setRowCount(0);
+
+  if(mainwindow->signalcomps)
+  {
+    sf = mainwindow->signalcomp[0]->edfhdr->edfparam[0].sf_f;
+  }
+
+  sf_spinbox->setValue(sf);
+
+  if(idx == 1)  /* lowpass */
+  {
+    add_passband_button_pressed();
+    add_stopband_button_pressed();
+
+    ((QDoubleSpinBox *)(param_table->cellWidget(0, 1)))->setValue(0.2 * sf);
+    ((QDoubleSpinBox *)(param_table->cellWidget(1, 0)))->setValue(0.25 * sf);
+    ((QDoubleSpinBox *)(param_table->cellWidget(1, 1)))->setValue(0.5 * sf);
+  }
+
+  if(idx == 2)  /* highpass */
+  {
+    add_stopband_button_pressed();
+    add_passband_button_pressed();
+
+    ((QDoubleSpinBox *)(param_table->cellWidget(0, 1)))->setValue(0.2 * sf);
+    ((QDoubleSpinBox *)(param_table->cellWidget(1, 0)))->setValue(0.25 * sf);
+    ((QDoubleSpinBox *)(param_table->cellWidget(1, 1)))->setValue(0.5 * sf);
+  }
+
+  if(idx == 3)  /* bandpass */
+  {
+    add_stopband_button_pressed();
+    add_passband_button_pressed();
+    add_stopband_button_pressed();
+
+    ((QDoubleSpinBox *)(param_table->cellWidget(0, 1)))->setValue(0.1 * sf);
+    ((QDoubleSpinBox *)(param_table->cellWidget(1, 0)))->setValue(0.15 * sf);
+    ((QDoubleSpinBox *)(param_table->cellWidget(1, 1)))->setValue(0.25 * sf);
+    ((QDoubleSpinBox *)(param_table->cellWidget(2, 0)))->setValue(0.3 * sf);
+    ((QDoubleSpinBox *)(param_table->cellWidget(2, 1)))->setValue(0.5 * sf);
+  }
+
+  if(idx == 4)  /* bandstop */
+  {
+    add_passband_button_pressed();
+    add_stopband_button_pressed();
+    add_passband_button_pressed();
+
+    ((QDoubleSpinBox *)(param_table->cellWidget(0, 1)))->setValue(0.1 * sf);
+    ((QDoubleSpinBox *)(param_table->cellWidget(1, 0)))->setValue(0.15 * sf);
+    ((QDoubleSpinBox *)(param_table->cellWidget(1, 1)))->setValue(0.25 * sf);
+    ((QDoubleSpinBox *)(param_table->cellWidget(2, 0)))->setValue(0.3 * sf);
+    ((QDoubleSpinBox *)(param_table->cellWidget(2, 1)))->setValue(0.5 * sf);
+  }
+
+  predefined_cbox->setCurrentIndex(0);
+}
+
+
 void UI_FIRFilterDialog::add_passband_button_pressed()
 {
   int i = add_table_row();
   if(i < 0)  return;
 
   ((QDoubleSpinBox *)(param_table->cellWidget(i, 2)))->setValue(1);
-  ((QDoubleSpinBox *)(param_table->cellWidget(i, 3)))->setValue(5);
+  ((QDoubleSpinBox *)(param_table->cellWidget(i, 3)))->setValue(1);
 }
 
 
@@ -893,6 +970,7 @@ void UI_FIRFilterRZ_thread::run()
                             rz_params.ripple,
                             &rz_params.f_taps);
 }
+
 
 
 

@@ -101,6 +101,8 @@ QPushButton    *CancelButton,
                *add_stopband_button,
                *design_button;
 
+QComboBox      *predefined_cbox;
+
 QListWidget    *list;
 
 QPlainTextEdit *textEdit;
@@ -151,6 +153,7 @@ void add_passband_button_pressed();
 void add_stopband_button_pressed();
 void design_button_pressed();
 void tabel_delete_pressed(int, int);
+void predefined_cbox_changed(int);
 
 };
 
