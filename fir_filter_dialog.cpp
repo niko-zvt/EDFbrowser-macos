@@ -177,6 +177,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   sinc_tab = new QWidget;
 
   sinc_sf_spinbox = new QDoubleSpinBox;
+  sinc_sf_spinbox->setDecimals(3);
   sinc_sf_spinbox->setRange(1e-3, 1e6);
   sinc_sf_spinbox->setSuffix(" Hz");
   if(mainwindow->signalcomps)
@@ -196,12 +197,14 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   sinc_type_cbox->setCurrentIndex(1);
 
   sinc_cutoff1_spinbox = new QDoubleSpinBox;
+  sinc_cutoff1_spinbox->setDecimals(3);
   sinc_cutoff1_spinbox->setRange(1e-3, 1e6);
   sinc_cutoff1_spinbox->setSuffix(" Hz");
   sinc_cutoff1_spinbox->setToolTip("Cutoff freq. 1");
   sinc_cutoff1_spinbox->setValue(sinc_sf_spinbox->value() * 0.1);
 
   sinc_cutoff2_spinbox = new QDoubleSpinBox;
+  sinc_cutoff2_spinbox->setDecimals(3);
   sinc_cutoff2_spinbox->setRange(1e-3, 1e6);
   sinc_cutoff2_spinbox->setSuffix(" Hz");
   sinc_cutoff2_spinbox->setToolTip("Cutoff freq. 2");
@@ -209,6 +212,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   sinc_cutoff2_spinbox->setEnabled(false);
 
   sinc_trans_bw_spinbox = new QDoubleSpinBox;
+  sinc_trans_bw_spinbox->setDecimals(3);
   sinc_trans_bw_spinbox->setRange(1e-3, 1e6);
   sinc_trans_bw_spinbox->setSuffix(" Hz");
   sinc_trans_bw_spinbox->setToolTip("Transition bandwidth");
@@ -282,6 +286,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   pm_predefined_cbox->addItem("Bandstop");
 
   pm_sf_spinbox = new QDoubleSpinBox;
+  pm_sf_spinbox->setDecimals(3);
   pm_sf_spinbox->setRange(1e-3, 1e6);
   pm_sf_spinbox->setPrefix("Fs: ");
   pm_sf_spinbox->setSuffix(" Hz");
@@ -748,16 +753,19 @@ int UI_FIRFilterDialog::pm_add_table_row(void)
   pm_param_table->setRowCount(i + 1);
 
   tmp_box = new QDoubleSpinBox;
+  tmp_box->setDecimals(3);
   tmp_box->setRange(0, 1e6);
   tmp_box->setSuffix(" Hz");
   pm_param_table->setCellWidget(i, 0, tmp_box);
 
   tmp_box = new QDoubleSpinBox;
+  tmp_box->setDecimals(3);
   tmp_box->setRange(0, 1e6);
   tmp_box->setSuffix(" Hz");
   pm_param_table->setCellWidget(i, 1, tmp_box);
 
   tmp_box = new QDoubleSpinBox;
+  tmp_box->setDecimals(3);
   tmp_box->setRange(0, 100);
   pm_param_table->setCellWidget(i, 2, tmp_box);
 

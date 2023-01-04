@@ -33,12 +33,6 @@
 #include "wind_sinc.h"
 
 
-#define FLT_ROUNDS 1
-
-#define T_WS_MAX_BANDS              (32)
-
-#define T_WS_MAX_TAPS             (2000)
-
 #define t_sinc(x)   (sin(x * M_PI) / (x * M_PI))
 
 
