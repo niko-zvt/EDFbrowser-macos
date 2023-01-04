@@ -169,6 +169,7 @@ HEADERS += filt/spike_filter.h
 HEADERS += filt/z_ratio_filter.h
 HEADERS += filt/math_func.h
 HEADERS += filt/remez.h
+HEADERS += filt/wind_sinc.h
 
 HEADERS += third_party/fidlib/fidlib.h
 HEADERS += third_party/fidlib/fidmkf.h
@@ -291,6 +292,7 @@ SOURCES += filt/spike_filter.c
 SOURCES += filt/z_ratio_filter.c
 SOURCES += filt/math_func.c
 SOURCES += filt/remez.c
+SOURCES += filt/wind_sinc.c
 
 SOURCES += third_party/fidlib/fidlib.c
 

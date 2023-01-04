@@ -2,8 +2,8 @@
  version 1.99      to be defined
  --------------
 
- - FIR filter dialog: added a design tool to create filter coefficients using the
-   Parks-McClellan filter design algorithm.
+ - FIR filter dialog: added a design tool to create FIR filter coefficients using either the
+   Parks-McClellan filter design algorithm or Windowed Sinc.
 
 
  version 1.98      December 17, 2022

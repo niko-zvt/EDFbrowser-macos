@@ -1006,9 +1006,9 @@ UI_Mainwindow::UI_Mainwindow()
 
   filtermenu = new QMenu(this);
   filtermenu->setTitle("&Filter");
-  filtermenu->addAction("New", this, SLOT(add_new_filter()));
-  filtermenu->addAction("Adjust", this, SLOT(filterproperties_dialog()));
-  filtermenu->addAction("Remove all", this, SLOT(remove_all_filters()));
+  filtermenu->addAction("Classic Butterworth, Bessel, Chebyshev, etc.", this, SLOT(add_new_filter()));
+  filtermenu->addAction("Adjust classic filters", this, SLOT(filterproperties_dialog()));
+  filtermenu->addAction("Remove all classic filters", this, SLOT(remove_all_filters()));
   filtermenu->addSeparator();
   filtermenu->addAction("Powerline interference removal for ECG", this, SLOT(add_plif_ecg_filter()));
   filtermenu->addAction("Remove all ECG Powerline interference filters", this, SLOT(remove_all_plif_ecg_filters()));
@@ -1016,8 +1016,8 @@ UI_Mainwindow::UI_Mainwindow()
   filtermenu->addAction("Powerline interference removal for EEG", this, SLOT(add_plif_eeg_filter()));
   filtermenu->addAction("Remove all EEG Powerline interference filters", this, SLOT(remove_all_plif_eeg_filters()));
   filtermenu->addSeparator();
-  filtermenu->addAction("Customizable FIR filter", this, SLOT(add_fir_filter()));
-  filtermenu->addAction("Remove all FIR filters", this, SLOT(remove_all_fir_filters()));
+  filtermenu->addAction("Custom FIR filter", this, SLOT(add_fir_filter()));
+  filtermenu->addAction("Remove all custom FIR filters", this, SLOT(remove_all_fir_filters()));
   filtermenu->addSeparator();
   filtermenu->addAction("Spike", this, SLOT(add_spike_filter()));
   filtermenu->addAction("Remove all spike filters", this, SLOT(remove_all_spike_filters()));

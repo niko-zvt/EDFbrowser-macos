@@ -45,6 +45,8 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   thrd = NULL;
 
+  fir_model = 0;
+
   n_taps = 0;
 
   db_max_i = 10;
@@ -168,9 +170,87 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   selected_signals_changed();
 
+  tabholder = new QTabWidget;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  tabholder = new QTabWidget;
+  sinc_tab = new QWidget;
+
+  sinc_sf_spinbox = new QDoubleSpinBox;
+  sinc_sf_spinbox->setRange(1e-3, 1e6);
+  sinc_sf_spinbox->setSuffix(" Hz");
+  if(mainwindow->signalcomps)
+  {
+    sinc_sf_spinbox->setValue(mainwindow->signalcomp[0]->edfhdr->edfparam[0].sf_f);
+  }
+  else
+  {
+    sinc_sf_spinbox->setValue(2000);
+  }
+
+  sinc_type_cbox = new QComboBox;
+  sinc_type_cbox->addItem("Highpass");
+  sinc_type_cbox->addItem("Lowpass");
+  sinc_type_cbox->addItem("Bandpass");
+  sinc_type_cbox->addItem("Bandstop");
+  sinc_type_cbox->setCurrentIndex(1);
+
+  sinc_cutoff1_spinbox = new QDoubleSpinBox;
+  sinc_cutoff1_spinbox->setRange(1e-3, 1e6);
+  sinc_cutoff1_spinbox->setSuffix(" Hz");
+  sinc_cutoff1_spinbox->setToolTip("Cutoff freq. 1");
+  sinc_cutoff1_spinbox->setValue(sinc_sf_spinbox->value() * 0.1);
+
+  sinc_cutoff2_spinbox = new QDoubleSpinBox;
+  sinc_cutoff2_spinbox->setRange(1e-3, 1e6);
+  sinc_cutoff2_spinbox->setSuffix(" Hz");
+  sinc_cutoff2_spinbox->setToolTip("Cutoff freq. 2");
+  sinc_cutoff2_spinbox->setValue(sinc_sf_spinbox->value() * 0.3);
+  sinc_cutoff2_spinbox->setEnabled(false);
+
+  sinc_trans_bw_spinbox = new QDoubleSpinBox;
+  sinc_trans_bw_spinbox->setRange(1e-3, 1e6);
+  sinc_trans_bw_spinbox->setSuffix(" Hz");
+  sinc_trans_bw_spinbox->setToolTip("Transition bandwidth");
+  sinc_trans_bw_spinbox->setValue(sinc_sf_spinbox->value() * 0.1);
+
+  sinc_design_button = new QPushButton;
+  sinc_design_button->setText("Design");
+
+  QFormLayout *flayout1 = new QFormLayout;
+  flayout1->addRow("", (QWidget *)NULL);
+  flayout1->addRow("Type", sinc_type_cbox);
+  flayout1->addRow("", (QWidget *)NULL);
+  flayout1->addRow("Sample frequency", sinc_sf_spinbox);
+  flayout1->addRow("", (QWidget *)NULL);
+  flayout1->addRow("Cutoff freq.", sinc_cutoff1_spinbox);
+  flayout1->addRow("", (QWidget *)NULL);
+  flayout1->addRow("Cutoff freq.", sinc_cutoff2_spinbox);
+  flayout1->addRow("", (QWidget *)NULL);
+  flayout1->addRow("Transition bandwidth", sinc_trans_bw_spinbox);
+  flayout1->addRow("", (QWidget *)NULL);
+
+  QHBoxLayout *hlayout6 = new QHBoxLayout;
+  hlayout6->addLayout(flayout1);
+  hlayout6->addStretch(1);
+
+  QHBoxLayout *hlayout7 = new QHBoxLayout;
+  hlayout7->addSpacing(20);
+  hlayout7->addStretch(2);
+  hlayout7->addWidget(sinc_design_button);
+  hlayout7->addStretch(10);
+
+  QVBoxLayout *vlayout6 = new QVBoxLayout;
+  vlayout6->addLayout(hlayout6);
+  vlayout6->addSpacing(20);
+  vlayout6->addLayout(hlayout7);
+  vlayout6->addSpacing(10);
+
+  sinc_tab->setLayout(vlayout6);
+
+  tabholder->addTab(sinc_tab, "Windowed Sinc");
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
   pm_tab = new QWidget;
 
@@ -312,6 +392,9 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   QObject::connect(pm_add_stopband_button, SIGNAL(clicked()),                this,            SLOT(pm_add_stopband_button_pressed()));
   QObject::connect(pm_param_table,         SIGNAL(cellClicked(int, int)),    this,            SLOT(pm_tabel_cell_pressed(int, int)));
   QObject::connect(pm_predefined_cbox,     SIGNAL(currentIndexChanged(int)), this,            SLOT(pm_predefined_cbox_changed(int)));
+  QObject::connect(tabholder,              SIGNAL(currentChanged(int)),      this,            SLOT(current_tab_changed(int)));
+  QObject::connect(sinc_design_button,     SIGNAL(clicked()),                this,            SLOT(sinc_design_button_pressed()));
+  QObject::connect(sinc_type_cbox,         SIGNAL(currentIndexChanged(int)), this,            SLOT(sinc_type_cbox_changed(int)));
 
   QObject::connect(pm_param_table->model(), SIGNAL(rowsInserted(const QModelIndex &, int, int)), this, SLOT(pm_paramtable_rowcount_changed()));
   QObject::connect(pm_param_table->model(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)),  this, SLOT(pm_paramtable_rowcount_changed()));
@@ -948,7 +1031,7 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
   {
     for(i=0, idx=0; i<thrd->rz_params.tap_num; i++)
     {
-      idx += snprintf(str + idx, 128, "%.20f\n", thrd->rz_params.f_taps[i]);
+      idx += snprintf(str + idx, 128, "%.24f\n", thrd->rz_params.f_taps[i]);
 
       if(idx >= (buf_sz - 128))
       {
@@ -1002,6 +1085,135 @@ void UI_FIRFilterRZ_thread::run()
                             rz_params.ripple,
                             &rz_params.f_taps);
 }
+
+
+void UI_FIRFilterDialog::current_tab_changed(int idx)
+{
+  fir_model = idx;
+}
+
+
+void UI_FIRFilterDialog::sinc_type_cbox_changed(int idx)
+{
+  if(idx >= 2)
+  {
+    sinc_cutoff2_spinbox->setEnabled(true);
+  }
+  else
+  {
+    sinc_cutoff2_spinbox->setEnabled(false);
+  }
+}
+
+
+void UI_FIRFilterDialog::sinc_design_button_pressed()
+{
+  int i,
+      sinc_type,
+      sinc_n_taps,
+      idx=0,
+      buf_sz=10000;
+
+  char *str=NULL,
+       txt_str[512]={""};
+
+  double sinc_sf,
+         sinc_cutoff1,
+         sinc_cutoff2,
+         sinc_tr_bw,
+         *sinc_taps=NULL;
+
+  textEdit->clear();
+
+  str = (char *)malloc(buf_sz);
+  if(str == NULL)
+  {
+    return;
+  }
+
+  sinc_type = sinc_type_cbox->currentIndex();
+
+  sinc_sf = sinc_sf_spinbox->value();
+
+  sinc_cutoff1 = sinc_cutoff1_spinbox->value();
+
+  sinc_cutoff2 = sinc_cutoff2_spinbox->value();
+
+  sinc_tr_bw = sinc_trans_bw_spinbox->value();
+
+  if(sinc_cutoff1 > (sinc_sf * 0.49))
+  {
+    QMessageBox::critical(firfilterdialog, "Error", "Cuttoff frequency 1 must be < 0.49 * Fs");
+    return;
+  }
+
+  if(sinc_type >= 2)
+  {
+    if(sinc_cutoff2 > (sinc_sf * 0.49))
+    {
+      QMessageBox::critical(firfilterdialog, "Error", "Cuttoff frequency 2 must be < 0.49 * Fs");
+      return;
+    }
+
+    if(sinc_cutoff1 > (sinc_cutoff2 * 0.98))
+    {
+      QMessageBox::critical(firfilterdialog, "Error", "Cuttoff frequency 1 must be < 0.98 * cutoff frequency 2");
+      return;
+    }
+  }
+
+  if(sinc_tr_bw > (sinc_sf * 0.49))
+  {
+    QMessageBox::critical(firfilterdialog, "Error", "Transition bandwidth must be < 0.49 * Fs");
+    return;
+  }
+
+  if(sinc_tr_bw < (sinc_sf * 0.005))
+  {
+    QMessageBox::critical(firfilterdialog, "Error", "Transition bandwidth must be > 0.005 * Fs");
+    return;
+  }
+
+  sinc_n_taps = wind_sinc(sinc_sf, sinc_type, sinc_cutoff1, sinc_cutoff2, sinc_tr_bw, &sinc_taps);
+
+  if((sinc_n_taps < 4) || (sinc_taps == NULL))
+  {
+    snprintf(txt_str, 512, "wind_sinc() returned error %i", sinc_n_taps);
+    QMessageBox::critical(firfilterdialog, "Error", txt_str);
+    free(sinc_taps);
+    free(str);
+    return;
+  }
+
+  for(i=0, idx=0; i<sinc_n_taps; i++)
+  {
+    idx += snprintf(str + idx, 128, "%.24f\n", sinc_taps[i]);
+
+    if(idx >= (buf_sz - 128))
+    {
+      buf_sz += 10000;
+      str = (char *)realloc(str, buf_sz);
+      if(str==NULL)
+      {
+        buf_sz = 0;
+        break;
+      }
+    }
+  }
+
+  if(str)
+  {
+    textEdit->appendPlainText(str);
+  }
+
+  free(sinc_taps);
+  free(str);
+}
+
+
+
+
+
 
 
 

@@ -42,6 +42,7 @@
 
 #include "filt/fir_filter.h"
 #include "filt/remez.h"
+#include "filt/wind_sinc.h"
 #include "filtercurve.h"
 
 
@@ -92,7 +93,8 @@ QDialog        *firfilterdialog;
 
 QTabWidget     *tabholder;
 
-QWidget        *pm_tab;
+QWidget        *sinc_tab,
+               *pm_tab;
 
 QPushButton    *CancelButton,
                *ApplyButton,
@@ -100,9 +102,11 @@ QPushButton    *CancelButton,
                *fileButton,
                *pm_add_passband_button,
                *pm_add_stopband_button,
-               *pm_design_button;
+               *pm_design_button,
+               *sinc_design_button;
 
-QComboBox      *pm_predefined_cbox;
+QComboBox      *pm_predefined_cbox,
+               *sinc_type_cbox;
 
 QListWidget    *list;
 
@@ -115,7 +119,11 @@ QLabel         *listlabel,
 QSpinBox       *db_min_spinbox,
                *db_max_spinbox;
 
-QDoubleSpinBox *pm_sf_spinbox;
+QDoubleSpinBox *pm_sf_spinbox,
+               *sinc_sf_spinbox,
+               *sinc_cutoff1_spinbox,
+               *sinc_cutoff2_spinbox,
+               *sinc_trans_bw_spinbox;
 
 QCheckBox      *plotphasecheckbox;
 
@@ -128,7 +136,8 @@ UI_FIRFilterRZ_thread *thrd;
 int n_taps,
     db_max_i,
     db_min_i,
-    plot_phase;
+    plot_phase,
+    fir_model;
 
 double *taps,
        *z,
@@ -156,6 +165,9 @@ void pm_design_button_pressed();
 void pm_tabel_cell_pressed(int, int);
 void pm_predefined_cbox_changed(int);
 void pm_paramtable_rowcount_changed();
+void current_tab_changed(int);
+void sinc_design_button_pressed();
+void sinc_type_cbox_changed(int);
 
 };
 

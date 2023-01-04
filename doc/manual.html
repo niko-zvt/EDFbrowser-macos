@@ -865,16 +865,19 @@
 <h3><a name="Custom_fir_filter">Custom FIR filter</a></h3>
 
 <p>
-  The Custom FIR filter can be used to create a customized FIR filter.<br>
-  Simply copy and paste a list of filter coefficients (so-called "filter taps") into the Filter taps list<br>
-  and select the signals which the filter needs to apply to (select/highlight them with the mouse).<br>
+  The Custom FIR filter can be used to create a customized Finite Impulse Response (FIR) filter.<br>
+  There are three methods to design/specify a FIR filter:<br>
 <br>
-  Or you can design your own filter coefficients by specifying the pass- and stopbands with their respective<br>
-  start- and stopfrequencies, gain and ripple. A passband usually has a gain of 1 (it must be more than zero).<br>
+  If you already have the filter coefficients (so-called "filter taps"), simply copy and paste them into the<br>
+  Filter taps list and select the signals to which the filter needs to apply to (select/highlight them with the mouse).<br>
+<br>
+  The second method is to use the designer that creates a phase-linear, Windowed Sinc FIR filter with flat passbands.<br>
+<br>
+  The third method is to use the designer that utilizes the Parks-McClellan algorithm to calculate a phase-linear, equiripple FIR filter.<br>
+  Specify the pass- and stopbands with their respective start- and stopfrequencies, gain and ripple.<br>
+  A passband usually has a gain of 1 (it must be more than zero).<br>
   A stopband must have a gain of zero. Bandwidth must be at least 5% and the transition between bands must be<br>
   at least 5%. After entering the filter specifications press the "Design" button.<br>
-  It uses the Parks-McClellan filter design algorithm.<br>
-<br>
   Example:<br>
   For a lowpass filter, specify a passband and a stopband (2 bands).<br>
   For a highpass filter, specify a stopband and a passband (2 bands).<br>
