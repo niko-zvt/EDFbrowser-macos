@@ -88,6 +88,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
   list->setSelectionMode(QAbstractItemView::ExtendedSelection);
   list->setMinimumWidth(100 * mainwindow->w_scaling);
+  list->setToolTip("Select and highlight with the mouse the signals which you want to apply the filter to");
 
   curve1 = new FilterCurve;
   curve1->setH_RasterSize(10);
@@ -103,6 +104,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   db_max_spinbox->setPrefix("Max ");
   db_max_spinbox->setSuffix(" dB");
   db_max_spinbox->setValue(10);
+  db_max_spinbox->setToolTip("Maximum of vertical scale");
   db_max_spinbox->setEnabled(false);
 
   db_min_spinbox = new QSpinBox;
@@ -111,6 +113,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   db_min_spinbox->setPrefix("Min ");
   db_min_spinbox->setSuffix(" dB");
   db_min_spinbox->setValue(-100);
+  db_min_spinbox->setToolTip("Minimum of vertical scale");
   db_min_spinbox->setEnabled(false);
 
   plotphasecheckbox = new QCheckBox("Phase");
@@ -180,6 +183,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   sinc_sf_spinbox->setDecimals(3);
   sinc_sf_spinbox->setRange(1e-3, 1e6);
   sinc_sf_spinbox->setSuffix(" Hz");
+  sinc_sf_spinbox->setToolTip("Sample frequency");
   if(mainwindow->signalcomps)
   {
     sinc_sf_spinbox->setValue(mainwindow->signalcomp[0]->edfhdr->edfparam[0].sf_f);
@@ -195,6 +199,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   sinc_type_cbox->addItem("Bandpass");
   sinc_type_cbox->addItem("Bandstop");
   sinc_type_cbox->setCurrentIndex(1);
+  sinc_type_cbox->setToolTip("Filter type");
 
   sinc_cutoff1_spinbox = new QDoubleSpinBox;
   sinc_cutoff1_spinbox->setDecimals(3);
@@ -220,6 +225,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   sinc_design_button = new QPushButton;
   sinc_design_button->setText("Design");
+  sinc_design_button->setToolTip("Calculate the filter coefficients for the given parameters");
 
   QFormLayout *flayout1 = new QFormLayout;
   flayout1->addRow("", (QWidget *)NULL);
@@ -227,9 +233,9 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   flayout1->addRow("", (QWidget *)NULL);
   flayout1->addRow("Sample frequency", sinc_sf_spinbox);
   flayout1->addRow("", (QWidget *)NULL);
-  flayout1->addRow("Cutoff freq.", sinc_cutoff1_spinbox);
+  flayout1->addRow("Cutoff freq. 1", sinc_cutoff1_spinbox);
   flayout1->addRow("", (QWidget *)NULL);
-  flayout1->addRow("Cutoff freq.", sinc_cutoff2_spinbox);
+  flayout1->addRow("Cutoff freq. 2", sinc_cutoff2_spinbox);
   flayout1->addRow("", (QWidget *)NULL);
   flayout1->addRow("Transition bandwidth", sinc_trans_bw_spinbox);
   flayout1->addRow("", (QWidget *)NULL);
@@ -284,6 +290,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   pm_predefined_cbox->addItem("Highpass");
   pm_predefined_cbox->addItem("Bandpass");
   pm_predefined_cbox->addItem("Bandstop");
+  pm_predefined_cbox->setToolTip("Select a predefined filter type to get you started");
 
   pm_sf_spinbox = new QDoubleSpinBox;
   pm_sf_spinbox->setDecimals(3);
@@ -302,6 +309,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   pm_design_button = new QPushButton;
   pm_design_button->setText("Design");
+  pm_design_button->setToolTip("Calculate the filter coefficients for the given parameters");
   pm_design_button->setEnabled(false);
 
   QHBoxLayout *hlayout4 = new QHBoxLayout;
@@ -726,13 +734,17 @@ void UI_FIRFilterDialog::selected_signals_changed()
 {
   int n;
 
-  char str[128]={""};
+  char str[256]={""};
 
   n = list->selectedItems().size();
 
-  snprintf(str, 128, "Selected signals: %i", n);
+  snprintf(str, 256, "Selected signals: %i", n);
 
   listlabel->setText(str);
+
+  snprintf(str, 256, "Apply the current filter to the %i selected (highlighted) signals", n);
+
+  ApplyButton->setToolTip(str);
 }
 
 
