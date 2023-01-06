@@ -75,7 +75,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   varsLabel->setText("Filter taps: 0");
 
   freqresplabel = new QLabel;
-  freqresplabel->setText("Frequency response: 0Hz - Fs/2 (Nyquist)");
+  freqresplabel->setText("Normalized frequency response: 0 - Fs/2 (Nyquist)");
 
   listlabel = new QLabel;
   listlabel->setText("Select signals:");
