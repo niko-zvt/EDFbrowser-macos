@@ -633,11 +633,17 @@ void UI_Mainwindow::save_session()
 
       fprintf(pro_file, "    <fir_filter>\n");
 
+      fprintf(pro_file, "    <description>");
+
+      xml_fwrite_encode_entity(pro_file, signalcomp[i]->fir_filter->label);
+
+      fprintf(pro_file, "</description>\n");
+
       fprintf(pro_file, "      <size>%i</size>\n", k);
 
       for(j=0; j<k; j++)
       {
-        fprintf(pro_file, "      <tap>%.20f</tap>\n", fir_filter_tap(j, signalcomp[i]->fir_filter));
+        fprintf(pro_file, "      <tap>%.24f</tap>\n", fir_filter_tap(j, signalcomp[i]->fir_filter));
       }
 
       fprintf(pro_file, "    </fir_filter>\n");

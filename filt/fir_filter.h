@@ -50,10 +50,11 @@ struct fir_filter_settings{
   int sz;
   int idx;
   int idx_sav;
+  char label[512];
 };
 
 
-struct fir_filter_settings * create_fir_filter(double *, int);
+struct fir_filter_settings * create_fir_filter(double *, int, const char *);
 double run_fir_filter(double, struct fir_filter_settings *);
 void free_fir_filter(struct fir_filter_settings *);
 void reset_fir_filter(double, struct fir_filter_settings *);
@@ -63,6 +64,7 @@ double fir_filter_tap(int, struct fir_filter_settings *);
 void fir_filter_restore_buf(struct fir_filter_settings *);
 void fir_filter_save_buf(struct fir_filter_settings *);
 int fir_filter_freqz(double *, int, double *, double *, int);
+const char * fir_filter_label(struct fir_filter_settings *);
 
 
 #ifdef __cplusplus

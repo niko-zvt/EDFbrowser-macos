@@ -155,7 +155,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
          d_tmp,
          velocity,
          factor[MAXSIGNALS],
-         fir_vars[1000],
+         *fir_vars=NULL,
          max_voltage=0,
          bp_min_hz=0,
          bp_max_hz=0,
@@ -1239,6 +1239,23 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
     if(!xml_goto_nth_element_inside(xml_hdl, "fir_filter", 0))
     {
+      if(!xml_goto_nth_element_inside(xml_hdl, "description", 0))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          view_session_format_error(__FILE__, __LINE__, xml_hdl);
+          return;
+        }
+
+        strlcpy(str2, result, 512);
+
+        xml_go_up(xml_hdl);
+      }
+      else
+      {
+        str2[0] = 0;
+      }
+
       if(xml_goto_nth_element_inside(xml_hdl, "size", 0))
       {
         view_session_format_error(__FILE__, __LINE__, xml_hdl);
@@ -1250,13 +1267,20 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
       n_taps = atoi(result);
-      if((n_taps < 2) || (n_taps > 1000))
+      if((n_taps < 2) || (n_taps > 4000))
       {
         view_session_format_error(__FILE__, __LINE__, xml_hdl);
         return;
       }
 
       xml_go_up(xml_hdl);
+
+      fir_vars = (double *)malloc(sizeof(double) * n_taps);
+      if(fir_vars == NULL)
+      {
+        view_session_format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
 
       for(r=0; r<n_taps; r++)
       {
@@ -1275,7 +1299,10 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         xml_go_up(xml_hdl);
       }
 
-      snprintf(str2, 2048, "Custom FIR filter with %i taps", n_taps);
+      if(!strlen(str2))
+      {
+        snprintf(str2, 2048, "Custom FIR filter with %i taps", n_taps);
+      }
 
       firfilterItem = new QStandardItem(str2);
 
@@ -1283,10 +1310,13 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
       for(r=0; r<n_taps; r++)
       {
-        snprintf(str2, 2048, " %.20f ", fir_vars[r]);
+        snprintf(str2, 2048, " %.24f ", fir_vars[r]);
 
         firfilterItem->appendRow(new QStandardItem(str2));
       }
+
+      free(fir_vars);
+      fir_vars = NULL;
 
       xml_go_up(xml_hdl);
     }

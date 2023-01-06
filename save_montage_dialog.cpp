@@ -282,11 +282,17 @@ void UI_SaveMontagewindow::SaveButtonClicked()
 
         fprintf(mtgfile, "    <fir_filter>\n");
 
+        fprintf(mtgfile, "    <description>");
+
+        xml_fwrite_encode_entity(mtgfile, mainwindow->signalcomp[i]->fir_filter->label);
+
+        fprintf(mtgfile, "</description>\n");
+
         fprintf(mtgfile, "      <size>%i</size>\n", k);
 
         for(j=0; j<k; j++)
         {
-          fprintf(mtgfile, "      <tap>%.20f</tap>\n", fir_filter_tap(j, mainwindow->signalcomp[i]->fir_filter));
+          fprintf(mtgfile, "      <tap>%.24f</tap>\n", fir_filter_tap(j, mainwindow->signalcomp[i]->fir_filter));
         }
 
         fprintf(mtgfile, "    </fir_filter>\n");

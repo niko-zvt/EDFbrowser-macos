@@ -35,7 +35,7 @@
 static void rect_to_polar(double, double, double *, double *);
 
 
-struct fir_filter_settings * create_fir_filter(double *vars, int sz)
+struct fir_filter_settings * create_fir_filter(double *vars, int sz, const char *label)
 {
   struct fir_filter_settings *settings;
 
@@ -78,6 +78,11 @@ struct fir_filter_settings * create_fir_filter(double *vars, int sz)
   settings->idx_sav = 0;
 
   memcpy(settings->vars, vars, sizeof(double) * sz);
+
+  if(label != NULL)
+  {
+    strlcpy(settings->label, label, 512);
+  }
 
   return settings;
 }
@@ -140,7 +145,7 @@ struct fir_filter_settings * create_fir_filter_copy(struct fir_filter_settings *
 
   if(settings == NULL)  return NULL;
 
-  new_settings = create_fir_filter(settings->vars, settings->sz);
+  new_settings = create_fir_filter(settings->vars, settings->sz, settings->label);
 
   if(new_settings == NULL)  return NULL;
 
@@ -194,6 +199,12 @@ void fir_filter_restore_buf(struct fir_filter_settings *settings)
   }
 
   settings->idx = settings->idx_sav;
+}
+
+
+const char * fir_filter_label(struct fir_filter_settings *settings)
+{
+  return settings->label;
 }
 
 

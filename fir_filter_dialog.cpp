@@ -59,13 +59,16 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   textbuf = NULL;
   taps=NULL;
 
+  filter_description_txt_1[0] = 0;
+  filter_description_txt_2[0] = 0;
+
   mainwindow = (UI_Mainwindow *)w_parent;
 
   recent_opendir = recent_dir;
   recent_savedir = save_dir;
 
   firfilterdialog = new QDialog;
-  firfilterdialog->setMinimumSize(800 * mainwindow->w_scaling, 600 * mainwindow->h_scaling);
+  firfilterdialog->setMinimumSize(800 * mainwindow->w_scaling, 700 * mainwindow->h_scaling);
   firfilterdialog->setWindowTitle("Add a Custom FIR filter");
   firfilterdialog->setModal(true);
   firfilterdialog->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -79,6 +82,8 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   listlabel = new QLabel;
   listlabel->setText("Select signals:");
+
+  filt_descr_label = new QLabel;
 
   textEdit = new QPlainTextEdit;
   textEdit->setReadOnly(false);
@@ -377,6 +382,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   QVBoxLayout *vlayout1 = new QVBoxLayout;
   vlayout1->addLayout(hlayout2, 1000);
+  vlayout1->addWidget(filt_descr_label);
   vlayout1->addSpacing(20);
   vlayout1->addWidget(tabholder);
   vlayout1->addSpacing(40);
@@ -547,7 +553,21 @@ void UI_FIRFilterDialog::check_text()
     db_max_spinbox->setEnabled(false);
     db_min_spinbox->setEnabled(false);
     plotphasecheckbox->setEnabled(false);
+    filter_description_txt_1[0] = 0;
+    filter_description_txt_2[0] = 0;
+    filt_descr_label->clear();
     return;
+  }
+
+  if(strlen(filter_description_txt_1))
+  {
+    strlcpy(filter_description_txt_2, filter_description_txt_1, 512);
+
+    filter_description_txt_1[0] = 0;
+  }
+  else
+  {
+    snprintf(filter_description_txt_2, 512, "Customized or user provided coefficients");
   }
 
   textEdit->setMinimumWidth(max_len * 8 * mainwindow->w_scaling);
@@ -558,6 +578,9 @@ void UI_FIRFilterDialog::check_text()
     db_max_spinbox->setEnabled(false);
     db_min_spinbox->setEnabled(false);
     plotphasecheckbox->setEnabled(false);
+    filter_description_txt_1[0] = 0;
+    filter_description_txt_2[0] = 0;
+    filt_descr_label->clear();
 
     snprintf(str2, 512, "fir_filter_freqz() error: %i", err);
     QMessageBox::critical(firfilterdialog, "Error", str2);
@@ -602,6 +625,8 @@ void UI_FIRFilterDialog::check_text()
 
   db_max_spinbox->setValue(db_max_i);
   db_min_spinbox->setValue(db_min_i);
+
+  filt_descr_label->setText(filter_description_txt_2);
 }
 
 
@@ -632,7 +657,7 @@ void UI_FIRFilterDialog::ApplyButtonClicked()
       mainwindow->signalcomp[s]->fir_filter = NULL;
     }
 
-    mainwindow->signalcomp[s]->fir_filter = create_fir_filter(taps, n_taps);
+    mainwindow->signalcomp[s]->fir_filter = create_fir_filter(taps, n_taps, filter_description_txt_2);
     if(mainwindow->signalcomp[s]->fir_filter == NULL)
     {
       QMessageBox::critical(firfilterdialog, "Error", "An error occurred while creating a FIR filter.");
@@ -905,7 +930,7 @@ void UI_FIRFilterDialog::pm_paramtable_rowcount_changed()
 
 void UI_FIRFilterDialog::pm_design_button_pressed()
 {
-  int i,
+  int i, len,
       err=0,
       idx=0,
       buf_sz=10000;
@@ -1067,6 +1092,31 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
 
     if(str)
     {
+      len = 512;
+      len -= snprintf(filter_description_txt_1, len,
+                      "Parks-McClellan Linear-phase equiripple taps: %i bands: %i",
+                      thrd->rz_params.tap_num , thrd->rz_params.band_num);
+
+      for(i=0; i<thrd->rz_params.band_num; i++)
+      {
+        if(dblcmp(thrd->rz_params.gain[i], 0))
+        {
+          len -= snprintf(filter_description_txt_1 + 512 - len, len,
+                          " [Passband from: %f to: %f gain: %f ripple: %f dB]",
+                          thrd->rz_params.start_hz[i] / thrd->rz_params.sf, thrd->rz_params.stop_hz[i] / thrd->rz_params.sf, thrd->rz_params.gain[i], thrd->rz_params.ripple[i]);
+        }
+        else
+        {
+          len -= snprintf(filter_description_txt_1 + 512 - len, len,
+                          " [Stopband from: %f to: %f atten.: %f dB]",
+                          thrd->rz_params.start_hz[i] / thrd->rz_params.sf, thrd->rz_params.stop_hz[i] / thrd->rz_params.sf, thrd->rz_params.ripple[i]);
+        }
+      }
+
+      len -= snprintf(filter_description_txt_1 + 512 - len, len, " (normalized)");
+
+      remove_trailing_zeros(filter_description_txt_1);
+
       textEdit->appendPlainText(str);
     }
 
@@ -1223,6 +1273,29 @@ void UI_FIRFilterDialog::sinc_design_button_pressed()
 
   if(str)
   {
+    switch(sinc_type)
+    {
+      case 0 : snprintf(filter_description_txt_1, 512,
+               "Windowed Sinc Linear-phase Flat passband Highpass taps: %i cutoff: %f transition bandwidth: %f (normalized)",
+               sinc_n_taps, sinc_cutoff1 / sinc_sf, sinc_tr_bw / sinc_sf);
+               break;
+      case 1 : snprintf(filter_description_txt_1, 512,
+               "Windowed Sinc Linear-phase Flat passband Lowpass taps: %i cutoff: %f transition bandwidth: %f (normalized)",
+               sinc_n_taps, sinc_cutoff1 / sinc_sf, sinc_tr_bw / sinc_sf);
+               break;
+      case 2 : snprintf(filter_description_txt_1, 512,
+               "Windowed Sinc Linear-phase Flat passband Bandpass taps: %i cutoff 1: %f cutoff 2: %f transition bandwidth: %f (normalized)",
+               sinc_n_taps, sinc_cutoff1 / sinc_sf, sinc_cutoff2 / sinc_sf, sinc_tr_bw / sinc_sf);
+               break;
+      case 3 : snprintf(filter_description_txt_1, 512,
+               "Windowed Sinc Linear-phase Flat passband Bandstop taps: %i cutoff 1: %f cutoff 2: %f transition bandwidth: %f (normalized)",
+               sinc_n_taps, sinc_cutoff1 / sinc_sf, sinc_cutoff2 / sinc_sf, sinc_tr_bw / sinc_sf);
+               break;
+      default: break;
+    }
+
+    remove_trailing_zeros(filter_description_txt_1);
+
     textEdit->appendPlainText(str);
   }
 

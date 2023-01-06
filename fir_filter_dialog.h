@@ -114,7 +114,8 @@ QPlainTextEdit *textEdit;
 
 QLabel         *listlabel,
                *varsLabel,
-               *freqresplabel;
+               *freqresplabel,
+               *filt_descr_label;
 
 QSpinBox       *db_min_spinbox,
                *db_max_spinbox;
@@ -145,7 +146,9 @@ double *taps,
 
 char *textbuf,
      *recent_opendir,
-     *recent_savedir;
+     *recent_savedir,
+     filter_description_txt_1[512],
+     filter_description_txt_2[512];
 
 int pm_add_table_row(void);
 

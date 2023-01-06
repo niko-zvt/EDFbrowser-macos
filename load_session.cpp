@@ -77,7 +77,7 @@ int UI_Mainwindow::read_session_file(const char *path_session)
          ripple=1.0,
          velocity=1.0,
          dthreshold,
-         fir_vars[1000];
+         *fir_vars=NULL;
 
   struct xml_handle *xml_hdl=NULL;
 
@@ -1390,6 +1390,22 @@ int UI_Mainwindow::read_session_file(const char *path_session)
 
     if(!xml_goto_nth_element_inside(xml_hdl, "fir_filter", 0))
     {
+      if(!xml_goto_nth_element_inside(xml_hdl, "description", 0))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return session_format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
+        }
+
+        strlcpy(str2, result, 512);
+
+        xml_go_up(xml_hdl);
+      }
+      else
+      {
+        str2[0] = 0;
+      }
+
       if(xml_goto_nth_element_inside(xml_hdl, "size", 0))
       {
         return session_format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
@@ -1399,12 +1415,18 @@ int UI_Mainwindow::read_session_file(const char *path_session)
         return session_format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
       }
       n_taps = atoi(result);
-      if((n_taps < 2) || (n_taps > 1000))
+      if((n_taps < 2) || (n_taps > 4000))
       {
         return session_format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
       }
 
       xml_go_up(xml_hdl);
+
+      fir_vars = (double *)malloc(sizeof(double) * n_taps);
+      if(fir_vars == NULL)
+      {
+        return session_format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
+      }
 
       for(r=0; r<n_taps; r++)
       {
@@ -1421,11 +1443,16 @@ int UI_Mainwindow::read_session_file(const char *path_session)
         xml_go_up(xml_hdl);
       }
 
-      newsignalcomp->fir_filter = create_fir_filter(fir_vars, n_taps);
+      newsignalcomp->fir_filter = create_fir_filter(fir_vars, n_taps, str2);
       if(newsignalcomp->fir_filter == NULL)
       {
+        free(fir_vars);
+        fir_vars = NULL;
         return session_format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
       }
+
+      free(fir_vars);
+      fir_vars = NULL;
 
       xml_go_up(xml_hdl);
     }
