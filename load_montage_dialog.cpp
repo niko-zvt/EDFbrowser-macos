@@ -1624,9 +1624,19 @@ int UI_LoadMontagewindow::LoadButtonClicked()
         return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
       }
 
-      for(r=0; r<n_taps; r++)
+      if(xml_goto_nth_element_inside(xml_hdl, "tap", 0))
       {
-        if(xml_goto_nth_element_inside(xml_hdl, "tap", r))
+        return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
+      }
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
+      }
+      fir_vars[0] = atof(result);
+
+      for(r=1; r<n_taps; r++)
+      {
+        if(xml_goto_next_element_with_same_name(xml_hdl))
         {
           return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
         }
@@ -1635,9 +1645,9 @@ int UI_LoadMontagewindow::LoadButtonClicked()
           return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
         }
         fir_vars[r] = atof(result);
-
-        xml_go_up(xml_hdl);
       }
+
+      xml_go_up(xml_hdl);
 
       newsignalcomp->fir_filter = create_fir_filter(fir_vars, n_taps, str2);
       if(newsignalcomp->fir_filter == NULL)

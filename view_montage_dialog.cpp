@@ -1039,9 +1039,21 @@ void UI_ViewMontagewindow::SelectButtonClicked()
         return;
       }
 
-      for(r=0; r<n_taps; r++)
+      if(xml_goto_nth_element_inside(xml_hdl, "tap", 0))
       {
-        if(xml_goto_nth_element_inside(xml_hdl, "tap", r))
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+      fir_vars[0] = atof(result);
+
+      for(r=1; r<n_taps; r++)
+      {
+        if(xml_goto_next_element_with_same_name(xml_hdl))
         {
           format_error(__FILE__, __LINE__, xml_hdl);
           return;
@@ -1052,9 +1064,9 @@ void UI_ViewMontagewindow::SelectButtonClicked()
           return;
         }
         fir_vars[r] = atof(result);
-
-        xml_go_up(xml_hdl);
       }
+
+      xml_go_up(xml_hdl);
 
       if(!strlen(str2))
       {
