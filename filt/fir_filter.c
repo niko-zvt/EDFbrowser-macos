@@ -39,7 +39,7 @@ struct fir_filter_settings * create_fir_filter(double *vars, int sz, const char 
 {
   struct fir_filter_settings *settings;
 
-  if((vars == NULL) || (sz < 1) || (sz > 1000))  return NULL;
+  if((vars == NULL) || (sz < 1) || (sz > 4000))  return NULL;
 
   settings = (struct fir_filter_settings *)calloc(1, sizeof(struct fir_filter_settings));
   if(settings == NULL)

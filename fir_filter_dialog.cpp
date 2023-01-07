@@ -1245,10 +1245,16 @@ void UI_FIRFilterDialog::sinc_design_button_pressed()
   }
 
   sinc_n_taps = wind_sinc(sinc_sf, sinc_type, sinc_cutoff1, sinc_cutoff2, sinc_tr_bw, &sinc_taps);
-
   if((sinc_n_taps < 4) || (sinc_taps == NULL))
   {
-    snprintf(txt_str, 512, "wind_sinc() returned error %i", sinc_n_taps);
+    if(sinc_n_taps == -7)
+    {
+      snprintf(txt_str, 512, "The resulting filter would have too many taps (>4000).\nRelax the constraints and try again");
+    }
+    else
+    {
+      snprintf(txt_str, 512, "wind_sinc() returned error %i", sinc_n_taps);
+    }
     QMessageBox::critical(firfilterdialog, "Error", txt_str);
     free(sinc_taps);
     free(str);

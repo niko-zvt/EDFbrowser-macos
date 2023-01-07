@@ -189,7 +189,14 @@ int wind_sinc(double sf, int filt_type, double cutoff1_hz, double cutoff2_hz, do
 
   if(!(num_taps % 2))  num_taps++;
 
-  if(num_taps > 5000)  return -7;
+  if(filt_type == T_FIR_TYPE_BP)
+  {
+    if(num_taps > 2000)  return -7;
+  }
+  else
+  {
+    if(num_taps > 4000)  return -7;
+  }
 
   *taps1 = (double *)malloc(sizeof(double) * num_taps);
   if(*taps1 == NULL)  return -8;
