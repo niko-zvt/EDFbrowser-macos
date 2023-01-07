@@ -363,11 +363,11 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
       filterItem->appendRow(new QStandardItem(txtbuf));
     }
 
-    if(mainwindow->signalcomp[i]->fir_filter != NULL)
+    for(j=0; j<mainwindow->signalcomp[i]->fir_filter_cnt; j++)
     {
-      n_taps = fir_filter_size(mainwindow->signalcomp[i]->fir_filter);
+      n_taps = fir_filter_size(mainwindow->signalcomp[i]->fir_filter[j]);
 
-      if(!strlen(mainwindow->signalcomp[i]->fir_filter->label))
+      if(!strlen(mainwindow->signalcomp[i]->fir_filter[j]->label))
       {
         snprintf(txtbuf, 2048, "Custom FIR filter with %i taps", n_taps);
 
@@ -375,14 +375,14 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
       }
       else
       {
-        firfilterItem = new QStandardItem(mainwindow->signalcomp[i]->fir_filter->label);
+        firfilterItem = new QStandardItem(mainwindow->signalcomp[i]->fir_filter[j]->label);
       }
 
       filterItem->appendRow(firfilterItem);
 
       for(k=0; k<n_taps; k++)
       {
-        snprintf(txtbuf, 2048, " %.24f ", fir_filter_tap(k, mainwindow->signalcomp[i]->fir_filter));
+        snprintf(txtbuf, 2048, " %.24f ", fir_filter_tap(k, mainwindow->signalcomp[i]->fir_filter[j]));
 
         firfilterItem->appendRow(new QStandardItem(txtbuf));
       }

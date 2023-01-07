@@ -959,14 +959,14 @@ void UI_FreqSpectrumWindow::run()
         dig_value = signalcomp->fidfuncp[k](signalcomp->fidbuf[k], dig_value);
       }
 
-      if(signalcomp->fir_filter != NULL)
+      for(k=0; k<signalcomp->fir_filter_cnt; k++)
       {
         if(s==signalcomp->sample_start)
         {
-          fir_filter_restore_buf(signalcomp->fir_filter);
+          fir_filter_restore_buf(signalcomp->fir_filter[k]);
         }
 
-        dig_value = run_fir_filter(dig_value, signalcomp->fir_filter);
+        dig_value = run_fir_filter(dig_value, signalcomp->fir_filter[k]);
       }
 
       for(k=0; k<signalcomp->math_func_cnt_after; k++)

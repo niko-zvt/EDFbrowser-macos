@@ -967,7 +967,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
       if(p>80)  break;
     }
 
-    if(signalcomp[i]->fir_filter != NULL)
+    for(j=0; j<signalcomp[i]->fir_filter_cnt; j++)
     {
       p += snprintf(scratchpad + p, 4096 - p, "FIR ");
     }
@@ -1227,17 +1227,17 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
             dig_value = signalcomp[i]->fidfuncp[p](signalcomp[i]->fidbuf[p], dig_value);
           }
 
-          if(signalcomp[i]->fir_filter != NULL)
+          for(p=0; p<signalcomp[i]->fir_filter_cnt; p++)
           {
             if(smpls_written[i]==signalcomp[i]->sample_start)
             {
               if(signalcomp[i]->edfhdr->viewtime!=0)
               {
-                fir_filter_restore_buf(signalcomp[i]->fir_filter);
+                fir_filter_restore_buf(signalcomp[i]->fir_filter[p]);
               }
             }
 
-            dig_value = run_fir_filter(dig_value, signalcomp[i]->fir_filter);
+            dig_value = run_fir_filter(dig_value, signalcomp[i]->fir_filter[p]);
           }
 
           for(p=0; p<signalcomp[i]->math_func_cnt_after; p++)

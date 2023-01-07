@@ -338,7 +338,8 @@ struct signalcompblock{
         int ravg_filter_setup[MAXFILTERS];
         struct ravg_filter_settings *ravg_filter[MAXFILTERS];
         struct ecg_filter_settings *ecg_filter;
-        struct fir_filter_settings *fir_filter;
+        int fir_filter_cnt;
+        struct fir_filter_settings *fir_filter[MAXFILTERS];
         double spike_filter_velocity;
         int spike_filter_holdoff;
         struct spike_filter_settings *spike_filter;

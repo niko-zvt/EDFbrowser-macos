@@ -103,7 +103,7 @@ UI_SaveMontagewindow::UI_SaveMontagewindow(QWidget *w_parent)
 
 void UI_SaveMontagewindow::SaveButtonClicked()
 {
-  int i, j, k, n,
+  int i, j, k, n, r,
       use_index=0;
 
   char mtg_path[MAX_PATH_LENGTH];
@@ -191,6 +191,8 @@ void UI_SaveMontagewindow::SaveButtonClicked()
 
       fprintf(mtgfile, "    <ravg_filter_cnt>%i</ravg_filter_cnt>\n", mainwindow->signalcomp[i]->ravg_filter_cnt);
 
+      fprintf(mtgfile, "    <fir_filter_cnt>%i</fir_filter_cnt>\n", mainwindow->signalcomp[i]->fir_filter_cnt);
+
       for(j=0; j<mainwindow->signalcomp[i]->num_of_signals; j++)
       {
         fprintf(mtgfile, "    <signal>\n");
@@ -276,23 +278,23 @@ void UI_SaveMontagewindow::SaveButtonClicked()
         fprintf(mtgfile, "    </fidfilter>\n");
       }
 
-      if(mainwindow->signalcomp[i]->fir_filter != NULL)
+      for(j=0; j<mainwindow->signalcomp[i]->fir_filter_cnt; j++)
       {
-        k = fir_filter_size(mainwindow->signalcomp[i]->fir_filter);
+        k = fir_filter_size(mainwindow->signalcomp[i]->fir_filter[j]);
 
         fprintf(mtgfile, "    <fir_filter>\n");
 
         fprintf(mtgfile, "    <description>");
 
-        xml_fwrite_encode_entity(mtgfile, mainwindow->signalcomp[i]->fir_filter->label);
+        xml_fwrite_encode_entity(mtgfile, mainwindow->signalcomp[i]->fir_filter[j]->label);
 
         fprintf(mtgfile, "</description>\n");
 
         fprintf(mtgfile, "      <size>%i</size>\n", k);
 
-        for(j=0; j<k; j++)
+        for(r=0; r<k; r++)
         {
-          fprintf(mtgfile, "      <tap>%.24f</tap>\n", fir_filter_tap(j, mainwindow->signalcomp[i]->fir_filter));
+          fprintf(mtgfile, "      <tap>%.24f</tap>\n", fir_filter_tap(r, mainwindow->signalcomp[i]->fir_filter[j]));
         }
 
         fprintf(mtgfile, "    </fir_filter>\n");

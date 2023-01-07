@@ -390,7 +390,7 @@ void UI_Mainwindow::save_file()
 
 void UI_Mainwindow::save_session()
 {
-  int i, j, k, hdr_idx=0, sigcomp_idx=0, use_index=0, present=0, position=0, button_nr=0;
+  int i, j, k, r, hdr_idx=0, sigcomp_idx=0, use_index=0, present=0, position=0, button_nr=0;
 
   QAction *act=NULL;
 
@@ -542,6 +542,8 @@ void UI_Mainwindow::save_session()
 
     fprintf(pro_file, "    <ravg_filter_cnt>%i</ravg_filter_cnt>\n", signalcomp[i]->ravg_filter_cnt);
 
+    fprintf(pro_file, "    <fir_filter_cnt>%i</fir_filter_cnt>\n", signalcomp[i]->fir_filter_cnt);
+
     for(j=0; j<signalcomp[i]->num_of_signals; j++)
     {
       fprintf(pro_file, "    <signal>\n");
@@ -627,23 +629,23 @@ void UI_Mainwindow::save_session()
       fprintf(pro_file, "    </fidfilter>\n");
     }
 
-    if(signalcomp[i]->fir_filter != NULL)
+    for(j=0; j<signalcomp[i]->fir_filter_cnt; j++)
     {
-      k = fir_filter_size(signalcomp[i]->fir_filter);
+      k = fir_filter_size(signalcomp[i]->fir_filter[j]);
 
       fprintf(pro_file, "    <fir_filter>\n");
 
-      fprintf(pro_file, "    <description>");
+      fprintf(pro_file, "      <description>");
 
-      xml_fwrite_encode_entity(pro_file, signalcomp[i]->fir_filter->label);
+      xml_fwrite_encode_entity(pro_file, signalcomp[i]->fir_filter[j]->label);
 
       fprintf(pro_file, "</description>\n");
 
       fprintf(pro_file, "      <size>%i</size>\n", k);
 
-      for(j=0; j<k; j++)
+      for(r=0; r<k; r++)
       {
-        fprintf(pro_file, "      <tap>%.24f</tap>\n", fir_filter_tap(j, signalcomp[i]->fir_filter));
+        fprintf(pro_file, "      <tap>%.24f</tap>\n", fir_filter_tap(r, signalcomp[i]->fir_filter[j]));
       }
 
       fprintf(pro_file, "    </fir_filter>\n");
@@ -2961,12 +2963,14 @@ void UI_Mainwindow::remove_all_filters()
 
     signalcomp[i]->ravg_filter_cnt = 0;
 
-    if(signalcomp[i]->fir_filter != NULL)
+    for(j=0; j<signalcomp[i]->fir_filter_cnt; j++)
     {
-      free_fir_filter(signalcomp[i]->fir_filter);
+      free_fir_filter(signalcomp[i]->fir_filter[j]);
 
-      signalcomp[i]->fir_filter = NULL;
+      signalcomp[i]->fir_filter[j] = NULL;
     }
+
+    signalcomp[i]->fir_filter_cnt = 0;
 
     if(signalcomp[i]->ecg_filter != NULL)
     {
@@ -3070,21 +3074,23 @@ void UI_Mainwindow::remove_all_plif_eeg_filters()
 
 void UI_Mainwindow::remove_all_fir_filters()
 {
-  int i,
+  int i, j,
       update_scr=0;
 
   if(!files_open)  return;
 
   for(i=0; i<signalcomps; i++)
   {
-    if(signalcomp[i]->fir_filter)
+    for(j=0; j<signalcomp[i]->fir_filter_cnt; j++)
     {
-      free_fir_filter(signalcomp[i]->fir_filter);
+      free_fir_filter(signalcomp[i]->fir_filter[j]);
 
-      signalcomp[i]->fir_filter = NULL;
+      signalcomp[i]->fir_filter[j] = NULL;
 
       update_scr = 1;
     }
+
+    signalcomp[i]->fir_filter_cnt = 0;
   }
 
   if(update_scr)
@@ -3438,12 +3444,14 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
 
       signalcomp[j]->ravg_filter_cnt = 0;
 
-      if(signalcomp[j]->fir_filter != NULL)
+      for(k=0; k<signalcomp[j]->fir_filter_cnt; k++)
       {
-        free_fir_filter(signalcomp[j]->fir_filter);
+        free_fir_filter(signalcomp[j]->fir_filter[k]);
 
-        signalcomp[j]->fir_filter = NULL;
+        signalcomp[j]->fir_filter[k] = NULL;
       }
+
+      signalcomp[j]->fir_filter_cnt = 0;
 
       if(signalcomp[j]->ecg_filter != NULL)
       {
@@ -5301,10 +5309,10 @@ struct signalcompblock * UI_Mainwindow::create_signalcomp_copy(struct signalcomp
     }
   }
 
-  if(original_signalcomp->fir_filter != NULL)
+  for(i=0; i<newsignalcomp->fir_filter_cnt; i++)
   {
-    newsignalcomp->fir_filter = create_fir_filter_copy(original_signalcomp->fir_filter);
-    if(newsignalcomp->fir_filter == NULL)
+    newsignalcomp->fir_filter[i] = create_fir_filter_copy(original_signalcomp->fir_filter[i]);
+    if(newsignalcomp->fir_filter[i] == NULL)
     {
       QMessageBox::critical(this, "Error", "malloc() error");
       free(newsignalcomp);
@@ -5726,12 +5734,14 @@ void UI_Mainwindow::remove_signalcomp(int signal_nr)
 
   signalcomp[signal_nr]->ravg_filter_cnt = 0;
 
-  if(signalcomp[signal_nr]->fir_filter != NULL)
+  for(j=0; j<signalcomp[signal_nr]->fir_filter_cnt; j++)
   {
-    free_fir_filter(signalcomp[signal_nr]->fir_filter);
+    free_fir_filter(signalcomp[signal_nr]->fir_filter[j]);
 
-    signalcomp[signal_nr]->fir_filter = NULL;
+    signalcomp[signal_nr]->fir_filter[j] = NULL;
   }
+
+  signalcomp[signal_nr]->fir_filter_cnt = 0;
 
   if(signalcomp[signal_nr]->ecg_filter != NULL)
   {

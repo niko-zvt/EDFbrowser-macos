@@ -125,6 +125,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       math_func_cnt_before=0,
       math_func_cnt_after=0,
       ravg_filter_cnt=0,
+      fir_filter_cnt=0,
       fidfilter_cnt=0,
       order=1,
       type=0,
@@ -287,13 +288,6 @@ int UI_LoadMontagewindow::LoadButtonClicked()
         mainwindow->signalcomp[k]->spike_filter = NULL;
       }
 
-      if(mainwindow->signalcomp[k]->fir_filter)
-      {
-        free_fir_filter(mainwindow->signalcomp[k]->fir_filter);
-
-        mainwindow->signalcomp[k]->fir_filter = NULL;
-      }
-
       for(i=0; i<mainwindow->signalcomp[k]->filter_cnt; i++)
       {
         free(mainwindow->signalcomp[k]->filter[i]);
@@ -321,6 +315,13 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       }
 
       mainwindow->signalcomp[k]->ravg_filter_cnt = 0;
+
+      for(i=0; i<mainwindow->signalcomp[k]->fir_filter_cnt; i++)
+      {
+        free_fir_filter(mainwindow->signalcomp[k]->fir_filter[i]);
+      }
+
+      mainwindow->signalcomp[k]->fir_filter_cnt = 0;
 
       for(i=0; i<mainwindow->signalcomp[k]->fidfilter_cnt; i++)
       {
@@ -446,12 +447,12 @@ int UI_LoadMontagewindow::LoadButtonClicked()
     newsignalcomp->math_func_cnt_after = 0;
     newsignalcomp->filter_cnt = 0;
     newsignalcomp->ravg_filter_cnt = 0;
+    newsignalcomp->fir_filter_cnt = 0;
     newsignalcomp->plif_ecg_filter = NULL;
     newsignalcomp->plif_ecg_filter_sav = NULL;
     newsignalcomp->plif_eeg_filter = NULL;
     newsignalcomp->plif_eeg_filter_sav = NULL;
     newsignalcomp->ecg_filter = NULL;
-    newsignalcomp->fir_filter = NULL;
     newsignalcomp->fidfilter_cnt = 0;
     newsignalcomp->hasruler = 0;
     newsignalcomp->polarity = 1;
@@ -586,6 +587,19 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       ravg_filter_cnt = atoi(result);
       if(ravg_filter_cnt < 0)  ravg_filter_cnt = 0;
       if(ravg_filter_cnt > MAXFILTERS)  ravg_filter_cnt = MAXFILTERS;
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(!(xml_goto_nth_element_inside(xml_hdl, "fir_filter_cnt", 0)))
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
+      }
+      fir_filter_cnt = atoi(result);
+      if(fir_filter_cnt < 0)  fir_filter_cnt = 0;
+      if(fir_filter_cnt > MAXFILTERS)  fir_filter_cnt = MAXFILTERS;
 
       xml_go_up(xml_hdl);
     }
@@ -1584,8 +1598,13 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       xml_go_up(xml_hdl);
     }
 
-    if(!xml_goto_nth_element_inside(xml_hdl, "fir_filter", 0))
+    for(filters_read=0; filters_read<fir_filter_cnt; filters_read++)
     {
+      if(xml_goto_nth_element_inside(xml_hdl, "fir_filter", filters_read))
+      {
+        return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
+      }
+
       if(!xml_goto_nth_element_inside(xml_hdl, "description", 0))
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
@@ -1649,11 +1668,13 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
       xml_go_up(xml_hdl);
 
-      newsignalcomp->fir_filter = create_fir_filter(fir_vars, n_taps, str2);
-      if(newsignalcomp->fir_filter == NULL)
+      newsignalcomp->fir_filter[filters_read] = create_fir_filter(fir_vars, n_taps, str2);
+      if(newsignalcomp->fir_filter[filters_read] == NULL)
       {
         return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
       }
+
+      newsignalcomp->fir_filter_cnt++;
 
       free(fir_vars);
       fir_vars = NULL;

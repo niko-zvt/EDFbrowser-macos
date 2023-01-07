@@ -2109,21 +2109,21 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           dig_value = signalcomp[i]->fidfuncp[k](signalcomp[i]->fidbuf[k], dig_value);
         }
 
-        if(signalcomp[i]->fir_filter != NULL)
+        for(k=0; k<signalcomp[i]->fir_filter_cnt; k++)
         {
           if(s==signalcomp[i]->sample_start)
           {
             if(signalcomp[i]->edfhdr->viewtime<=0)
             {
-              reset_fir_filter(0, signalcomp[i]->fir_filter);
+              reset_fir_filter(0, signalcomp[i]->fir_filter[k]);
             }
             else
             {
-              fir_filter_restore_buf(signalcomp[i]->fir_filter);
+              fir_filter_restore_buf(signalcomp[i]->fir_filter[k]);
             }
           }
 
-          dig_value = run_fir_filter(dig_value, signalcomp[i]->fir_filter);
+          dig_value = run_fir_filter(dig_value, signalcomp[i]->fir_filter[k]);
         }
 
         for(k=0; k<signalcomp[i]->math_func_cnt_after; k++)
@@ -2673,21 +2673,21 @@ void drawCurve_stage_1_thread::run()
         dig_value = signalcomp->fidfuncp[k](signalcomp->fidbuf[k], dig_value);
       }
 
-      if(signalcomp->fir_filter != NULL)
+      for(k=0; k<signalcomp->fir_filter_cnt; k++)
       {
         if(s==signalcomp->sample_start)
         {
           if(signalcomp->edfhdr->viewtime<=0)
           {
-            reset_fir_filter(0, signalcomp->fir_filter);
+            reset_fir_filter(0, signalcomp->fir_filter[k]);
           }
           else
           {
-            fir_filter_restore_buf(signalcomp->fir_filter);
+            fir_filter_restore_buf(signalcomp->fir_filter[k]);
           }
         }
 
-        dig_value = run_fir_filter(dig_value, signalcomp->fir_filter);
+        dig_value = run_fir_filter(dig_value, signalcomp->fir_filter[k]);
       }
 
       for(k=0; k<signalcomp->math_func_cnt_after; k++)
@@ -3046,7 +3046,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   sidemenuButton7->setText("Z-EEG");
 
   sidemenuButton8 = new QPushButton;
-  sidemenuButton8->setText("Remove filter");
+  sidemenuButton8->setText("Remove filters");
 
   sidemenuButton9 = new QPushButton;
   sidemenuButton9->setText("Remove signal");
@@ -3642,12 +3642,12 @@ void ViewCurve::RemovefilterButton()
 
   mainwindow->signalcomp[signal_nr]->ravg_filter_cnt = 0;
 
-  if(mainwindow->signalcomp[signal_nr]->fir_filter != NULL)
+  for(j=0; j<mainwindow->signalcomp[signal_nr]->fir_filter_cnt; j++)
   {
-    free_fir_filter(mainwindow->signalcomp[signal_nr]->fir_filter);
-
-    mainwindow->signalcomp[signal_nr]->fir_filter = NULL;
+    free_fir_filter(mainwindow->signalcomp[signal_nr]->fir_filter[j]);
   }
+
+  mainwindow->signalcomp[signal_nr]->fir_filter_cnt = 0;
 
   if(mainwindow->signalcomp[signal_nr]->ecg_filter != NULL)
   {

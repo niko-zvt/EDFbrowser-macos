@@ -103,6 +103,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       math_func_pk_hold_smpls=0,
       spike_filter_cnt=0,
       ravg_filter_cnt=0,
+      fir_filter_cnt=0,
       fidfilter_cnt=0,
       islpf,
       signalcomps,
@@ -316,6 +317,17 @@ void UI_ViewMontagewindow::SelectButtonClicked()
         return;
       }
       ravg_filter_cnt = atoi(result);
+      xml_go_up(xml_hdl);
+    }
+
+    if(!(xml_goto_nth_element_inside(xml_hdl, "fir_filter_cnt", 0)))
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+      fir_filter_cnt = atoi(result);
       xml_go_up(xml_hdl);
     }
 
@@ -994,8 +1006,14 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       xml_go_up(xml_hdl);
     }
 
-    if(!xml_goto_nth_element_inside(xml_hdl, "fir_filter", 0))
+    for(filters_read=0; filters_read<fir_filter_cnt; filters_read++)
     {
+      if(xml_goto_nth_element_inside(xml_hdl, "fir_filter", filters_read))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
       if(!xml_goto_nth_element_inside(xml_hdl, "description", 0))
       {
         if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))

@@ -427,9 +427,9 @@ int FilteredBlockReadClass::process_signalcomp(int datarecord_or_sample_start)
         dig_value = signalcomp->fidfuncp[k](signalcomp->fidbuf[k], dig_value);
       }
 
-      if(signalcomp->fir_filter)
+      for(k=0; k<signalcomp->fir_filter_cnt; k++)
       {
-        dig_value = run_fir_filter(dig_value, signalcomp->fir_filter);
+        dig_value = run_fir_filter(dig_value, signalcomp->fir_filter[k]);
       }
 
       for(k=0; k<signalcomp->math_func_cnt_after; k++)

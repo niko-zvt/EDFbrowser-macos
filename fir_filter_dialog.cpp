@@ -650,17 +650,27 @@ void UI_FIRFilterDialog::ApplyButtonClicked()
   {
     s = selectedlist.at(i)->data(Qt::UserRole).toInt();
 
-    if(mainwindow->signalcomp[s]->fir_filter)
+    if(mainwindow->signalcomp[s]->fir_filter_cnt >= MAXFILTERS)
     {
-      free_fir_filter(mainwindow->signalcomp[s]->fir_filter);
-
-      mainwindow->signalcomp[s]->fir_filter = NULL;
+      QMessageBox::critical(firfilterdialog, "Error",
+                            "The maximum amount of FIR filters per signal has been reached.\n"
+                            "Remove some FIR filters first.");
+      return;
     }
+  }
 
-    mainwindow->signalcomp[s]->fir_filter = create_fir_filter(taps, n_taps, filter_description_txt_2);
-    if(mainwindow->signalcomp[s]->fir_filter == NULL)
+  for(i=0; i<n; i++)
+  {
+    s = selectedlist.at(i)->data(Qt::UserRole).toInt();
+
+    mainwindow->signalcomp[s]->fir_filter[mainwindow->signalcomp[s]->fir_filter_cnt] = create_fir_filter(taps, n_taps, filter_description_txt_2);
+    if(mainwindow->signalcomp[s]->fir_filter[mainwindow->signalcomp[s]->fir_filter_cnt] == NULL)
     {
       QMessageBox::critical(firfilterdialog, "Error", "An error occurred while creating a FIR filter.");
+    }
+    else
+    {
+      mainwindow->signalcomp[s]->fir_filter_cnt++;
     }
   }
 
