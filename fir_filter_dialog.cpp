@@ -30,7 +30,7 @@
 
 
 #define FIR_FILTER_MAX_MEAS_PNTS     (10000)
-#define FIR_FILTER_MAX_TAPS           (5000)
+#define FIR_FILTER_MAX_TAPS           (4000)
 #define FIR_FILTER_MAX_BUFSZ        (100000)
 
 
