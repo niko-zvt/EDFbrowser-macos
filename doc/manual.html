@@ -889,7 +889,14 @@
   - Click on the "Design" button.If there are no errors in the parameters, the coefficients will be calculated<br>
     and shown together with the filters' response curve.<br>
   - Select and highlight with the mouse the signals which you want to apply the filter to.<br>
-  - Click on the "Apply" button.
+  - Click on the "Apply" button.<br>
+<br>
+  Note: A filter "tap" is simply a coefficient/delay pair. The number of taps is an indication of:<br>
+  - the amount of memory required to implement the filter<br>
+  - the number of calculations required<br>
+  - the amount of "filtering" the filter can do; in effect, more taps means more stopband attenuation, less ripple, narrower filters, etc.<br>
+<br>
+  Warning: using a FIR filter with many taps can slow down the processing considerably.<br>
 </p>
 
 <p><br></p>
