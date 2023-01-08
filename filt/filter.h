@@ -54,15 +54,15 @@ typedef struct
   double cutoff_frequency;
   int is_LPF;
   int first_sample;
-} filt_set_t;
+} filtset_t;
 
 
 
-filt_set_t * create_filter(int, double, double);
-void reset_filter(double, filt_set_t *);
-double first_order_filter(double, filt_set_t *);
+filtset_t * create_filter(int, double, double);
+void reset_filter(double, filtset_t *);
+double first_order_filter(double, filtset_t *);
 double get_filter_factor(double, double);
-filt_set_t * create_filter_copy(filt_set_t *);
+filtset_t * create_filter_copy(filtset_t *);
 
 
 #ifdef __cplusplus

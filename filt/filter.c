@@ -31,11 +31,11 @@
 
 
 
-filt_set_t * create_filter(int is_LPF, double cutoff_frequency, double sample_frequency)
+filtset_t * create_filter(int is_LPF, double cutoff_frequency, double sample_frequency)
 {
-  filt_set_t *settings;
+  filtset_t *settings;
 
-  settings = (filt_set_t *) calloc(1, sizeof(filt_set_t));
+  settings = (filtset_t *) calloc(1, sizeof(filtset_t));
   if(settings==NULL)  return NULL;
 
   settings->is_LPF = is_LPF;
@@ -50,22 +50,22 @@ filt_set_t * create_filter(int is_LPF, double cutoff_frequency, double sample_fr
 }
 
 
-filt_set_t * create_filter_copy(filt_set_t *src)
+filtset_t * create_filter_copy(filtset_t *src)
 {
-  filt_set_t *settings;
+  filtset_t *settings;
 
-  settings = (filt_set_t *)calloc(1, sizeof(filt_set_t));
+  settings = (filtset_t *)calloc(1, sizeof(filtset_t));
   if(settings==NULL)
   {
     return NULL;
   }
-  memcpy(settings, src, sizeof(filt_set_t));
+  memcpy(settings, src, sizeof(filtset_t));
 
   return settings;
 }
 
 
-void reset_filter(double offset, filt_set_t *settings)
+void reset_filter(double offset, filtset_t *settings)
 {
   settings->first_sample = 0;
   settings->old_input = offset;
@@ -80,7 +80,7 @@ void reset_filter(double offset, filt_set_t *settings)
 }
 
 
-double first_order_filter(double new_input, filt_set_t *settings)
+double first_order_filter(double new_input, filtset_t *settings)
 {
   double new_output;
 

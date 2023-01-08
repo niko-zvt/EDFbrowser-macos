@@ -93,7 +93,7 @@ FILE *inputfile,
 
 edfhdrblck_t *edfhdr;
 
-filt_set_t *filterlist[MAXSIGNALS];
+filtset_t *filterlist[MAXSIGNALS];
 
 void showpopupmessage(const char *, const char *);
 

@@ -309,7 +309,7 @@ typedef struct
   int prefilter_reset_sample;
   double filterpreset_a[MAXFILTERS];
   double filterpreset_b[MAXFILTERS];
-  filt_set_t *filter[MAXFILTERS];
+  filtset_t *filter[MAXFILTERS];
   mathfuncset_t *math_func_before[MAXMATHFUNCS];
   mathfuncset_t *math_func_after[MAXMATHFUNCS];
   int max_dig_value;
