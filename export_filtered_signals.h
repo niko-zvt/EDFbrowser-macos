@@ -100,7 +100,7 @@ char  inputpath[MAX_PATH_LENGTH],
 FILE *inputfile,
      *outputfile;
 
-struct edfhdrblock *edfhdr;
+edfhdrblck *edfhdr;
 
 void showpopupmessage(const char *, const char *);
 

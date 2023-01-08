@@ -361,9 +361,9 @@ long long annot_editor_user_button_epoch_len,
 
   struct raw2edf_var_struct raw2edf_var;
 
-  struct edfhdrblock *edfheaderlist[MAXFILES];
+  edfhdrblck *edfheaderlist[MAXFILES];
 
-  struct signalcompblock *signalcomp[MAXSIGNALS];
+  sigcompblck *signalcomp[MAXSIGNALS];
 
   struct zoomhistoryblock *zoomhistory;
 
@@ -401,7 +401,7 @@ long long annot_editor_user_button_epoch_len,
 
   void setup_viewbuf();
 
-  void setMainwindowTitle(struct edfhdrblock *);
+  void setMainwindowTitle(edfhdrblck *);
 
   int file_is_opened(const char *);
 
@@ -411,13 +411,13 @@ long long annot_editor_user_button_epoch_len,
 
   void annot_dock_updated(void);
 
-  int get_filenum(struct edfhdrblock *);
+  int get_filenum(edfhdrblck *);
 
-  void get_unique_annotations(struct edfhdrblock *);
+  void get_unique_annotations(edfhdrblck *);
 
-  struct signalcompblock * create_signalcomp_copy(struct signalcompblock *);
+  sigcompblck * create_signalcomp_copy(sigcompblck *);
 
-  void enable_hrv_stats_toolbar(const char *, struct annotation_list *, struct signalcompblock *);
+  void enable_hrv_stats_toolbar(const char *, struct annotation_list *, sigcompblck *);
 
   void remove_signalcomp(int);
 
@@ -615,8 +615,8 @@ private:
   void read_general_settings();
   void write_settings();
   int read_session_file(const char *);
-  int session_format_error(const char *, int, struct signalcompblock *, struct xml_handle *);
-  long long check_edf_file_datarecords(struct edfhdrblock *);
+  int session_format_error(const char *, int, sigcompblck *, struct xml_handle *);
+  long long check_edf_file_datarecords(edfhdrblck *);
   void mpr_write(const char *);
   int mpr_read(char *, int);
   int parse_rc_command(const char *, char [CMD_MAX_SUB_CMDS][CMD_PARSE_STR_LEN], int *, char *, int);

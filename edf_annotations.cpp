@@ -36,7 +36,7 @@ static void process_events(void)
 }
 
 
-int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_trigger_signal)
+int EDF_annotations::get_annotations(edfhdrblck *edf_hdr, int read_nk_trigger_signal)
 {
   int i, j, k, p, r=0, n,
       edfsignals,
@@ -81,7 +81,7 @@ int EDF_annotations::get_annotations(struct edfhdrblock *edf_hdr, int read_nk_tr
 
   FILE *inputfile;
 
-  struct edfparamblock *edfparam;
+  edf_par *edfparam;
 
   struct annotationblock annotblock;
 

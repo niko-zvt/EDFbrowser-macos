@@ -127,8 +127,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
 
   FILE *inputfile;
 
-  struct edfparamblock *edfparam;
-
+  edf_par *edfparam;
 
 
   if(!mainwindow->files_open)

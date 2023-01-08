@@ -30,7 +30,7 @@
 
 
 
-int BDF_triggers::get_triggers(struct edfhdrblock *hdr)
+int BDF_triggers::get_triggers(edfhdrblck *hdr)
 {
   int i, j,
       sf,

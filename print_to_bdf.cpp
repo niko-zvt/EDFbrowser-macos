@@ -78,7 +78,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
   FILE *outputfile;
 
 
-  struct signalcompblock **signalcomp;
+  sigcompblck **signalcomp;
 
   union {
           signed int one_signed;

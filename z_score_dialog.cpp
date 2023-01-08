@@ -253,10 +253,10 @@ void UI_ZScoreWindow::ZscoreDialogDestroyed(QObject *)
 
 void UI_ZScoreWindow::addTraceButtonClicked()
 {
-  struct edfhdrblock *hdr;
+  edfhdrblck *hdr;
 
-  struct signalcompblock *signalcomp,
-                         *original_signalcomp;
+  sigcompblck *signalcomp,
+              *original_signalcomp;
 
   original_signalcomp = mainwindow->signalcomp[signalnr];
 
@@ -372,9 +372,9 @@ void UI_ZScoreWindow::startButtonClicked()
          power_neg,
          power_pos;
 
-  struct edfhdrblock *hdr=NULL;
+  edfhdrblck *hdr=NULL;
 
-  struct signalcompblock *signalcomp=NULL;
+  sigcompblck *signalcomp=NULL;
 
 
   curve1->clear();
@@ -955,7 +955,7 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
 
   struct annotationblock annotation;
 
-  struct edfhdrblock *edf_hdr = mainwindow->signalcomp[signalnr]->edfhdr;
+  edfhdrblck *edf_hdr = mainwindow->signalcomp[signalnr]->edfhdr;
 
   if((epoch_cntr < 2) || (zscore_pages < 1))
   {

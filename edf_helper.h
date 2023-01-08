@@ -40,8 +40,8 @@
 extern "C" {
 #endif
 
-int edfplus_annotation_get_tal_timestamp_digit_cnt(struct edfhdrblock *);
-int edfplus_annotation_get_tal_timestamp_decimal_cnt(struct edfhdrblock *);
+int edfplus_annotation_get_tal_timestamp_digit_cnt(edfhdrblck *);
+int edfplus_annotation_get_tal_timestamp_decimal_cnt(edfhdrblck *);
 int strip_types_from_label(char *);
 int utc_to_edf_startdate(long long, char *);
 int to_edf_startdate(int, int, int, char *);

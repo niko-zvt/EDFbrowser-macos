@@ -53,7 +53,7 @@ class UI_aeeg_window : public QObject
   Q_OBJECT
 
 public:
-  UI_aeeg_window(QWidget *, struct signalcompblock *, int, struct aeeg_dock_param_struct *p_par=NULL);
+  UI_aeeg_window(QWidget *, sigcompblck *, int, struct aeeg_dock_param_struct *p_par=NULL);
 
   UI_Mainwindow  *mainwindow;
 
@@ -61,7 +61,7 @@ private:
 
   int sf, aeeg_instance_nr;
 
-  struct signalcompblock *signalcomp;
+  sigcompblck *signalcomp;
 
   struct aeeg_dock_param_struct *no_dialog_params;
 

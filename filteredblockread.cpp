@@ -41,7 +41,7 @@ struct edf_hdr_struct edfhdr;
 #endif
 
 
-double * FilteredBlockReadClass::init_signalcomp(struct signalcompblock *i_signalcomp, int datarecord_or_smpls_cnt, int skip_f, int mode, int *err_descr)
+double * FilteredBlockReadClass::init_signalcomp(sigcompblck *i_signalcomp, int datarecord_or_smpls_cnt, int skip_f, int mode, int *err_descr)
 {
   skip_filters = skip_f;
 

@@ -57,7 +57,7 @@ class UI_AverageCurveWindow : public QWidget
   Q_OBJECT
 
 public:
-  UI_AverageCurveWindow(struct signalcompblock *, QWidget *, int,
+  UI_AverageCurveWindow(sigcompblck *, QWidget *, int,
                         double *,
                         double,
                         double,
@@ -74,7 +74,7 @@ public:
 
   QDialog *averager_curve_dialog;
 
-  struct signalcompblock *signalcomp;
+  sigcompblck *signalcomp;
 
 private:
 

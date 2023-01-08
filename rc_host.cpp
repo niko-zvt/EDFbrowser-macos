@@ -759,7 +759,7 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
   double value2=100,
          original_value=100;
 
-  struct signalcompblock *newsignalcomp=NULL;
+  sigcompblck *newsignalcomp=NULL;
 
   if(n_sub_cmds < 3)
   {
@@ -813,7 +813,7 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
         trim_spaces(str2);
         if(!strcmp(str2, str1))
         {
-          newsignalcomp = (struct signalcompblock *)calloc(1, sizeof(struct signalcompblock));
+          newsignalcomp = (sigcompblck *)calloc(1, sizeof(sigcompblck));
           if(newsignalcomp==NULL)  return 206;
           newsignalcomp->uid = uid_seq++;
           newsignalcomp->num_of_signals = 1;

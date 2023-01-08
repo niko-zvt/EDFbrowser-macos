@@ -31,7 +31,7 @@
 
 
 
-UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp, QWidget *w_parent, int number,
+UI_AverageCurveWindow::UI_AverageCurveWindow(sigcompblck *signal_comp, QWidget *w_parent, int number,
                                              double *abuf,
                                              double maxvalue,
                                              double minvalue,

@@ -1703,7 +1703,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   FILE *inputfile=NULL;
 
-  struct edfhdrblock *edfhdr=NULL;
+  edfhdrblck *edfhdr=NULL;
 
   struct annotationblock *annotation;
 
@@ -1854,7 +1854,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
 
   struct annotationblock annotation;
 
-  struct signalcompblock *signalcomp;
+  sigcompblck *signalcomp;
 
 
   last_description[0] = 0;

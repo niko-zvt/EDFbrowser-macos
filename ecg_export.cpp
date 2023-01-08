@@ -142,7 +142,7 @@ void UI_ECGExport::Export_RR_intervals()
             smpls_left,
             l_time=0LL;
 
-  struct signalcompblock *signalcomp;
+  sigcompblck *signalcomp;
 
 
   FILE *outputfile;

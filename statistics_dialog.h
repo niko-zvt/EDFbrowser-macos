@@ -57,7 +57,7 @@ class UI_StatisticWindow : public QObject
 
 public:
 
-UI_StatisticWindow(struct signalcompblock *,
+UI_StatisticWindow(sigcompblck *,
                    long long,
                    QWidget *,
                    struct annotation_list *annot_list=NULL,

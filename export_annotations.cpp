@@ -251,7 +251,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
   struct annotationblock *annot;
 
-  struct edfhdrblock *hdr;
+  edfhdrblck *hdr;
 
   struct date_time_struct tm;
 

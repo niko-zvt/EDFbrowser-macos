@@ -91,7 +91,7 @@ double dividerlist[MAXSIGNALS];
 FILE *inputfile,
      *outputfile;
 
-struct edfhdrblock *edfhdr;
+edfhdrblck *edfhdr;
 
 struct filter_settings *filterlist[MAXSIGNALS];
 

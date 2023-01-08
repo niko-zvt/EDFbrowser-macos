@@ -85,7 +85,7 @@ class UI_Mainwindow;
 class drawCurve_stage_1_thread : public QThread
 {
 public:
-  void init_vars(UI_Mainwindow *, struct signalcompblock **, int,
+  void init_vars(UI_Mainwindow *, sigcompblck **, int,
                  int, char *, int, int, int *, int,
                  struct graphicBufStruct *, double,
                  double, struct crossHairStruct *,
@@ -109,7 +109,7 @@ private:
 
   UI_Mainwindow *mainwindow;
 
-  struct signalcompblock *signalcomp, **signalcomp_b;
+  sigcompblck *signalcomp, **signalcomp_b;
 
   struct graphicBufStruct *graphicBuf;
 
@@ -274,7 +274,7 @@ private:
 
   drawCurve_stage_1_thread *thr[MAXSIGNALS];
 
-  inline void floating_ruler(QPainter *, int, int, struct signalcompblock *, int);
+  inline void floating_ruler(QPainter *, int, int, sigcompblck *, int);
 
   void backup_colors_for_printing(void);
   void restore_colors_after_printing(void);

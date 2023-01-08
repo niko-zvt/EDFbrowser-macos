@@ -82,7 +82,7 @@ int UI_Mainwindow::read_session_file(const char *path_session)
 
   struct xml_handle *xml_hdl=NULL;
 
-  struct signalcompblock *newsignalcomp=NULL;
+  sigcompblck *newsignalcomp=NULL;
 
   struct spectrumdocksettings settings[MAXSPECTRUMDOCKS];
 
@@ -272,7 +272,7 @@ int UI_Mainwindow::read_session_file(const char *path_session)
       break;
     }
 
-    newsignalcomp = (struct signalcompblock *)calloc(1, sizeof(struct signalcompblock));
+    newsignalcomp = (sigcompblck *)calloc(1, sizeof(sigcompblck));
     if(newsignalcomp==NULL)
     {
       if(!rc_cmd_in_progress)
@@ -2942,7 +2942,7 @@ int UI_Mainwindow::read_session_file(const char *path_session)
 }
 
 
-int UI_Mainwindow::session_format_error(const char *file_name, int line_number, struct signalcompblock *sigcomp, struct xml_handle *hdl)
+int UI_Mainwindow::session_format_error(const char *file_name, int line_number, sigcompblck *sigcomp, struct xml_handle *hdl)
 {
   char str[2048]="";
 

@@ -30,7 +30,7 @@
 
 
 
-struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, int txt_len, int live_stream, int import_annots_active)
+edfhdrblck * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, int txt_len, int live_stream, int import_annots_active)
 {
   int i, j, p, r=0, n,
       dotposition,
@@ -64,7 +64,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     return NULL;
   }
 
-  edfhdr = (struct edfhdrblock *)calloc(1, sizeof(struct edfhdrblock));
+  edfhdr = (edfhdrblck *)calloc(1, sizeof(edfhdrblck));
   if(edfhdr==NULL)
   {
     snprintf(txt_string, txt_len, "Memory allocation error. (edfhdr)");
@@ -612,7 +612,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
     return NULL;
   }
 
-  edfhdr->edfparam = (struct edfparamblock *)calloc(1, sizeof(struct edfparamblock[edfhdr->edfsignals]));
+  edfhdr->edfparam = (edf_par *)calloc(1, sizeof(edf_par[edfhdr->edfsignals]));
   if(edfhdr->edfparam==NULL)
   {
     snprintf(txt_string, txt_len, "Memory allocation error! (edfparam)");

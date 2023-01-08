@@ -30,7 +30,7 @@
 
 
 
-UI_AnnotationEditwindow::UI_AnnotationEditwindow(struct edfhdrblock *e_hdr, QWidget *w_parent)
+UI_AnnotationEditwindow::UI_AnnotationEditwindow(edfhdrblck *e_hdr, QWidget *w_parent)
 {
   int i;
 
@@ -286,7 +286,7 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
 
   mainwindow->annotations_edited = 1;
 
-  file_num = mainwindow->get_filenum((struct edfhdrblock *)(annot->edfhdr));
+  file_num = mainwindow->get_filenum((edfhdrblck *)(annot->edfhdr));
   if(file_num >= 0)
   {
     mainwindow->annotations_dock[file_num]->updateList(0);
@@ -329,7 +329,7 @@ void UI_AnnotationEditwindow::deleteButtonClicked()
 
   mainwindow->save_act->setEnabled(true);
 
-  file_num = mainwindow->get_filenum((struct edfhdrblock *)(annot->edfhdr));
+  file_num = mainwindow->get_filenum((edfhdrblck *)(annot->edfhdr));
   if(file_num >= 0)
   {
     mainwindow->annotations_dock[file_num]->updateList(0);
@@ -387,7 +387,7 @@ void UI_AnnotationEditwindow::createButtonClicked()
 
   mainwindow->annotations_edited = 1;
 
-  file_num = mainwindow->get_filenum((struct edfhdrblock *)(annotation.edfhdr));
+  file_num = mainwindow->get_filenum((edfhdrblck *)(annotation.edfhdr));
   if(file_num >= 0)
   {
     mainwindow->annotations_dock[file_num]->updateList(1);
@@ -464,7 +464,7 @@ void UI_AnnotationEditwindow::annotEditSetDescription(char *descr)
 }
 
 
-void UI_AnnotationEditwindow::set_edf_header(struct edfhdrblock *e_hdr)
+void UI_AnnotationEditwindow::set_edf_header(edfhdrblck *e_hdr)
 {
   edf_hdr = e_hdr;
 }
@@ -496,7 +496,7 @@ void UI_AnnotationEditwindow::set_selected_annotation(int annot_nr)
 
   annot_descript_lineEdit->setText(QString::fromUtf8(annot->description));
 
-  l_tmp = annot->onset - ((struct edfhdrblock *)(annot->edfhdr))->starttime_offset;
+  l_tmp = annot->onset - ((edfhdrblck *)(annot->edfhdr))->starttime_offset;
 
   if(l_tmp < 0LL)
   {
@@ -567,7 +567,7 @@ void UI_AnnotationEditwindow::set_selected_annotation(struct annotationblock *an
 
   annot_descript_lineEdit->setText(QString::fromUtf8(annot->description));
 
-  l_tmp = annot->onset - ((struct edfhdrblock *)(annot->edfhdr))->starttime_offset;
+  l_tmp = annot->onset - ((edfhdrblck *)(annot->edfhdr))->starttime_offset;
 
   if(l_tmp < 0LL)
   {

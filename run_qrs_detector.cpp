@@ -30,7 +30,7 @@
 
 
 
-UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, struct signalcompblock *signalcomp_)
+UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, sigcompblck *signalcomp_)
 {
   int i,
       sense=1,

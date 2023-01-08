@@ -59,7 +59,7 @@ class AdjustFilterSettings : public QObject
 
 public:
 
-AdjustFilterSettings(struct signalcompblock *, QWidget *);
+AdjustFilterSettings(sigcompblck *, QWidget *);
 
 
 private:
@@ -76,7 +76,7 @@ double frequency1,
        frequency2,
        ripple;
 
-struct signalcompblock * signalcomp;
+sigcompblck * signalcomp;
 
 UI_Mainwindow  *mainwindow;
 

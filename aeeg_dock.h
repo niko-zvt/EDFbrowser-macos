@@ -47,7 +47,7 @@ class aeeg_curve_widget;
 
 struct aeeg_dock_param_struct
 {
-  struct signalcompblock *signalcomp;
+  sigcompblck *signalcomp;
   int sf;
   double bp_min_hz;
   double bp_max_hz;

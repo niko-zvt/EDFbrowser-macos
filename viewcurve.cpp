@@ -537,7 +537,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
       h_size,
       signallabel_strlen=1;
 
-  struct signalcompblock **signalcomp;
+  sigcompblck **signalcomp;
 
   if(!mainwindow->files_open)  return;
   if(!mainwindow->signalcomps)  return;
@@ -650,7 +650,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
               if(QApplication::keyboardModifiers() == Qt::ShiftModifier)
               {
-                edfplus_annotation_cancel_all_selected_in_dock(&((edfhdrblock *)(active_markers->list[i]->edfhdr))->annot_list);
+                edfplus_annotation_cancel_all_selected_in_dock(&((edfhdrblck *)(active_markers->list[i]->edfhdr))->annot_list);
 
                 active_markers->list[i]->selected_in_dock = 1;
 
@@ -822,7 +822,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
   double v_zoomfactor=1;
 
-  struct signalcompblock **signalcomp;
+  sigcompblck **signalcomp;
 
   if(!mainwindow->files_open)  return;
   if(!mainwindow->signalcomps)  return;
@@ -873,7 +873,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
       active_markers->list[active_markers->selected]->grabbed = 1;
 
-      edfplus_annotation_cancel_all_selected_in_dock(&((edfhdrblock *)(active_markers->list[active_markers->selected]->edfhdr))->annot_list);
+      edfplus_annotation_cancel_all_selected_in_dock(&((edfhdrblck *)(active_markers->list[active_markers->selected]->edfhdr))->annot_list);
 
       active_markers->list[active_markers->selected]->selected_in_dock = 1;
 
@@ -1091,7 +1091,7 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
 
   double d_temp;
 
-  struct signalcompblock **signalcomp;
+  sigcompblck **signalcomp;
 
   if(!mainwindow->files_open)  return;
   if(!mainwindow->signalcomps)  return;
@@ -1764,7 +1764,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
   double dig_value=0,
          f_tmp=0;
 
-  struct signalcompblock **signalcomp;
+  sigcompblck **signalcomp;
 
   union {
           unsigned int one;
@@ -2415,7 +2415,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 }
 
 
-void drawCurve_stage_1_thread::init_vars(UI_Mainwindow *mainwindow_a, struct signalcompblock **signalcomp_a, int i_a,
+void drawCurve_stage_1_thread::init_vars(UI_Mainwindow *mainwindow_a, sigcompblck **signalcomp_a, int i_a,
                                          int signalcomps_a, char *viewbuf_a, int w_a, int h_a, int *screensamples_a, int printing_a,
                                          struct graphicBufStruct *graphicBuf_a, double printsize_x_factor_a,
                                          double printsize_y_factor_a, struct crossHairStruct *crosshair_1_a,
@@ -3168,7 +3168,7 @@ void ViewCurve::ECGdetectButton()
 
   char str[32]={""};
 
-  struct signalcompblock *newsignalcomp;
+  sigcompblck *newsignalcomp;
 
   sidemenu->close();
 
@@ -3981,7 +3981,7 @@ void ViewCurve::select_annot(bool)
     return;
   }
 
-  edfplus_annotation_cancel_all_selected_in_dock(&((edfhdrblock *)(active_markers->list[idx]->edfhdr))->annot_list);
+  edfplus_annotation_cancel_all_selected_in_dock(&((edfhdrblck *)(active_markers->list[idx]->edfhdr))->annot_list);
 
   for(i=0; i<active_markers->count; i++)
   {
@@ -3995,7 +3995,7 @@ void ViewCurve::select_annot(bool)
     }
   }
 
-  mainwindow->annotations_dock[mainwindow->get_filenum((edfhdrblock *)(active_markers->list[idx]->edfhdr))]->updateList(1);
+  mainwindow->annotations_dock[mainwindow->get_filenum((edfhdrblck *)(active_markers->list[idx]->edfhdr))]->updateList(1);
 }
 
 

@@ -44,7 +44,7 @@ static const char edf_label_types[EDF_LABEL_TYPE_NUM][32]=
 };
 
 
-int edfplus_annotation_get_tal_timestamp_digit_cnt(struct edfhdrblock *hdr)
+int edfplus_annotation_get_tal_timestamp_digit_cnt(edfhdrblck *hdr)
 {
   int timestamp_digits;
 
@@ -70,7 +70,7 @@ int edfplus_annotation_get_tal_timestamp_digit_cnt(struct edfhdrblock *hdr)
 }
 
 
-int edfplus_annotation_get_tal_timestamp_decimal_cnt(struct edfhdrblock *hdr)
+int edfplus_annotation_get_tal_timestamp_decimal_cnt(edfhdrblck *hdr)
 {
   int i, j,
       timestamp_decimals;

@@ -51,7 +51,7 @@ class EDF_annotations
 
 public:
 
-  int get_annotations(struct edfhdrblock *, int);
+  int get_annotations(edfhdrblck *, int);
 
 private:
 

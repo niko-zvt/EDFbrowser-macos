@@ -53,7 +53,7 @@ class simple_color_index;
 
 struct cdsa_dock_param_struct
 {
-  struct signalcompblock *signalcomp;
+  sigcompblck *signalcomp;
   int sf;
   int min_hz;
   int max_hz;
