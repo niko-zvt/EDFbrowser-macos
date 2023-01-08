@@ -45,23 +45,24 @@ extern "C" {
 #endif
 
 
-struct filter_settings{
-                       double old_input;
-                       double old_output;
-                       double factor;
-                       double sample_frequency;
-                       double cutoff_frequency;
-                       int    is_LPF;
-                       int first_sample;
-                      };
+typedef struct
+{
+  double old_input;
+  double old_output;
+  double factor;
+  double sample_frequency;
+  double cutoff_frequency;
+  int is_LPF;
+  int first_sample;
+} filt_set_t;
 
 
 
-struct filter_settings * create_filter(int, double, double);
-void reset_filter(double, struct filter_settings *);
-double first_order_filter(double, struct filter_settings *);
+filt_set_t * create_filter(int, double, double);
+void reset_filter(double, filt_set_t *);
+double first_order_filter(double, filt_set_t *);
 double get_filter_factor(double, double);
-struct filter_settings * create_filter_copy(struct filter_settings *);
+filt_set_t * create_filter_copy(filt_set_t *);
 
 
 #ifdef __cplusplus

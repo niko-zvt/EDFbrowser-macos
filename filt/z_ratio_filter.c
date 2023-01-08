@@ -25,25 +25,23 @@
 */
 
 
-
-
 #include "z_ratio_filter.h"
 
 
-#define ZRATIO_EPOCH_LEN 2
-#define ZRATIO_F0 0.5
-#define ZRATIO_F1 3.0
-#define ZRATIO_F3 12.0
-#define ZRATIO_F4 25.0
+#define ZRATIO_EPOCH_LEN   (2)
+#define ZRATIO_F0        (0.5)
+#define ZRATIO_F1        (3.0)
+#define ZRATIO_F3       (12.0)
+#define ZRATIO_F4       (25.0)
+
+#define ZR_TIME_DIMENSION  (10000000LL)
 
 
-
-
-struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long long long_data_record_duration, double crossoverf, double bitval)
+zratiofiltset_t * create_zratio_filter(int smp_per_record, long long long_data_record_duration, double crossoverf, double bitval)
 {
-  struct zratio_filter_settings * settings;
+  zratiofiltset_t * settings;
 
-  settings = (struct zratio_filter_settings *)calloc(1, sizeof(struct zratio_filter_settings));
+  settings = (zratiofiltset_t *)calloc(1, sizeof(zratiofiltset_t));
   if(settings == NULL)
   {
     return NULL;
@@ -53,7 +51,7 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
 
   settings->bitvalue = bitval;
 
-  settings->dftblocksize = ((long long)smp_per_record * (ZRATIO_EPOCH_LEN * TIME_DIMENSION)) / long_data_record_duration;
+  settings->dftblocksize = ((long long)smp_per_record * (ZRATIO_EPOCH_LEN * ZR_TIME_DIMENSION)) / long_data_record_duration;
 
   if(settings->dftblocksize < (ZRATIO_EPOCH_LEN * 100))
   {
@@ -61,7 +59,7 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
     return NULL;
   }
 
-  settings->samplefreq = (double)smp_per_record / ((double)long_data_record_duration / TIME_DIMENSION);
+  settings->samplefreq = (double)smp_per_record / ((double)long_data_record_duration / ZR_TIME_DIMENSION);
   if(dblcmp(settings->samplefreq, 100.0) < 0)
   {
     free(settings);
@@ -132,7 +130,7 @@ struct zratio_filter_settings * create_zratio_filter(int smp_per_record, long lo
 }
 
 
-double run_zratio_filter(double new_sample, struct zratio_filter_settings *settings)
+double run_zratio_filter(double new_sample, zratiofiltset_t *settings)
 {
   int i;
 
@@ -197,7 +195,7 @@ double run_zratio_filter(double new_sample, struct zratio_filter_settings *setti
 }
 
 
-void zratio_filter_save_buf(struct zratio_filter_settings *settings)
+void zratio_filter_save_buf(zratiofiltset_t *settings)
 {
   settings->smpls_in_inputbuf_bu = settings->smpls_in_inputbuf;
   settings->zratio_value_bu = settings->zratio_value;
@@ -205,7 +203,7 @@ void zratio_filter_save_buf(struct zratio_filter_settings *settings)
 }
 
 
-void zratio_filter_restore_buf(struct zratio_filter_settings *settings)
+void zratio_filter_restore_buf(zratiofiltset_t *settings)
 {
   settings->smpls_in_inputbuf = settings->smpls_in_inputbuf_bu;
   settings->zratio_value = settings->zratio_value_bu;
@@ -213,7 +211,7 @@ void zratio_filter_restore_buf(struct zratio_filter_settings *settings)
 }
 
 
-void free_zratio_filter(struct zratio_filter_settings *settings)
+void free_zratio_filter(zratiofiltset_t *settings)
 {
   free(settings->fft_inputbuf);
   free(settings->fft_inputbuf_bu);
@@ -224,7 +222,7 @@ void free_zratio_filter(struct zratio_filter_settings *settings)
 }
 
 
-void reset_zratio_filter(struct zratio_filter_settings *settings)
+void reset_zratio_filter(zratiofiltset_t *settings)
 {
   settings->smpls_in_inputbuf = 0;
   settings->zratio_value = 0.0;

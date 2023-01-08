@@ -38,16 +38,16 @@ static const char math_func_descr[MATH_MAX_FUNCS][32]=
 };
 
 
-struct math_func_settings * create_math_func(int func_f, int pk_smpls)
+mathfuncset_t * create_math_func(int func_f, int pk_smpls)
 {
-  struct math_func_settings *st;
+  mathfuncset_t *st;
 
   if((func_f < 0) || (func_f >= MATH_MAX_FUNCS))
   {
     return NULL;
   }
 
-  st = (struct math_func_settings *) calloc(1, sizeof(struct math_func_settings));
+  st = (mathfuncset_t *) calloc(1, sizeof(mathfuncset_t));
   if(st==NULL)  return NULL;
 
   st->func = func_f;
@@ -84,13 +84,13 @@ int get_math_func_descr(int func_f, char *dest, int sz)
 }
 
 
-void free_math_func(struct math_func_settings *st)
+void free_math_func(mathfuncset_t *st)
 {
   free(st);
 }
 
 
-double run_math_func(double val, struct math_func_settings *st)
+double run_math_func(double val, mathfuncset_t *st)
 {
   if(st->func == MATH_FUNC_SQUARE)
   {

@@ -35,13 +35,13 @@
 static void rect_to_polar(double, double, double *, double *);
 
 
-struct fir_filter_settings * create_fir_filter(double *vars, int sz, const char *label)
+firfiltset_t * create_fir_filter(double *vars, int sz, const char *label)
 {
-  struct fir_filter_settings *settings;
+  firfiltset_t *settings;
 
   if((vars == NULL) || (sz < 1) || (sz > 4000))  return NULL;
 
-  settings = (struct fir_filter_settings *)calloc(1, sizeof(struct fir_filter_settings));
+  settings = (firfiltset_t *)calloc(1, sizeof(firfiltset_t));
   if(settings == NULL)
   {
     return NULL;
@@ -88,7 +88,7 @@ struct fir_filter_settings * create_fir_filter(double *vars, int sz, const char 
 }
 
 
-double run_fir_filter(double val, struct fir_filter_settings *settings)
+double run_fir_filter(double val, firfiltset_t *settings)
 {
   int i, j;
 
@@ -113,7 +113,7 @@ double run_fir_filter(double val, struct fir_filter_settings *settings)
 }
 
 
-void free_fir_filter(struct fir_filter_settings *settings)
+void free_fir_filter(firfiltset_t *settings)
 {
   if(settings == NULL)  return;
 
@@ -124,7 +124,7 @@ void free_fir_filter(struct fir_filter_settings *settings)
 }
 
 
-void reset_fir_filter(double val, struct fir_filter_settings *settings)
+void reset_fir_filter(double val, firfiltset_t *settings)
 {
   int i;
 
@@ -137,11 +137,11 @@ void reset_fir_filter(double val, struct fir_filter_settings *settings)
 }
 
 
-struct fir_filter_settings * create_fir_filter_copy(struct fir_filter_settings *settings)
+firfiltset_t * create_fir_filter_copy(firfiltset_t *settings)
 {
   int i;
 
-  struct fir_filter_settings *new_settings;
+  firfiltset_t *new_settings;
 
   if(settings == NULL)  return NULL;
 
@@ -158,7 +158,7 @@ struct fir_filter_settings * create_fir_filter_copy(struct fir_filter_settings *
 }
 
 
-int fir_filter_size(struct fir_filter_settings *settings)
+int fir_filter_size(firfiltset_t *settings)
 {
   if(settings == NULL)  return 0;
 
@@ -166,7 +166,7 @@ int fir_filter_size(struct fir_filter_settings *settings)
 }
 
 
-double fir_filter_tap(int idx, struct fir_filter_settings *settings)
+double fir_filter_tap(int idx, firfiltset_t *settings)
 {
   if(settings == NULL)  return 0;
 
@@ -176,7 +176,7 @@ double fir_filter_tap(int idx, struct fir_filter_settings *settings)
 }
 
 
-void fir_filter_save_buf(struct fir_filter_settings *settings)
+void fir_filter_save_buf(firfiltset_t *settings)
 {
   int i;
 
@@ -189,7 +189,7 @@ void fir_filter_save_buf(struct fir_filter_settings *settings)
 }
 
 
-void fir_filter_restore_buf(struct fir_filter_settings *settings)
+void fir_filter_restore_buf(firfiltset_t *settings)
 {
   int i;
 
@@ -202,7 +202,7 @@ void fir_filter_restore_buf(struct fir_filter_settings *settings)
 }
 
 
-const char * fir_filter_label(struct fir_filter_settings *settings)
+const char * fir_filter_label(firfiltset_t *settings)
 {
   return settings->label;
 }

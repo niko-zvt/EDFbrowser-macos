@@ -32,8 +32,6 @@
 */
 
 
-
-
 #include "plif_eeg_subtract_filter.h"
 
 
@@ -44,9 +42,9 @@
  * pwlf: powerline frequency (must be set to 50Hz or 60Hz)
  *
  */
-struct plif_eeg_subtract_filter_settings * plif_eeg_create_subtract_filter(int sf, int pwlf)
+plifeegfilt_t * plif_eeg_create_subtract_filter(int sf, int pwlf)
 {
-  struct plif_eeg_subtract_filter_settings *st;
+  plifeegfilt_t *st;
 
 /* perform some sanity checks */
   if(sf < 100)  return NULL;
@@ -55,7 +53,7 @@ struct plif_eeg_subtract_filter_settings * plif_eeg_create_subtract_filter(int s
 
   if(sf % pwlf)  return NULL;  /* ratio between the samplefrequency and the powerline frequency must be an integer multiple */
 
-  st = (struct plif_eeg_subtract_filter_settings *)calloc(1, sizeof(struct plif_eeg_subtract_filter_settings));
+  st = (plifeegfilt_t *)calloc(1, sizeof(plifeegfilt_t));
   if(st==NULL)  return NULL;
 
   st->sf = sf;
@@ -73,7 +71,7 @@ struct plif_eeg_subtract_filter_settings * plif_eeg_create_subtract_filter(int s
 }
 
 
-double plif_eeg_run_subtract_filter(double new_input, struct plif_eeg_subtract_filter_settings *st)
+double plif_eeg_run_subtract_filter(double new_input, plifeegfilt_t *st)
 {
   int i;
 
@@ -106,16 +104,16 @@ double plif_eeg_run_subtract_filter(double new_input, struct plif_eeg_subtract_f
 }
 
 
-struct plif_eeg_subtract_filter_settings * plif_eeg_subtract_filter_create_copy(struct plif_eeg_subtract_filter_settings *st_ori)
+plifeegfilt_t * plif_eeg_subtract_filter_create_copy(plifeegfilt_t *st_ori)
 {
-  struct plif_eeg_subtract_filter_settings *st;
+  plifeegfilt_t *st;
 
   if(st_ori == NULL)
   {
     return NULL;
   }
 
-  st = (struct plif_eeg_subtract_filter_settings *)calloc(1, sizeof(struct plif_eeg_subtract_filter_settings));
+  st = (plifeegfilt_t *)calloc(1, sizeof(plifeegfilt_t));
   if(st==NULL)  return NULL;
 
   *st = *st_ori;
@@ -132,7 +130,7 @@ struct plif_eeg_subtract_filter_settings * plif_eeg_subtract_filter_create_copy(
 }
 
 
-void plif_eeg_free_subtract_filter(struct plif_eeg_subtract_filter_settings *st)
+void plif_eeg_free_subtract_filter(plifeegfilt_t *st)
 {
   if(st == NULL)
   {
@@ -144,7 +142,7 @@ void plif_eeg_free_subtract_filter(struct plif_eeg_subtract_filter_settings *st)
 }
 
 
-void plif_eeg_reset_subtract_filter(struct plif_eeg_subtract_filter_settings *st)
+void plif_eeg_reset_subtract_filter(plifeegfilt_t *st)
 {
   if(st == NULL)
   {
@@ -157,7 +155,7 @@ void plif_eeg_reset_subtract_filter(struct plif_eeg_subtract_filter_settings *st
 }
 
 
-void plif_eeg_subtract_filter_state_copy(struct plif_eeg_subtract_filter_settings *dest, struct plif_eeg_subtract_filter_settings *src)
+void plif_eeg_subtract_filter_state_copy(plifeegfilt_t *dest, plifeegfilt_t *src)
 {
   if((dest == NULL) || (src == NULL))  return;
 

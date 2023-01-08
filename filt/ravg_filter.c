@@ -34,15 +34,15 @@
 /*
  *  type: 0 = highpass, 1 = lowpass
  */
-struct ravg_filter_settings * create_ravg_filter(int type, int size)
+ravgfiltset_t * create_ravg_filter(int type, int size)
 {
-  struct ravg_filter_settings *settings;
+  ravgfiltset_t *settings;
 
   if((size < 2) || (size > 10000))  return NULL;
 
   if((type < 0) || (type > 1))  return NULL;
 
-  settings = (struct ravg_filter_settings *) calloc(1, sizeof(struct ravg_filter_settings));
+  settings = (ravgfiltset_t *) calloc(1, sizeof(ravgfiltset_t));
   if(settings==NULL)  return NULL;
 
   settings->size = size;
@@ -70,16 +70,16 @@ struct ravg_filter_settings * create_ravg_filter(int type, int size)
 }
 
 
-struct ravg_filter_settings * create_ravg_filter_copy(struct ravg_filter_settings *src)
+ravgfiltset_t * create_ravg_filter_copy(ravgfiltset_t *src)
 {
-  struct ravg_filter_settings *settings;
+  ravgfiltset_t *settings;
 
-  settings = (struct ravg_filter_settings *) calloc(1, sizeof(struct ravg_filter_settings));
+  settings = (ravgfiltset_t *) calloc(1, sizeof(ravgfiltset_t));
   if(settings==NULL)
   {
     return NULL;
   }
-  memcpy(settings, src, sizeof(struct ravg_filter_settings));
+  memcpy(settings, src, sizeof(ravgfiltset_t));
 
   settings->buf = (double *)calloc(1, sizeof(double) * settings->size);
   if(settings->buf == NULL)
@@ -102,7 +102,7 @@ struct ravg_filter_settings * create_ravg_filter_copy(struct ravg_filter_setting
 }
 
 
-void reset_ravg_filter(double offset, struct ravg_filter_settings *settings)
+void reset_ravg_filter(double offset, ravgfiltset_t *settings)
 {
   int i;
 
@@ -123,7 +123,7 @@ void reset_ravg_filter(double offset, struct ravg_filter_settings *settings)
 }
 
 
-void ravg_filter_restore_buf(struct ravg_filter_settings *settings)
+void ravg_filter_restore_buf(ravgfiltset_t *settings)
 {
   memcpy(settings->buf, settings->buf2, settings->size * sizeof(double));
 
@@ -133,7 +133,7 @@ void ravg_filter_restore_buf(struct ravg_filter_settings *settings)
 }
 
 
-void ravg_filter_save_buf(struct ravg_filter_settings *settings)
+void ravg_filter_save_buf(ravgfiltset_t *settings)
 {
   memcpy(settings->buf2, settings->buf, settings->size * sizeof(double));
 
@@ -143,7 +143,7 @@ void ravg_filter_save_buf(struct ravg_filter_settings *settings)
 }
 
 
-double run_ravg_filter(double new_input, struct ravg_filter_settings *settings)
+double run_ravg_filter(double new_input, ravgfiltset_t *settings)
 {
   int i;
 
@@ -189,7 +189,7 @@ double run_ravg_filter(double new_input, struct ravg_filter_settings *settings)
 }
 
 
-void free_ravg_filter(struct ravg_filter_settings *settings)
+void free_ravg_filter(ravgfiltset_t *settings)
 {
   if(settings == NULL)
   {

@@ -47,9 +47,7 @@
 #include "filt/ecg_filter.h"
 
 
-
 class UI_Mainwindow;
-
 
 
 class UI_QRS_detector : public QObject
@@ -68,16 +66,16 @@ private:
 
   sigcompblck *signalcomp;
 
-  struct ecg_filter_settings *ecg_filter_bu;
+  ecgfiltset_t *ecg_filter_bu;
 
 private slots:
 
 };
 
 
-
-
 #endif
+
+
 
 
 

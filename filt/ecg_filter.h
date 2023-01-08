@@ -25,14 +25,8 @@
 */
 
 
-
-
-
-
-
 #ifndef ecg_filter_INCLUDED
 #define ecg_filter_INCLUDED
-
 
 
 #include <stdlib.h>
@@ -48,9 +42,7 @@ extern "C" {
 #endif
 
 
-
-
-struct ecg_filter_settings
+typedef struct
 {
   struct pt_qrs_settings *pt_qrs,
                          *pt_qrs_bu;
@@ -70,26 +62,27 @@ struct ecg_filter_settings
   long long *stat_smpl_buf;
   int stat_buf_idx;
   int sample_cntr;
-};
+} ecgfiltset_t;
 
 
-struct ecg_filter_settings * create_ecg_filter(double, double, double);
-double run_ecg_filter(double, struct ecg_filter_settings *);
-void free_ecg_filter(struct ecg_filter_settings *);
-void ecg_filter_save_buf(struct ecg_filter_settings *);
-void ecg_filter_restore_buf(struct ecg_filter_settings *);
-void reset_ecg_filter(struct ecg_filter_settings *);
-int ecg_filter_get_beat_cnt(struct ecg_filter_settings *);
-long long * ecg_filter_get_onset_beatlist(struct ecg_filter_settings *);
-double * ecg_filter_get_interval_beatlist(struct ecg_filter_settings *);
+ecgfiltset_t * create_ecg_filter(double, double, double);
+double run_ecg_filter(double, ecgfiltset_t *);
+void free_ecg_filter(ecgfiltset_t *);
+void ecg_filter_save_buf(ecgfiltset_t *);
+void ecg_filter_restore_buf(ecgfiltset_t *);
+void reset_ecg_filter(ecgfiltset_t *);
+int ecg_filter_get_beat_cnt(ecgfiltset_t *);
+long long * ecg_filter_get_onset_beatlist(ecgfiltset_t *);
+double * ecg_filter_get_interval_beatlist(ecgfiltset_t *);
 
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-
 #endif
+
+
 
 
 

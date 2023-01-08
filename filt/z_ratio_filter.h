@@ -25,23 +25,15 @@
 */
 
 
-
-
-
-
-
 #ifndef zratio_filter_INCLUDED
 #define zratio_filter_INCLUDED
-
 
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "global.h"
 #include "utils.h"
-
 #include "third_party/kiss_fft/kiss_fftr.h"
 
 
@@ -50,8 +42,8 @@ extern "C" {
 #endif
 
 
-
-struct zratio_filter_settings{
+typedef struct
+{
   double crossoverfreq;
   int dftblocksize;
   double samplefreq;
@@ -72,16 +64,15 @@ struct zratio_filter_settings{
   int smpls_in_inputbuf_bu;
   double zratio_value_bu;
   double bitvalue;
-};
+} zratiofiltset_t;
 
 
-
-struct zratio_filter_settings * create_zratio_filter(int, long long, double, double);
-double run_zratio_filter(double, struct zratio_filter_settings *);
-void free_zratio_filter(struct zratio_filter_settings *);
-void reset_zratio_filter(struct zratio_filter_settings *);
-void zratio_filter_save_buf(struct zratio_filter_settings *);
-void zratio_filter_restore_buf(struct zratio_filter_settings *);
+zratiofiltset_t * create_zratio_filter(int, long long, double, double);
+double run_zratio_filter(double, zratiofiltset_t *);
+void free_zratio_filter(zratiofiltset_t *);
+void reset_zratio_filter(zratiofiltset_t *);
+void zratio_filter_save_buf(zratiofiltset_t *);
+void zratio_filter_restore_buf(zratiofiltset_t *);
 
 
 #ifdef __cplusplus

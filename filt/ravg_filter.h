@@ -25,14 +25,8 @@
 */
 
 
-
-
-
-
-
 #ifndef ravg_filter_INCLUDED
 #define ravg_filter_INCLUDED
-
 
 
 #include <stdlib.h>
@@ -45,36 +39,37 @@ extern "C" {
 #endif
 
 
+typedef struct
+{
+  int size;
+  int type;
+  int first_sample;
+  double *buf;
+  double *buf2;
+  int buf_pntr;
+  int buf_pntr2;
+  double mean;
+  double mean2;
+} ravgfiltset_t;
 
-struct ravg_filter_settings{
-                       int size;
-                       int type;
-                       int first_sample;
-                       double *buf;
-                       double *buf2;
-                       int buf_pntr;
-                       int buf_pntr2;
-                       double mean;
-                       double mean2;
-                      };
 
-
-
-struct ravg_filter_settings * create_ravg_filter(int, int);
-void reset_ravg_filter(double, struct ravg_filter_settings *);
-double run_ravg_filter(double, struct ravg_filter_settings *);
-void free_ravg_filter(struct ravg_filter_settings *);
-void ravg_filter_restore_buf(struct ravg_filter_settings *);
-void ravg_filter_save_buf(struct ravg_filter_settings *);
+ravgfiltset_t * create_ravg_filter(int, int);
+void reset_ravg_filter(double, ravgfiltset_t *);
+double run_ravg_filter(double, ravgfiltset_t *);
+void free_ravg_filter(ravgfiltset_t *);
+void ravg_filter_restore_buf(ravgfiltset_t *);
+void ravg_filter_save_buf(ravgfiltset_t *);
 double ravg_filter_response(int, int, double);
-struct ravg_filter_settings * create_ravg_filter_copy(struct ravg_filter_settings *);
+ravgfiltset_t * create_ravg_filter_copy(ravgfiltset_t *);
 
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-
 #endif
+
+
+
 
 

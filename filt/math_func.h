@@ -49,18 +49,19 @@ extern "C" {
 #define MATH_MAX_FUNCS      (5)
 
 
-struct math_func_settings{
+typedef struct
+{
   int func;
   char descr[32];
   int pk_hold_smpls_set;
   int pk_hold_smpl_cntr;
   double pk_hold_val;
-};
+} mathfuncset_t;
 
 
-struct math_func_settings * create_math_func(int, int);
-double run_math_func(double, struct math_func_settings *);
-void free_math_func(struct math_func_settings *);
+mathfuncset_t * create_math_func(int, int);
+double run_math_func(double, mathfuncset_t *);
+void free_math_func(mathfuncset_t *);
 int get_math_func_descr(int, char *, int);
 
 #ifdef __cplusplus

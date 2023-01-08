@@ -71,17 +71,17 @@ QDateTimeEdit *StartDatetimeedit;
 char *recent_opendir,
      *recent_savedir;
 
-struct ravg_filter_settings *hpf44,
-                            *lpf9a,
-                            *lpf9b,
-                            *lpf9c,
-                            *lpf9d,
-                            *lpf9e,
-                            *lpf200a,
-                            *lpf200b,
-                            *lpf200c,
-                            *lpf200d,
-                            *lpf200e;
+ravgfiltset_t *hpf44,
+              *lpf9a,
+              *lpf9b,
+              *lpf9c,
+              *lpf9d,
+              *lpf9e,
+              *lpf200a,
+              *lpf200b,
+              *lpf200c,
+              *lpf200d,
+              *lpf200e;
 
 void enable_widgets(bool);
 

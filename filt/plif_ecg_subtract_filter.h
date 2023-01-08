@@ -42,7 +42,8 @@ extern "C" {
 #endif
 
 
-struct plif_ecg_subtract_filter_settings{
+typedef struct
+{
   int sf;
   int tpl;
   double *ravg_buf;
@@ -53,16 +54,16 @@ struct plif_ecg_subtract_filter_settings{
   double linear_diff[PLIF_ECG_NBUFS];
   int ravg_idx;
   int buf_idx;
-};
+} plifecgfilt_t;
 
 
 
-struct plif_ecg_subtract_filter_settings * plif_ecg_create_subtract_filter(int, int, double);
-double plif_ecg_run_subtract_filter(double, struct plif_ecg_subtract_filter_settings *);
-void plif_ecg_reset_subtract_filter(struct plif_ecg_subtract_filter_settings *, double);
-void plif_ecg_free_subtract_filter(struct plif_ecg_subtract_filter_settings *);
-void plif_ecg_subtract_filter_state_copy(struct plif_ecg_subtract_filter_settings *, struct plif_ecg_subtract_filter_settings *);
-struct plif_ecg_subtract_filter_settings * plif_ecg_subtract_filter_create_copy(struct plif_ecg_subtract_filter_settings *);
+plifecgfilt_t * plif_ecg_create_subtract_filter(int, int, double);
+double plif_ecg_run_subtract_filter(double, plifecgfilt_t *);
+void plif_ecg_reset_subtract_filter(plifecgfilt_t *, double);
+void plif_ecg_free_subtract_filter(plifecgfilt_t *);
+void plif_ecg_subtract_filter_state_copy(plifecgfilt_t *, plifecgfilt_t *);
+plifecgfilt_t * plif_ecg_subtract_filter_create_copy(plifecgfilt_t *);
 
 
 #ifdef __cplusplus

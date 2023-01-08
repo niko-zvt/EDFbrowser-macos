@@ -25,22 +25,19 @@
 */
 
 
-
-
 #include "ecg_filter.h"
 
 
 #define ECG_FILTER_STAT_BUFSIZE 262144
 
 
-
-struct ecg_filter_settings * create_ecg_filter(double sf, double bitval, double sense)
+ecgfiltset_t * create_ecg_filter(double sf, double bitval, double sense)
 {
-  struct ecg_filter_settings *st;
+  ecgfiltset_t *st;
 
   if(sf < 199.999)  return NULL;
 
-  st = (struct ecg_filter_settings *)calloc(1, sizeof(struct ecg_filter_settings));
+  st = (ecgfiltset_t *)calloc(1, sizeof(ecgfiltset_t));
   if(st == NULL)  return NULL;
 
   st->sf = sf;
@@ -75,7 +72,7 @@ CREATE_OUT_ERROR:
 }
 
 
-void free_ecg_filter(struct ecg_filter_settings *st)
+void free_ecg_filter(ecgfiltset_t *st)
 {
   if(st == NULL)  return;
 
@@ -89,7 +86,7 @@ void free_ecg_filter(struct ecg_filter_settings *st)
 }
 
 
-double run_ecg_filter(double new_sample, struct ecg_filter_settings *st)
+double run_ecg_filter(double new_sample, ecgfiltset_t *st)
 {
   int rr_smpl_ival,
       qrs_smpl_offset;
@@ -135,7 +132,7 @@ double run_ecg_filter(double new_sample, struct ecg_filter_settings *st)
 }
 
 
-void ecg_filter_save_buf(struct ecg_filter_settings *st)
+void ecg_filter_save_buf(ecgfiltset_t *st)
 {
   int i;
 
@@ -165,7 +162,7 @@ void ecg_filter_save_buf(struct ecg_filter_settings *st)
 }
 
 
-void ecg_filter_restore_buf(struct ecg_filter_settings *st)
+void ecg_filter_restore_buf(ecgfiltset_t *st)
 {
   int i;
 
@@ -199,7 +196,7 @@ void ecg_filter_restore_buf(struct ecg_filter_settings *st)
 }
 
 
-void reset_ecg_filter(struct ecg_filter_settings *st)
+void reset_ecg_filter(ecgfiltset_t *st)
 {
   if(st == NULL)  return;
 
@@ -215,7 +212,7 @@ void reset_ecg_filter(struct ecg_filter_settings *st)
 }
 
 
-int ecg_filter_get_beat_cnt(struct ecg_filter_settings *st)
+int ecg_filter_get_beat_cnt(ecgfiltset_t *st)
 {
   if(st == NULL)  return 0;
 
@@ -223,7 +220,7 @@ int ecg_filter_get_beat_cnt(struct ecg_filter_settings *st)
 }
 
 
-long long * ecg_filter_get_onset_beatlist(struct ecg_filter_settings *st)
+long long * ecg_filter_get_onset_beatlist(ecgfiltset_t *st)
 {
   if(st == NULL)  return 0LL;
 
@@ -231,7 +228,7 @@ long long * ecg_filter_get_onset_beatlist(struct ecg_filter_settings *st)
 }
 
 
-double * ecg_filter_get_interval_beatlist(struct ecg_filter_settings *st)
+double * ecg_filter_get_interval_beatlist(ecgfiltset_t *st)
 {
   if(st == NULL)  return NULL;
 

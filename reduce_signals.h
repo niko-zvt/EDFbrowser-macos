@@ -107,7 +107,7 @@ FILE *inputfile,
 
 edfhdrblck *edfhdr;
 
-struct ravg_filter_settings *filterlist[MAXSIGNALS][REDUCER_MAX_AA_FILTERS];
+ravgfiltset_t *filterlist[MAXSIGNALS][REDUCER_MAX_AA_FILTERS];
 
 void showpopupmessage(const char *, const char *);
 

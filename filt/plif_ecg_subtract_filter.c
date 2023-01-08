@@ -57,8 +57,6 @@
 */
 
 
-
-
 #include "plif_ecg_subtract_filter.h"
 
 
@@ -72,11 +70,11 @@
  *     used to detect linear region between two consecutive QRS complexes
  *
  */
-struct plif_ecg_subtract_filter_settings * plif_ecg_create_subtract_filter(int sf, int pwlf, double lt)
+plifecgfilt_t * plif_ecg_create_subtract_filter(int sf, int pwlf, double lt)
 {
   int i;
 
-  struct plif_ecg_subtract_filter_settings *st;
+  plifecgfilt_t *st;
 
 /* perform some sanity checks */
   if(sf < 240)  return NULL;
@@ -87,7 +85,7 @@ struct plif_ecg_subtract_filter_settings * plif_ecg_create_subtract_filter(int s
 
   if((lt < 1) || (lt > 100000))  return NULL;  /* range for the linear detection threshold */
 
-  st = (struct plif_ecg_subtract_filter_settings *) calloc(1, sizeof(struct plif_ecg_subtract_filter_settings));
+  st = (plifecgfilt_t *) calloc(1, sizeof(plifecgfilt_t));
   if(st==NULL)  return NULL;
 
   st->sf = sf;
@@ -135,7 +133,7 @@ struct plif_ecg_subtract_filter_settings * plif_ecg_create_subtract_filter(int s
 }
 
 
-double plif_ecg_run_subtract_filter(double new_input, struct plif_ecg_subtract_filter_settings *st)
+double plif_ecg_run_subtract_filter(double new_input, plifecgfilt_t *st)
 {
   int i, j, pre, linear_buf_idx, linear_bufs, linear;
 
@@ -248,18 +246,18 @@ double plif_ecg_run_subtract_filter(double new_input, struct plif_ecg_subtract_f
 }
 
 
-struct plif_ecg_subtract_filter_settings * plif_ecg_subtract_filter_create_copy(struct plif_ecg_subtract_filter_settings *st_ori)
+plifecgfilt_t * plif_ecg_subtract_filter_create_copy(plifecgfilt_t *st_ori)
 {
   int i;
 
-  struct plif_ecg_subtract_filter_settings *st;
+  plifecgfilt_t *st;
 
   if(st_ori == NULL)
   {
     return NULL;
   }
 
-  st = (struct plif_ecg_subtract_filter_settings *) calloc(1, sizeof(struct plif_ecg_subtract_filter_settings));
+  st = (plifecgfilt_t *) calloc(1, sizeof(plifecgfilt_t));
   if(st==NULL)  return NULL;
 
   *st = *st_ori;
@@ -316,7 +314,7 @@ struct plif_ecg_subtract_filter_settings * plif_ecg_subtract_filter_create_copy(
 }
 
 
-void plif_ecg_free_subtract_filter(struct plif_ecg_subtract_filter_settings *st)
+void plif_ecg_free_subtract_filter(plifecgfilt_t *st)
 {
   int i;
 
@@ -336,7 +334,7 @@ void plif_ecg_free_subtract_filter(struct plif_ecg_subtract_filter_settings *st)
 }
 
 
-void plif_ecg_reset_subtract_filter(struct plif_ecg_subtract_filter_settings *st, double reference)
+void plif_ecg_reset_subtract_filter(plifecgfilt_t *st, double reference)
 {
   int i, j;
 
@@ -369,7 +367,7 @@ void plif_ecg_reset_subtract_filter(struct plif_ecg_subtract_filter_settings *st
 }
 
 
-void plif_ecg_subtract_filter_state_copy(struct plif_ecg_subtract_filter_settings *dest, struct plif_ecg_subtract_filter_settings *src)
+void plif_ecg_subtract_filter_state_copy(plifecgfilt_t *dest, plifecgfilt_t *src)
 {
   int i;
 

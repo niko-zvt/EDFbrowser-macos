@@ -34,35 +34,33 @@
 #include <stdio.h>
 
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-struct plif_eeg_subtract_filter_settings{
+typedef struct
+{
   int sf;
   int pwrcycles;
   int pwrcyclesmpls;
   double *buf;
   int sz;
   int idx;
-};
+} plifeegfilt_t;
 
 
-
-struct plif_eeg_subtract_filter_settings * plif_eeg_create_subtract_filter(int, int);
-double plif_eeg_run_subtract_filter(double, struct plif_eeg_subtract_filter_settings *);
-void plif_eeg_reset_subtract_filter(struct plif_eeg_subtract_filter_settings *);
-void plif_eeg_free_subtract_filter(struct plif_eeg_subtract_filter_settings *);
-void plif_eeg_subtract_filter_state_copy(struct plif_eeg_subtract_filter_settings *, struct plif_eeg_subtract_filter_settings *);
-struct plif_eeg_subtract_filter_settings * plif_eeg_subtract_filter_create_copy(struct plif_eeg_subtract_filter_settings *);
+plifeegfilt_t * plif_eeg_create_subtract_filter(int, int);
+double plif_eeg_run_subtract_filter(double, plifeegfilt_t *);
+void plif_eeg_reset_subtract_filter(plifeegfilt_t *);
+void plif_eeg_free_subtract_filter(plifeegfilt_t *);
+void plif_eeg_subtract_filter_state_copy(plifeegfilt_t *, plifeegfilt_t *);
+plifeegfilt_t * plif_eeg_subtract_filter_create_copy(plifeegfilt_t *);
 
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
-
 
 #endif
 

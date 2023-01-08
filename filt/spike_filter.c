@@ -32,9 +32,9 @@
 
 
 
-struct spike_filter_settings * create_spike_filter(int sf, double sv, int ho, int *pace_detected)
+spikefiltset_t * create_spike_filter(int sf, double sv, int ho, int *pace_detected)
 {
-  struct spike_filter_settings *st;
+  spikefiltset_t *st;
 
   if((sf < 4000) || (sf > 128000)) return NULL;
 
@@ -42,7 +42,7 @@ struct spike_filter_settings * create_spike_filter(int sf, double sv, int ho, in
 
   if((ho < 10) || (ho > 1000))  return NULL;
 
-  st = (struct spike_filter_settings *) calloc(1, sizeof(struct spike_filter_settings));
+  st = (spikefiltset_t *) calloc(1, sizeof(spikefiltset_t));
   if(st==NULL)  return NULL;
 
   st->sf = sf;    // samplefrequency
@@ -65,7 +65,7 @@ struct spike_filter_settings * create_spike_filter(int sf, double sv, int ho, in
 }
 
 
-void reset_spike_filter(struct spike_filter_settings *st)
+void reset_spike_filter(spikefiltset_t *st)
 {
   int i;
 
@@ -107,7 +107,7 @@ void reset_spike_filter(struct spike_filter_settings *st)
 }
 
 
-void spike_filter_save_buf(struct spike_filter_settings *st)
+void spike_filter_save_buf(spikefiltset_t *st)
 {
   int i;
 
@@ -124,7 +124,7 @@ void spike_filter_save_buf(struct spike_filter_settings *st)
 }
 
 
-void spike_filter_restore_buf(struct spike_filter_settings *st)
+void spike_filter_restore_buf(spikefiltset_t *st)
 {
   int i;
 
@@ -141,7 +141,7 @@ void spike_filter_restore_buf(struct spike_filter_settings *st)
 }
 
 
-double run_spike_filter(double val, struct spike_filter_settings *st)
+double run_spike_filter(double val, spikefiltset_t *st)
 {
   int k,
       p_det=0,
@@ -271,22 +271,22 @@ double run_spike_filter(double val, struct spike_filter_settings *st)
 }
 
 
-struct spike_filter_settings * create_spike_filter_copy(struct spike_filter_settings *src)
+spikefiltset_t * create_spike_filter_copy(spikefiltset_t *src)
 {
-  struct spike_filter_settings *settings;
+  spikefiltset_t *settings;
 
-  settings = (struct spike_filter_settings *) malloc(sizeof(struct spike_filter_settings));
+  settings = (spikefiltset_t *) malloc(sizeof(spikefiltset_t));
   if(settings==NULL)
   {
     return NULL;
   }
-  memcpy(settings, src, sizeof(struct spike_filter_settings));
+  memcpy(settings, src, sizeof(spikefiltset_t));
 
   return settings;
 }
 
 
-void free_spike_filter(struct spike_filter_settings *st)
+void free_spike_filter(spikefiltset_t *st)
 {
   free(st);
 }
