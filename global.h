@@ -363,69 +363,76 @@ typedef struct
   long long annot_created_by_rect_draw_duration;
 } sigcompblck;
 
-struct zoomhistoryblock{
-        int idx;
-        int history_size_tail;
-        int history_size_head;
-        long long viewtime[MAXZOOMHISTORY][MAXFILES];
-        long long pagetime[MAXZOOMHISTORY];
-        double voltpercm[MAXZOOMHISTORY][MAXSIGNALS];
-        double sensitivity[MAXZOOMHISTORY][MAXSIGNALS];
-        double screen_offset[MAXZOOMHISTORY][MAXSIGNALS];
-       };
+typedef struct
+{
+  int idx;
+  int history_size_tail;
+  int history_size_head;
+  long long viewtime[MAXZOOMHISTORY][MAXFILES];
+  long long pagetime[MAXZOOMHISTORY];
+  double voltpercm[MAXZOOMHISTORY][MAXSIGNALS];
+  double sensitivity[MAXZOOMHISTORY][MAXSIGNALS];
+  double screen_offset[MAXZOOMHISTORY][MAXSIGNALS];
+} zoomhistblck;
 
-struct active_markersblock{
-        edfhdrblck *edf_hdr;
-        struct annotationblock *list[MAX_ACTIVE_ANNOT_MARKERS];
-        int count;
-        int selected;
-       };
+typedef struct
+{
+  edfhdrblck *edf_hdr;
+  struct annotationblock *list[MAX_ACTIVE_ANNOT_MARKERS];
+  int count;
+  int selected;
+} active_markersblck;
 
-struct graphicLineStruct{
-        int x1;
-        int y1;
-        int x2;
-        int y2;
-        };
+typedef struct
+{
+  int x1;
+  int y1;
+  int x2;
+  int y2;
+} graph_line;
 
-struct graphicBufStruct{
-        struct graphicLineStruct graphicLine[MAXSIGNALS];
-        };
+typedef struct
+{
+  graph_line graphic_line[MAXSIGNALS];
+} graph_buf;
 
-struct crossHairStruct{
-        int color;
-        edfhdrblck *edf_hdr;
-        int active;
-        int moving;
-        int position;
-        int x_position;
-        int y_position;
-        int y_value;
-        double value;
-        long long time;
-        long long time_relative;
-        int has_hor_line;
-        int dot_sz;
-       };
+typedef struct
+{
+  int color;
+  edfhdrblck *edf_hdr;
+  int active;
+  int moving;
+  int position;
+  int x_position;
+  int y_position;
+  int y_value;
+  double value;
+  long long time;
+  long long time_relative;
+  int has_hor_line;
+  int dot_sz;
+} crosshair_t;
 
-struct video_player_struct{
-        int status;
-        int cntdwn_timer;
-        int poll_timer;
-        long long utc_starttime;
-        int starttime_diff;
-        int stop_det_counter;
-        int fpos;
-        int speed;
-       };
+typedef struct
+{
+  int status;
+  int cntdwn_timer;
+  int poll_timer;
+  long long utc_starttime;
+  int starttime_diff;
+  int stop_det_counter;
+  int fpos;
+  int speed;
+} videoplayer_t;
 
-struct annot_filter_struct{
-       int tmin;
-       int tmax;
-       int invert;
-       int hide_other;
-       int hide_in_list_only;
-       };
+typedef struct
+{
+int tmin;
+int tmax;
+int invert;
+int hide_other;
+int hide_in_list_only;
+} annotfilter_t;
 
 #endif
 

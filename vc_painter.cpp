@@ -1033,17 +1033,17 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     for(j=0; j<screensamples[i]; j++)
     {
-      painter->drawLine(graphicBuf[j].graphicLine[i].x1,
-                        graphicBuf[j].graphicLine[i].y1 - scroll_h_offset,
-                        graphicBuf[j].graphicLine[i].x2,
-                        graphicBuf[j].graphicLine[i].y2 - scroll_h_offset);
+      painter->drawLine(graphicBuf[j].graphic_line[i].x1,
+                        graphicBuf[j].graphic_line[i].y1 - scroll_h_offset,
+                        graphicBuf[j].graphic_line[i].x2,
+                        graphicBuf[j].graphic_line[i].y2 - scroll_h_offset);
 
       if(draw_zoom_rectangle && use_move_events)
       {
-        if((graphicBuf[j].graphicLine[i].x1 >= mouse_press_coordinate_x) &&
-           (graphicBuf[j].graphicLine[i].x1 <= mouse_x))
+        if((graphicBuf[j].graphic_line[i].x1 >= mouse_press_coordinate_x) &&
+           (graphicBuf[j].graphic_line[i].x1 <= mouse_x))
         {
-          signalcomp[i]->draw_rectangle_sum_y += graphicBuf[j].graphicLine[i].y1;
+          signalcomp[i]->draw_rectangle_sum_y += graphicBuf[j].graphic_line[i].y1;
 
           signalcomp[i]->draw_rectangle_sum_cnt++;
         }

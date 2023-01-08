@@ -31,7 +31,7 @@
 
 
 
-UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationblock *annot, struct annot_filter_struct *filter_p, edfhdrblck *e_hdr)
+UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationblock *annot, annotfilter_t *filter_p, edfhdrblck *e_hdr)
 {
   int n;
 

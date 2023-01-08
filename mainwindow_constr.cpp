@@ -442,7 +442,7 @@ UI_Mainwindow::UI_Mainwindow()
   raw2edf_var.skipbytes = 1;
   strlcpy(raw2edf_var.phys_dim, "uV", 16);
 
-  annot_filter = (struct annot_filter_struct *)calloc(1, sizeof(struct annot_filter_struct));
+  annot_filter = (annotfilter_t *)calloc(1, sizeof(annotfilter_t));
   annot_filter->tmin = 1000;
   annot_filter->tmax = 2000;
   annot_filter->invert = 0;
@@ -518,7 +518,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   read_color_settings();
 
-  video_player = (struct video_player_struct *)calloc(1, sizeof(struct video_player_struct));
+  video_player = (videoplayer_t *)calloc(1, sizeof(videoplayer_t));
   video_player->poll_timer = 100;
 
   live_stream_timer = new QTimer;
@@ -1308,7 +1308,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   annotationlist_backup = NULL;
 
-  zoomhistory = (struct zoomhistoryblock *)calloc(1, sizeof(struct zoomhistoryblock));
+  zoomhistory = (zoomhistblck *)calloc(1, sizeof(zoomhistblck));
   zoomhistory->idx = 0;
   zoomhistory->history_size_tail = 0;
   zoomhistory->history_size_head = 0;

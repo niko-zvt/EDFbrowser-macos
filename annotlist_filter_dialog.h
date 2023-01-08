@@ -57,7 +57,7 @@ class UI_AnnotFilterWindow : public QObject
   Q_OBJECT
 
 public:
-  UI_AnnotFilterWindow(QWidget *, struct annotationblock *, struct annot_filter_struct *, edfhdrblck *);
+  UI_AnnotFilterWindow(QWidget *, struct annotationblock *, annotfilter_t *, edfhdrblck *);
 
   UI_Mainwindow *mainwindow;
 
@@ -89,7 +89,7 @@ struct annotation_list *annot_list;
 
 struct annotationblock *sel_annot_ptr;
 
-struct annot_filter_struct *filter_params;
+annotfilter_t *filter_params;
 
 UI_Annotationswindow *annots_dock;
 

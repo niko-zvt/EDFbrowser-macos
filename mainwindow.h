@@ -365,7 +365,7 @@ long long annot_editor_user_button_epoch_len,
 
   sigcompblck *signalcomp[MAXSIGNALS];
 
-  struct zoomhistoryblock *zoomhistory;
+  zoomhistblck *zoomhistory;
 
   struct annotation_list *annotationlist_backup;
 
@@ -375,9 +375,9 @@ long long annot_editor_user_button_epoch_len,
 
   struct export_annotations_var_block *export_annotations_var;
 
-  struct video_player_struct *video_player;
+  videoplayer_t *video_player;
 
-  struct annot_filter_struct *annot_filter;
+  annotfilter_t *annot_filter;
 
   UI_Annotationswindow *annotations_dock[MAXFILES];
 

@@ -87,9 +87,9 @@ class drawCurve_stage_1_thread : public QThread
 public:
   void init_vars(UI_Mainwindow *, sigcompblck **, int,
                  int, char *, int, int, int *, int,
-                 struct graphicBufStruct *, double,
-                 double, struct crossHairStruct *,
-                 struct crossHairStruct *, int, int);
+                 graph_buf *, double,
+                 double, crosshair_t *,
+                 crosshair_t *, int, int);
 
 
 private:
@@ -111,9 +111,9 @@ private:
 
   sigcompblck *signalcomp, **signalcomp_b;
 
-  struct graphicBufStruct *graphicBuf;
+  graph_buf *graphicBuf;
 
-  struct crossHairStruct *crosshair_1,
+  crosshair_t *crosshair_1,
                          *crosshair_2;
 
 void run();
@@ -172,12 +172,12 @@ public:
          w_scaling,
          h_scaling;
 
-  struct graphicBufStruct *graphicBuf,
-                          *printBuf;
+  graph_buf *graphicBuf,
+            *printBuf;
 
-  struct active_markersblock *active_markers;
+  active_markersblck *active_markers;
 
-  struct crossHairStruct crosshair_1,
+  crosshair_t crosshair_1,
                          crosshair_2;
 
   QColor backgroundcolor,

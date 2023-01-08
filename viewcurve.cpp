@@ -58,7 +58,7 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   annot_sidemenu_act->setShortcut(QKeySequence("A"));
   addAction(annot_sidemenu_act);
 
-  active_markers = (struct active_markersblock *)calloc(1, sizeof(struct active_markersblock));
+  active_markers = (active_markersblck *)calloc(1, sizeof(active_markersblck));
 
   scroll_h_offset = 0;
 
@@ -138,8 +138,8 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
 
   floating_ruler_color = Qt::cyan;
 
-  memset(&crosshair_1, 0, sizeof(struct crossHairStruct));
-  memset(&crosshair_2, 0, sizeof(struct crossHairStruct));
+  memset(&crosshair_1, 0, sizeof(crosshair_t));
+  memset(&crosshair_2, 0, sizeof(crosshair_t));
 
   crosshair_1.dot_sz = 4;
   crosshair_2.dot_sz = 4;
@@ -1868,7 +1868,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
   {
     free(graphicBuf);
 
-    graphicBuf = (struct graphicBufStruct *)malloc(sizeof(struct graphicBufStruct) * w * 2 + 4);
+    graphicBuf = (graph_buf *)malloc(sizeof(graph_buf) * w * 2 + 4);
 
     graphicBufWidth = w;
   }
@@ -2281,29 +2281,29 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
                 x1 = (int)(((double)(s - 1)) / signalcomp[i]->sample_pixel_ratio);
                 x2 = (int)((double)s / signalcomp[i]->sample_pixel_ratio);
 
-                graphicBuf[screensamples[i]].graphicLine[i].x1 = x1 - signalcomp[i]->pixels_shift;
-                graphicBuf[screensamples[i]].graphicLine[i].y1 = y1;
-                graphicBuf[screensamples[i]].graphicLine[i].x2 = x2 - signalcomp[i]->pixels_shift;
-                graphicBuf[screensamples[i]].graphicLine[i].y2 = y2;
+                graphicBuf[screensamples[i]].graphic_line[i].x1 = x1 - signalcomp[i]->pixels_shift;
+                graphicBuf[screensamples[i]].graphic_line[i].y1 = y1;
+                graphicBuf[screensamples[i]].graphic_line[i].x2 = x2 - signalcomp[i]->pixels_shift;
+                graphicBuf[screensamples[i]].graphic_line[i].y2 = y2;
 
                 screensamples[i]++;
               }
             }
             else
             {
-              graphicBuf[screensamples[i]].graphicLine[i].x1 = x1 - signalcomp[i]->pixels_shift;
-              graphicBuf[screensamples[i]].graphicLine[i].y1 = y2;
-              graphicBuf[screensamples[i]].graphicLine[i].x2 = x2 - signalcomp[i]->pixels_shift;
-              graphicBuf[screensamples[i]].graphicLine[i].y2 = y2;
+              graphicBuf[screensamples[i]].graphic_line[i].x1 = x1 - signalcomp[i]->pixels_shift;
+              graphicBuf[screensamples[i]].graphic_line[i].y1 = y2;
+              graphicBuf[screensamples[i]].graphic_line[i].x2 = x2 - signalcomp[i]->pixels_shift;
+              graphicBuf[screensamples[i]].graphic_line[i].y2 = y2;
 
               if(screensamples[i])
               {
                 screensamples[i]++;
 
-                graphicBuf[screensamples[i]].graphicLine[i].x1 = x1 - signalcomp[i]->pixels_shift;
-                graphicBuf[screensamples[i]].graphicLine[i].y1 = y1;
-                graphicBuf[screensamples[i]].graphicLine[i].x2 = x1 - signalcomp[i]->pixels_shift;
-                graphicBuf[screensamples[i]].graphicLine[i].y2 = y2;
+                graphicBuf[screensamples[i]].graphic_line[i].x1 = x1 - signalcomp[i]->pixels_shift;
+                graphicBuf[screensamples[i]].graphic_line[i].y1 = y1;
+                graphicBuf[screensamples[i]].graphic_line[i].x2 = x1 - signalcomp[i]->pixels_shift;
+                graphicBuf[screensamples[i]].graphic_line[i].y2 = y2;
               }
 
               screensamples[i]++;
@@ -2313,37 +2313,37 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           {
             if(!screensamples[i])
             {
-              graphicBuf[screensamples[i]].graphicLine[i].x1 = x1;
-              graphicBuf[screensamples[i]].graphicLine[i].y1 = y1;
-              graphicBuf[screensamples[i]].graphicLine[i].x2 = x2;
-              graphicBuf[screensamples[i]].graphicLine[i].y2 = y2;
+              graphicBuf[screensamples[i]].graphic_line[i].x1 = x1;
+              graphicBuf[screensamples[i]].graphic_line[i].y1 = y1;
+              graphicBuf[screensamples[i]].graphic_line[i].x2 = x2;
+              graphicBuf[screensamples[i]].graphic_line[i].y2 = y2;
 
               screensamples[i]++;
             }
             else
             {
-              if((x1==x2)&&(x1==graphicBuf[screensamples[i]-1].graphicLine[i].x1)&&
-                (graphicBuf[screensamples[i]-1].graphicLine[i].x1==graphicBuf[screensamples[i]-1].graphicLine[i].x2))
+              if((x1==x2)&&(x1==graphicBuf[screensamples[i]-1].graphic_line[i].x1)&&
+                (graphicBuf[screensamples[i]-1].graphic_line[i].x1==graphicBuf[screensamples[i]-1].graphic_line[i].x2))
               {
                 maximum = y1;
                 if(y2>maximum)  maximum = y2;
-                if(graphicBuf[screensamples[i]-1].graphicLine[i].y1>maximum)  maximum = graphicBuf[screensamples[i]-1].graphicLine[i].y1;
-                if(graphicBuf[screensamples[i]-1].graphicLine[i].y2>maximum)  maximum = graphicBuf[screensamples[i]-1].graphicLine[i].y2;
+                if(graphicBuf[screensamples[i]-1].graphic_line[i].y1>maximum)  maximum = graphicBuf[screensamples[i]-1].graphic_line[i].y1;
+                if(graphicBuf[screensamples[i]-1].graphic_line[i].y2>maximum)  maximum = graphicBuf[screensamples[i]-1].graphic_line[i].y2;
 
                 minimum = y1;
                 if(y2<minimum)  minimum = y2;
-                if(graphicBuf[screensamples[i]-1].graphicLine[i].y1<minimum)  minimum = graphicBuf[screensamples[i]-1].graphicLine[i].y1;
-                if(graphicBuf[screensamples[i]-1].graphicLine[i].y2<minimum)  minimum = graphicBuf[screensamples[i]-1].graphicLine[i].y2;
+                if(graphicBuf[screensamples[i]-1].graphic_line[i].y1<minimum)  minimum = graphicBuf[screensamples[i]-1].graphic_line[i].y1;
+                if(graphicBuf[screensamples[i]-1].graphic_line[i].y2<minimum)  minimum = graphicBuf[screensamples[i]-1].graphic_line[i].y2;
 
-                graphicBuf[screensamples[i]-1].graphicLine[i].y1 = maximum;
-                graphicBuf[screensamples[i]-1].graphicLine[i].y2 = minimum;
+                graphicBuf[screensamples[i]-1].graphic_line[i].y1 = maximum;
+                graphicBuf[screensamples[i]-1].graphic_line[i].y2 = minimum;
               }
               else
               {
-                graphicBuf[screensamples[i]].graphicLine[i].x1 = x1;
-                graphicBuf[screensamples[i]].graphicLine[i].y1 = y1;
-                graphicBuf[screensamples[i]].graphicLine[i].x2 = x2;
-                graphicBuf[screensamples[i]].graphicLine[i].y2 = y2;
+                graphicBuf[screensamples[i]].graphic_line[i].x1 = x1;
+                graphicBuf[screensamples[i]].graphic_line[i].y1 = y1;
+                graphicBuf[screensamples[i]].graphic_line[i].x2 = x2;
+                graphicBuf[screensamples[i]].graphic_line[i].y2 = y2;
 
                 if(screensamples[i]<(w * 2))  screensamples[i]++;
               }
@@ -2417,9 +2417,9 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
 void drawCurve_stage_1_thread::init_vars(UI_Mainwindow *mainwindow_a, sigcompblck **signalcomp_a, int i_a,
                                          int signalcomps_a, char *viewbuf_a, int w_a, int h_a, int *screensamples_a, int printing_a,
-                                         struct graphicBufStruct *graphicBuf_a, double printsize_x_factor_a,
-                                         double printsize_y_factor_a, struct crossHairStruct *crosshair_1_a,
-                                         struct crossHairStruct *crosshair_2_a, int cpu_cnt_a, int linear_interpol_a)
+                                         graph_buf *graphicBuf_a, double printsize_x_factor_a,
+                                         double printsize_y_factor_a, crosshair_t *crosshair_1_a,
+                                         crosshair_t *crosshair_2_a, int cpu_cnt_a, int linear_interpol_a)
 {
   mainwindow = mainwindow_a;
   signalcomp_b = signalcomp_a;
@@ -2845,29 +2845,29 @@ void drawCurve_stage_1_thread::run()
               x1 = (int)(((double)(s - 1)) / signalcomp->sample_pixel_ratio);
               x2 = (int)((double)s / signalcomp->sample_pixel_ratio);
 
-              graphicBuf[*screensamples].graphicLine[i].x1 = x1 - signalcomp->pixels_shift;
-              graphicBuf[*screensamples].graphicLine[i].y1 = y1;
-              graphicBuf[*screensamples].graphicLine[i].x2 = x2 - signalcomp->pixels_shift;
-              graphicBuf[*screensamples].graphicLine[i].y2 = y2;
+              graphicBuf[*screensamples].graphic_line[i].x1 = x1 - signalcomp->pixels_shift;
+              graphicBuf[*screensamples].graphic_line[i].y1 = y1;
+              graphicBuf[*screensamples].graphic_line[i].x2 = x2 - signalcomp->pixels_shift;
+              graphicBuf[*screensamples].graphic_line[i].y2 = y2;
 
               (*screensamples)++;
             }
           }
           else
           {
-            graphicBuf[*screensamples].graphicLine[i].x1 = x1 - signalcomp->pixels_shift;
-            graphicBuf[*screensamples].graphicLine[i].y1 = y2;
-            graphicBuf[*screensamples].graphicLine[i].x2 = x2 - signalcomp->pixels_shift;
-            graphicBuf[*screensamples].graphicLine[i].y2 = y2;
+            graphicBuf[*screensamples].graphic_line[i].x1 = x1 - signalcomp->pixels_shift;
+            graphicBuf[*screensamples].graphic_line[i].y1 = y2;
+            graphicBuf[*screensamples].graphic_line[i].x2 = x2 - signalcomp->pixels_shift;
+            graphicBuf[*screensamples].graphic_line[i].y2 = y2;
 
             if(*screensamples)
             {
               (*screensamples)++;
 
-              graphicBuf[*screensamples].graphicLine[i].x1 = x1 - signalcomp->pixels_shift;
-              graphicBuf[*screensamples].graphicLine[i].y1 = y1;
-              graphicBuf[*screensamples].graphicLine[i].x2 = x1 - signalcomp->pixels_shift;
-              graphicBuf[*screensamples].graphicLine[i].y2 = y2;
+              graphicBuf[*screensamples].graphic_line[i].x1 = x1 - signalcomp->pixels_shift;
+              graphicBuf[*screensamples].graphic_line[i].y1 = y1;
+              graphicBuf[*screensamples].graphic_line[i].x2 = x1 - signalcomp->pixels_shift;
+              graphicBuf[*screensamples].graphic_line[i].y2 = y2;
             }
 
             (*screensamples)++;
@@ -2877,37 +2877,37 @@ void drawCurve_stage_1_thread::run()
         {
           if(!(*screensamples))
           {
-            graphicBuf[*screensamples].graphicLine[i].x1 = x1;
-            graphicBuf[*screensamples].graphicLine[i].y1 = y1;
-            graphicBuf[*screensamples].graphicLine[i].x2 = x2;
-            graphicBuf[*screensamples].graphicLine[i].y2 = y2;
+            graphicBuf[*screensamples].graphic_line[i].x1 = x1;
+            graphicBuf[*screensamples].graphic_line[i].y1 = y1;
+            graphicBuf[*screensamples].graphic_line[i].x2 = x2;
+            graphicBuf[*screensamples].graphic_line[i].y2 = y2;
 
             (*screensamples)++;
           }
           else
           {
-            if((x1==x2)&&(x1==graphicBuf[(*screensamples)-1].graphicLine[i].x1)&&
-              (graphicBuf[(*screensamples)-1].graphicLine[i].x1==graphicBuf[(*screensamples)-1].graphicLine[i].x2))
+            if((x1==x2)&&(x1==graphicBuf[(*screensamples)-1].graphic_line[i].x1)&&
+              (graphicBuf[(*screensamples)-1].graphic_line[i].x1==graphicBuf[(*screensamples)-1].graphic_line[i].x2))
             {
               maximum = y1;
               if(y2>maximum)  maximum = y2;
-              if(graphicBuf[(*screensamples)-1].graphicLine[i].y1>maximum)  maximum = graphicBuf[(*screensamples)-1].graphicLine[i].y1;
-              if(graphicBuf[(*screensamples)-1].graphicLine[i].y2>maximum)  maximum = graphicBuf[(*screensamples)-1].graphicLine[i].y2;
+              if(graphicBuf[(*screensamples)-1].graphic_line[i].y1>maximum)  maximum = graphicBuf[(*screensamples)-1].graphic_line[i].y1;
+              if(graphicBuf[(*screensamples)-1].graphic_line[i].y2>maximum)  maximum = graphicBuf[(*screensamples)-1].graphic_line[i].y2;
 
               minimum = y1;
               if(y2<minimum)  minimum = y2;
-              if(graphicBuf[(*screensamples)-1].graphicLine[i].y1<minimum)  minimum = graphicBuf[(*screensamples)-1].graphicLine[i].y1;
-              if(graphicBuf[(*screensamples)-1].graphicLine[i].y2<minimum)  minimum = graphicBuf[(*screensamples)-1].graphicLine[i].y2;
+              if(graphicBuf[(*screensamples)-1].graphic_line[i].y1<minimum)  minimum = graphicBuf[(*screensamples)-1].graphic_line[i].y1;
+              if(graphicBuf[(*screensamples)-1].graphic_line[i].y2<minimum)  minimum = graphicBuf[(*screensamples)-1].graphic_line[i].y2;
 
-              graphicBuf[(*screensamples)-1].graphicLine[i].y1 = maximum;
-              graphicBuf[(*screensamples)-1].graphicLine[i].y2 = minimum;
+              graphicBuf[(*screensamples)-1].graphic_line[i].y1 = maximum;
+              graphicBuf[(*screensamples)-1].graphic_line[i].y2 = minimum;
             }
             else
             {
-              graphicBuf[*screensamples].graphicLine[i].x1 = x1;
-              graphicBuf[*screensamples].graphicLine[i].y1 = y1;
-              graphicBuf[*screensamples].graphicLine[i].x2 = x2;
-              graphicBuf[*screensamples].graphicLine[i].y2 = y2;
+              graphicBuf[*screensamples].graphic_line[i].x1 = x1;
+              graphicBuf[*screensamples].graphic_line[i].y1 = y1;
+              graphicBuf[*screensamples].graphic_line[i].x2 = x2;
+              graphicBuf[*screensamples].graphic_line[i].y2 = y2;
 
               if((*screensamples)<(w * 2))  (*screensamples)++;
             }
