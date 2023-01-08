@@ -32,7 +32,7 @@
 
 
 
-UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, edfhdrblck *e_hdr, int i_num)
+UI_hypnogram_window::UI_hypnogram_window(QWidget *w_parent, edfhdrblck_t *e_hdr, int i_num)
 {
   mainwindow = (UI_Mainwindow *)w_parent;
 

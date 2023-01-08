@@ -40,7 +40,7 @@
 
 
 
-UI_StatisticWindow::UI_StatisticWindow(sigcompblck *signalcomp,
+UI_StatisticWindow::UI_StatisticWindow(sigcompblck_t *signalcomp,
                                        long long pagetime,
                                        QWidget *w_parent,
                                        annotlist_t *annot_list,

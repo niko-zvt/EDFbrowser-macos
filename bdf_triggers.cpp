@@ -30,7 +30,7 @@
 
 
 
-int BDF_triggers::get_triggers(edfhdrblck *hdr)
+int BDF_triggers::get_triggers(edfhdrblck_t *hdr)
 {
   int i, j,
       sf,

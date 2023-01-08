@@ -36,7 +36,7 @@ static void process_events(void)
 }
 
 
-int EDF_annotations::get_annotations(edfhdrblck *edf_hdr, int read_nk_trigger_signal)
+int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_signal)
 {
   int i, j, k, p, r=0, n,
       edfsignals,
@@ -67,21 +67,20 @@ int EDF_annotations::get_annotations(edfhdrblck *edf_hdr, int read_nk_trigger_si
   unsigned short nk_triggerfields=0,
                  nk_old_triggerfields=0;
 
-  char *scratchpad,
-       *cnv_buf,
-       *time_in_txt,
-       *duration_in_txt,
-       nk_triggerlabel[16][32];
-
+  char *scratchpad=NULL,
+       *cnv_buf=NULL,
+       *time_in_txt=NULL,
+       *duration_in_txt=NULL,
+       nk_triggerlabel[16][32]={0,};
 
   long long data_record_duration,
             elapsedtime,
             time_tmp=0LL,
             nk_trigger_sample_duration=0LL;
 
-  FILE *inputfile;
+  FILE *inputfile=NULL;
 
-  edf_par *edfparam;
+  edfpar_t *edfparam=NULL;
 
   annotblck annotblock;
 

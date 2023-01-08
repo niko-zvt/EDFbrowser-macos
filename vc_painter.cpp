@@ -60,7 +60,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   static int old_w=100;
 
-  sigcompblck **signalcomp=NULL;
+  sigcompblck_t **signalcomp=NULL;
 
   annotlist_t *annot_list=NULL;
 
@@ -1374,7 +1374,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 }
 
 
-inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, sigcompblck *signalcomp, int print_linewidth)
+inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, sigcompblck_t *signalcomp, int print_linewidth)
 {
   int i, j, v_use_exp=0, h_use_exp=0;
 

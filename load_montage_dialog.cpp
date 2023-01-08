@@ -158,9 +158,9 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
   struct xml_handle *xml_hdl=NULL;
 
-  sigcompblck *newsignalcomp=NULL;
+  sigcompblck_t *newsignalcomp=NULL;
 
-  edfhdrblck *edf_hdr=NULL;
+  edfhdrblck_t *edf_hdr=NULL;
 
   if(mainwindow->rc_cmd_in_progress)
   {
@@ -403,7 +403,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       break;
     }
 
-    newsignalcomp = (sigcompblck *)calloc(1, sizeof(sigcompblck));
+    newsignalcomp = (sigcompblck_t *)calloc(1, sizeof(sigcompblck_t));
     if(newsignalcomp==NULL)
     {
       if(mainwindow->rc_cmd_in_progress)
@@ -2356,7 +2356,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 }
 
 
-int UI_LoadMontagewindow::format_error(const char *file_name, int line_number, sigcompblck *sigcomp, struct xml_handle *hdl)
+int UI_LoadMontagewindow::format_error(const char *file_name, int line_number, sigcompblck_t *sigcomp, struct xml_handle *hdl)
 {
   char str[1024]="";
 

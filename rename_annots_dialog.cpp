@@ -39,7 +39,7 @@ UI_rename_annots_dialog::UI_rename_annots_dialog(QWidget *w_parent, int delete_a
 
   replacements_cnt = 0;
 
-  edfhdrblck *hdr;
+  edfhdrblck_t *hdr;
 
   hdr = mainwindow->edfheaderlist[0];
 
@@ -142,7 +142,7 @@ void UI_rename_annots_dialog::delete_all_func()
 
   char str[4096]="";
 
-  edfhdrblck *hdr;
+  edfhdrblck_t *hdr;
 
   hdr = mainwindow->edfheaderlist[0];
 
@@ -200,7 +200,7 @@ void UI_rename_annots_dialog::rename_all_func()
 
   char str[4096]="";
 
-  edfhdrblck *hdr;
+  edfhdrblck_t *hdr;
 
   hdr = mainwindow->edfheaderlist[0];
 

@@ -102,10 +102,10 @@ int signal_nr;
 
 double *avgbuf;
 
-edfhdrblck *edf_hdr;
+edfhdrblck_t *edf_hdr;
 
 
-void process_avg(sigcompblck *);
+void process_avg(sigcompblck_t *);
 
 private slots:
 

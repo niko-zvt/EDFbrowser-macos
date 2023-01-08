@@ -38,7 +38,7 @@ static const int dftsz_range[24]={200,1000,1024,2048,4096,5000,8192,10000,16384,
 
 
 
-UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(sigcompblck *signal_comp, char *view_buf, UI_FreqSpectrumWindow **spectrdialog, int number, QWidget *w_parent)
+UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(sigcompblck_t *signal_comp, char *view_buf, UI_FreqSpectrumWindow **spectrdialog, int number, QWidget *w_parent)
 {
   int i;
 

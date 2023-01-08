@@ -32,7 +32,7 @@
 
 
 
-UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, sigcompblck *signal_comp, int numb, struct cdsa_dock_param_struct *p_par)
+UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, sigcompblck_t *signal_comp, int numb, struct cdsa_dock_param_struct *p_par)
 {
   char str[1024]="";
 

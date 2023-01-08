@@ -30,7 +30,7 @@
 
 
 
-int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck *hdr)
+int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *hdr)
 {
   int i, j, k, n, p=0, r,
       new_edfsignals=0,

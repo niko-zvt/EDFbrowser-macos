@@ -58,8 +58,8 @@ struct hypnogram_dock_param_struct
   char stage_name[HYPNOGRAM_STAGENUM][32];
   char annot_name[HYPNOGRAM_STAGENUM][32];
   char annot_ov_name[HYPNOGRAM_OVNUM][32];
-  rgba_c annot_ov_color[HYPNOGRAM_OVNUM];
-  edfhdrblck *edfhdr;
+  rgbac_t annot_ov_color[HYPNOGRAM_OVNUM];
+  edfhdrblck_t *edfhdr;
   UI_Mainwindow  *mainwindow;
 };
 

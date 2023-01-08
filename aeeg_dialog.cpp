@@ -34,7 +34,7 @@
 
 
 
-UI_aeeg_window::UI_aeeg_window(QWidget *w_parent, sigcompblck *signal_comp, int numb, struct aeeg_dock_param_struct *p_par)
+UI_aeeg_window::UI_aeeg_window(QWidget *w_parent, sigcompblck_t *signal_comp, int numb, struct aeeg_dock_param_struct *p_par)
 {
   char str[1024]="";
 

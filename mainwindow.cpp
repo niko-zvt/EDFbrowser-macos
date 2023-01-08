@@ -261,7 +261,7 @@ void UI_Mainwindow::live_stream_timer_func()
 }
 
 
-long long UI_Mainwindow::check_edf_file_datarecords(edfhdrblck *hdr)
+long long UI_Mainwindow::check_edf_file_datarecords(edfhdrblck_t *hdr)
 {
   long long datarecords;
 
@@ -305,7 +305,7 @@ void UI_Mainwindow::save_file()
 
   char f_path[MAX_PATH_LENGTH];
 
-  edfhdrblck *hdr;
+  edfhdrblck_t *hdr;
 
   FILE *outputfile;
 
@@ -2349,7 +2349,7 @@ void UI_Mainwindow::open_new_file()
 
   QAction *act=NULL;
 
-  edfhdrblck *edfhdr=NULL;
+  edfhdrblck_t *edfhdr=NULL;
 
   rc_file_open_err = 0;
 
@@ -2800,7 +2800,7 @@ void UI_Mainwindow::remove_recent_file_mtg_path(const char *mtg_path)
 }
 
 
-void UI_Mainwindow::setMainwindowTitle(edfhdrblck *edfhdr)
+void UI_Mainwindow::setMainwindowTitle(edfhdrblck_t *edfhdr)
 {
   int i, len;
 
@@ -5211,7 +5211,7 @@ void UI_Mainwindow::edfplus_remove_duplicate_annotations()
 }
 
 
-sigcompblck * UI_Mainwindow::create_signalcomp_copy(sigcompblck *original_signalcomp)
+sigcompblck_t * UI_Mainwindow::create_signalcomp_copy(sigcompblck_t *original_signalcomp)
 {
   int i;
 
@@ -5219,7 +5219,7 @@ sigcompblck * UI_Mainwindow::create_signalcomp_copy(sigcompblck *original_signal
        *filter_spec,
        *err;
 
-  sigcompblck *newsignalcomp;
+  sigcompblck_t *newsignalcomp;
 
   if(signalcomps >= MAXSIGNALS)
   {
@@ -5236,7 +5236,7 @@ sigcompblck * UI_Mainwindow::create_signalcomp_copy(sigcompblck *original_signal
     return NULL;
   }
 
-  newsignalcomp = (sigcompblck *)calloc(1, sizeof(sigcompblck));
+  newsignalcomp = (sigcompblck_t *)calloc(1, sizeof(sigcompblck_t));
   if(newsignalcomp == NULL)
   {
     QMessageBox::critical(this, "Error", "malloc() error");
@@ -5442,7 +5442,7 @@ void UI_Mainwindow::annot_dock_updated(void)
 }
 
 
-int UI_Mainwindow::get_filenum(edfhdrblck *ptr)
+int UI_Mainwindow::get_filenum(edfhdrblck_t *ptr)
 {
   int i;
 
@@ -5458,7 +5458,7 @@ int UI_Mainwindow::get_filenum(edfhdrblck *ptr)
 }
 
 
-void UI_Mainwindow::enable_hrv_stats_toolbar(const char *annotation, annotlist_t *annot_list, sigcompblck *sigcomp)
+void UI_Mainwindow::enable_hrv_stats_toolbar(const char *annotation, annotlist_t *annot_list, sigcompblck_t *sigcomp)
 {
   char annot_descr[MAX_ANNOTATION_LEN]="";
 
@@ -5492,7 +5492,7 @@ void UI_Mainwindow::enable_hrv_stats_toolbar(const char *annotation, annotlist_t
 }
 
 
-void UI_Mainwindow::get_unique_annotations(edfhdrblck *hdr)
+void UI_Mainwindow::get_unique_annotations(edfhdrblck_t *hdr)
 {
   int i, j, listsz;
 

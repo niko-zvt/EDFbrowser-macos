@@ -64,7 +64,7 @@ class UI_FreqSpectrumWindow : public QThread
   Q_OBJECT
 
 public:
-  UI_FreqSpectrumWindow(sigcompblck *, char *, UI_FreqSpectrumWindow **, int, QWidget *);
+  UI_FreqSpectrumWindow(sigcompblck_t *, char *, UI_FreqSpectrumWindow **, int, QWidget *);
 
   ~UI_FreqSpectrumWindow();
 
@@ -72,7 +72,7 @@ public:
 
   QDialog *SpectrumDialog;
 
-  sigcompblck *signalcomp;
+  sigcompblck_t *signalcomp;
 
 private:
 

@@ -111,7 +111,7 @@ void UI_EDFDwindow::SelectFileButton()
 
   annotblck *annot_ptr;
 
-  edfhdrblck *edfhdr=NULL;
+  edfhdrblck_t *edfhdr=NULL;
 
 
   pushButton1->setEnabled(false);
@@ -651,7 +651,7 @@ void UI_EDFDwindow::SelectFileButton()
 
 
 
-void UI_EDFDwindow::write_values_to_hdr(FILE *outputfile, long long timestamp, int datarecords, edfhdrblck *edfhdr)
+void UI_EDFDwindow::write_values_to_hdr(FILE *outputfile, long long timestamp, int datarecords, edfhdrblck_t *edfhdr)
 {
   int i;
 

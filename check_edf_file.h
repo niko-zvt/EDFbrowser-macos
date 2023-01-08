@@ -49,11 +49,11 @@ class EDFfileCheck
 
 public:
 
-  edfhdrblck * check_edf_file(FILE *, char *, int, int, int);
+  edfhdrblck_t * check_edf_file(FILE *, char *, int, int, int);
 
 private:
 
-  edfhdrblck *edfhdr;
+  edfhdrblck_t *edfhdr;
 
   int is_integer_number(char *);
   int is_number(char *);

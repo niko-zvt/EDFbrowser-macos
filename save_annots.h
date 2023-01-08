@@ -47,7 +47,7 @@
 
 
 
-int save_annotations(UI_Mainwindow *, FILE *, edfhdrblck *);
+int save_annotations(UI_Mainwindow *, FILE *, edfhdrblck_t *);
 
 
 

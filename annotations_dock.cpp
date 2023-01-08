@@ -36,7 +36,7 @@ static void process_events(void)
 }
 
 
-UI_Annotationswindow::UI_Annotationswindow(edfhdrblck *e_hdr, QWidget *w_parent)
+UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_parent)
 {
   QPalette palette;
 

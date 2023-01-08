@@ -69,7 +69,7 @@ char *recent_opendir,
      *recent_savedir;
 
 long long get_datarecord_timestamp(char *);
-void write_values_to_hdr(FILE *, long long, int, edfhdrblck *);
+void write_values_to_hdr(FILE *, long long, int, edfhdrblck_t *);
 
 private slots:
 

@@ -55,9 +55,9 @@ class FilteredBlockReadClass
 private:
   FILE *inputfile;
 
-  edfhdrblck *hdr;
+  edfhdrblck_t *hdr;
 
-  sigcompblck *signalcomp;
+  sigcompblck_t *signalcomp;
 
   int datarecord_cnt,
       samples_per_datrec,
@@ -74,7 +74,7 @@ private:
 
 
 public:
-  double * init_signalcomp(sigcompblck *, int, int, int, int *);
+  double * init_signalcomp(sigcompblck_t *, int, int, int, int *);
   int process_signalcomp(int);
   long long samples_in_buf(void);
   FilteredBlockReadClass();

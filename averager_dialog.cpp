@@ -37,7 +37,7 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, annotblck *annot)
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
-  edf_hdr = (edfhdrblck *)(annot->edfhdr);
+  edf_hdr = (edfhdrblck_t *)(annot->edfhdr);
 
   averager_dialog = new QDialog(w_parent);
 
@@ -520,7 +520,7 @@ UI_AveragerWindow::~UI_AveragerWindow()
 }
 
 
-void UI_AveragerWindow::process_avg(sigcompblck *signalcomp)
+void UI_AveragerWindow::process_avg(sigcompblck_t *signalcomp)
 {
   int j, k, tmp;
 

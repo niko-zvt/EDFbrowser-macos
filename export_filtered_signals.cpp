@@ -476,7 +476,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
   FilteredBlockReadClass *block_reader[MAXSIGNALS];
 
-  sigcompblck *signalcomp[MAXSIGNALS];
+  sigcompblck_t *signalcomp[MAXSIGNALS];
 
   for(i=0; i<MAXSIGNALS; i++)
   {

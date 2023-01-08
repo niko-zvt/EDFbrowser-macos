@@ -61,7 +61,7 @@ class UI_Annotationswindow : public QObject
   Q_OBJECT
 
 public:
-  UI_Annotationswindow(edfhdrblck *e_hdr, QWidget *parent);
+  UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *parent);
 
   UI_Mainwindow *mainwindow;
 
@@ -82,7 +82,7 @@ private:
       hide_bs_triggers,
       last_pressed_annotation;
 
-  edfhdrblck *edf_hdr;
+  edfhdrblck_t *edf_hdr;
 
   QDialog *dialog1;
 

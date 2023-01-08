@@ -91,7 +91,7 @@ double dividerlist[MAXSIGNALS];
 FILE *inputfile,
      *outputfile;
 
-edfhdrblck *edfhdr;
+edfhdrblck_t *edfhdr;
 
 filt_set_t *filterlist[MAXSIGNALS];
 

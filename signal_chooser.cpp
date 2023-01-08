@@ -330,7 +330,7 @@ void UI_SignalChooser::signalUp()
       sigcomp_nr,
       selected_signals[MAXSIGNALS];
 
-  sigcompblck *signalcomp;
+  sigcompblck_t *signalcomp;
 
 
   n = get_selectionlist(selected_signals);
@@ -381,7 +381,7 @@ void UI_SignalChooser::signalDown()
       sigcomp_nr,
       selected_signals[MAXSIGNALS];
 
-  sigcompblck *signalcomp;
+  sigcompblck_t *signalcomp;
 
 
   n = get_selectionlist(selected_signals);

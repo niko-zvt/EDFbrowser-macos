@@ -62,7 +62,7 @@ char  inputpath[MAX_PATH_LENGTH],
       outputpath[MAX_PATH_LENGTH],
       *recent_savedir;
 
-edfhdrblck *edfhdr;
+edfhdrblck_t *edfhdr;
 
   QDialog      *myobjectDialog;
 

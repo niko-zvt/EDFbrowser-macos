@@ -180,7 +180,7 @@ typedef struct
   int g;
   int b;
   int a;
-} rgba_c;
+} rgbac_t;
 
 typedef struct
 {
@@ -201,7 +201,7 @@ typedef struct
   int    sf_int;
   double sf_f;
   long long smpls;
-} edf_par;
+} edfpar_t;
 
 typedef struct
 {
@@ -254,17 +254,17 @@ typedef struct
   long long prefiltertime;
   int       annots_not_read;
   int       recording_len_sec;
-  edf_par   *edfparam;
+  edfpar_t   *edfparam;
   annotlist_t annot_list;
   char      unique_annotations_list[MAX_UNIQUE_ANNOTATIONS][MAX_ANNOTATION_LEN];
   int       hypnogram_idx[MAXHYPNOGRAMDOCKS];
   int       hrv_dock[MAXHRVDOCKS];
-} edfhdrblck;
+} edfhdrblck_t;
 
 typedef struct
 {
   unsigned long long uid;
-  edfhdrblck *edfhdr;
+  edfhdrblck_t *edfhdr;
   int num_of_signals;
   unsigned long long viewbufsize;
   unsigned long long viewbufoffset;
@@ -361,7 +361,7 @@ typedef struct
   int annot_created_by_rect_draw_active;
   long long annot_created_by_rect_draw_onset;
   long long annot_created_by_rect_draw_duration;
-} sigcompblck;
+} sigcompblck_t;
 
 typedef struct
 {
@@ -377,7 +377,7 @@ typedef struct
 
 typedef struct
 {
-  edfhdrblck *edf_hdr;
+  edfhdrblck_t *edf_hdr;
   annotblck *list[MAX_ACTIVE_ANNOT_MARKERS];
   int count;
   int selected;
@@ -399,7 +399,7 @@ typedef struct
 typedef struct
 {
   int color;
-  edfhdrblck *edf_hdr;
+  edfhdrblck_t *edf_hdr;
   int active;
   int moving;
   int position;

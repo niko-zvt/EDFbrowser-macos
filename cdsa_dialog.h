@@ -54,7 +54,7 @@ class UI_cdsa_window : public QObject
   Q_OBJECT
 
 public:
-  UI_cdsa_window(QWidget *, sigcompblck *, int, struct cdsa_dock_param_struct *p_par=NULL);
+  UI_cdsa_window(QWidget *, sigcompblck_t *, int, struct cdsa_dock_param_struct *p_par=NULL);
 
   UI_Mainwindow  *mainwindow;
 
@@ -62,7 +62,7 @@ private:
 
   int sf, cdsa_instance_nr, export_data;
 
-  sigcompblck *signalcomp;
+  sigcompblck_t *signalcomp;
 
   struct cdsa_dock_param_struct *no_dialog_params;
 

@@ -56,7 +56,7 @@ class UI_AnnotationEditwindow : public QObject
   Q_OBJECT
 
 public:
-  UI_AnnotationEditwindow(edfhdrblck *e_hdr, QWidget *parent);
+  UI_AnnotationEditwindow(edfhdrblck_t *e_hdr, QWidget *parent);
   ~UI_AnnotationEditwindow();
 
   UI_Mainwindow *mainwindow;
@@ -75,7 +75,7 @@ public:
 
   void process_annot_by_rect_draw(void);
 
-  void set_edf_header(edfhdrblck *);
+  void set_edf_header(edfhdrblck_t *);
 
   void set_selected_annotation(annotblck *);
 
@@ -88,7 +88,7 @@ private:
   int annot_num,
       is_deleted;
 
-  edfhdrblck *edf_hdr;
+  edfhdrblck_t *edf_hdr;
 
   QFrame *annot_edit_frame;
 

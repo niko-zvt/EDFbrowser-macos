@@ -97,7 +97,7 @@ public:
 
   QDockWidget *dock;
 
-  sigcompblck *signalcomp;
+  sigcompblck_t *signalcomp;
 
   struct spectrum_markersblock *spectrum_color;
 

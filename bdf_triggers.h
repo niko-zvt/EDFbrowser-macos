@@ -50,7 +50,7 @@ class BDF_triggers
 
 public:
 
-  int get_triggers(edfhdrblck *);
+  int get_triggers(edfhdrblck_t *);
 
 };
 

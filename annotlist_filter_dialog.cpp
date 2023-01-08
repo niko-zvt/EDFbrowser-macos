@@ -31,7 +31,7 @@
 
 
 
-UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, annotblck *annot, annotfilter_t *filter_p, edfhdrblck *e_hdr)
+UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, annotblck *annot, annotfilter_t *filter_p, edfhdrblck_t *e_hdr)
 {
   int n;
 

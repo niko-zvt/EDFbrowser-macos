@@ -66,7 +66,7 @@ model:
 
 
 
-AdjustFilterSettings::AdjustFilterSettings(sigcompblck *signal_comp, QWidget *w_parent)
+AdjustFilterSettings::AdjustFilterSettings(sigcompblck_t *signal_comp, QWidget *w_parent)
 {
   char txtbuf[2048];
 

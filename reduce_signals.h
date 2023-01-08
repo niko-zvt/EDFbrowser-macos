@@ -105,7 +105,7 @@ char  inputpath[MAX_PATH_LENGTH],
 FILE *inputfile,
      *outputfile;
 
-edfhdrblck *edfhdr;
+edfhdrblck_t *edfhdr;
 
 ravgfiltset_t *filterlist[MAXSIGNALS][REDUCER_MAX_AA_FILTERS];
 

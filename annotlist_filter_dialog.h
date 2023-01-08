@@ -57,7 +57,7 @@ class UI_AnnotFilterWindow : public QObject
   Q_OBJECT
 
 public:
-  UI_AnnotFilterWindow(QWidget *, annotblck *, annotfilter_t *, edfhdrblck *);
+  UI_AnnotFilterWindow(QWidget *, annotblck *, annotfilter_t *, edfhdrblck_t *);
 
   UI_Mainwindow *mainwindow;
 
@@ -81,7 +81,7 @@ QCheckBox *hide_in_list_checkbox,
           *hide_other_checkbox,
           *invert_checkbox;
 
-edfhdrblck *edf_hdr;
+edfhdrblck_t *edf_hdr;
 
 char sel_annot_str[MAX_ANNOTATION_LEN + 1];
 

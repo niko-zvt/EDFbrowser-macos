@@ -52,7 +52,7 @@ struct hrv_dock_param_struct
 {
   int instance_num;
   char annot_name[MAX_ANNOTATION_LEN];
-  edfhdrblck *edfhdr;
+  edfhdrblck_t *edfhdr;
   UI_Mainwindow *mainwindow;
 };
 

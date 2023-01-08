@@ -56,7 +56,7 @@ class UI_QRS_detector : public QObject
 
 public:
 
-  UI_QRS_detector(QWidget *parent, sigcompblck *signalcomp_);
+  UI_QRS_detector(QWidget *parent, sigcompblck_t *signalcomp_);
 
   UI_Mainwindow *mainwindow;
 
@@ -64,7 +64,7 @@ private:
 
   double sf;
 
-  sigcompblck *signalcomp;
+  sigcompblck_t *signalcomp;
 
   ecgfiltset_t *ecg_filter_bu;
 

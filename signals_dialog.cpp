@@ -287,7 +287,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
   char str[512]="",
        str2[128]="";
 
-  sigcompblck *newsignalcomp;
+  sigcompblck_t *newsignalcomp;
 
 
   n = compositionlist->rowCount();
@@ -311,7 +311,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
     }
   }
 
-  newsignalcomp = (sigcompblck *)calloc(1, sizeof(sigcompblck));
+  newsignalcomp = (sigcompblck_t *)calloc(1, sizeof(sigcompblck_t));
   if(newsignalcomp==NULL)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error: Memory allocation error:\n\"new signal composition\"");
@@ -419,7 +419,7 @@ void UI_Signalswindow::DisplayButtonClicked()
 {
   int i, n, s, old_scomps;
 
-  sigcompblck *newsignalcomp;
+  sigcompblck_t *newsignalcomp;
 
   QListWidgetItem *item;
 
@@ -439,7 +439,7 @@ void UI_Signalswindow::DisplayButtonClicked()
 
   for(i=0; i<n; i++)
   {
-    newsignalcomp = (sigcompblck *)calloc(1, sizeof(sigcompblck));
+    newsignalcomp = (sigcompblck_t *)calloc(1, sizeof(sigcompblck_t));
     if(newsignalcomp==NULL)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error: Memory allocation error:\n\"new signal composition\"");
