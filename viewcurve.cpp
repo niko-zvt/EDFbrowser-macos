@@ -58,7 +58,7 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   annot_sidemenu_act->setShortcut(QKeySequence("A"));
   addAction(annot_sidemenu_act);
 
-  active_markers = (active_markersblck *)calloc(1, sizeof(active_markersblck));
+  active_markers = (activemarkersblck_t *)calloc(1, sizeof(activemarkersblck_t));
 
   scroll_h_offset = 0;
 
@@ -1868,7 +1868,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
   {
     free(graphicBuf);
 
-    graphicBuf = (graph_buf *)malloc(sizeof(graph_buf) * w * 2 + 4);
+    graphicBuf = (graphbuf_t *)malloc(sizeof(graphbuf_t) * w * 2 + 4);
 
     graphicBufWidth = w;
   }
@@ -2417,7 +2417,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
 void drawCurve_stage_1_thread::init_vars(UI_Mainwindow *mainwindow_a, sigcompblck **signalcomp_a, int i_a,
                                          int signalcomps_a, char *viewbuf_a, int w_a, int h_a, int *screensamples_a, int printing_a,
-                                         graph_buf *graphicBuf_a, double printsize_x_factor_a,
+                                         graphbuf_t *graphicBuf_a, double printsize_x_factor_a,
                                          double printsize_y_factor_a, crosshair_t *crosshair_1_a,
                                          crosshair_t *crosshair_2_a, int cpu_cnt_a, int linear_interpol_a)
 {

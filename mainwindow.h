@@ -365,7 +365,7 @@ long long annot_editor_user_button_epoch_len,
 
   sigcompblck *signalcomp[MAXSIGNALS];
 
-  zoomhistblck *zoomhistory;
+  zoomhistblck_t *zoomhistory;
 
   annotlist_t *annotationlist_backup;
 

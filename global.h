@@ -373,7 +373,7 @@ typedef struct
   double voltpercm[MAXZOOMHISTORY][MAXSIGNALS];
   double sensitivity[MAXZOOMHISTORY][MAXSIGNALS];
   double screen_offset[MAXZOOMHISTORY][MAXSIGNALS];
-} zoomhistblck;
+} zoomhistblck_t;
 
 typedef struct
 {
@@ -381,7 +381,7 @@ typedef struct
   annotblck *list[MAX_ACTIVE_ANNOT_MARKERS];
   int count;
   int selected;
-} active_markersblck;
+} activemarkersblck_t;
 
 typedef struct
 {
@@ -389,12 +389,12 @@ typedef struct
   int y1;
   int x2;
   int y2;
-} graph_line;
+} graphline_t;
 
 typedef struct
 {
-  graph_line graphic_line[MAXSIGNALS];
-} graph_buf;
+  graphline_t graphic_line[MAXSIGNALS];
+} graphbuf_t;
 
 typedef struct
 {

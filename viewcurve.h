@@ -87,7 +87,7 @@ class drawCurve_stage_1_thread : public QThread
 public:
   void init_vars(UI_Mainwindow *, sigcompblck **, int,
                  int, char *, int, int, int *, int,
-                 graph_buf *, double,
+                 graphbuf_t *, double,
                  double, crosshair_t *,
                  crosshair_t *, int, int);
 
@@ -111,7 +111,7 @@ private:
 
   sigcompblck *signalcomp, **signalcomp_b;
 
-  graph_buf *graphicBuf;
+  graphbuf_t *graphicBuf;
 
   crosshair_t *crosshair_1,
                          *crosshair_2;
@@ -172,10 +172,10 @@ public:
          w_scaling,
          h_scaling;
 
-  graph_buf *graphicBuf,
+  graphbuf_t *graphicBuf,
             *printBuf;
 
-  active_markersblck *active_markers;
+  activemarkersblck_t *active_markers;
 
   crosshair_t crosshair_1,
                          crosshair_2;

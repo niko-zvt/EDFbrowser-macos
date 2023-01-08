@@ -1308,7 +1308,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   annotationlist_backup = NULL;
 
-  zoomhistory = (zoomhistblck *)calloc(1, sizeof(zoomhistblck));
+  zoomhistory = (zoomhistblck_t *)calloc(1, sizeof(zoomhistblck_t));
   zoomhistory->idx = 0;
   zoomhistory->history_size_tail = 0;
   zoomhistory->history_size_head = 0;
