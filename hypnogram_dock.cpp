@@ -379,9 +379,9 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
 
   char str[64]={""};
 
-  struct annotation_list *annot_list;
+  annotlist_t *annot_list;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   w = width();
   h = height();

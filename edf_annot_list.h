@@ -42,51 +42,53 @@
 extern "C" {
 #endif
 
-struct annotationblock{
-        void *edfhdr;
-        long long onset;
-        char duration[16];
-        long long long_duration;
-        long long file_offset;
-        int datrec;
-        char description[MAX_ANNOTATION_LEN_II + 1];
-        int modified;
-        int x_pos;
-        int grabbed;
-        int hided;
-        int hided_in_list;
-        unsigned int ident;
-        int selected_in_dock;
-       };
+typedef struct
+{
+  void *edfhdr;
+  long long onset;
+  char duration[16];
+  long long long_duration;
+  long long file_offset;
+  int datrec;
+  char description[MAX_ANNOTATION_LEN_II + 1];
+  int modified;
+  int x_pos;
+  int grabbed;
+  int hided;
+  int hided_in_list;
+  unsigned int ident;
+  int selected_in_dock;
+} annotblck;
 
-struct annotation_list{
-        struct annotationblock *items;
-        int sz;
-        int used_sz;
-        int mem_sz;
-        int *idx;
-};
+typedef struct
+{
+  annotblck *items;
+  int sz;
+  int used_sz;
+  int mem_sz;
+  int *idx;
+} annotlist_t;
 
 
-int edfplus_annotation_add_item(struct annotation_list *, struct annotationblock);
-int edfplus_annotation_size(struct annotation_list *);
-int edfplus_annotation_cnt(struct annotation_list *, struct annotationblock *);
-void edfplus_annotation_empty_list(struct annotation_list *);
-void edfplus_annotation_remove_item(struct annotation_list *, int);
-struct annotationblock * edfplus_annotation_get_item(struct annotation_list *, int);
-struct annotationblock * edfplus_annotation_get_item_visible_only(struct annotation_list *, int);
-struct annotationblock * edfplus_annotation_get_item_visible_only_cached(struct annotation_list *, int, int *, int *);
-int edfplus_annotation_get_index(struct annotation_list *, struct annotationblock *);
-void edfplus_annotation_sort(struct annotation_list *, void (*)(void));
-struct annotation_list * edfplus_annotation_create_list_copy(struct annotation_list *);
-int edfplus_annotation_remove_duplicates(struct annotation_list *);
-int edfplus_annotation_delete_multiple(struct annotation_list *, const char *);
-int edfplus_annotation_rename_multiple(struct annotation_list *, const char *, const char *);
-int edfplus_annotation_get_max_annotation_strlen(struct annotation_list *);
-void edfplus_annotation_copy_list(struct annotation_list *, struct annotation_list *);
+int edfplus_annotation_add_item(annotlist_t *, annotblck);
+int edfplus_annotation_size(annotlist_t *);
+int edfplus_annotation_cnt(annotlist_t *, annotblck *);
+void edfplus_annotation_empty_list(annotlist_t *);
+void edfplus_annotation_remove_item(annotlist_t *, int);
+annotblck * edfplus_annotation_get_item(annotlist_t *, int);
+annotblck * edfplus_annotation_get_item_visible_only(annotlist_t *, int);
+annotblck * edfplus_annotation_get_item_visible_only_cached(annotlist_t *, int, int *, int *);
+int edfplus_annotation_get_index(annotlist_t *, annotblck *);
+void edfplus_annotation_sort(annotlist_t *, void (*)(void));
+annotlist_t * edfplus_annotation_create_list_copy(annotlist_t *);
+int edfplus_annotation_remove_duplicates(annotlist_t *);
+int edfplus_annotation_delete_multiple(annotlist_t *, const char *);
+int edfplus_annotation_rename_multiple(annotlist_t *, const char *, const char *);
+int edfplus_annotation_get_max_annotation_strlen(annotlist_t *);
+void edfplus_annotation_copy_list(annotlist_t *, annotlist_t *);
 long long edfplus_annotation_get_long_from_number(const char *);
-int edfplus_annotation_get_index_at(struct annotation_list *, long long, int);
-void edfplus_annotation_cancel_all_selected_in_dock(struct annotation_list *);
+int edfplus_annotation_get_index_at(annotlist_t *, long long, int);
+void edfplus_annotation_cancel_all_selected_in_dock(annotlist_t *);
 
 #ifdef __cplusplus
 } /* extern "C" */

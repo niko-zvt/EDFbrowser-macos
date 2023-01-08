@@ -189,9 +189,9 @@ void UI_Annotationswindow::delete_annots()
 {
   char str[4096]="";
 
-  struct annotation_list *annot_list;
+  annotlist_t *annot_list;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   if(mainwindow->files_open < 1)
   {
@@ -303,9 +303,9 @@ void UI_Annotationswindow::rename_all()
 {
   char str[4096]="";
 
-  struct annotation_list *annot_list;
+  annotlist_t *annot_list;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   if(mainwindow->files_open < 1)
   {
@@ -365,9 +365,9 @@ void UI_Annotationswindow::show_heart_rate(bool)
 
   char str[4096]="";
 
-  struct annotation_list *annot_list;
+  annotlist_t *annot_list;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   if(mainwindow->files_open < 1)
   {
@@ -449,9 +449,9 @@ void UI_Annotationswindow::show_stats(bool)
 {
   char str[4096]="";
 
-  struct annotation_list *annot_list;
+  annotlist_t *annot_list;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   if(mainwindow->files_open < 1)
   {
@@ -496,9 +496,9 @@ void UI_Annotationswindow::filt_ival_time(bool)
 {
   char str[4096]="";
 
-  struct annotation_list *annot_list;
+  annotlist_t *annot_list;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   if(mainwindow->files_open < 1)
   {
@@ -543,9 +543,9 @@ void UI_Annotationswindow::hide_all_NK_triggers(bool)
 {
   int i, sz;
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   hide_nk_triggers = 1;
 
@@ -573,9 +573,9 @@ void UI_Annotationswindow::hide_all_BS_triggers(bool)
 {
   int i, sz;
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   hide_bs_triggers = 1;
 
@@ -603,9 +603,9 @@ void UI_Annotationswindow::unhide_all_NK_triggers(bool)
 {
   int i, sz;
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   hide_nk_triggers = 0;
 
@@ -633,9 +633,9 @@ void UI_Annotationswindow::unhide_all_BS_triggers(bool)
 {
   int i, sz;
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   hide_bs_triggers = 0;
 
@@ -671,9 +671,9 @@ void UI_Annotationswindow::delayed_list_filter_update()
 
   char filter_str[32];
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   QString text = search_line_edit->text();
 
@@ -786,7 +786,7 @@ void UI_Annotationswindow::checkbox2_clicked(int state)
 {
   int changed=0, sz;
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -830,9 +830,9 @@ void UI_Annotationswindow::show_between(bool)
     return;
   }
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -873,9 +873,9 @@ void UI_Annotationswindow::hide_annot(bool)
 
   n = list->currentRow();
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -904,9 +904,9 @@ void UI_Annotationswindow::unhide_annot(bool)
 
   n = list->currentRow();
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -939,9 +939,9 @@ void UI_Annotationswindow::hide_same_annots(bool)
 
   n = list->currentRow();
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -993,9 +993,9 @@ void UI_Annotationswindow::unhide_same_annots(bool)
 
   n = list->currentRow();
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -1033,9 +1033,9 @@ void UI_Annotationswindow::unhide_all_annots(bool)
 {
   int i, sz;
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -1058,9 +1058,9 @@ void UI_Annotationswindow::average_annot(bool)
 {
   char str[4096]="";
 
-  struct annotation_list *annot_list;
+  annotlist_t *annot_list;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   if(mainwindow->files_open < 1)
   {
@@ -1157,9 +1157,9 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
 
   QString string;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
-  struct annotation_list *annot_list;
+  annotlist_t *annot_list;
 
   selected = -1;
 
@@ -1364,9 +1364,9 @@ void UI_Annotationswindow::annotation_pressed(QListWidgetItem *item)
 {
   int n, sz;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
   n = item->data(Qt::UserRole).toInt();
 
@@ -1388,9 +1388,9 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
 {
   int n, sz;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
   n = item->data(Qt::UserRole).toInt();
 

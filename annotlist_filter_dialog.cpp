@@ -31,7 +31,7 @@
 
 
 
-UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, struct annotationblock *annot, annotfilter_t *filter_p, edfhdrblck *e_hdr)
+UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, annotblck *annot, annotfilter_t *filter_p, edfhdrblck *e_hdr)
 {
   int n;
 
@@ -157,7 +157,7 @@ void UI_AnnotFilterWindow::undo_filter()
 {
   int i, sz;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -191,7 +191,7 @@ void UI_AnnotFilterWindow::apply_filter()
 
   char annot_str[MAX_ANNOTATION_LEN + 1];
 
-  struct annotationblock *annot, *annot_before;
+  annotblck *annot, *annot_before;
 
   if(invert_checkbox->checkState() == Qt::Checked)
   {

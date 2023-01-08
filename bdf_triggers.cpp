@@ -51,11 +51,11 @@ int BDF_triggers::get_triggers(edfhdrblck *hdr)
 
   FILE *inputfile;
 
-  struct annotation_list *annot_list = &hdr->annot_list;
+  annotlist_t *annot_list = &hdr->annot_list;
 
-  struct annotationblock annotation;
+  annotblck annotation;
 
-  memset(&annotation, 0, sizeof(struct annotationblock));
+  memset(&annotation, 0, sizeof(annotblck));
 
   inputfile = hdr->file_hdl;
   edfsignals = hdr->edfsignals;

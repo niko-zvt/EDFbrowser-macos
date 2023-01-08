@@ -530,9 +530,9 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
 
   char str[MAX_ANNOTATION_LEN];
 
-  struct annotation_list *annot_list;
+  annotlist_t *annot_list;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   w = width();
   h = height();

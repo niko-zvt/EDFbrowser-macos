@@ -255,7 +255,7 @@ typedef struct
   int       annots_not_read;
   int       recording_len_sec;
   edf_par   *edfparam;
-  struct    annotation_list annot_list;
+  annotlist_t annot_list;
   char      unique_annotations_list[MAX_UNIQUE_ANNOTATIONS][MAX_ANNOTATION_LEN];
   int       hypnogram_idx[MAXHYPNOGRAMDOCKS];
   int       hrv_dock[MAXHRVDOCKS];
@@ -378,7 +378,7 @@ typedef struct
 typedef struct
 {
   edfhdrblck *edf_hdr;
-  struct annotationblock *list[MAX_ACTIVE_ANNOT_MARKERS];
+  annotblck *list[MAX_ACTIVE_ANNOT_MARKERS];
   int count;
   int selected;
 } active_markersblck;

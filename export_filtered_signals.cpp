@@ -469,10 +469,10 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
   struct date_time_struct dts;
 
-  struct annotation_list new_annot_list,
+  annotlist_t new_annot_list,
                          *annot_list=NULL;
 
-  struct annotationblock *annot_ptr=NULL;
+  annotblck *annot_ptr=NULL;
 
   FilteredBlockReadClass *block_reader[MAXSIGNALS];
 
@@ -483,7 +483,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
     block_reader[i] = NULL;
   }
 
-  memset(&new_annot_list, 0, sizeof(struct annotation_list));
+  memset(&new_annot_list, 0, sizeof(annotlist_t));
 
   QProgressDialog progress("Processing file...", "Abort", 0, 1);
   progress.setWindowModality(Qt::WindowModal);

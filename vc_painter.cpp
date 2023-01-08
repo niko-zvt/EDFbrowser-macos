@@ -62,9 +62,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   sigcompblck **signalcomp=NULL;
 
-  struct annotation_list *annot_list=NULL;
+  annotlist_t *annot_list=NULL;
 
-  struct annotationblock *annot=NULL;
+  annotblck *annot=NULL;
 
   struct date_time_struct date_time_str;
 

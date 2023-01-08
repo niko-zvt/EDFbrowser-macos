@@ -49,7 +49,7 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, sigcompblck *signalcomp_)
             smpls_left=0,
             *beat_onset_list=NULL;
 
-  struct annotationblock annotation;
+  annotblck annotation;
 
   FilteredBlockReadClass fbr;
 
@@ -168,7 +168,7 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, sigcompblck *signalcomp_)
 
   trim_spaces(rpeak_descr);
 
-  memset(&annotation, 0, sizeof(struct annotationblock));
+  memset(&annotation, 0, sizeof(annotblck));
   strlcpy(annotation.description, rpeak_descr, MAX_ANNOTATION_LEN);
 
   for(i=0; i<beat_cnt; i++)

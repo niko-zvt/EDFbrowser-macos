@@ -953,7 +953,7 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
       marker_start,
       marker_end;
 
-  struct annotationblock annotation;
+  annotblck annotation;
 
   edfhdrblck *edf_hdr = mainwindow->signalcomp[signalnr]->edfhdr;
 
@@ -984,7 +984,7 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
 
       if(i >= marker_start)
       {
-        memset(&annotation, 0, sizeof(struct annotationblock));
+        memset(&annotation, 0, sizeof(annotblck));
 
         annotation.onset = i * zscore_page_len * 2LL * TIME_DIMENSION;
         if(awake)

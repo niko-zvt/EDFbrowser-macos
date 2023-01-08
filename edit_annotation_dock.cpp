@@ -239,9 +239,9 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
 {
   int file_num;
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot = edfplus_annotation_get_item(annot_list, annot_num);
+  annotblck *annot = edfplus_annotation_get_item(annot_list, annot_num);
 
   if(annot->edfhdr == NULL)
   {
@@ -303,9 +303,9 @@ void UI_AnnotationEditwindow::deleteButtonClicked()
 {
   int file_num;
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot = edfplus_annotation_get_item(annot_list, annot_num);
+  annotblck *annot = edfplus_annotation_get_item(annot_list, annot_num);
 
   if(annot->edfhdr == NULL)
   {
@@ -346,11 +346,11 @@ void UI_AnnotationEditwindow::createButtonClicked()
 {
   int file_num;
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock annotation;
+  annotblck annotation;
 
-  memset(&annotation, 0, sizeof(struct annotationblock));
+  memset(&annotation, 0, sizeof(annotblck));
 
   annotation.onset = annotEditGetOnset();
 
@@ -478,9 +478,9 @@ void UI_AnnotationEditwindow::set_selected_annotation(int annot_nr)
 
   annot_num = annot_nr;
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  struct annotationblock *annot = edfplus_annotation_get_item(annot_list, annot_num);
+  annotblck *annot = edfplus_annotation_get_item(annot_list, annot_num);
 
   if(annot->edfhdr == NULL)
   {
@@ -537,7 +537,7 @@ void UI_AnnotationEditwindow::set_selected_annotation(int annot_nr)
 }
 
 
-void UI_AnnotationEditwindow::set_selected_annotation(struct annotationblock *annot)
+void UI_AnnotationEditwindow::set_selected_annotation(annotblck *annot)
 {
   int n;
 
@@ -545,7 +545,7 @@ void UI_AnnotationEditwindow::set_selected_annotation(struct annotationblock *an
 
   QTime ta;
 
-  struct annotation_list *annot_list = &(edf_hdr->annot_list);
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
 
   if(annot->edfhdr == NULL)
   {

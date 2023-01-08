@@ -43,8 +43,8 @@
 UI_StatisticWindow::UI_StatisticWindow(sigcompblck *signalcomp,
                                        long long pagetime,
                                        QWidget *w_parent,
-                                       struct annotation_list *annot_list,
-                                       struct annotationblock *annot)
+                                       annotlist_t *annot_list,
+                                       annotblck *annot)
 {
   mainwindow = (UI_Mainwindow *)w_parent;
 
@@ -72,7 +72,7 @@ UI_StatisticWindow::UI_StatisticWindow(sigcompblck *signalcomp,
 
   long long l_tmp=0;
 
-  struct annotationblock *tmp_annot=NULL;
+  annotblck *tmp_annot=NULL;
 
   StatDialog = new QDialog;
   StatDialog->setWindowTitle("Statistics");

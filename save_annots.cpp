@@ -82,9 +82,9 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck *hd
     return 1;
   }
 
-  struct annotation_list *annot_list = &hdr->annot_list;
+  annotlist_t *annot_list = &hdr->annot_list;
 
-  struct annotationblock *annot_ptr;
+  annotblck *annot_ptr;
 
   annot_len = edfplus_annotation_get_max_annotation_strlen(annot_list);
 

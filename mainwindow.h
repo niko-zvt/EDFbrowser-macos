@@ -356,7 +356,7 @@ long long annot_editor_user_button_epoch_len,
           int active;
           double *ival;
           char annot_label[MAX_ANNOTATION_LEN + 1];
-          struct annotation_list *annot_list;
+          annotlist_t *annot_list;
         } toolbar_stats;
 
   struct raw2edf_var_struct raw2edf_var;
@@ -367,7 +367,7 @@ long long annot_editor_user_button_epoch_len,
 
   zoomhistblck *zoomhistory;
 
-  struct annotation_list *annotationlist_backup;
+  annotlist_t *annotationlist_backup;
 
   struct spectrum_markersblock *spectrum_colorbar;
 
@@ -417,7 +417,7 @@ long long annot_editor_user_button_epoch_len,
 
   sigcompblck * create_signalcomp_copy(sigcompblck *);
 
-  void enable_hrv_stats_toolbar(const char *, struct annotation_list *, sigcompblck *);
+  void enable_hrv_stats_toolbar(const char *, annotlist_t *, sigcompblck *);
 
   void remove_signalcomp(int);
 

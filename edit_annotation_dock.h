@@ -77,7 +77,7 @@ public:
 
   void set_edf_header(edfhdrblck *);
 
-  void set_selected_annotation(struct annotationblock *);
+  void set_selected_annotation(annotblck *);
 
   QPushButton *user_button[8];
 

@@ -109,7 +109,7 @@ void UI_EDFDwindow::SelectFileButton()
        *readbuf,
        *tal;
 
-  struct annotationblock *annot_ptr;
+  annotblck *annot_ptr;
 
   edfhdrblck *edfhdr=NULL;
 

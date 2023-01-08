@@ -60,8 +60,8 @@ public:
 UI_StatisticWindow(sigcompblck *,
                    long long,
                    QWidget *,
-                   struct annotation_list *annot_list=NULL,
-                   struct annotationblock *annot=NULL);
+                   annotlist_t *annot_list=NULL,
+                   annotblck *annot=NULL);
 
 UI_Mainwindow *mainwindow;
 

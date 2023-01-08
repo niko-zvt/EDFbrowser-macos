@@ -35,9 +35,9 @@
 
 
 
-int edfplus_annotation_add_item(struct annotation_list *list, struct annotationblock annotation)
+int edfplus_annotation_add_item(annotlist_t *list, annotblck annotation)
 {
-  struct annotationblock *tmp_block_list;
+  annotblck *tmp_block_list;
 
   int *tmp_idx;
 
@@ -47,7 +47,7 @@ int edfplus_annotation_add_item(struct annotation_list *list, struct annotationb
 
   if(list->used_sz >= list->mem_sz)
   {
-    tmp_block_list = (struct annotationblock *)realloc(list->items, (list->mem_sz + EDF_ANNOT_MEMBLOCKSZ_II) * sizeof(struct annotationblock));
+    tmp_block_list = (annotblck *)realloc(list->items, (list->mem_sz + EDF_ANNOT_MEMBLOCKSZ_II) * sizeof(annotblck));
     if(tmp_block_list == NULL)
     {
       return -2;
@@ -78,7 +78,7 @@ int edfplus_annotation_add_item(struct annotation_list *list, struct annotationb
 }
 
 
-void edfplus_annotation_remove_item(struct annotation_list *list, int n)
+void edfplus_annotation_remove_item(annotlist_t *list, int n)
 {
   int i;
 
@@ -95,7 +95,7 @@ void edfplus_annotation_remove_item(struct annotation_list *list, int n)
 }
 
 
-int edfplus_annotation_size(struct annotation_list *list)
+int edfplus_annotation_size(annotlist_t *list)
 {
   if(list == NULL)  return 0;
 
@@ -103,11 +103,11 @@ int edfplus_annotation_size(struct annotation_list *list)
 }
 
 
-int edfplus_annotation_cnt(struct annotation_list *list, struct annotationblock *annot)
+int edfplus_annotation_cnt(annotlist_t *list, annotblck *annot)
 {
   int i, n=0;
 
-  struct annotationblock *tmp_annot;
+  annotblck *tmp_annot;
 
   for(i=0; i<list->sz; i++)
   {
@@ -123,7 +123,7 @@ int edfplus_annotation_cnt(struct annotation_list *list, struct annotationblock 
 }
 
 
-void edfplus_annotation_empty_list(struct annotation_list *list)
+void edfplus_annotation_empty_list(annotlist_t *list)
 {
   if(list == NULL)  return;
 
@@ -137,7 +137,7 @@ void edfplus_annotation_empty_list(struct annotation_list *list)
 }
 
 
-int edfplus_annotation_get_index(struct annotation_list *list, struct annotationblock *annot)
+int edfplus_annotation_get_index(annotlist_t *list, annotblck *annot)
 {
   int i;
 
@@ -155,7 +155,7 @@ int edfplus_annotation_get_index(struct annotation_list *list, struct annotation
 }
 
 
-struct annotationblock * edfplus_annotation_get_item(struct annotation_list *list, int n)
+annotblck * edfplus_annotation_get_item(annotlist_t *list, int n)
 {
   if(list == NULL)  return NULL;
 
@@ -165,7 +165,7 @@ struct annotationblock * edfplus_annotation_get_item(struct annotation_list *lis
 }
 
 
-struct annotationblock * edfplus_annotation_get_item_visible_only(struct annotation_list *list, int n)
+annotblck * edfplus_annotation_get_item_visible_only(annotlist_t *list, int n)
 {
   int i, j=0;
 
@@ -190,7 +190,7 @@ struct annotationblock * edfplus_annotation_get_item_visible_only(struct annotat
 }
 
 
-struct annotationblock * edfplus_annotation_get_item_visible_only_cached(struct annotation_list *list, int n, int *i, int *j)
+annotblck * edfplus_annotation_get_item_visible_only_cached(annotlist_t *list, int n, int *i, int *j)
 {
   if(list == NULL)  return NULL;
 
@@ -213,7 +213,7 @@ struct annotationblock * edfplus_annotation_get_item_visible_only_cached(struct 
 }
 
 
-int edfplus_annotation_get_index_at(struct annotation_list *list, long long onset, int start)
+int edfplus_annotation_get_index_at(annotlist_t *list, long long onset, int start)
 {
   int i;
 
@@ -233,7 +233,7 @@ int edfplus_annotation_get_index_at(struct annotation_list *list, long long onse
 }
 
 
-void edfplus_annotation_sort(struct annotation_list *list, void (*callback)(void))  /* sort the annotationlist based on the onset time */
+void edfplus_annotation_sort(annotlist_t *list, void (*callback)(void))  /* sort the annotationlist based on the onset time */
 {
   int i, j, p, idx;
 
@@ -288,13 +288,13 @@ void edfplus_annotation_sort(struct annotation_list *list, void (*callback)(void
 }
 
 
-struct annotation_list * edfplus_annotation_create_list_copy(struct annotation_list *list)
+annotlist_t * edfplus_annotation_create_list_copy(annotlist_t *list)
 {
-  struct annotation_list *cpy;
+  annotlist_t *cpy;
 
   if(list == NULL)  return NULL;
 
-  cpy = (struct annotation_list *)calloc(1, sizeof(struct annotation_list));
+  cpy = (annotlist_t *)calloc(1, sizeof(annotlist_t));
   if(cpy == NULL)
   {
     return NULL;
@@ -302,7 +302,7 @@ struct annotation_list * edfplus_annotation_create_list_copy(struct annotation_l
 
   if(list->sz > 0)
   {
-    cpy->items = (struct annotationblock *)calloc(1, sizeof(struct annotationblock) * list->mem_sz);
+    cpy->items = (annotblck *)calloc(1, sizeof(annotblck) * list->mem_sz);
     if(cpy->items == NULL)
     {
       free(cpy);
@@ -323,7 +323,7 @@ struct annotation_list * edfplus_annotation_create_list_copy(struct annotation_l
 
     cpy->used_sz = list->used_sz;
 
-    memcpy(cpy->items, list->items, cpy->mem_sz * sizeof(struct annotationblock));
+    memcpy(cpy->items, list->items, cpy->mem_sz * sizeof(annotblck));
 
     memcpy(cpy->idx, list->idx, cpy->mem_sz * sizeof(int));
   }
@@ -332,7 +332,7 @@ struct annotation_list * edfplus_annotation_create_list_copy(struct annotation_l
 }
 
 
-void edfplus_annotation_copy_list(struct annotation_list *destlist, struct annotation_list *srclist)
+void edfplus_annotation_copy_list(annotlist_t *destlist, annotlist_t *srclist)
 {
   if((destlist == NULL) || (srclist == NULL)) return;
 
@@ -353,7 +353,7 @@ void edfplus_annotation_copy_list(struct annotation_list *destlist, struct annot
     destlist->used_sz = 0;
   }
 
-  destlist->items = (struct annotationblock *)calloc(1, srclist->mem_sz * sizeof(struct annotationblock));
+  destlist->items = (annotblck *)calloc(1, srclist->mem_sz * sizeof(annotblck));
   if(destlist->items == NULL)
   {
     return;
@@ -373,17 +373,17 @@ void edfplus_annotation_copy_list(struct annotation_list *destlist, struct annot
 
   destlist->mem_sz = srclist->mem_sz;
 
-  memcpy(destlist->items, srclist->items, destlist->mem_sz * sizeof(struct annotationblock));
+  memcpy(destlist->items, srclist->items, destlist->mem_sz * sizeof(annotblck));
 
   memcpy(destlist->idx, srclist->idx, destlist->mem_sz * sizeof(int));
 }
 
 
-int edfplus_annotation_remove_duplicates(struct annotation_list *list)
+int edfplus_annotation_remove_duplicates(annotlist_t *list)
 {
   int i, j, dup_cnt=0;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   if(list == NULL)  return -1;
 
@@ -417,11 +417,11 @@ int edfplus_annotation_remove_duplicates(struct annotation_list *list)
 }
 
 
-int edfplus_annotation_delete_multiple(struct annotation_list *list, const char *descr)
+int edfplus_annotation_delete_multiple(annotlist_t *list, const char *descr)
 {
   int i, ren_cnt=0;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   if(list == NULL)  return -1;
 
@@ -441,11 +441,11 @@ int edfplus_annotation_delete_multiple(struct annotation_list *list, const char 
 }
 
 
-int edfplus_annotation_rename_multiple(struct annotation_list *list, const char *descr_old, const char *descr_new)
+int edfplus_annotation_rename_multiple(annotlist_t *list, const char *descr_old, const char *descr_new)
 {
   int i, ren_cnt=0;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   if(list == NULL)  return -1;
 
@@ -465,7 +465,7 @@ int edfplus_annotation_rename_multiple(struct annotation_list *list, const char 
 }
 
 
-void edfplus_annotation_cancel_all_selected_in_dock(struct annotation_list *list)
+void edfplus_annotation_cancel_all_selected_in_dock(annotlist_t *list)
 {
   int i;
 
@@ -478,7 +478,7 @@ void edfplus_annotation_cancel_all_selected_in_dock(struct annotation_list *list
 }
 
 
-int edfplus_annotation_get_max_annotation_strlen(struct annotation_list *list)
+int edfplus_annotation_get_max_annotation_strlen(annotlist_t *list)
 {
   int i, j,
       len,
@@ -489,7 +489,7 @@ int edfplus_annotation_get_max_annotation_strlen(struct annotation_list *list)
 
   char scratchpad[1024];
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   if(list == NULL)
   {

@@ -93,9 +93,9 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
 
   struct date_time_struct date_time;
 
-  struct annotation_list *annot_list=NULL;
+  annotlist_t *annot_list=NULL;
 
-  struct annotationblock *annot_ptr=NULL;
+  annotblck *annot_ptr=NULL;
 
 /////////////////////////////////////////////////////////////////////////
 

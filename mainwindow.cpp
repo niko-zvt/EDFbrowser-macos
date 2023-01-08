@@ -2627,7 +2627,7 @@ void UI_Mainwindow::open_new_file()
 
     edfheaderlist[files_open] = edfhdr;
 
-    memset(&edfheaderlist[files_open]->annot_list, 0, sizeof(struct annotation_list));
+    memset(&edfheaderlist[files_open]->annot_list, 0, sizeof(annotlist_t));
 
     annotations_dock[files_open] = NULL;
 
@@ -5458,7 +5458,7 @@ int UI_Mainwindow::get_filenum(edfhdrblck *ptr)
 }
 
 
-void UI_Mainwindow::enable_hrv_stats_toolbar(const char *annotation, struct annotation_list *annot_list, sigcompblck *sigcomp)
+void UI_Mainwindow::enable_hrv_stats_toolbar(const char *annotation, annotlist_t *annot_list, sigcompblck *sigcomp)
 {
   char annot_descr[MAX_ANNOTATION_LEN]="";
 
@@ -5496,7 +5496,7 @@ void UI_Mainwindow::get_unique_annotations(edfhdrblck *hdr)
 {
   int i, j, listsz;
 
-  struct annotationblock *annot;
+  annotblck *annot;
 
   if(hdr == NULL)  return;
 

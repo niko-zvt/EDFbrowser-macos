@@ -163,15 +163,15 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
 
   struct edf_hdr_struct hdr;
 
-  struct annotation_list annot_list;
+  annotlist_t annot_list;
 
-  memset(&annot_list, 0, sizeof(struct annotation_list));
+  memset(&annot_list, 0, sizeof(annotlist_t));
 
-  struct annotationblock annotation;
+  annotblck annotation;
 
-  memset(&annotation, 0, sizeof(struct annotationblock));
+  memset(&annotation, 0, sizeof(annotblck));
 
-  struct annotationblock *annot_ptr=NULL;
+  annotblck *annot_ptr=NULL;
 
 
   for(i=0; i<16; i++)
