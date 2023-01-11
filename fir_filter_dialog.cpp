@@ -844,7 +844,7 @@ int UI_FIRFilterDialog::pm_add_table_row(void)
   QObject::connect(tmp_box, SIGNAL(valueChanged(double)), this, SLOT(gain_spinbox_changed(double)));
 
   tmp_box = new QDoubleSpinBox;
-  tmp_box->setRange(-100, 10);
+  tmp_box->setRange(-140, 10);
   tmp_box->setSuffix(" dB");
   pm_param_table->setCellWidget(i, 4, tmp_box);
 
