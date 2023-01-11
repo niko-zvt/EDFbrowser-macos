@@ -171,6 +171,7 @@ void pm_paramtable_rowcount_changed();
 void current_tab_changed(int);
 void sinc_design_button_pressed();
 void sinc_type_cbox_changed(int);
+void gain_spinbox_changed(double);
 
 };
 
