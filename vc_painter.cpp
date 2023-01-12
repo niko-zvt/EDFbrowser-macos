@@ -66,7 +66,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   annotblck_t *annot=NULL;
 
-  struct date_time_struct date_time_str;
+  date_time_t date_time_str;
 
   if(mainwindow->exit_in_progress)
   {

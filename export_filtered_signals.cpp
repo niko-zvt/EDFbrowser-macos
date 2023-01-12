@@ -467,7 +467,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
             l_temp,
             endtime=0;
 
-  struct date_time_struct dts;
+  date_time_t dts;
 
   annotlist_t new_annot_list,
                          *annot_list=NULL;

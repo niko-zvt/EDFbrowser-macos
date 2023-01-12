@@ -100,7 +100,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
           unsigned char four[4];
         } var;
 
-  struct date_time_struct date_time;
+  date_time_t date_time;
 
   annotlist_t *annot_list=NULL;
 

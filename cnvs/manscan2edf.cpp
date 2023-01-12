@@ -131,7 +131,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
          char four[4];
        } var;
 
-  struct date_time_struct dtm_struct;
+  date_time_t dtm_struct;
 
   pushButton1->setEnabled(false);
 

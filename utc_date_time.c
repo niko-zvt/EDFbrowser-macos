@@ -33,7 +33,7 @@
 
 
 
-void date_time_to_utc(long long *seconds, struct date_time_struct date_time)
+void date_time_to_utc(long long *seconds, date_time_t date_time)
 {
   *seconds = (date_time.day - 1) * 86400LL;
 
@@ -139,7 +139,7 @@ void date_time_to_utc(long long *seconds, struct date_time_struct date_time)
 
 
 
-void utc_to_date_time(long long seconds, struct date_time_struct *date_time)
+void utc_to_date_time(long long seconds, date_time_t *date_time)
 {
   date_time->year = 1970;
 

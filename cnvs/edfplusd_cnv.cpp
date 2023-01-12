@@ -655,7 +655,7 @@ void UI_EDFDwindow::write_values_to_hdr(FILE *outputfile, long long timestamp, i
 {
   int i;
 
-  struct date_time_struct date_time;
+  date_time_t date_time;
 
   utc_to_date_time(edfhdr->utc_starttime + (timestamp / TIME_DIMENSION), &date_time);
 

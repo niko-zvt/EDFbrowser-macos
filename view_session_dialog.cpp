@@ -182,7 +182,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
   struct xml_handle *xml_hdl=NULL;
 
-  struct date_time_struct dt;
+  date_time_t dt;
 
   for(i=0; i<MAXFILES; i++)
   {

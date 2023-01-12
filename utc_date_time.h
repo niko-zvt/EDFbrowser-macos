@@ -42,20 +42,21 @@ extern "C" {
 
 
 
-struct date_time_struct{
-         int year;
-         int month;
-         int day;
-         int hour;
-         int minute;
-         int second;
-         char month_str[4];
-       };
+typedef struct
+{
+  int year;
+  int month;
+  int day;
+  int hour;
+  int minute;
+  int second;
+  char month_str[4];
+} date_time_t;
 
 
-void utc_to_date_time(long long, struct date_time_struct *);
+void utc_to_date_time(long long, date_time_t *);
 
-void date_time_to_utc(long long *, struct date_time_struct);
+void date_time_to_utc(long long *, date_time_t);
 
 
 #ifdef __cplusplus

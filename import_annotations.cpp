@@ -993,7 +993,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
   annotblck_t annotation;
 
-  struct date_time_struct date_time;
+  date_time_t date_time;
 
   struct xml_handle *xml_hdl;
 
@@ -2191,7 +2191,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
 
   char scratchpad[64];
 
-  struct date_time_struct date_time;
+  date_time_t date_time;
 
   strncpy(scratchpad, str, 30);
   scratchpad[30] = 0;

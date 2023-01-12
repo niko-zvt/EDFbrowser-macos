@@ -687,7 +687,7 @@ void UI_Signalswindow::show_signals(int row)
 
   QListWidgetItem *item=NULL;
 
-  struct date_time_struct date_time;
+  date_time_t date_time;
 
 
   if(row<0)  return;

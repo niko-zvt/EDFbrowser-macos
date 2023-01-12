@@ -2191,7 +2191,7 @@ void UI_Mainwindow::setMainwindowTitle(edfhdrblck_t *edfhdr)
 
   char str[MAX_PATH_LENGTH + 64]={""};
 
-  struct date_time_struct date_time;
+  date_time_t date_time;
 
 
   if(edfhdr==NULL)

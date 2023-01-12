@@ -194,7 +194,7 @@ void UI_EDFhdrwindow::show_params(int row)
 
   long long file_duration;
 
-  struct date_time_struct date_time;
+  date_time_t date_time;
 
 
   if(row<0)  return;

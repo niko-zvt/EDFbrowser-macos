@@ -89,7 +89,7 @@ long long parse_date_time_stamp(const char *src)
   ptr[14] = 0;
   ptr[17] = 0;
 
-  struct date_time_struct dat_time;
+  date_time_t dat_time;
 
   dat_time.day = atoi(ptr);
   dat_time.year = atoi(ptr + 7);

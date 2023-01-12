@@ -91,7 +91,7 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
           unsigned char two[2];
         } null_bytes[MAXSIGNALS];
 
-  struct date_time_struct date_time;
+  date_time_t date_time;
 
   annotlist_t *annot_list=NULL;
 

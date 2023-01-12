@@ -1279,7 +1279,7 @@ void ViewCurve::print_to_printer()
 
   double height_factor;
 
-  struct date_time_struct date_time;
+  date_time_t date_time;
 
 
   if(!mainwindow->files_open)  return;
@@ -1395,7 +1395,7 @@ void ViewCurve::print_to_postscript()
 
   char path[MAX_PATH_LENGTH];
 
-  struct date_time_struct date_time;
+  date_time_t date_time;
 
 
   if(!mainwindow->files_open)  return;
@@ -1515,7 +1515,7 @@ void ViewCurve::print_to_pdf()
 
   char path[MAX_PATH_LENGTH];
 
-  struct date_time_struct date_time;
+  date_time_t date_time;
 
 
   if(!mainwindow->files_open)  return;
@@ -1647,7 +1647,7 @@ void ViewCurve::print_to_image(int w_img, int h_img)
   char path[MAX_PATH_LENGTH],
        str[1024];
 
-  struct date_time_struct date_time;
+  date_time_t date_time;
 
 
   if(!mainwindow->files_open)  return;

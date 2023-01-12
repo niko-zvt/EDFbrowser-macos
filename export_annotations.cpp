@@ -253,7 +253,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
   edfhdrblck_t *hdr;
 
-  struct date_time_struct tm;
+  date_time_t tm;
 
 
   if(CSVRadioButton->isChecked() == true)

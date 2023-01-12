@@ -160,7 +160,7 @@ int strip_types_from_label(char *label)
 
 int utc_to_edf_startdate(long long utc_time, char *dest)
 {
-  struct date_time_struct dt;
+  date_time_t dt;
 
   utc_to_date_time(utc_time, &dt);
 

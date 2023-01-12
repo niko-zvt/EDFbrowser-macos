@@ -43,7 +43,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
   long long l_tmp,
             l_tmp2;
 
-  struct date_time_struct date_time;
+  date_time_t date_time;
 
 /***************** check header ******************************/
 

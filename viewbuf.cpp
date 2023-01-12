@@ -54,7 +54,7 @@ void UI_Mainwindow::setup_viewbuf()
           unsigned char four[4];
         } var;
 
-  struct date_time_struct date_time_str;
+  date_time_t date_time_str;
 
 
   for(i=0; i<files_open; i++) edfheaderlist[i]->prefiltertime = 0;
