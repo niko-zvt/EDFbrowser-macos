@@ -266,6 +266,18 @@ typedef struct
   unsigned long long uid;
   edfhdrblck_t *edfhdr;
   int num_of_signals;
+  int edfsignal[MAXSIGNALS];
+  double factor[MAXSIGNALS];
+  edfpar_t *edfparam_0;
+
+  int polarity;
+  char signallabel[512];
+  int signallabel_type_stripped;
+  char alias[17];
+  int signallabellen;
+  char signallabel_bu[512];
+  int signallabellen_bu;
+
   unsigned long long viewbufsize;
   unsigned long long viewbufoffset;
   unsigned long long records_in_viewbuf;
@@ -278,19 +290,10 @@ typedef struct
   int pixels_shift;
   double sample_timeoffset_part;
   double sample_pixel_ratio;
-  int edfsignal[MAXSIGNALS];
-  double factor[MAXSIGNALS];
-  int polarity;
   double sensitivity;
   int oldvalue;
   long long oldsmplnr;
   long long file_duration;
-  char signallabel[512];
-  int signallabel_type_stripped;
-  char alias[17];
-  int signallabellen;
-  char signallabel_bu[512];
-  int signallabellen_bu;
   int hascursor1;
   int hascursor2;
   int hasoffsettracking;

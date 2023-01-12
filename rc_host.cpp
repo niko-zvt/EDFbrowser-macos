@@ -858,6 +858,8 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
           strlcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[i].physdimension, 9);
           remove_trailing_spaces(newsignalcomp->physdimension);
 
+          newsignalcomp->edfparam_0 = &newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]];
+
           signalcomp[signalcomps] = newsignalcomp;
           signalcomps++;
 

@@ -287,7 +287,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
   char str[512]="",
        str2[128]="";
 
-  sigcompblck_t *newsignalcomp;
+  sigcompblck_t *newsignalcomp=NULL;
 
 
   n = compositionlist->rowCount();
@@ -401,6 +401,8 @@ void UI_Signalswindow::DisplayCompButtonClicked()
   strlcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension, 9);
   remove_trailing_spaces(newsignalcomp->physdimension);
 
+  newsignalcomp->edfparam_0 = &newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]];
+
   mainwindow->signalcomp[mainwindow->signalcomps] = newsignalcomp;
   mainwindow->signalcomps++;
 
@@ -500,6 +502,8 @@ void UI_Signalswindow::DisplayButtonClicked()
 
     strlcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[s].physdimension, 9);
     remove_trailing_spaces(newsignalcomp->physdimension);
+
+    newsignalcomp->edfparam_0 = &newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]];
 
     mainwindow->signalcomp[mainwindow->signalcomps] = newsignalcomp;
     mainwindow->signalcomps++;
@@ -675,13 +679,13 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
 
 void UI_Signalswindow::show_signals(int row)
 {
-  int i, j, len, skip, signal_cnt;
+  int i, j, len, skip, signal_cnt=0;
 
-  char str[256];
+  char str[256]={""};
 
-  long long file_duration;
+  long long file_duration=0LL;
 
-  QListWidgetItem *item;
+  QListWidgetItem *item=NULL;
 
   struct date_time_struct date_time;
 
@@ -823,7 +827,14 @@ void UI_Signalswindow::show_signals(int row)
     snprintf(str, 256, "%-3i ", i + 1);
     strlcat(str, mainwindow->edfheaderlist[row]->edfparam[i].label, 256);
     strlcat(str, "   ", 256);
-    convert_to_metric_suffix(str + strlen(str), mainwindow->edfheaderlist[row]->edfparam[i].sf_f, 6, 256 - strlen(str));
+    if(mainwindow->edfheaderlist[row]->edfparam[i].sf_int)
+    {
+      convert_to_metric_suffix(str + strlen(str), mainwindow->edfheaderlist[row]->edfparam[i].sf_int, 6, 256 - strlen(str));
+    }
+    else
+    {
+      convert_to_metric_suffix(str + strlen(str), mainwindow->edfheaderlist[row]->edfparam[i].sf_f, 6, 256 - strlen(str));
+    }
     remove_trailing_zeros(str);
     strlcat(str, "Hz", 256);
     item = new QListWidgetItem;

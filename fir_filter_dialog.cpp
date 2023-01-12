@@ -39,7 +39,9 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 {
   int i, n, max_len=4;
 
-  QListWidgetItem *item;
+  char str[256]={""};
+
+  QListWidgetItem *item=NULL;
 
   QList<QListWidgetItem *> selectedlist;
 
@@ -92,6 +94,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   list = new QListWidget;
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
   list->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  list->setFont(*mainwindow->monofont);
   list->setMinimumWidth(100 * mainwindow->w_scaling);
   list->setToolTip("Select and highlight with the mouse the signals which you want to apply the filter to");
 
@@ -142,25 +145,36 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   for(i=0; i<mainwindow->signalcomps; i++)
   {
-    item = new QListWidgetItem;
+    snprintf(str, 256, "%-3i ", i + 1);
+
     if(mainwindow->signalcomp[i]->alias[0] != 0)
     {
-      item->setText(mainwindow->signalcomp[i]->alias);
-
-      if(max_len < (int)strlen(mainwindow->signalcomp[i]->alias))
-      {
-        max_len = strlen(mainwindow->signalcomp[i]->alias);
-      }
+      strlcat(str, mainwindow->signalcomp[i]->alias, 256);
     }
     else
     {
-      item->setText(mainwindow->signalcomp[i]->signallabel);
-
-      if(max_len < (int)strlen(mainwindow->signalcomp[i]->signallabel))
-      {
-        max_len = strlen(mainwindow->signalcomp[i]->signallabel);
-      }
+      strlcat(str, mainwindow->signalcomp[i]->edfparam_0->label, 256);
     }
+
+    strlcat(str, "   ", 256);
+    if(mainwindow->signalcomp[i]->edfparam_0->sf_int)
+    {
+      convert_to_metric_suffix(str + strlen(str), mainwindow->signalcomp[i]->edfparam_0->sf_int, 6, 256 - strlen(str));
+    }
+    else
+    {
+      convert_to_metric_suffix(str + strlen(str), mainwindow->signalcomp[i]->edfparam_0->sf_f, 6, 256 - strlen(str));
+    }
+    remove_trailing_zeros(str);
+    strlcat(str, "Hz", 256);
+
+    if(max_len < (int)strlen(str))
+    {
+      max_len = strlen(str);
+    }
+
+    item = new QListWidgetItem;
+    item->setText(str);
     item->setData(Qt::UserRole, QVariant(i));
     list->addItem(item);
   }

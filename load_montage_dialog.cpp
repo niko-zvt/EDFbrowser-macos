@@ -1907,6 +1907,8 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       }
     }
 
+    newsignalcomp->edfparam_0 = &newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]];
+
     mainwindow->signalcomp[mainwindow->signalcomps] = newsignalcomp;
 
     mainwindow->signalcomps++;

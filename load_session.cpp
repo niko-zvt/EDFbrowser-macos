@@ -1692,6 +1692,8 @@ int UI_Mainwindow::read_session_file(const char *path_session)
       }
     }
 
+    newsignalcomp->edfparam_0 = &newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]];
+
     signalcomp[signalcomps] = newsignalcomp;
 
     signalcomps++;
