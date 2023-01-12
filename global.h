@@ -381,7 +381,7 @@ typedef struct
 typedef struct
 {
   edfhdrblck_t *edf_hdr;
-  annotblck *list[MAX_ACTIVE_ANNOT_MARKERS];
+  annotblck_t *list[MAX_ACTIVE_ANNOT_MARKERS];
   int count;
   int selected;
 } activemarkersblck_t;

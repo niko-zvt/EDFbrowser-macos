@@ -191,7 +191,7 @@ void UI_Annotationswindow::delete_annots()
 
   annotlist_t *annot_list;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   if(mainwindow->files_open < 1)
   {
@@ -305,7 +305,7 @@ void UI_Annotationswindow::rename_all()
 
   annotlist_t *annot_list;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   if(mainwindow->files_open < 1)
   {
@@ -367,7 +367,7 @@ void UI_Annotationswindow::show_heart_rate(bool)
 
   annotlist_t *annot_list;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   if(mainwindow->files_open < 1)
   {
@@ -451,7 +451,7 @@ void UI_Annotationswindow::show_stats(bool)
 
   annotlist_t *annot_list;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   if(mainwindow->files_open < 1)
   {
@@ -498,7 +498,7 @@ void UI_Annotationswindow::filt_ival_time(bool)
 
   annotlist_t *annot_list;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   if(mainwindow->files_open < 1)
   {
@@ -545,7 +545,7 @@ void UI_Annotationswindow::hide_all_NK_triggers(bool)
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   hide_nk_triggers = 1;
 
@@ -575,7 +575,7 @@ void UI_Annotationswindow::hide_all_BS_triggers(bool)
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   hide_bs_triggers = 1;
 
@@ -605,7 +605,7 @@ void UI_Annotationswindow::unhide_all_NK_triggers(bool)
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   hide_nk_triggers = 0;
 
@@ -635,7 +635,7 @@ void UI_Annotationswindow::unhide_all_BS_triggers(bool)
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   hide_bs_triggers = 0;
 
@@ -673,7 +673,7 @@ void UI_Annotationswindow::delayed_list_filter_update()
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   QString text = search_line_edit->text();
 
@@ -832,7 +832,7 @@ void UI_Annotationswindow::show_between(bool)
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -875,7 +875,7 @@ void UI_Annotationswindow::hide_annot(bool)
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -906,7 +906,7 @@ void UI_Annotationswindow::unhide_annot(bool)
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -941,7 +941,7 @@ void UI_Annotationswindow::hide_same_annots(bool)
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -995,7 +995,7 @@ void UI_Annotationswindow::unhide_same_annots(bool)
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -1035,7 +1035,7 @@ void UI_Annotationswindow::unhide_all_annots(bool)
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   sz = edfplus_annotation_size(annot_list);
 
@@ -1060,7 +1060,7 @@ void UI_Annotationswindow::average_annot(bool)
 
   annotlist_t *annot_list;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   if(mainwindow->files_open < 1)
   {
@@ -1157,7 +1157,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
 
   QString string;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   annotlist_t *annot_list;
 
@@ -1364,7 +1364,7 @@ void UI_Annotationswindow::annotation_pressed(QListWidgetItem *item)
 {
   int n, sz;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
@@ -1388,7 +1388,7 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
 {
   int n, sz;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 

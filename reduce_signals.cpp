@@ -683,7 +683,7 @@ void UI_ReduceSignalsWindow::StartConversion()
   annotlist_t new_annot_list,
                          *annot_list=NULL;
 
-  annotblck *annot_ptr=NULL;
+  annotblck_t *annot_ptr=NULL;
 
   union {
           unsigned int one;

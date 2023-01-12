@@ -249,7 +249,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
   annotlist_t *annot_list;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   edfhdrblck_t *hdr;
 

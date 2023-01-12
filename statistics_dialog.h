@@ -61,7 +61,7 @@ UI_StatisticWindow(sigcompblck_t *,
                    long long,
                    QWidget *,
                    annotlist_t *annot_list=NULL,
-                   annotblck *annot=NULL);
+                   annotblck_t *annot=NULL);
 
 UI_Mainwindow *mainwindow;
 

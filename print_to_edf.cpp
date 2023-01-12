@@ -95,7 +95,7 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
 
   annotlist_t *annot_list=NULL;
 
-  annotblck *annot_ptr=NULL;
+  annotblck_t *annot_ptr=NULL;
 
 /////////////////////////////////////////////////////////////////////////
 

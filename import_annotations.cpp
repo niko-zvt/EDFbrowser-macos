@@ -763,7 +763,7 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
 
   unsigned char a_buf[128];
 
-  annotblck annotation;
+  annotblck_t annotation;
 
   FILE *inputfile=NULL;
 
@@ -895,7 +895,7 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
         {
           if((!ignore_consecutive) || (strcmp(aux_str, last_description_aux)))
           {
-            memset(&annotation, 0, sizeof(annotblck));
+            memset(&annotation, 0, sizeof(annotblck_t));
             annotation.onset = (long long)tc * sampletime;
             strncpy(annotation.description, aux_str, MAX_ANNOTATION_LEN);
 
@@ -926,7 +926,7 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
           {
             if((!ignore_consecutive) || (annot_code != last_std_code))
             {
-              memset(&annotation, 0, sizeof(annotblck));
+              memset(&annotation, 0, sizeof(annotblck_t));
               annotation.onset = (long long)tc * sampletime;
               if(annot_code < 42)
               {
@@ -991,7 +991,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
             l_temp,
             utc_time=0LL;
 
-  annotblck annotation;
+  annotblck_t annotation;
 
   struct date_time_struct date_time;
 
@@ -1174,7 +1174,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
     if((!ignore_consecutive) || (strcmp(result, last_description)))
     {
-      memset(&annotation, 0, sizeof(annotblck));
+      memset(&annotation, 0, sizeof(annotblck_t));
       annotation.onset = onset;
       strlcpy(annotation.description, result, MAX_ANNOTATION_LEN);
       if(xml_hdl->encoding == 1)
@@ -1250,7 +1250,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   FILE *inputfile=NULL;
 
-  annotblck annotation;
+  annotblck_t annotation;
 
 
   if(UseManualDescriptionRadioButton->isChecked() == true)
@@ -1615,7 +1615,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
     {
       if((!ignore_consecutive) || strcmp(description, last_description))
       {
-        memset(&annotation, 0, sizeof(annotblck));
+        memset(&annotation, 0, sizeof(annotblck_t));
         annotation.onset = onset;
         strncpy(annotation.description, description, MAX_ANNOTATION_LEN);
         annotation.description[MAX_ANNOTATION_LEN] = 0;
@@ -1705,7 +1705,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   edfhdrblck_t *edfhdr=NULL;
 
-  annotblck *annotation;
+  annotblck_t *annotation;
 
 
   strlcpy(path, QFileDialog::getOpenFileName(0, "Open EDF+/BDF+ file", QString::fromLocal8Bit(mainwindow->recent_opendir), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF )").toLocal8Bit().data(), MAX_PATH_LENGTH);
@@ -1852,7 +1852,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
 
   FILE *inputfile=NULL;
 
-  annotblck annotation;
+  annotblck_t annotation;
 
   sigcompblck_t *signalcomp;
 
@@ -2080,7 +2080,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
 
                 if((!ignore_consecutive) || (strcmp(scratchpad, last_description)))
                 {
-                  memset(&annotation, 0, sizeof(annotblck));
+                  memset(&annotation, 0, sizeof(annotblck_t));
                   annotation.onset = ((trigger_datrec * signalcomp->edfhdr->long_data_record_duration) + (trigger_sample * time_per_sample));
                   annotation.onset += signalcomp->edfhdr->starttime_offset;
                   annotation.edfhdr = signalcomp->edfhdr;

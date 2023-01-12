@@ -43,7 +43,7 @@ UI_rename_annots_dialog::UI_rename_annots_dialog(QWidget *w_parent, int delete_a
 
   hdr = mainwindow->edfheaderlist[0];
 
-  annotblck *annot=NULL;
+  annotblck_t *annot=NULL;
 
   rename_dialog = new QDialog(mainwindow);
   rename_dialog->setMinimumSize(300 * mainwindow->w_scaling, 250 * mainwindow->h_scaling);

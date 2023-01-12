@@ -4883,7 +4883,7 @@ void UI_Mainwindow::get_unique_annotations(edfhdrblck_t *hdr)
 {
   int i, j, listsz;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   if(hdr == NULL)  return;
 

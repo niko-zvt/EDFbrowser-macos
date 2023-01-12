@@ -532,7 +532,7 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
 
   annotlist_t *annot_list;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   w = width();
   h = height();

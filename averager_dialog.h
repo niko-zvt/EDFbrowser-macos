@@ -63,7 +63,7 @@ class UI_AveragerWindow : public QObject
   Q_OBJECT
 
 public:
-  UI_AveragerWindow(QWidget *, annotblck *);
+  UI_AveragerWindow(QWidget *, annotblck_t *);
 
   ~UI_AveragerWindow();
 

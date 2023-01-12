@@ -472,7 +472,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
   annotlist_t new_annot_list,
                          *annot_list=NULL;
 
-  annotblck *annot_ptr=NULL;
+  annotblck_t *annot_ptr=NULL;
 
   FilteredBlockReadClass *block_reader[MAXSIGNALS];
 

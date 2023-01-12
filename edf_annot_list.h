@@ -58,11 +58,11 @@ typedef struct
   int hided_in_list;
   unsigned int ident;
   int selected_in_dock;
-} annotblck;
+} annotblck_t;
 
 typedef struct
 {
-  annotblck *items;
+  annotblck_t *items;
   int sz;
   int used_sz;
   int mem_sz;
@@ -70,15 +70,15 @@ typedef struct
 } annotlist_t;
 
 
-int edfplus_annotation_add_item(annotlist_t *, annotblck);
+int edfplus_annotation_add_item(annotlist_t *, annotblck_t);
 int edfplus_annotation_size(annotlist_t *);
-int edfplus_annotation_cnt(annotlist_t *, annotblck *);
+int edfplus_annotation_cnt(annotlist_t *, annotblck_t *);
 void edfplus_annotation_empty_list(annotlist_t *);
 void edfplus_annotation_remove_item(annotlist_t *, int);
-annotblck * edfplus_annotation_get_item(annotlist_t *, int);
-annotblck * edfplus_annotation_get_item_visible_only(annotlist_t *, int);
-annotblck * edfplus_annotation_get_item_visible_only_cached(annotlist_t *, int, int *, int *);
-int edfplus_annotation_get_index(annotlist_t *, annotblck *);
+annotblck_t * edfplus_annotation_get_item(annotlist_t *, int);
+annotblck_t * edfplus_annotation_get_item_visible_only(annotlist_t *, int);
+annotblck_t * edfplus_annotation_get_item_visible_only_cached(annotlist_t *, int, int *, int *);
+int edfplus_annotation_get_index(annotlist_t *, annotblck_t *);
 void edfplus_annotation_sort(annotlist_t *, void (*)(void));
 annotlist_t * edfplus_annotation_create_list_copy(annotlist_t *);
 int edfplus_annotation_remove_duplicates(annotlist_t *);

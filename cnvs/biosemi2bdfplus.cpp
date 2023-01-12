@@ -167,11 +167,11 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
 
   memset(&annot_list, 0, sizeof(annotlist_t));
 
-  annotblck annotation;
+  annotblck_t annotation;
 
-  memset(&annotation, 0, sizeof(annotblck));
+  memset(&annotation, 0, sizeof(annotblck_t));
 
-  annotblck *annot_ptr=NULL;
+  annotblck_t *annot_ptr=NULL;
 
 
   for(i=0; i<16; i++)

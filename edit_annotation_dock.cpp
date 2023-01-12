@@ -241,7 +241,7 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot = edfplus_annotation_get_item(annot_list, annot_num);
+  annotblck_t *annot = edfplus_annotation_get_item(annot_list, annot_num);
 
   if(annot->edfhdr == NULL)
   {
@@ -305,7 +305,7 @@ void UI_AnnotationEditwindow::deleteButtonClicked()
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot = edfplus_annotation_get_item(annot_list, annot_num);
+  annotblck_t *annot = edfplus_annotation_get_item(annot_list, annot_num);
 
   if(annot->edfhdr == NULL)
   {
@@ -348,9 +348,9 @@ void UI_AnnotationEditwindow::createButtonClicked()
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck annotation;
+  annotblck_t annotation;
 
-  memset(&annotation, 0, sizeof(annotblck));
+  memset(&annotation, 0, sizeof(annotblck_t));
 
   annotation.onset = annotEditGetOnset();
 
@@ -480,7 +480,7 @@ void UI_AnnotationEditwindow::set_selected_annotation(int annot_nr)
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
 
-  annotblck *annot = edfplus_annotation_get_item(annot_list, annot_num);
+  annotblck_t *annot = edfplus_annotation_get_item(annot_list, annot_num);
 
   if(annot->edfhdr == NULL)
   {
@@ -537,7 +537,7 @@ void UI_AnnotationEditwindow::set_selected_annotation(int annot_nr)
 }
 
 
-void UI_AnnotationEditwindow::set_selected_annotation(annotblck *annot)
+void UI_AnnotationEditwindow::set_selected_annotation(annotblck_t *annot)
 {
   int n;
 

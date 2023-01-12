@@ -31,7 +31,7 @@
 
 
 
-UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, annotblck *annot)
+UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, annotblck_t *annot)
 {
   int i;
 
@@ -207,7 +207,7 @@ void UI_AveragerWindow::startButtonClicked()
             l_time1,
             l_time2;
 
-  annotblck *annot_ptr;
+  annotblck_t *annot_ptr;
 
   QList<QListWidgetItem *> itemList;
 

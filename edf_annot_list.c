@@ -35,9 +35,9 @@
 
 
 
-int edfplus_annotation_add_item(annotlist_t *list, annotblck annotation)
+int edfplus_annotation_add_item(annotlist_t *list, annotblck_t annotation)
 {
-  annotblck *tmp_block_list;
+  annotblck_t *tmp_block_list;
 
   int *tmp_idx;
 
@@ -47,7 +47,7 @@ int edfplus_annotation_add_item(annotlist_t *list, annotblck annotation)
 
   if(list->used_sz >= list->mem_sz)
   {
-    tmp_block_list = (annotblck *)realloc(list->items, (list->mem_sz + EDF_ANNOT_MEMBLOCKSZ_II) * sizeof(annotblck));
+    tmp_block_list = (annotblck_t *)realloc(list->items, (list->mem_sz + EDF_ANNOT_MEMBLOCKSZ_II) * sizeof(annotblck_t));
     if(tmp_block_list == NULL)
     {
       return -2;
@@ -103,11 +103,11 @@ int edfplus_annotation_size(annotlist_t *list)
 }
 
 
-int edfplus_annotation_cnt(annotlist_t *list, annotblck *annot)
+int edfplus_annotation_cnt(annotlist_t *list, annotblck_t *annot)
 {
   int i, n=0;
 
-  annotblck *tmp_annot;
+  annotblck_t *tmp_annot;
 
   for(i=0; i<list->sz; i++)
   {
@@ -137,7 +137,7 @@ void edfplus_annotation_empty_list(annotlist_t *list)
 }
 
 
-int edfplus_annotation_get_index(annotlist_t *list, annotblck *annot)
+int edfplus_annotation_get_index(annotlist_t *list, annotblck_t *annot)
 {
   int i;
 
@@ -155,7 +155,7 @@ int edfplus_annotation_get_index(annotlist_t *list, annotblck *annot)
 }
 
 
-annotblck * edfplus_annotation_get_item(annotlist_t *list, int n)
+annotblck_t * edfplus_annotation_get_item(annotlist_t *list, int n)
 {
   if(list == NULL)  return NULL;
 
@@ -165,7 +165,7 @@ annotblck * edfplus_annotation_get_item(annotlist_t *list, int n)
 }
 
 
-annotblck * edfplus_annotation_get_item_visible_only(annotlist_t *list, int n)
+annotblck_t * edfplus_annotation_get_item_visible_only(annotlist_t *list, int n)
 {
   int i, j=0;
 
@@ -190,7 +190,7 @@ annotblck * edfplus_annotation_get_item_visible_only(annotlist_t *list, int n)
 }
 
 
-annotblck * edfplus_annotation_get_item_visible_only_cached(annotlist_t *list, int n, int *i, int *j)
+annotblck_t * edfplus_annotation_get_item_visible_only_cached(annotlist_t *list, int n, int *i, int *j)
 {
   if(list == NULL)  return NULL;
 
@@ -302,7 +302,7 @@ annotlist_t * edfplus_annotation_create_list_copy(annotlist_t *list)
 
   if(list->sz > 0)
   {
-    cpy->items = (annotblck *)calloc(1, sizeof(annotblck) * list->mem_sz);
+    cpy->items = (annotblck_t *)calloc(1, sizeof(annotblck_t) * list->mem_sz);
     if(cpy->items == NULL)
     {
       free(cpy);
@@ -323,7 +323,7 @@ annotlist_t * edfplus_annotation_create_list_copy(annotlist_t *list)
 
     cpy->used_sz = list->used_sz;
 
-    memcpy(cpy->items, list->items, cpy->mem_sz * sizeof(annotblck));
+    memcpy(cpy->items, list->items, cpy->mem_sz * sizeof(annotblck_t));
 
     memcpy(cpy->idx, list->idx, cpy->mem_sz * sizeof(int));
   }
@@ -353,7 +353,7 @@ void edfplus_annotation_copy_list(annotlist_t *destlist, annotlist_t *srclist)
     destlist->used_sz = 0;
   }
 
-  destlist->items = (annotblck *)calloc(1, srclist->mem_sz * sizeof(annotblck));
+  destlist->items = (annotblck_t *)calloc(1, srclist->mem_sz * sizeof(annotblck_t));
   if(destlist->items == NULL)
   {
     return;
@@ -373,7 +373,7 @@ void edfplus_annotation_copy_list(annotlist_t *destlist, annotlist_t *srclist)
 
   destlist->mem_sz = srclist->mem_sz;
 
-  memcpy(destlist->items, srclist->items, destlist->mem_sz * sizeof(annotblck));
+  memcpy(destlist->items, srclist->items, destlist->mem_sz * sizeof(annotblck_t));
 
   memcpy(destlist->idx, srclist->idx, destlist->mem_sz * sizeof(int));
 }
@@ -383,7 +383,7 @@ int edfplus_annotation_remove_duplicates(annotlist_t *list)
 {
   int i, j, dup_cnt=0;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   if(list == NULL)  return -1;
 
@@ -421,7 +421,7 @@ int edfplus_annotation_delete_multiple(annotlist_t *list, const char *descr)
 {
   int i, ren_cnt=0;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   if(list == NULL)  return -1;
 
@@ -445,7 +445,7 @@ int edfplus_annotation_rename_multiple(annotlist_t *list, const char *descr_old,
 {
   int i, ren_cnt=0;
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   if(list == NULL)  return -1;
 
@@ -489,7 +489,7 @@ int edfplus_annotation_get_max_annotation_strlen(annotlist_t *list)
 
   char scratchpad[1024];
 
-  annotblck *annot;
+  annotblck_t *annot;
 
   if(list == NULL)
   {

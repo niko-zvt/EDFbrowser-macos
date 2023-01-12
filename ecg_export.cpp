@@ -149,7 +149,7 @@ void UI_ECGExport::Export_RR_intervals()
 
   QList<QListWidgetItem *> selectedlist;
 
-  annotblck annotation;
+  annotblck_t annotation;
 
 
   selectedlist = list->selectedItems();
@@ -274,7 +274,7 @@ void UI_ECGExport::Export_RR_intervals()
       mainwindow->annotationlist_backup = edfplus_annotation_create_list_copy(&mainwindow->edfheaderlist[filenum]->annot_list);
     }
 
-    memset(&annotation, 0, sizeof(annotblck));
+    memset(&annotation, 0, sizeof(annotblck_t));
     strncpy(annotation.description, mainwindow->ecg_qrs_rpeak_descr, MAX_ANNOTATION_LEN);
     annotation.description[MAX_ANNOTATION_LEN] = 0;
     annotation.edfhdr = mainwindow->edfheaderlist[filenum];

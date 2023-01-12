@@ -82,7 +82,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
 
   edfpar_t *edfparam=NULL;
 
-  annotblck annotblock;
+  annotblck_t annotblock;
 
   inputfile = edf_hdr->file_hdl;
   edfsignals = edf_hdr->edfsignals;
@@ -426,7 +426,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
             {
               if(n >= 0)
               {
-                memset(&annotblock, 0, sizeof(annotblck));
+                memset(&annotblock, 0, sizeof(annotblck_t));
                 annotblock.edfhdr = edf_hdr;
                 annotblock.onset = get_long_time(time_in_txt);
                 for(j=0; j<n; j++)
@@ -549,7 +549,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
             {
               nk_triggers_cnt++;
 
-              memset(&annotblock, 0, sizeof(annotblck));
+              memset(&annotblock, 0, sizeof(annotblck_t));
               annotblock.edfhdr = edf_hdr;
               annotblock.onset = ((long long)i * data_record_duration) + ((long long)k * nk_trigger_sample_duration);
               annotblock.onset += edf_hdr->starttime_offset;
