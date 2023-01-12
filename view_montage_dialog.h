@@ -84,7 +84,7 @@ private:
   char mtg_path[MAX_PATH_LENGTH],
        mtg_dir[MAX_PATH_LENGTH];
 
-  int format_error(const char *, int, struct xml_handle *);
+  int format_error(const char *, int, xml_hdl_t *);
 
 private slots:
 

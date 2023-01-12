@@ -156,7 +156,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
          *fir_vars=NULL;
 
 
-  struct xml_handle *xml_hdl=NULL;
+  xml_hdl_t *xml_hdl=NULL;
 
   sigcompblck_t *newsignalcomp=NULL;
 
@@ -2358,7 +2358,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 }
 
 
-int UI_LoadMontagewindow::format_error(const char *file_name, int line_number, sigcompblck_t *sigcomp, struct xml_handle *hdl)
+int UI_LoadMontagewindow::format_error(const char *file_name, int line_number, sigcompblck_t *sigcomp, xml_hdl_t *hdl)
 {
   char str[1024]="";
 

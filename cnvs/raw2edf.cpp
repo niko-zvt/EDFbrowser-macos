@@ -894,7 +894,7 @@ void UI_RAW2EDFapp::loadbuttonpressed()
   char path[MAX_PATH_LENGTH],
        result[XML_STRBUFLEN];
 
-  struct xml_handle *xml_hdl;
+  xml_hdl_t *xml_hdl;
 
   strlcpy(path, QFileDialog::getOpenFileName(0, "Load parameters", QString::fromLocal8Bit(recent_opendir), "Template files (*.template *.TEMPLATE);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 

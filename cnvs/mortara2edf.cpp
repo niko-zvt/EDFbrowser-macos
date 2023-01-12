@@ -84,7 +84,7 @@ void UI_MortaraEDFwindow::SelectFileButton()
        scratchpad[4096]={""},
        scratchpad_2[4096]={""};
 
-  struct xml_handle *xml_hdl=NULL;
+  xml_hdl_t *xml_hdl=NULL;
 
   for(i=0; i<MORTARA_MAX_CHNS; i++)
   {

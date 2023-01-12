@@ -32,12 +32,12 @@
 
 
 static int xml_attribute(const char *, const char *, char *, int);
-static int xml_process_tag(const char *, struct xml_handle *);
-inline static int xml_next_tag(int, struct xml_handle *);
+static int xml_process_tag(const char *, xml_hdl_t *);
+inline static int xml_next_tag(int, xml_hdl_t *);
 
 
 
-int xml_character_encoding_type(struct xml_handle *handle_p)
+int xml_character_encoding_type(xml_hdl_t *handle_p)
 {
   if(handle_p==NULL)  return -1;
 
@@ -347,7 +347,7 @@ int xml_strncpy_decode_entity(char *dest, const char *src, int n)
 }
 
 
-int xml_get_name_of_element(struct xml_handle *handle_p, char *buf, int sz)
+int xml_get_name_of_element(xml_hdl_t *handle_p, char *buf, int sz)
 {
   if(handle_p == NULL)  return XML_ERROR_INV_HDL;
 
@@ -367,7 +367,7 @@ int xml_get_name_of_element(struct xml_handle *handle_p, char *buf, int sz)
 }
 
 
-int xml_get_attribute_of_element(struct xml_handle *handle_p, const char *attr_name, char *str_buf, int content_len)
+int xml_get_attribute_of_element(xml_hdl_t *handle_p, const char *attr_name, char *str_buf, int content_len)
 {
   if(handle_p == NULL)  return XML_ERROR_INV_HDL;
 
@@ -476,15 +476,15 @@ static int xml_attribute(const char *data, const char *item, char *result, int r
 }
 
 
-struct xml_handle * xml_get_handle(const char *filename)
+xml_hdl_t * xml_get_handle(const char *filename)
 {
   int err;
 
   char scratchpad[4096];
 
-  struct xml_handle *handle_p;
+  xml_hdl_t *handle_p;
 
-  handle_p = (struct xml_handle *)calloc(1, sizeof(struct xml_handle));
+  handle_p = (xml_hdl_t *)calloc(1, sizeof(xml_hdl_t));
   if(handle_p==NULL)  return NULL;
 
   handle_p->file = fopen(filename, "rb");
@@ -551,7 +551,7 @@ struct xml_handle * xml_get_handle(const char *filename)
 }
 
 
-int xml_get_content_of_element(struct xml_handle *handle_p, char *buf, int sz)
+int xml_get_content_of_element(xml_hdl_t *handle_p, char *buf, int sz)
 {
   int i, j, offset, len, deep=0, cdata=0, mem_sz;
 
@@ -729,7 +729,7 @@ int xml_get_content_of_element(struct xml_handle *handle_p, char *buf, int sz)
 }
 
 
-int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, int n)
+int xml_goto_nth_element_inside(xml_hdl_t *handle_p, const char *name, int n)
 {
   int len, offset, deep=0, cnt=0, ts_len, has_endslash, err;
 
@@ -835,7 +835,7 @@ int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, i
 }
 
 
-int xml_goto_next_element_with_same_name(struct xml_handle *handle_p)
+int xml_goto_next_element_with_same_name(xml_hdl_t *handle_p)
 {
   int len, offset, deep=0, err, ts_len, has_endslash;
 
@@ -952,7 +952,7 @@ int xml_goto_next_element_with_same_name(struct xml_handle *handle_p)
 }
 
 
-int xml_goto_next_element_at_same_level(struct xml_handle *handle_p)
+int xml_goto_next_element_at_same_level(xml_hdl_t *handle_p)
 {
   int offset, deep=0, ts_len, err;
 
@@ -1015,7 +1015,7 @@ int xml_goto_next_element_at_same_level(struct xml_handle *handle_p)
 /* Read the element name and copy it into the field of the structure */
 /* Read the attributes and copy them into the field of the structure */
 /* Check if the element has one or two tags */
-static int xml_process_tag(const char *str, struct xml_handle *handle_p)
+static int xml_process_tag(const char *str, xml_hdl_t *handle_p)
 {
   int len, i, p, mem_sz;
 
@@ -1119,7 +1119,7 @@ static int xml_process_tag(const char *str, struct xml_handle *handle_p)
 }
 
 
-void xml_close(struct xml_handle *handle_p)  /* delete everything and close the file */
+void xml_close(xml_hdl_t *handle_p)  /* delete everything and close the file */
 {
   int i;
 
@@ -1140,7 +1140,7 @@ void xml_close(struct xml_handle *handle_p)  /* delete everything and close the 
 }
 
 
-void xml_goto_root(struct xml_handle *handle_p) /* go to rootlevel and delete everything beneath */
+void xml_goto_root(xml_hdl_t *handle_p) /* go to rootlevel and delete everything beneath */
 {
   if(handle_p==NULL)  return;
 
@@ -1148,7 +1148,7 @@ void xml_goto_root(struct xml_handle *handle_p) /* go to rootlevel and delete ev
 }
 
 
-void xml_go_up(struct xml_handle *handle_p) /* go one level up and delete everything beneath */
+void xml_go_up(xml_hdl_t *handle_p) /* go one level up and delete everything beneath */
 {
   if(handle_p==NULL)  return;
 
@@ -1158,7 +1158,7 @@ void xml_go_up(struct xml_handle *handle_p) /* go one level up and delete everyt
 }
 
 
-inline static int xml_next_tag(int offset, struct xml_handle *handle_p) /* returns offset after '>' */
+inline static int xml_next_tag(int offset, xml_hdl_t *handle_p) /* returns offset after '>' */
 {
   int temp, fp1=0, fp2=0, tagstart=0,
       tag_char_cnt=0,

@@ -53,7 +53,7 @@ extern "C" {
 #endif
 
 
-struct xml_handle
+typedef struct
 {
   FILE *file;
   int encoding;
@@ -68,20 +68,20 @@ struct xml_handle
   int tag_search_result_sz;
   char *content[XML_MAX_ED];
   int content_sz[XML_MAX_ED];
-};
+} xml_hdl_t;
 
 
-struct xml_handle * xml_get_handle(const char *);
-void xml_close(struct xml_handle *);
-void xml_go_up(struct xml_handle *);
-int xml_goto_nth_element_inside(struct xml_handle *, const char *, int);
-int xml_goto_next_element_with_same_name(struct xml_handle *);
-int xml_goto_next_element_at_same_level(struct xml_handle *);
-void xml_goto_root(struct xml_handle *);
-int xml_get_content_of_element(struct xml_handle *, char *, int);
-int xml_character_encoding_type(struct xml_handle *);
-int xml_get_attribute_of_element(struct xml_handle *, const char *, char *, int);
-int xml_get_name_of_element(struct xml_handle *, char *, int);
+xml_hdl_t * xml_get_handle(const char *);
+void xml_close(xml_hdl_t *);
+void xml_go_up(xml_hdl_t *);
+int xml_goto_nth_element_inside(xml_hdl_t *, const char *, int);
+int xml_goto_next_element_with_same_name(xml_hdl_t *);
+int xml_goto_next_element_at_same_level(xml_hdl_t *);
+void xml_goto_root(xml_hdl_t *);
+int xml_get_content_of_element(xml_hdl_t *, char *, int);
+int xml_character_encoding_type(xml_hdl_t *);
+int xml_get_attribute_of_element(xml_hdl_t *, const char *, char *, int);
+int xml_get_name_of_element(xml_hdl_t *, char *, int);
 void xml_fwrite_encode_entity(FILE *, const char *);
 void xml_fnwrite_encode_entity(FILE *, const char *, int);
 void xml_strlcpy_encode_entity(char *, const char *, int);

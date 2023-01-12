@@ -407,7 +407,7 @@ long long annot_editor_user_button_epoch_len,
 
   void remove_recent_file_mtg_path(const char *);
 
-  void get_rgbcolor_settings(struct xml_handle *, const char *, int, QColor *);
+  void get_rgbcolor_settings(xml_hdl_t *, const char *, int, QColor *);
 
   void annot_dock_updated(void);
 
@@ -615,7 +615,7 @@ private:
   void read_general_settings();
   void write_settings();
   int read_session_file(const char *);
-  int session_format_error(const char *, int, sigcompblck_t *, struct xml_handle *);
+  int session_format_error(const char *, int, sigcompblck_t *, xml_hdl_t *);
   long long check_edf_file_datarecords(edfhdrblck_t *);
   void mpr_write(const char *);
   int mpr_read(char *, int);

@@ -141,7 +141,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
                 *math_item_before=NULL,
                 *math_item_after=NULL;
 
-  struct xml_handle *xml_hdl;
+  xml_hdl_t *xml_hdl;
 
 
   strlcpy(mtg_path, QFileDialog::getOpenFileName(0, "Choose a montage", QString::fromLocal8Bit(mtg_dir), "Montage files (*.mtg *.MTG)").toLocal8Bit().data(), MAX_PATH_LENGTH);
@@ -1197,7 +1197,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 }
 
 
-int UI_ViewMontagewindow::format_error(const char *file_name, int line_number, struct xml_handle *hdl)
+int UI_ViewMontagewindow::format_error(const char *file_name, int line_number, xml_hdl_t *hdl)
 {
   char str[1024]="";
 

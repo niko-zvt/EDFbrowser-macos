@@ -28,7 +28,7 @@
 #include "mainwindow.h"
 
 
-void UI_Mainwindow::get_rgbcolor_settings(struct xml_handle *xml_hdl, const char *id, int cnt, QColor *rgb_color)
+void UI_Mainwindow::get_rgbcolor_settings(xml_hdl_t *xml_hdl, const char *id, int cnt, QColor *rgb_color)
 {
   char result[XML_STRBUFLEN];
 
@@ -106,7 +106,7 @@ void UI_Mainwindow::read_color_settings()
   char cfg_path[MAX_PATH_LENGTH],
        result[XML_STRBUFLEN];
 
-  struct xml_handle *xml_hdl;
+  xml_hdl_t *xml_hdl;
 
   cfg_path[0] = 0;
 
@@ -393,7 +393,7 @@ void UI_Mainwindow::read_recent_file_settings()
   char cfg_path[MAX_PATH_LENGTH],
        result[XML_STRBUFLEN];
 
-  struct xml_handle *xml_hdl;
+  xml_hdl_t *xml_hdl;
 
   cfg_path[0] = 0;
 
@@ -649,7 +649,7 @@ void UI_Mainwindow::read_general_settings()
   char cfg_path[MAX_PATH_LENGTH],
        result[XML_STRBUFLEN];
 
-  struct xml_handle *xml_hdl;
+  xml_hdl_t *xml_hdl;
 
   cfg_path[0] = 0;
 

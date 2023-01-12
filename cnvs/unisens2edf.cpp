@@ -131,7 +131,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
        tmp2,
        linebuf[512];
 
-  struct xml_handle *xml_hdl;
+  xml_hdl_t *xml_hdl;
 
 
   strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "XML files (*.xml *.XML);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
@@ -1932,7 +1932,7 @@ int UI_UNISENS2EDFwindow::count_events_from_csv_files(int max_files, const char 
 }
 
 
-int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_handle *xml_hdl, int file_nr)
+int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xml_hdl, int file_nr)
 {
   char str[256],
        scratchpad[2048];
@@ -2344,7 +2344,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
 }
 
 
-int UI_UNISENS2EDFwindow::get_signalparameters_from_EVT_attributes(struct xml_handle *xml_hdl, int file_nr)
+int UI_UNISENS2EDFwindow::get_signalparameters_from_EVT_attributes(xml_hdl_t *xml_hdl, int file_nr)
 {
   char str[256];
 

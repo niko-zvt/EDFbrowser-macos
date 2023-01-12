@@ -995,7 +995,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
   date_time_t date_time;
 
-  struct xml_handle *xml_hdl;
+  xml_hdl_t *xml_hdl;
 
 
   if(IgnoreConsecutiveCheckBox->checkState() == Qt::Checked)

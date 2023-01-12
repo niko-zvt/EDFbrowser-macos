@@ -120,8 +120,8 @@ double physmax[MAXFILES],
 FILE *binfile[MAXFILES];
 
 
-int get_signalparameters_from_BIN_attributes(struct xml_handle *, int);
-int get_signalparameters_from_EVT_attributes(struct xml_handle *, int);
+int get_signalparameters_from_BIN_attributes(xml_hdl_t *, int);
+int get_signalparameters_from_EVT_attributes(xml_hdl_t *, int);
 int get_events_from_csv_files(int, int, const char *);
 int count_events_from_csv_files(int, const char *, int *);
 

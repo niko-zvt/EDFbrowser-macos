@@ -78,7 +78,7 @@ private:
 
   char mtg_path[MAX_PATH_LENGTH];
 
-  int format_error(const char *, int , sigcompblck_t *, struct xml_handle *);
+  int format_error(const char *, int , sigcompblck_t *, xml_hdl_t *);
 
 private slots:
 

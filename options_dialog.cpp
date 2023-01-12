@@ -2895,7 +2895,7 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
        scratchpad[2048],
        result[XML_STRBUFLEN];
 
-  struct xml_handle *xml_hdl;
+  xml_hdl_t *xml_hdl;
 
 
   strlcpy(path, QFileDialog::getOpenFileName(0, "Load colorschema", QString::fromLocal8Bit(mainwindow->recent_colordir), "Montage files (*.color *.COLOR)").toLocal8Bit().data(), MAX_PATH_LENGTH);

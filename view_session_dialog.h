@@ -84,7 +84,7 @@ private:
   char session_path[MAX_PATH_LENGTH],
        session_dir[MAX_PATH_LENGTH];
 
-int view_session_format_error(const char *, int, struct xml_handle *);
+int view_session_format_error(const char *, int, xml_hdl_t *);
 
 private slots:
 

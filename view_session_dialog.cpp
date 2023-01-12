@@ -180,7 +180,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
   QColor tmp_color;
 
-  struct xml_handle *xml_hdl=NULL;
+  xml_hdl_t *xml_hdl=NULL;
 
   date_time_t dt;
 
@@ -2395,7 +2395,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 }
 
 
-int UI_ViewSessionwindow::view_session_format_error(const char *file_name, int line_number, struct xml_handle *hdl)
+int UI_ViewSessionwindow::view_session_format_error(const char *file_name, int line_number, xml_hdl_t *hdl)
 {
   char str[2048]="";
 
