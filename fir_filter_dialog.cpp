@@ -205,7 +205,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   sinc_sf_spinbox->setToolTip("Sample frequency");
   if(mainwindow->signalcomps)
   {
-    sinc_sf_spinbox->setValue(mainwindow->signalcomp[0]->edfhdr->edfparam[0].sf_f);
+    sinc_sf_spinbox->setValue(mainwindow->signalcomp[0]->edfparam_0->sf_f);
   }
   else
   {
@@ -320,7 +320,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   pm_sf_spinbox->setToolTip("Samplefrequency");
   if(mainwindow->signalcomps)
   {
-    pm_sf_spinbox->setValue(mainwindow->signalcomp[0]->edfhdr->edfparam[0].sf_f);
+    pm_sf_spinbox->setValue(mainwindow->signalcomp[0]->edfparam_0->sf_f);
   }
   else
   {
@@ -882,7 +882,7 @@ void UI_FIRFilterDialog::pm_predefined_cbox_changed(int idx)
 
   if(mainwindow->signalcomps)
   {
-    sf = mainwindow->signalcomp[0]->edfhdr->edfparam[0].sf_f;
+    sf = mainwindow->signalcomp[0]->edfparam_0->sf_f;
   }
 
   pm_sf_spinbox->setValue(sf);
