@@ -441,7 +441,7 @@ void UI_cdsa_window::start_button_clicked()
   char str[1024]={""},
        path[MAX_PATH_LENGTH]={""};
 
-  struct fft_wrap_settings_struct *dft;
+  fft_wrap_setting_t *dft;
 
   QPixmap *pxm=NULL;
 

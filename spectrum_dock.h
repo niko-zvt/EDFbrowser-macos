@@ -180,7 +180,7 @@ private:
        signallabel[512],
        physdimension[9];
 
-  struct fft_wrap_settings_struct *fft_data;
+  fft_wrap_setting_t *fft_data;
 
   struct spectrumdocksettings settings;
 

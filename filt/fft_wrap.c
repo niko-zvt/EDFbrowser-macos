@@ -33,9 +33,9 @@ static void set_gain_unity(double *, int);
 static double bessi0(double);
 
 
-struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int dft_size, int window_type, int overlap)
+fft_wrap_setting_t * fft_wrap_create(double *buf, int buf_size, int dft_size, int window_type, int overlap)
 {
-  struct fft_wrap_settings_struct *st;
+  fft_wrap_setting_t *st;
 
   if(buf == NULL)  return NULL;
   if(buf_size < 4)  return NULL;
@@ -44,7 +44,7 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
   if((window_type < 0) || (window_type > 12))  return NULL;
   if((overlap < 1) || (overlap > 5))  return NULL;
 
-  st = (struct fft_wrap_settings_struct *)calloc(1, sizeof(struct fft_wrap_settings_struct));
+  st = (fft_wrap_setting_t *)calloc(1, sizeof(fft_wrap_setting_t));
   if(st == NULL)  return NULL;
   st->sz_in = buf_size;
   st->dft_sz = dft_size;
@@ -108,7 +108,7 @@ struct fft_wrap_settings_struct * fft_wrap_create(double *buf, int buf_size, int
 }
 
 
-void fft_wrap_run(struct fft_wrap_settings_struct *st)
+void fft_wrap_run(fft_wrap_setting_t *st)
 {
   int i, j, k;
 
@@ -215,7 +215,7 @@ void fft_wrap_run(struct fft_wrap_settings_struct *st)
 }
 
 
-void free_fft_wrap(struct fft_wrap_settings_struct *st)
+void free_fft_wrap(fft_wrap_setting_t *st)
 {
   if(st == NULL)  return;
   free(st->cfg);
@@ -223,7 +223,7 @@ void free_fft_wrap(struct fft_wrap_settings_struct *st)
   free(st->buf_out);
   free(st->buf_wndw);
   free(st->buf_wndw_coef);
-  memset(st, 0, sizeof(struct fft_wrap_settings_struct));
+  memset(st, 0, sizeof(fft_wrap_setting_t));
   free(st);
 }
 

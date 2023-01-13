@@ -58,7 +58,8 @@ extern "C" {
 #endif
 
 
-struct fft_wrap_settings_struct{
+typedef struct
+{
   int sz_in;
   int dft_sz;
   int sz_out;
@@ -73,12 +74,12 @@ struct fft_wrap_settings_struct{
   double *buf_out;
   kiss_fftr_cfg cfg;
   kiss_fft_cpx *kiss_fftbuf;
-};
+} fft_wrap_setting_t;
 
 
-struct fft_wrap_settings_struct * fft_wrap_create(double *, int, int, int, int);
-void fft_wrap_run(struct fft_wrap_settings_struct *);
-void free_fft_wrap(struct fft_wrap_settings_struct *);
+fft_wrap_setting_t * fft_wrap_create(double *, int, int, int, int);
+void fft_wrap_run(fft_wrap_setting_t *);
+void free_fft_wrap(fft_wrap_setting_t *);
 
 
 #ifdef __cplusplus
