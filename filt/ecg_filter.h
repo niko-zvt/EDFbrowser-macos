@@ -44,8 +44,8 @@ extern "C" {
 
 typedef struct
 {
-  struct pt_qrs_settings *pt_qrs,
-                         *pt_qrs_bu;
+  ptqrsset_t *pt_qrs,
+             *pt_qrs_bu;
 
   int qrs_smpl_offset_old;
 

@@ -106,11 +106,11 @@
 #define DIFF_C3   (4)
 
 
-static inline void pt_qrs_bpf_diff_sqr(double, struct pt_qrs_settings *);
-static inline void pt_qrs_adjust_thresholds(int, int, struct pt_qrs_settings *);
-static inline void pt_qrs_adjust_rr_averages(struct pt_qrs_settings *, int);
-static inline double pt_qrs_get_slope(struct pt_qrs_settings *);
-static inline int pt_qrs_search_back(struct pt_qrs_settings *);
+static inline void pt_qrs_bpf_diff_sqr(double, ptqrsset_t *);
+static inline void pt_qrs_adjust_thresholds(int, int, ptqrsset_t *);
+static inline void pt_qrs_adjust_rr_averages(ptqrsset_t *, int);
+static inline double pt_qrs_get_slope(ptqrsset_t *);
+static inline int pt_qrs_search_back(ptqrsset_t *);
 
 /* Creates a new qrs detector object.
  * ds_sf_in is the input sample rate
@@ -119,15 +119,15 @@ static inline int pt_qrs_search_back(struct pt_qrs_settings *);
  * if your input samples are expressed in mVolts, set it to 1000
  * Returns a pointer to the qrs detector object.
  */
-struct pt_qrs_settings * create_pt_qrs(double ds_sf_in, double sense)
+ptqrsset_t * create_pt_qrs(double ds_sf_in, double sense)
 {
   int i;
 
-  struct pt_qrs_settings *st;
+  ptqrsset_t *st;
 
   if((ds_sf_in < 199.999999) || (sense < 1e-6))  return NULL;  /* sanity check */
 
-  st = (struct pt_qrs_settings *)calloc(1, sizeof(struct pt_qrs_settings));
+  st = (ptqrsset_t *)calloc(1, sizeof(ptqrsset_t));
   if(st==NULL)  return NULL;
 
 /* The compensation for the delay of the filters.
@@ -178,7 +178,7 @@ CREATE_OUT_ERROR:
 }
 
 
-void free_pt_qrs(struct pt_qrs_settings *st)
+void free_pt_qrs(ptqrsset_t *st)
 {
   if(st == NULL)  return;
 
@@ -192,7 +192,7 @@ void free_pt_qrs(struct pt_qrs_settings *st)
  * relative to this sample when a beat has been detected.
  * Otherwise it returns 0.
  */
-int run_pt_qrs(double new_val, struct pt_qrs_settings *st)
+int run_pt_qrs(double new_val, ptqrsset_t *st)
 {
   int i,
       r_peak_detected_1st_run=0,
@@ -446,7 +446,7 @@ RUN_OUT_RETURN:
 }
 
 
-static inline void pt_qrs_bpf_diff_sqr(double new_val, struct pt_qrs_settings *st)
+static inline void pt_qrs_bpf_diff_sqr(double new_val, ptqrsset_t *st)
 {
   int i;
 
@@ -519,7 +519,7 @@ static inline void pt_qrs_bpf_diff_sqr(double new_val, struct pt_qrs_settings *s
  * the maximal peak reserved between the two established thresholds is considered to
  * be a QRS candidate.
  */
-static inline int pt_qrs_search_back(struct pt_qrs_settings *st)
+static inline int pt_qrs_search_back(ptqrsset_t *st)
 {
   if(st->idx_lt < 1)  return 0;
 
@@ -578,7 +578,7 @@ static inline int pt_qrs_search_back(struct pt_qrs_settings *st)
  * threshold_f2 is the second threshold applied
  *
  */
-static inline void pt_qrs_adjust_thresholds(int noise, int thr2, struct pt_qrs_settings *st)
+static inline void pt_qrs_adjust_thresholds(int noise, int thr2, ptqrsset_t *st)
 {
   if(noise)
   {
@@ -617,7 +617,7 @@ static inline void pt_qrs_adjust_thresholds(int noise, int thr2, struct pt_qrs_s
  * The second average is based on selected beats that fell between
  * the acceptable low and high RR-interval limits.
  */
-static inline void pt_qrs_adjust_rr_averages(struct pt_qrs_settings *st, int bs)
+static inline void pt_qrs_adjust_rr_averages(ptqrsset_t *st, int bs)
 {
   int i, idx;
 
@@ -680,7 +680,7 @@ static inline void pt_qrs_adjust_rr_averages(struct pt_qrs_settings *st, int bs)
 }
 
 /* search back and find the highest peak in the squared differentiator output array */
-static inline double pt_qrs_get_slope(struct pt_qrs_settings *st)
+static inline double pt_qrs_get_slope(ptqrsset_t *st)
 {
   int i;
 

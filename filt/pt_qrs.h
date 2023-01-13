@@ -43,7 +43,7 @@ extern "C" {
 #define PT_MWI_LEN         (30)
 
 
-struct pt_qrs_settings
+typedef struct
 {
 /******** begin down sampling section ********/
   double ds_ratio;
@@ -124,12 +124,12 @@ struct pt_qrs_settings
   int rr_high_limit;
   int rr_missed_limit;
   int rr_regular;
-};
+} ptqrsset_t;
 
 
-struct pt_qrs_settings * create_pt_qrs(double, double);
-void free_pt_qrs(struct pt_qrs_settings *);
-int run_pt_qrs(double, struct pt_qrs_settings *);
+ptqrsset_t * create_pt_qrs(double, double);
+void free_pt_qrs(ptqrsset_t *);
+int run_pt_qrs(double, ptqrsset_t *);
 
 #ifdef __cplusplus
 } /* extern "C" */
