@@ -59,6 +59,7 @@ class UI_FilterDialog : public QObject
 
 public:
   UI_FilterDialog(QWidget *parent=0);
+  ~UI_FilterDialog();
 
   UI_Mainwindow *mainwindow;
 
@@ -92,12 +93,11 @@ QLabel         *typeboxlabel,
 
 FilterCurve    *curve1;
 
-double array[400],
-       array_pha[400],
+double *array,
+       *array_pha,
        last_ripple;
 
-int arraysize,
-    last_order,
+int last_order,
     last_qfactor,
     last_model,
     last_samples;

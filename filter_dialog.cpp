@@ -37,6 +37,8 @@
 #define FILTERMODEL_BESSEL         (2)
 #define FILTERMODEL_MOVINGAVERAGE  (3)
 
+#define FILT_RESP_ARR_SZ     (1000)
+
 
 #include "filter_dialog.h"
 
@@ -47,9 +49,9 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
 
   char str[256]="";
 
-  QListWidgetItem *item;
+  filter_spec = NULL;
 
-  arraysize = 400;
+  QListWidgetItem *item;
 
   last_order = 1;
 
@@ -62,6 +64,9 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   last_ripple = -1.0;
 
   mainwindow = (UI_Mainwindow *)w_parent;
+
+  array     = (double *)malloc(sizeof(double) * FILT_RESP_ARR_SZ);
+  array_pha = (double *)malloc(sizeof(double) * FILT_RESP_ARR_SZ);
 
   filterdialog = new QDialog;
   filterdialog->setMinimumSize(620 * mainwindow->w_scaling, 365 * mainwindow->h_scaling);
@@ -243,6 +248,13 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
 }
 
 
+UI_FilterDialog::~UI_FilterDialog()
+{
+  free(array);
+  free(array_pha);
+}
+
+
 void UI_FilterDialog::updatecurve(void)
 {
   int i,
@@ -268,12 +280,12 @@ void UI_FilterDialog::updatecurve(void)
 
   if(model == FILTERMODEL_MOVINGAVERAGE)
   {
-    for(i=0; i<arraysize; i++)
+    for(i=0; i<FILT_RESP_ARR_SZ; i++)
     {
       array[i] = ravg_filter_response(type, order, (double)i / 800.0);
     }
 
-    curve1->drawCurve(array, arraysize, 1.4, 0.0);
+    curve1->drawCurve(array, FILT_RESP_ARR_SZ, 1.4, 0.0);
 
     return;
   }
@@ -383,18 +395,18 @@ void UI_FilterDialog::updatecurve(void)
     return;
   }
 
-  for(i=0; i<arraysize; i++)
+  for(i=0; i<FILT_RESP_ARR_SZ; i++)
   {
     array[i] = fid_response_pha(ff, (double)i / (double)rate, array_pha + i);
   }
 
   if((type == FILTERTYPE_BANDPASS) || (type == FILTERTYPE_BANDSTOP))
   {
-    curve1->drawCurve(array, arraysize, 1.4, 0.0, array_pha, arraysize, 0.0, 1.0, frequency, frequency2);
+    curve1->drawCurve(array, FILT_RESP_ARR_SZ, 1.4, 0.0, array_pha, FILT_RESP_ARR_SZ, 0.0, 1.0, frequency, frequency2);
   }
   else
   {
-    curve1->drawCurve(array, arraysize, 1.4, 0.0, array_pha, arraysize, 0.0, 1.0, frequency);
+    curve1->drawCurve(array, FILT_RESP_ARR_SZ, 1.4, 0.0, array_pha, FILT_RESP_ARR_SZ, 0.0, 1.0, frequency);
   }
 
   free(ff);

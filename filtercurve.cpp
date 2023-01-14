@@ -83,7 +83,7 @@ void FilterCurve::paintEvent(QPaintEvent *)
   w = width();
   h = height();
 
-  horizontal_marker_ratio = w / 400.0;
+  horizontal_marker_ratio = w / 1000.0;
 
   QPainter painter(this);
 #if (QT_VERSION >= 0x050000) && (QT_VERSION < 0x060000)
