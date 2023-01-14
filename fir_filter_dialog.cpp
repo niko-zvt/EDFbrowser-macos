@@ -91,12 +91,12 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   textEdit->setReadOnly(false);
   textEdit->setToolTip("Copy & paste your filter coefficients here");
 
-  list = new QListWidget;
-  list->setSelectionBehavior(QAbstractItemView::SelectRows);
-  list->setSelectionMode(QAbstractItemView::ExtendedSelection);
-  list->setFont(*mainwindow->monofont);
-  list->setMinimumWidth(100 * mainwindow->w_scaling);
-  list->setToolTip("Select and highlight with the mouse the signals which you want to apply the filter to");
+  signals_list = new QListWidget;
+  signals_list->setSelectionBehavior(QAbstractItemView::SelectRows);
+  signals_list->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  signals_list->setFont(*mainwindow->monofont);
+  signals_list->setMinimumWidth(100 * mainwindow->w_scaling);
+  signals_list->setToolTip("Select and highlight with the mouse the signals which you want to apply the filter to");
 
   curve1 = new FilterCurve;
   curve1->setH_RasterSize(10);
@@ -176,16 +176,16 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
     item = new QListWidgetItem;
     item->setText(str);
     item->setData(Qt::UserRole, QVariant(i));
-    list->addItem(item);
+    signals_list->addItem(item);
   }
 
-  list->setMinimumWidth(max_len * 8 * mainwindow->w_scaling);
+  signals_list->setMinimumWidth(max_len * 8 * mainwindow->w_scaling);
 
-  n = list->count();
+  n = signals_list->count();
 
   for(i=0; i<n; i++)
   {
-    item = list->item(i);
+    item = signals_list->item(i);
 
     item->setSelected(true);
   }
@@ -379,7 +379,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   QVBoxLayout *vlayout4 = new QVBoxLayout;
   vlayout4->addWidget(listlabel);
-  vlayout4->addWidget(list, 1000);
+  vlayout4->addWidget(signals_list, 1000);
 
   QHBoxLayout *hlayout2 = new QHBoxLayout;
   hlayout2->addLayout(vlayout2, 1);
@@ -420,7 +420,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   QObject::connect(db_max_spinbox,         SIGNAL(valueChanged(int)),        this,            SLOT(db_max_spinbox_changed(int)));
   QObject::connect(db_min_spinbox,         SIGNAL(valueChanged(int)),        this,            SLOT(db_min_spinbox_changed(int)));
   QObject::connect(plotphasecheckbox,      SIGNAL(stateChanged(int)),        this,            SLOT(plotphasecheckbox_changed(int)));
-  QObject::connect(list,                   SIGNAL(itemSelectionChanged()),   this,            SLOT(selected_signals_changed()));
+  QObject::connect(signals_list,           SIGNAL(itemSelectionChanged()),   this,            SLOT(selected_signals_changed()));
   QObject::connect(pm_design_button,       SIGNAL(clicked()),                this,            SLOT(pm_design_button_pressed()));
   QObject::connect(pm_add_passband_button, SIGNAL(clicked()),                this,            SLOT(pm_add_passband_button_pressed()));
   QObject::connect(pm_add_stopband_button, SIGNAL(clicked()),                this,            SLOT(pm_add_stopband_button_pressed()));
@@ -647,11 +647,9 @@ void UI_FIRFilterDialog::check_text()
 
 void UI_FIRFilterDialog::ApplyButtonClicked()
 {
-  int i, s, n;
+  int i, s, n, ret;
 
-  QList<QListWidgetItem *> selectedlist;
-
-  selectedlist = list->selectedItems();
+  QList<QListWidgetItem *> selectedlist = signals_list->selectedItems();
 
   n = selectedlist.size();
 
@@ -671,6 +669,28 @@ void UI_FIRFilterDialog::ApplyButtonClicked()
                             "The maximum amount of FIR filters per signal has been reached.\n"
                             "Remove some FIR filters first.");
       return;
+    }
+  }
+
+  for(i=0; i<n; i++)
+  {
+    s = selectedlist.at(i)->data(Qt::UserRole).toInt();
+
+    if(((fir_model == 0) && dblcmp(mainwindow->signalcomp[s]->edfparam_0->sf_f, sinc_sf_spinbox->value())) ||
+       ((fir_model == 1) && dblcmp(mainwindow->signalcomp[s]->edfparam_0->sf_f, pm_sf_spinbox->value())))
+    {
+      ret = QMessageBox::warning(firfilterdialog,
+                                 "Warning", "One or more signals selected has a samplerate different than the samplerate used to design the filter.",
+                                 QMessageBox::Cancel | QMessageBox::Ignore, QMessageBox::Cancel);
+
+      if(ret == QMessageBox::Cancel)
+      {
+       return;
+      }
+      else
+      {
+       break;
+      }
     }
   }
 
@@ -786,7 +806,7 @@ void UI_FIRFilterDialog::selected_signals_changed()
 
   char str[256]={""};
 
-  n = list->selectedItems().size();
+  n = signals_list->selectedItems().size();
 
   snprintf(str, 256, "Selected signals: %i", n);
 
@@ -874,7 +894,9 @@ int UI_FIRFilterDialog::pm_add_table_row(void)
 
 void UI_FIRFilterDialog::pm_predefined_cbox_changed(int idx)
 {
-  double sf = 2000;
+  int n;
+
+  double sf=2000;
 
   if(!idx)  return;
 
@@ -883,6 +905,15 @@ void UI_FIRFilterDialog::pm_predefined_cbox_changed(int idx)
   if(mainwindow->signalcomps)
   {
     sf = mainwindow->signalcomp[0]->edfparam_0->sf_f;
+  }
+
+  QList<QListWidgetItem *> selectedlist = signals_list->selectedItems();
+
+  n = selectedlist.size();
+
+  if(n)
+  {
+    sf = mainwindow->signalcomp[selectedlist.at(0)->data(Qt::UserRole).toInt()]->edfparam_0->sf_f;
   }
 
   pm_sf_spinbox->setValue(sf);

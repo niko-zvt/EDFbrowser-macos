@@ -108,7 +108,7 @@ QPushButton    *CancelButton,
 QComboBox      *pm_predefined_cbox,
                *sinc_type_cbox;
 
-QListWidget    *list;
+QListWidget    *signals_list;
 
 QPlainTextEdit *textEdit;
 
