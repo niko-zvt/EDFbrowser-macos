@@ -425,9 +425,7 @@ void UI_Signalswindow::DisplayButtonClicked()
 
   QListWidgetItem *item;
 
-  QList<QListWidgetItem *> selectedlist;
-
-  selectedlist = signallist->selectedItems();
+  QList<QListWidgetItem *> selectedlist = signallist->selectedItems();
 
   n = selectedlist.size();
 
@@ -549,9 +547,7 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
 
   QListWidgetItem *item;
 
-  QList<QListWidgetItem *> selectedlist;
-
-  selectedlist = signallist->selectedItems();
+  QList<QListWidgetItem *> selectedlist = signallist->selectedItems();
 
   n = selectedlist.size();
 
@@ -697,10 +693,7 @@ void UI_Signalswindow::show_signals(int row)
     delete signallist->item(0);
   }
 
-  while(compositionlist->rowCount())
-  {
-    compositionlist->removeRow(0);
-  }
+  compositionlist->setRowCount(0);
 
   if((mainwindow->edfheaderlist[row]->edfplus)||(mainwindow->edfheaderlist[row]->bdfplus))
   {

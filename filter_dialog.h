@@ -71,7 +71,7 @@ QDialog        *filterdialog;
 QPushButton    *CancelButton,
                *ApplyButton;
 
-QListWidget    *list;
+QListWidget    *signals_list;
 
 QComboBox      *typebox,
                *modelbox;

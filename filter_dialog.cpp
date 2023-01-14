@@ -142,9 +142,9 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   listlabel = new QLabel;
   listlabel->setText("Select signals:");
 
-  list = new QListWidget;
-  list->setSelectionBehavior(QAbstractItemView::SelectRows);
-  list->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  signals_list = new QListWidget;
+  signals_list->setSelectionBehavior(QAbstractItemView::SelectRows);
+  signals_list->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
   CancelButton = new QPushButton;
   CancelButton->setText("&Cancel");
@@ -173,10 +173,10 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
     remove_trailing_zeros(str);
     item->setText(str);
     item->setData(Qt::UserRole, QVariant(i));
-    list->addItem(item);
+    signals_list->addItem(item);
   }
 
-  list->setCurrentRow(0);
+  signals_list->setCurrentRow(0);
 
   selected_signals_changed();
 
@@ -223,7 +223,7 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
 
   QVBoxLayout *vlayout2 = new QVBoxLayout;
   vlayout2->addWidget(listlabel);
-  vlayout2->addWidget(list);
+  vlayout2->addWidget(signals_list);
 
   QHBoxLayout *hlayout1 = new QHBoxLayout;
   hlayout1->addLayout(vlayout1, 1000);
@@ -240,7 +240,7 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   QObject::connect(modelbox,     SIGNAL(currentIndexChanged(int)), this,         SLOT(filtermodelboxvaluechanged(int)));
   QObject::connect(ripplebox,    SIGNAL(valueChanged(double)),     this,         SLOT(rippleboxvaluechanged(double)));
   QObject::connect(freq2box,     SIGNAL(valueChanged(double)),     this,         SLOT(freq2boxvaluechanged(double)));
-  QObject::connect(list,         SIGNAL(itemSelectionChanged()),   this,         SLOT(selected_signals_changed()));
+  QObject::connect(signals_list, SIGNAL(itemSelectionChanged()),   this,         SLOT(selected_signals_changed()));
 
   updatecurve();
 
@@ -785,9 +785,7 @@ void UI_FilterDialog::ApplyButtonClicked()
 
   QListWidgetItem *item;
 
-  QList<QListWidgetItem *> selectedlist;
-
-  selectedlist = list->selectedItems();
+  QList<QListWidgetItem *> selectedlist = signals_list->selectedItems();
 
   n = selectedlist.size();
 
@@ -829,7 +827,7 @@ void UI_FilterDialog::ApplyButtonClicked()
     for(i=0; i<n; i++)
     {
       item = selectedlist.at(i);
-      s = list->row(item);
+      s = signals_list->row(item);
 
       if((type == FILTERTYPE_HIGHPASS) || (type == FILTERTYPE_LOWPASS) || (type == FILTERTYPE_NOTCH))
       {
@@ -935,7 +933,7 @@ void UI_FilterDialog::ApplyButtonClicked()
     for(i=0; i<n; i++)
     {
       item = selectedlist.at(i);
-      s = list->row(item);
+      s = signals_list->row(item);
 
       strlcpy(spec_str_2, spec_str_1, 256);
 
@@ -983,7 +981,7 @@ void UI_FilterDialog::ApplyButtonClicked()
     for(i=0; i<n; i++)
     {
       item = selectedlist.at(i);
-      s = list->row(item);
+      s = signals_list->row(item);
 
       mainwindow->signalcomp[s]->ravg_filter[mainwindow->signalcomp[s]->ravg_filter_cnt] = create_ravg_filter(type, order);
       if(mainwindow->signalcomp[s]->ravg_filter[mainwindow->signalcomp[s]->ravg_filter_cnt] == NULL)
@@ -1016,9 +1014,7 @@ void UI_FilterDialog::selected_signals_changed()
 
   char str[128]={""};
 
-  QList<QListWidgetItem *> selectedlist;
-
-  selectedlist = list->selectedItems();
+  QList<QListWidgetItem *> selectedlist = signals_list->selectedItems();
 
   n = selectedlist.size();
 
