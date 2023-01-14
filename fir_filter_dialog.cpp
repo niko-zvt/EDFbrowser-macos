@@ -179,7 +179,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
     signals_list->addItem(item);
   }
 
-  signals_list->setMinimumWidth(max_len * 8 * mainwindow->w_scaling);
+  signals_list->setMinimumWidth(max_len * mainwindow->font_pixel_width);
 
   n = signals_list->count();
 
@@ -585,7 +585,7 @@ void UI_FIRFilterDialog::check_text()
     snprintf(filter_description_txt_2, 512, "Customized or user provided coefficients");
   }
 
-  textEdit->setMinimumWidth(max_len * 8 * mainwindow->w_scaling);
+  textEdit->setMinimumWidth(max_len * mainwindow->font_pixel_width);
 
   err = fir_filter_freqz(taps, n_taps, z, deg, FIR_FILTER_MAX_MEAS_PNTS);
   if(err)

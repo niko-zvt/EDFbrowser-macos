@@ -5256,13 +5256,6 @@ void UI_Mainwindow::desktop_resized()
 
   font_pixel_height = fm.ascent();
 
-#if QT_VERSION >= 0x050B00
-  font_pixel_width = (fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZ") / 26.0) + 0.5;
-#else
-  font_pixel_width = (fm.width("ABCDEFGHIJKLMNOPQRSTUVWXYZ") / 26.0) + 0.5;
-#endif
-//  printf("font_pixel_height: %i    font_pixel_width: %i\n", font_pixel_height, font_pixel_width);
-
   h_scaling = fm.height() / 18.0;
 
 #if QT_VERSION >= 0x050B00
@@ -5277,13 +5270,15 @@ void UI_Mainwindow::desktop_resized()
   if(h_scaling > 8)  h_scaling = 8;
   if(h_scaling < 1)  h_scaling = 1;
 
-//  printf("w_scaling: %f    h_scaling: %f\n", w_scaling, h_scaling);
+  font_pixel_width = w_scaling * 7.5;
+
+//   printf("\nw_scaling: %.2f    h_scaling: %.2f\n", w_scaling, h_scaling);
+//
+//   printf("\nfont_pixel_height: %.2f    font_pixel_width: %.2f\n", font_pixel_height, font_pixel_width);
 
   dpix = maincurve->physicalDpiX();
 
   dpiy = maincurve->physicalDpiY();
-
-//  printf("dpix: %i    dpiy: %i\n", dpix, dpiy);
 
   if(auto_dpi)
   {
