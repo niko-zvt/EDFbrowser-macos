@@ -680,7 +680,8 @@ void UI_FIRFilterDialog::ApplyButtonClicked()
        ((fir_model == 1) && dblcmp(mainwindow->signalcomp[s]->edfparam_0->sf_f, pm_sf_spinbox->value())))
     {
       ret = QMessageBox::warning(firfilterdialog,
-                                 "Warning", "One or more signals selected has a samplerate different than the samplerate used to design the filter.",
+                                 "Warning", "One or more signals selected has a samplerate different than the samplerate used to design the filter.\n"
+                                 "It's recommended to click \"Cancel\" and to select only signals with a samplerate equal to the samplerate used for designing the filter.",
                                  QMessageBox::Cancel | QMessageBox::Ignore, QMessageBox::Cancel);
 
       if(ret == QMessageBox::Cancel)
