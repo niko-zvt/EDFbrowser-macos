@@ -48,14 +48,14 @@ firfiltset_t * create_fir_filter(double *vars, int sz, const char *label)
   }
 
   settings->vars = (double *)calloc(1, sizeof(double) * sz);
-  if(settings == NULL)
+  if(settings->vars == NULL)
   {
     free(settings);
     return NULL;
   }
 
   settings->buf = (double *)calloc(1, sizeof(double) * sz);
-  if(settings == NULL)
+  if(settings->buf == NULL)
   {
     free(settings->vars);
     free(settings);
@@ -63,7 +63,7 @@ firfiltset_t * create_fir_filter(double *vars, int sz, const char *label)
   }
 
   settings->buf_sav = (double *)calloc(1, sizeof(double) * sz);
-  if(settings == NULL)
+  if(settings->buf_sav == NULL)
   {
     free(settings->buf);
     free(settings->vars);
@@ -229,7 +229,11 @@ int fir_filter_freqz(double *h_arr, int n_taps, double *z, double *deg, int pnts
   if(re == NULL)  return -2;
 
   im = (double *)malloc(sizeof(double) * pnts);
-  if(im == NULL)  return -3;
+  if(im == NULL)
+  {
+    free(re);
+    return -3;
+  }
 
   w = M_PI / pnts;
 

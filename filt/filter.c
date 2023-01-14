@@ -35,7 +35,7 @@ filtset_t * create_filter(int is_LPF, double cutoff_frequency, double sample_fre
 {
   filtset_t *settings;
 
-  settings = (filtset_t *) calloc(1, sizeof(filtset_t));
+  settings = (filtset_t *)calloc(1, sizeof(filtset_t));
   if(settings==NULL)  return NULL;
 
   settings->is_LPF = is_LPF;

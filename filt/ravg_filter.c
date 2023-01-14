@@ -42,7 +42,7 @@ ravgfiltset_t * create_ravg_filter(int type, int size)
 
   if((type < 0) || (type > 1))  return NULL;
 
-  settings = (ravgfiltset_t *) calloc(1, sizeof(ravgfiltset_t));
+  settings = (ravgfiltset_t *)calloc(1, sizeof(ravgfiltset_t));
   if(settings==NULL)  return NULL;
 
   settings->size = size;
