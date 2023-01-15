@@ -64,6 +64,7 @@ struct rz_params_struct
   double ripple[32];
   double *f_taps;
   int tap_num;
+  int abort;
 }rz_params;
 
 UI_FIRFilterRZ_thread();

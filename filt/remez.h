@@ -34,7 +34,7 @@ extern "C" {
 #endif
 
 
-int remez(double, int, double *, double *, double *, double *, double **);
+int remez(double, int, double *, double *, double *, double *, double **, int *);
 
 
 #ifdef __cplusplus

@@ -46,14 +46,14 @@
 #define T_RZ_MAX_MSG_LEN          (2048)
 
 
-typedef struct t_rz_fq_er_struct
+typedef struct
 {
   double freq;
   double error;
 } t_rz_fq_er;
 
 
-typedef struct t_rz_band_struct
+typedef struct
 {
   double start;
   double stop;
@@ -67,7 +67,7 @@ typedef struct t_rz_band_struct
 } t_rz_band;
 
 
-typedef struct t_rz_spec_struct
+typedef struct
 {
   t_rz_band band[T_RZ_MAX_BANDS];
   int num_bands;
@@ -104,7 +104,7 @@ typedef struct t_rz_spec_struct
 
   int error;
   char err_msg[T_RZ_MAX_MSG_LEN];
-  int abort;
+  int *abort;
 } t_rz_spec;
 
 
@@ -163,7 +163,7 @@ static int init_frequencies(t_rz_spec *spec)
 
   for(i=0; i<(spec->r + 1); i++)
   {
-    if(spec->abort)  return -1;
+    if(*(spec->abort))  return -1;
 
     if(i >= T_RZ_MAX_FREQS)
     {
@@ -192,7 +192,7 @@ static int binary_search(t_rz_spec *spec, int min, int max, int (*is_good)(t_rz_
 
   while(1)
   {
-    if(spec->error | spec->abort)  return 0;
+    if(spec->error | *(spec->abort))  return 0;
 
     c = (min + max) / 2;
 
@@ -233,6 +233,8 @@ static double get_actual_gain(t_rz_spec *spec, double w)
 
   for(i=0; i<spec->num_frequencies; i++)
   {
+    if(*(spec->abort))  return -1;
+
     c = cosw - spec->x[i];
     if(fabs(c) < T_RZ_DELTALIMIT)
     {
@@ -268,6 +270,8 @@ static int get_taps(t_rz_spec *spec, double *h)
 
   for(i=0; i<=(spec->num_taps / 2); i++)
   {
+    if(*(spec->abort))  return -2;
+
     if(spec->num_taps % 2 == 0)
       c = cos(M_PI * i / spec->num_taps);
     else
@@ -281,6 +285,8 @@ static int get_taps(t_rz_spec *spec, double *h)
   {
     for(i=0; i<spec->num_taps; i++)
     {
+      if(*(spec->abort))  return -3;
+
       val = taps[0];
 
       x = M_PI * 2 * (i - M) / spec->num_taps;
@@ -297,6 +303,8 @@ static int get_taps(t_rz_spec *spec, double *h)
   {
     for(i=0; i<spec->num_taps; i++)
     {
+      if(*(spec->abort))  return -3;
+
       val = taps[0];
 
       x = M_PI * 2 * (i - M) / spec->num_taps;
@@ -578,7 +586,7 @@ static int get_extrema(t_rz_spec *spec, int resolution)
 
   for(i=0; i<resolution; i++)
   {
-    if(spec->abort)
+    if(*(spec->abort))
     {
       err = -2;
       goto OUT_GET_EXTREMA;
@@ -610,7 +618,7 @@ static int get_extrema(t_rz_spec *spec, int resolution)
 
   for(i=1; i<resolution-1; i++)
   {
-    if(spec->abort)
+    if(*(spec->abort))
     {
       err = -3;
       goto OUT_GET_EXTREMA;
@@ -804,6 +812,16 @@ static int get_extrema_adaptively(t_rz_spec *spec)
 
   while(num_extrema < spec->r + 1)
   {
+    if(*(spec->abort))
+    {
+      free(spec->extrema);
+      spec->extrema = NULL;
+      free(spec->allextrema);
+      spec->allextrema = NULL;
+      spec->max_resolution_alloc = 0;
+      return -1;
+    }
+
     if((resolution + 16) > spec->max_resolution_alloc)
     {
       fprintf(stdout, "mem re-alloc: %.2f MiB\n", (resolution + 16.0) / (1024 * 1024));
@@ -820,7 +838,7 @@ static int get_extrema_adaptively(t_rz_spec *spec)
       if(spec->extrema == NULL)
       {
         spec->max_resolution_alloc = 0;
-        return -1;
+        return -2;
       }
 
       spec->allextrema = (t_rz_fq_er *)malloc(sizeof(t_rz_fq_er) * spec->max_resolution_alloc);
@@ -829,7 +847,7 @@ static int get_extrema_adaptively(t_rz_spec *spec)
         free(spec->extrema);
         spec->extrema = NULL;
         spec->max_resolution_alloc = 0;
-        return -2;
+        return -3;
       }
     }
 
@@ -846,7 +864,7 @@ static int get_extrema_adaptively(t_rz_spec *spec)
       spec->extrema = NULL;
       spec->allextrema = NULL;
       spec->max_resolution_alloc = 0;
-      return -3;
+      return -4;
     }
 
     resolution *= 10;
@@ -884,6 +902,8 @@ static int design_filter(t_rz_spec *spec)
 
   for(iter=0; iter<maxiter; iter++)
   {
+    if(*(spec->abort))  return -2;
+
     calc_delta(spec);
 
 //    fprintf(stdout, "delta: %.19f\n", spec->delta);
@@ -893,7 +913,7 @@ static int design_filter(t_rz_spec *spec)
     {
       spec->no_convergence = 1;
       fprintf(stderr, "design_filter(): ERROR: not enough extrema: error: %i   line: %i  file: %s\n", err, __LINE__, __FILE__);
-      return -2;
+      return -3;
     }
 
     errorchange = lasterror - spec->maxerror;
@@ -909,7 +929,7 @@ static int design_filter(t_rz_spec *spec)
     err = update_frequencies(spec);
     if(err)
     {
-      return -3;
+      return -4;
     }
 
     lasterror = spec->maxerror;
@@ -930,7 +950,7 @@ static int design_filter(t_rz_spec *spec)
   {
     spec->no_convergence = 1;
     fprintf(stderr, "design_filter(): error, no convergence  line: %i  file: %s\n", __LINE__, __FILE__);
-    return -4;
+    return -5;
   }
 
   return 0;
@@ -1083,6 +1103,8 @@ int optimize(t_rz_spec *spec)
 
   while(1)
   {
+    if(*(spec->abort))  return -1;
+
     delta = fabs(get_only_delta(spec));
     if((delta < T_RZ_DELTALIMIT) && (delta > 0))
     {
@@ -1096,7 +1118,7 @@ int optimize(t_rz_spec *spec)
     if(spec->num_taps > T_RZ_MAX_TAPS)
     {
       fprintf(stderr, "optimize(): cannot design filter, requires more than %i taps.   line: %i  file: %s\n", T_RZ_MAX_TAPS, __LINE__, __FILE__);
-      return -1;
+      return -2;
     }
   }
 
@@ -1107,7 +1129,7 @@ int optimize(t_rz_spec *spec)
   if(spec->error)
   {
     fprintf(stderr, "optimize(): cannot design filter, XXX   line: %i  file: %s\n", __LINE__, __FILE__);
-    return -2;
+    return -3;
   }
 
 //  fprintf(stdout, "spec->num_taps: %i   opt: %i\n", spec->num_taps, opt);
@@ -1121,7 +1143,7 @@ int optimize(t_rz_spec *spec)
     else
     {
       fprintf(stderr, "optimize(): the specified number of taps cannot be achieved. Try specifying narrower transition bands.   line: %i  file: %s\n", __LINE__, __FILE__);
-      return -3;
+      return -4;
     }
 
     spec->num_taps = opt;
@@ -1133,7 +1155,7 @@ int optimize(t_rz_spec *spec)
     if(spec->error)
     {
       fprintf(stderr, "optimize(): cannot design filter, XXX   line: %i  file: %s\n", __LINE__, __FILE__);
-      return -4;
+      return -5;
     }
 
     spec->num_taps = opt + 2;
@@ -1142,7 +1164,7 @@ int optimize(t_rz_spec *spec)
   if(spec->num_taps > T_RZ_MAX_TAPS)
   {
     fprintf(stderr, "optimize(): cannot design filter, requires more than %i taps.   line: %i  file: %s\n", T_RZ_MAX_TAPS, __LINE__, __FILE__);
-    return -5;
+    return -6;
   }
 
 //  fprintf(stdout, "spec->num_taps: %i   spec->desired_taps: %i\n", spec->num_taps, spec->desired_taps);
@@ -1151,20 +1173,26 @@ int optimize(t_rz_spec *spec)
   if(err)
   {
     fprintf(stderr, "optimize(): design_filter() error: %i  line %i   file: %s\n", err, __LINE__, __FILE__);
-    return -6;
+    return -7;
   }
 
   return 0;
 }
 
 
-int remez(double sf, int num_bands, double *start_hz, double *stop_hz, double *gain, double *ripple, double **taps)
+int remez(double sf, int num_bands, double *start_hz, double *stop_hz, double *gain, double *ripple, double **taps, int *abort)
 {
   int i, err=0, num_taps=0;
 
   t_rz_spec *spec=NULL;
 
   *taps = NULL;
+
+  if(abort == NULL)
+  {
+    num_taps = -99;
+    goto OUT_REMEZ;
+  }
 
   spec = (t_rz_spec *)calloc(1, sizeof(t_rz_spec));
   if(spec == NULL)
@@ -1176,6 +1204,7 @@ int remez(double sf, int num_bands, double *start_hz, double *stop_hz, double *g
 
   spec->sf = sf;
   spec->num_bands = num_bands;
+  spec->abort = abort;
 
   for(i=0; i<num_bands; i++)
   {

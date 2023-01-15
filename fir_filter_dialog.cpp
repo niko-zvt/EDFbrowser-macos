@@ -1023,7 +1023,7 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
   char *str=NULL,
        txt_str[512]={""};
 
-  QEventLoop evlp;
+  QMessageBox msgbox;
 
   if(pm_param_table->rowCount() < 2)  return;
 
@@ -1142,73 +1142,94 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
 
   firfilterdialog->setEnabled(false);
 
+  msgbox.setIcon(QMessageBox::NoIcon);
+  msgbox.setWindowTitle("Busy");
+  msgbox.setStandardButtons(QMessageBox::Abort);
+  msgbox.setText("   \n Computing filter, please wait ... \n   ");
+
+  QObject::connect(thrd, SIGNAL(finished()), &msgbox, SLOT(accept()));
+
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
   thrd->start();
 
-  QObject::connect(thrd, SIGNAL(finished()), &evlp, SLOT(quit()));
-  evlp.exec();
+  msgbox.exec();
 
-  if((thrd->rz_params.tap_num < 2) || (thrd->rz_params.f_taps == NULL))
+  if(thrd->isFinished() == false)
   {
-    firfilterdialog->setEnabled(true);
+    msgbox.setIcon(QMessageBox::NoIcon);
+    msgbox.setWindowTitle("Waiting");
+    msgbox.setStandardButtons(QMessageBox::NoButton);
+    msgbox.setText("   \n Aborting, please wait ... \n   ");
 
-    QApplication::restoreOverrideCursor();
+    thrd->rz_params.abort = 1;
 
-    QMessageBox::critical(mainwindow, "Error", "Cannot design filter, try changing parameters");
-  }
-  else
-  {
-    for(i=0, idx=0; i<thrd->rz_params.tap_num; i++)
-    {
-      idx += snprintf(str + idx, 128, "%.24f\n", thrd->rz_params.f_taps[i]);
-
-      if(idx >= (buf_sz - 128))
-      {
-        buf_sz += 10000;
-        str = (char *)realloc(str, buf_sz);
-        if(str==NULL)
-        {
-          buf_sz = 0;
-          break;
-        }
-      }
-    }
-
-    if(str)
-    {
-      len = 512;
-      len -= snprintf(filter_description_txt_1, len,
-                      "Parks-McClellan Linear-phase equiripple taps: %i bands: %i",
-                      thrd->rz_params.tap_num , thrd->rz_params.band_num);
-
-      for(i=0; i<thrd->rz_params.band_num; i++)
-      {
-        if(dblcmp(thrd->rz_params.gain[i], 0))
-        {
-          len -= snprintf(filter_description_txt_1 + 512 - len, len,
-                          " [Passband from: %f to: %f gain: %f ripple: %f dB]",
-                          thrd->rz_params.start_hz[i] / thrd->rz_params.sf, thrd->rz_params.stop_hz[i] / thrd->rz_params.sf, thrd->rz_params.gain[i], thrd->rz_params.ripple[i]);
-        }
-        else
-        {
-          len -= snprintf(filter_description_txt_1 + 512 - len, len,
-                          " [Stopband from: %f to: %f atten.: %f dB]",
-                          thrd->rz_params.start_hz[i] / thrd->rz_params.sf, thrd->rz_params.stop_hz[i] / thrd->rz_params.sf, thrd->rz_params.ripple[i]);
-        }
-      }
-
-      len -= snprintf(filter_description_txt_1 + 512 - len, len, " (normalized)");
-
-      remove_trailing_zeros(filter_description_txt_1);
-
-      textEdit->appendPlainText(str);
-    }
+    msgbox.exec();
 
     firfilterdialog->setEnabled(true);
 
     QApplication::restoreOverrideCursor();
   }
+  else if((thrd->rz_params.tap_num < 2) || (thrd->rz_params.f_taps == NULL))
+    {
+      firfilterdialog->setEnabled(true);
+
+      QApplication::restoreOverrideCursor();
+
+      QMessageBox::critical(mainwindow, "Error", "Cannot design filter, try changing parameters");
+    }
+    else
+    {
+      for(i=0, idx=0; i<thrd->rz_params.tap_num; i++)
+      {
+        idx += snprintf(str + idx, 128, "%.24f\n", thrd->rz_params.f_taps[i]);
+
+        if(idx >= (buf_sz - 128))
+        {
+          buf_sz += 10000;
+          str = (char *)realloc(str, buf_sz);
+          if(str==NULL)
+          {
+            buf_sz = 0;
+            break;
+          }
+        }
+      }
+
+      if(str)
+      {
+        len = 512;
+        len -= snprintf(filter_description_txt_1, len,
+                        "Parks-McClellan Linear-phase equiripple taps: %i bands: %i",
+                        thrd->rz_params.tap_num , thrd->rz_params.band_num);
+
+        for(i=0; i<thrd->rz_params.band_num; i++)
+        {
+          if(dblcmp(thrd->rz_params.gain[i], 0))
+          {
+            len -= snprintf(filter_description_txt_1 + 512 - len, len,
+                            " [Passband from: %f to: %f gain: %f ripple: %f dB]",
+                            thrd->rz_params.start_hz[i] / thrd->rz_params.sf, thrd->rz_params.stop_hz[i] / thrd->rz_params.sf, thrd->rz_params.gain[i], thrd->rz_params.ripple[i]);
+          }
+          else
+          {
+            len -= snprintf(filter_description_txt_1 + 512 - len, len,
+                            " [Stopband from: %f to: %f atten.: %f dB]",
+                            thrd->rz_params.start_hz[i] / thrd->rz_params.sf, thrd->rz_params.stop_hz[i] / thrd->rz_params.sf, thrd->rz_params.ripple[i]);
+          }
+        }
+
+        len -= snprintf(filter_description_txt_1 + 512 - len, len, " (normalized)");
+
+        remove_trailing_zeros(filter_description_txt_1);
+
+        textEdit->appendPlainText(str);
+      }
+
+      firfilterdialog->setEnabled(true);
+
+      QApplication::restoreOverrideCursor();
+    }
 
   delete thrd;
 
@@ -1238,7 +1259,8 @@ void UI_FIRFilterRZ_thread::run()
                             rz_params.stop_hz,
                             rz_params.gain,
                             rz_params.ripple,
-                            &rz_params.f_taps);
+                            &rz_params.f_taps,
+                            &(rz_params.abort));
 }
 
 
