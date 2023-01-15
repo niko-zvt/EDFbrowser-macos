@@ -43,9 +43,7 @@
 
 #define T_RZ_DELTALIMIT          (1e-12)
 
-#define T_RZ_MAX_RESOLUTION_1    (20000)
-#define T_RZ_MAX_RESOLUTION_2   (200000)
-
+#define T_RZ_MAX_MSG_LEN          (2048)
 
 
 typedef struct t_rz_fq_er_struct
@@ -103,6 +101,10 @@ typedef struct t_rz_spec_struct
 
   t_rz_fq_er *allextrema;
   int num_allextrema;
+
+  int error;
+  char err_msg[T_RZ_MAX_MSG_LEN];
+  int abort;
 } t_rz_spec;
 
 
@@ -111,11 +113,11 @@ static int dblcmp(double val1, double val2)
 {
   long double diff = (long double)val1 - (long double)val2;
 
-  if(diff > 1e-18l)
+  if(diff > 1e-24l)
   {
     return 1;
   }
-  else if(-diff > 1e-18l)
+  else if(-diff > 1e-24l)
     {
       return -1;
     }
@@ -144,7 +146,7 @@ static double get_linear_freq(t_rz_spec *spec, double w)
 }
 
 
-static void init_frequencies(t_rz_spec *spec)
+static int init_frequencies(t_rz_spec *spec)
 {
   int i;
 
@@ -161,7 +163,15 @@ static void init_frequencies(t_rz_spec *spec)
 
   for(i=0; i<(spec->r + 1); i++)
   {
-    if(i >= T_RZ_MAX_FREQS)  break;
+    if(spec->abort)  return -1;
+
+    if(i >= T_RZ_MAX_FREQS)
+    {
+      spec->error = -2;
+      snprintf(spec->err_msg, T_RZ_MAX_MSG_LEN, "init_frequencies(): reached max frequencies: %i   line: %i  file: %s\n", spec->r, __LINE__, __FILE__);
+      fprintf(stderr, spec->err_msg);
+      return -2;
+    }
 
     spec->frequencies[i] = get_linear_freq(spec, step * (i + 1));
 
@@ -171,6 +181,8 @@ static void init_frequencies(t_rz_spec *spec)
   spec->num_frequencies = i;
 
 //  fprintf(stdout, "spec->num_frequencies: %i\n", spec->num_frequencies);
+
+  return 0;
 }
 
 
@@ -180,6 +192,8 @@ static int binary_search(t_rz_spec *spec, int min, int max, int (*is_good)(t_rz_
 
   while(1)
   {
+    if(spec->error | spec->abort)  return 0;
+
     c = (min + max) / 2;
 
     if(!(c % 2))  c++;
@@ -527,11 +541,12 @@ static double make_alternating(int firstOneSign, t_rz_fq_er *candidates, int *nu
 
 static int get_extrema(t_rz_spec *spec, int resolution)
 {
-  int i, j,
-      alloc_sz=0,
+  int i, j, err=0,
       num_candidates=0,
       num_firstUp=0,
       num_firstDown=0;
+
+  long long alloc_sz=0LL;
 
   double *E=NULL,
          *F=NULL,
@@ -539,13 +554,13 @@ static int get_extrema(t_rz_spec *spec, int resolution)
          firstDownError;
 
   t_rz_fq_er *candidates=NULL,
-              *firstUp=NULL,
-              *firstDown=NULL,
-              fq_er_tmp;
+             *firstUp=NULL,
+             *firstDown=NULL,
+             fq_er_tmp;
 
   spec->num_extrema = 0;
 
-  alloc_sz = resolution + (spec->num_bands * 2) + 16;
+  alloc_sz = (long long)resolution + (spec->num_bands * 2LL) + 16LL;
 
   E = (double *)malloc(sizeof(double) * alloc_sz);
   F = (double *)malloc(sizeof(double) * alloc_sz);
@@ -556,17 +571,19 @@ static int get_extrema(t_rz_spec *spec, int resolution)
 
   if((E == NULL) || (F == NULL) || (candidates == NULL) || (firstUp == NULL) || (firstDown == NULL))
   {
-    free(E);
-    free(F);
-    free(candidates);
-    free(firstUp);
-    free(firstDown);
-    fprintf(stderr, "malloc() error   line: %i  file: %s\n", __LINE__, __FILE__);
-    return -1;
+    err = -1;
+    fprintf(stderr, "get_extrema(): malloc() error   line: %i  file: %s\n", __LINE__, __FILE__);
+    goto OUT_GET_EXTREMA;
   }
 
   for(i=0; i<resolution; i++)
   {
+    if(spec->abort)
+    {
+      err = -2;
+      goto OUT_GET_EXTREMA;
+    }
+
     F[i] = get_linear_freq(spec, spec->sum_bands * (i + 1.0) / (resolution + 1.0));
     E[i] = get_error(spec, F[i]);
   }
@@ -593,6 +610,12 @@ static int get_extrema(t_rz_spec *spec, int resolution)
 
   for(i=1; i<resolution-1; i++)
   {
+    if(spec->abort)
+    {
+      err = -3;
+      goto OUT_GET_EXTREMA;
+    }
+
     if((E[i] >= E[i-1] && E[i] > E[i+1] && E[i] > 0) ||
        (E[i] <= E[i-1] && E[i] < E[i+1] && E[i] < 0))
     {
@@ -683,35 +706,46 @@ static int get_extrema(t_rz_spec *spec, int resolution)
 
 //  fprintf(stdout, "spec->maxerror: %.19f\n", spec->maxerror);
 
+OUT_GET_EXTREMA:
+
   free(E);
   free(F);
   free(candidates);
   free(firstUp);
   free(firstDown);
 
+  if(err)  return err;
+
   return spec->num_extrema;
 }
 
 
-static void update_frequencies(t_rz_spec *spec)
+static int update_frequencies(t_rz_spec *spec)
 {
   int i, j, num_e=0;
 
   double d_tmp;
 
-  t_rz_fq_er *e, fq_er_tmp;
+  t_rz_fq_er *e=NULL, fq_er_tmp;
+
+  spec->num_frequencies = 0;
 
   e = (t_rz_fq_er *)malloc(sizeof(t_rz_fq_er) * spec->max_resolution_alloc);
   if(e == NULL)
   {
-    fprintf(stderr, "malloc() error   line: %i   file: %s\n", __LINE__, __FILE__);
-    return;
+    fprintf(stderr, "update_frequencies(): malloc() error   line: %i   file: %s\n", __LINE__, __FILE__);
+    return -1;
   }
-
-  spec->num_frequencies = 0;
 
   for(num_e=0; num_e<spec->num_extrema; num_e++)
   {
+    if(num_e >= spec->max_resolution_alloc)
+    {
+      fprintf(stderr, "update_frequencies(): error   line: %i   file: %s\n", __LINE__, __FILE__);
+      free(e);
+      return -2;
+    }
+
     e[num_e] = spec->extrema[num_e];
   }
 
@@ -756,6 +790,8 @@ static void update_frequencies(t_rz_spec *spec)
   }
 
   free(e);
+
+  return 0;
 }
 
 
@@ -770,12 +806,7 @@ static int get_extrema_adaptively(t_rz_spec *spec)
   {
     if((resolution + 16) > spec->max_resolution_alloc)
     {
-      if(spec->max_resolution_alloc == T_RZ_MAX_RESOLUTION_2)
-      {
-        return 0;
-      }
-
-//      fprintf(stdout, "mem re-alloc!\n");
+      fprintf(stdout, "mem re-alloc: %.2f MiB\n", (resolution + 16.0) / (1024 * 1024));
 
       free(spec->extrema);
       spec->extrema = NULL;
@@ -783,35 +814,55 @@ static int get_extrema_adaptively(t_rz_spec *spec)
       free(spec->allextrema);
       spec->allextrema = NULL;
 
-      spec->max_resolution_alloc = 0;
+      spec->max_resolution_alloc = resolution + 16;
 
-      spec->extrema = (t_rz_fq_er *)malloc(sizeof(t_rz_fq_er) * T_RZ_MAX_RESOLUTION_2);
+      spec->extrema = (t_rz_fq_er *)malloc(sizeof(t_rz_fq_er) * spec->max_resolution_alloc);
       if(spec->extrema == NULL)
       {
-        return 0;
+        spec->max_resolution_alloc = 0;
+        return -1;
       }
 
-      spec->allextrema = (t_rz_fq_er *)malloc(sizeof(t_rz_fq_er) * T_RZ_MAX_RESOLUTION_2);
+      spec->allextrema = (t_rz_fq_er *)malloc(sizeof(t_rz_fq_er) * spec->max_resolution_alloc);
       if(spec->allextrema == NULL)
       {
         free(spec->extrema);
-        return 0;
+        spec->extrema = NULL;
+        spec->max_resolution_alloc = 0;
+        return -2;
       }
-
-      spec->max_resolution_alloc = T_RZ_MAX_RESOLUTION_2;
     }
 
     num_extrema = get_extrema(spec, resolution);
-//    fprintf(stdout, "resolution: %i\n", resolution);
+
+    if(num_extrema >= spec->r + 1)  break;
+
+    if((long long)resolution * 10LL > (0x7fffffffLL))
+    {
+      fprintf(stdout, "memory limit reached...   line: %i  file: %s\n", __LINE__, __FILE__);
+
+      free(spec->extrema);
+      free(spec->allextrema);
+      spec->extrema = NULL;
+      spec->allextrema = NULL;
+      spec->max_resolution_alloc = 0;
+      return -3;
+    }
+
     resolution *= 10;
   }
 
-  return 1;
+  return 0;
 }
 
 
 static int design_filter(t_rz_spec *spec)
 {
+  int i, err, iter, maxiter=20;
+
+  double errorchange,
+         lasterror=1;
+
   spec->no_convergence = 0;
   spec->requirements_met = 0;
   spec->delta_too_small = 0;
@@ -825,14 +876,11 @@ static int design_filter(t_rz_spec *spec)
     spec->r = (spec->num_taps + 1) / 2;
   }
 
-  init_frequencies(spec);
-
-  int i,
-      iter,
-      maxiter=20;
-
-  double errorchange,
-         lasterror=1;
+  err = init_frequencies(spec);
+  if(err)
+  {
+    return -1;
+  }
 
   for(iter=0; iter<maxiter; iter++)
   {
@@ -840,11 +888,12 @@ static int design_filter(t_rz_spec *spec)
 
 //    fprintf(stdout, "delta: %.19f\n", spec->delta);
 
-    if(!get_extrema_adaptively(spec))
+    err = get_extrema_adaptively(spec);
+    if(err)
     {
       spec->no_convergence = 1;
-      fprintf(stderr, "ERROR: not enough extrema   line: %i  file: %s\n", __LINE__, __FILE__);
-      return -1;
+      fprintf(stderr, "design_filter(): ERROR: not enough extrema: error: %i   line: %i  file: %s\n", err, __LINE__, __FILE__);
+      return -2;
     }
 
     errorchange = lasterror - spec->maxerror;
@@ -856,7 +905,13 @@ static int design_filter(t_rz_spec *spec)
 //      fprintf(stderr, "wtf quitting   line: %i  file: %s\n", __LINE__, __FILE__);
       break;
     }
-    update_frequencies(spec);
+
+    err = update_frequencies(spec);
+    if(err)
+    {
+      return -3;
+    }
+
     lasterror = spec->maxerror;
   }
 
@@ -874,7 +929,8 @@ static int design_filter(t_rz_spec *spec)
   if(!spec->requirements_met && iter == maxiter)
   {
     spec->no_convergence = 1;
-    return 0;
+    fprintf(stderr, "design_filter(): error, no convergence  line: %i  file: %s\n", __LINE__, __FILE__);
+    return -4;
   }
 
   return 0;
@@ -883,6 +939,8 @@ static int design_filter(t_rz_spec *spec)
 
 static double get_only_delta(t_rz_spec *spec)
 {
+  int err;
+
   if(spec->num_taps % 2)
   {
     spec->r = (spec->num_taps + 1) / 2;
@@ -892,7 +950,11 @@ static double get_only_delta(t_rz_spec *spec)
     spec->r = spec->num_taps / 2;
   }
 
-  init_frequencies(spec);
+  err = init_frequencies(spec);
+  if(err)
+  {
+    return 0;
+  }
 
   calc_delta(spec);
 
@@ -910,11 +972,16 @@ static int func_a(t_rz_spec *spec, int n)
 
 static int func_b(t_rz_spec *spec, int n)
 {
-  int err=0;
-
   spec->num_taps = n;
 
-  if(design_filter(spec))  err = 1;
+  int err = design_filter(spec);
+  if(err)
+  {
+    snprintf(spec->err_msg, T_RZ_MAX_MSG_LEN, "func_b() error: %i   line: %i  file: %s\n", err, __LINE__, __FILE__);
+    spec->error = -1;
+    fprintf(stderr, spec->err_msg);
+    err = 1;
+  }
 
   return((!spec->requirements_met) || spec->no_convergence || err);
 }
@@ -972,28 +1039,35 @@ int spec_init(t_rz_spec *spec)
 
       spec->band[i].weight = pow(10, -spec->band[i].ripple / M_E / 20);
 
+//      fprintf(stdout, "spec->band[i].weight: %20f\n", spec->band[i].weight);
+
       spec->band[i].upper = 1.0 / spec->band[i].weight * spec->band[i].gain;
       spec->band[i].lower = (1.0 - (1.0 / spec->band[i].weight - 1.0)) * spec->band[i].gain;
       spec->band[i].weight = 1.0 / (1.0 / spec->band[i].weight - 1.0) / spec->band[i].gain;
+
+//       fprintf(stdout, "spec->band[i].gain: %20f\n", spec->band[i].gain);
+//       fprintf(stdout, "spec->band[i].upper: %20f\n", spec->band[i].upper);
+//       fprintf(stdout, "spec->band[i].lower: %20f\n", spec->band[i].lower);
+//       fprintf(stdout, "spec->band[i].weight: %20f\n", spec->band[i].weight);
     }
   }
 
   spec->done = 0;
 
-  spec->extrema = (t_rz_fq_er *)malloc(sizeof(t_rz_fq_er) * T_RZ_MAX_RESOLUTION_1);
+  spec->extrema = (t_rz_fq_er *)malloc(sizeof(t_rz_fq_er) * 20000);
   if(spec->extrema == NULL)
   {
     return -10;
   }
 
-  spec->allextrema = (t_rz_fq_er *)malloc(sizeof(t_rz_fq_er) * T_RZ_MAX_RESOLUTION_1);
+  spec->allextrema = (t_rz_fq_er *)malloc(sizeof(t_rz_fq_er) * 20000);
   if(spec->allextrema == NULL)
   {
     free(spec->extrema);
     return -11;
   }
 
-  spec->max_resolution_alloc = T_RZ_MAX_RESOLUTION_1;
+  spec->max_resolution_alloc = 20000;
 
   return 0;
 }
@@ -1001,7 +1075,7 @@ int spec_init(t_rz_spec *spec)
 
 int optimize(t_rz_spec *spec)
 {
-  int opt;
+  int opt, err;
 
   double delta;
 
@@ -1021,13 +1095,20 @@ int optimize(t_rz_spec *spec)
 
     if(spec->num_taps > T_RZ_MAX_TAPS)
     {
-      break;
+      fprintf(stderr, "optimize(): cannot design filter, requires more than %i taps.   line: %i  file: %s\n", T_RZ_MAX_TAPS, __LINE__, __FILE__);
+      return -1;
     }
   }
 
 //  fprintf(stdout, "spec->num_taps: %i\n", spec->num_taps);
 
   opt = binary_search(spec, 1, spec->num_taps, &func_a) + 2;
+
+  if(spec->error)
+  {
+    fprintf(stderr, "optimize(): cannot design filter, XXX   line: %i  file: %s\n", __LINE__, __FILE__);
+    return -2;
+  }
 
 //  fprintf(stdout, "spec->num_taps: %i   opt: %i\n", spec->num_taps, opt);
 
@@ -1039,27 +1120,38 @@ int optimize(t_rz_spec *spec)
     }
     else
     {
-      fprintf(stderr, "The specified number of taps cannot be achieved. Try specifying narrower transition bands.\n");
-      return -1;
+      fprintf(stderr, "optimize(): the specified number of taps cannot be achieved. Try specifying narrower transition bands.   line: %i  file: %s\n", __LINE__, __FILE__);
+      return -3;
     }
-  }
 
-  if(!spec->desired_taps)
-  {
-    opt = binary_search(spec, 1, opt, &func_b);
-    spec->num_taps = opt + 2;
+    spec->num_taps = opt;
   }
   else
   {
-    spec->num_taps = opt;
+    opt = binary_search(spec, 1, opt, &func_b);
+
+    if(spec->error)
+    {
+      fprintf(stderr, "optimize(): cannot design filter, XXX   line: %i  file: %s\n", __LINE__, __FILE__);
+      return -4;
+    }
+
+    spec->num_taps = opt + 2;
+  }
+
+  if(spec->num_taps > T_RZ_MAX_TAPS)
+  {
+    fprintf(stderr, "optimize(): cannot design filter, requires more than %i taps.   line: %i  file: %s\n", T_RZ_MAX_TAPS, __LINE__, __FILE__);
+    return -5;
   }
 
 //  fprintf(stdout, "spec->num_taps: %i   spec->desired_taps: %i\n", spec->num_taps, spec->desired_taps);
 
-  if(design_filter(spec))
+  err = design_filter(spec);
+  if(err)
   {
-    fprintf(stderr, "Error, cannot design filter.  line %i   file: %s\n", __LINE__, __FILE__);
-    return -2;
+    fprintf(stderr, "optimize(): design_filter() error: %i  line %i   file: %s\n", err, __LINE__, __FILE__);
+    return -6;
   }
 
   return 0;
@@ -1079,7 +1171,7 @@ int remez(double sf, int num_bands, double *start_hz, double *stop_hz, double *g
   {
     fprintf(stderr, "calloc() error    line: %i   file: %s\n", __LINE__, __FILE__);
     num_taps = -1;
-    goto OUT;
+    goto OUT_REMEZ;
   }
 
   spec->sf = sf;
@@ -1098,7 +1190,7 @@ int remez(double sf, int num_bands, double *start_hz, double *stop_hz, double *g
   {
     fprintf(stderr, "spec_init() error: %i\n", err);
     num_taps = -2;
-    goto OUT;
+    goto OUT_REMEZ;
   }
 
   err = optimize(spec);
@@ -1106,7 +1198,7 @@ int remez(double sf, int num_bands, double *start_hz, double *stop_hz, double *g
   {
     fprintf(stderr, "optimize() error: %i\n", err);
     num_taps = -3;
-    goto OUT;
+    goto OUT_REMEZ;
   }
 
   num_taps = spec->num_taps;
@@ -1116,7 +1208,7 @@ int remez(double sf, int num_bands, double *start_hz, double *stop_hz, double *g
   {
     fprintf(stderr, "malloc() error   line: %i  file: %s\n", __LINE__, __FILE__);
     num_taps = -4;
-    goto OUT;
+    goto OUT_REMEZ;
   }
 
   err = get_taps(spec, *taps);
@@ -1124,10 +1216,10 @@ int remez(double sf, int num_bands, double *start_hz, double *stop_hz, double *g
   {
     fprintf(stderr, "get_taps() error: %i\n", err);
     num_taps = -5;
-    goto OUT;
+    goto OUT_REMEZ;
   }
 
-OUT:
+OUT_REMEZ:
 
   if(spec != NULL)
   {
