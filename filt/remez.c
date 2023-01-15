@@ -876,7 +876,7 @@ static int get_extrema_adaptively(t_rz_spec *spec)
 
 static int design_filter(t_rz_spec *spec)
 {
-  int i, err, iter, maxiter=20;
+  int i, err, iter, maxiter=100;
 
   double errorchange,
          lasterror=1;
