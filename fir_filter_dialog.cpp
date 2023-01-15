@@ -1023,7 +1023,9 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
   char *str=NULL,
        txt_str[512]={""};
 
-  QMessageBox msgbox;
+  QMessageBox msgbox(firfilterdialog);
+  snprintf(txt_str, 512, "QLabel {min-width: %ipx;}", (int)(250 * mainwindow->w_scaling));
+  msgbox.setStyleSheet(txt_str);
 
   if(pm_param_table->rowCount() < 2)  return;
 
@@ -1140,8 +1142,6 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
     return;
   }
 
-  firfilterdialog->setEnabled(false);
-
   msgbox.setIcon(QMessageBox::NoIcon);
   msgbox.setWindowTitle("Busy");
   msgbox.setStandardButtons(QMessageBox::Abort);
@@ -1166,14 +1166,10 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
 
     msgbox.exec();
 
-    firfilterdialog->setEnabled(true);
-
     QApplication::restoreOverrideCursor();
   }
   else if((thrd->rz_params.tap_num < 2) || (thrd->rz_params.f_taps == NULL))
     {
-      firfilterdialog->setEnabled(true);
-
       QApplication::restoreOverrideCursor();
 
       QMessageBox::critical(mainwindow, "Error", "Cannot design filter, try changing parameters");
@@ -1225,8 +1221,6 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
 
         textEdit->appendPlainText(str);
       }
-
-      firfilterdialog->setEnabled(true);
 
       QApplication::restoreOverrideCursor();
     }

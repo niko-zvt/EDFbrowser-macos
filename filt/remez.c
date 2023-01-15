@@ -395,6 +395,8 @@ static void calc_delta(t_rz_spec *spec)
     spec->x[i] = cos(spec->frequencies[i] * M_PI);
   }
 
+  if(*(spec->abort))  return;
+
   for(i=0; i<spec->num_frequencies; i++)
   {
     spec->di[i] = 1;
@@ -408,6 +410,8 @@ static void calc_delta(t_rz_spec *spec)
     spec->dn[i] = 1.0 / spec->di[i];
   }
 
+  if(*(spec->abort))  return;
+
   for(i=0, sign=1; i<spec->num_frequencies; i++)
   {
     numerator += get_desired_gain(spec, spec->frequencies[i]) * spec->dn[i];
@@ -416,6 +420,8 @@ static void calc_delta(t_rz_spec *spec)
   }
 
   spec->delta = numerator / denominator;
+
+  if(*(spec->abort))  return;
 
   for(i=0, sign=1; i<spec->num_frequencies; i++)
   {
@@ -635,6 +641,12 @@ static int get_extrema(t_rz_spec *spec, int resolution)
 
   for(i=0; i<spec->num_bands; i++)
   {
+    if(*(spec->abort))
+    {
+      err = -4;
+      goto OUT_GET_EXTREMA;
+    }
+
     candidates[num_candidates].freq = spec->band[i].start;
     candidates[num_candidates].error = get_error(spec, spec->band[i].start);
     num_candidates++;
