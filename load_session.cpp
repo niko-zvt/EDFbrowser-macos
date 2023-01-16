@@ -92,9 +92,9 @@ int UI_Mainwindow::read_session_file(const char *path_session)
 
   memset(&hypnogram_param, 0, sizeof(hypnogram_dock_param_t));
 
-  struct cdsa_dock_param_struct cdsa_param;
+  cdsa_dock_param_t cdsa_param;
 
-  memset(&cdsa_param, 0, sizeof(struct cdsa_dock_param_struct));
+  memset(&cdsa_param, 0, sizeof(cdsa_dock_param_t));
 
   aeeg_dock_param_t aeeg_param;
 
@@ -2326,7 +2326,7 @@ int UI_Mainwindow::read_session_file(const char *path_session)
   {
     if(!(xml_goto_nth_element_inside(xml_hdl, "cdsa", i)))
     {
-      memset(&cdsa_param, 0, sizeof(struct cdsa_dock_param_struct));
+      memset(&cdsa_param, 0, sizeof(cdsa_dock_param_t));
 
       if(xml_goto_nth_element_inside(xml_hdl, "instance_num", 0))
       {

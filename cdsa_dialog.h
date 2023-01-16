@@ -38,8 +38,8 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "utils.h"
-#include "filteredblockread.h"
 #include "cdsa_dock.h"
+#include "filteredblockread.h"
 
 #include "filt/fft_wrap.h"
 

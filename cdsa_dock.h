@@ -73,13 +73,16 @@ struct cdsa_dock_param_struct
   int no_dialog;
 };
 
+typedef struct cdsa_dock_param_struct cdsa_dock_param_t;
+
+
 
 class UI_cdsa_dock : public QObject
 {
   Q_OBJECT
 
 public:
-  UI_cdsa_dock(QWidget *, struct cdsa_dock_param_struct);
+  UI_cdsa_dock(QWidget *, cdsa_dock_param_t);
   ~UI_cdsa_dock();
 
   UI_Mainwindow  *mainwindow;
@@ -89,7 +92,7 @@ public:
   double w_scaling,
          h_scaling;
 
-  struct cdsa_dock_param_struct param;
+  cdsa_dock_param_t param;
 
 private:
 

@@ -29,7 +29,7 @@
 #include "cdsa_dock.h"
 
 
-UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, struct cdsa_dock_param_struct par)
+UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, cdsa_dock_param_t par)
 {
   char str[1024]={""};
 
