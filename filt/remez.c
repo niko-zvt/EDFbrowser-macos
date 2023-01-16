@@ -867,7 +867,7 @@ static int get_extrema_adaptively(t_rz_spec *spec)
 
     if(num_extrema >= spec->r + 1)  break;
 
-    if((long long)resolution * 10LL > (0x7fffffffLL))
+    if((long long)resolution * 10LL > (256LL * 1024LL * 1024LL))
     {
       fprintf(stdout, "memory limit reached...   line: %i  file: %s\n", __LINE__, __FILE__);
 
