@@ -50,7 +50,7 @@ class simple_ruler_indicator2;
 class hypnogram_curve_widget;
 
 
-struct hypnogram_dock_param_struct
+typedef struct
 {
   int instance_num;
   int use_epoch_len;
@@ -61,7 +61,7 @@ struct hypnogram_dock_param_struct
   rgbac_t annot_ov_color[HYPNOGRAM_OVNUM];
   edfhdrblck_t *edfhdr;
   UI_Mainwindow  *mainwindow;
-};
+} hypnogram_dock_param_t;
 
 
 class UI_hypnogram_dock : public QObject
@@ -69,7 +69,7 @@ class UI_hypnogram_dock : public QObject
   Q_OBJECT
 
 public:
-  UI_hypnogram_dock(QWidget *, struct hypnogram_dock_param_struct);
+  UI_hypnogram_dock(QWidget *, hypnogram_dock_param_t);
   ~UI_hypnogram_dock();
 
   UI_Mainwindow  *mainwindow;
@@ -79,7 +79,7 @@ public:
   double w_scaling,
          h_scaling;
 
-  struct hypnogram_dock_param_struct param;
+  hypnogram_dock_param_t param;
 
 public slots:
   void update_curve(void);
@@ -146,7 +146,7 @@ public:
   QSize sizeHint() const {return minimumSizeHint(); }
   QSize minimumSizeHint() const {return QSize(5, 5); }
 
-  void set_params(struct hypnogram_dock_param_struct *);
+  void set_params(hypnogram_dock_param_t *);
   void set_scaling(double, double);
 
 public slots:
@@ -160,7 +160,7 @@ private:
   double w_scaling,
          h_scaling;
 
-  struct hypnogram_dock_param_struct param;
+  hypnogram_dock_param_t param;
 };
 
 
@@ -176,7 +176,7 @@ public:
 
   UI_Mainwindow  *mainwindow;
 
-  void set_params(struct hypnogram_dock_param_struct *);
+  void set_params(hypnogram_dock_param_t *);
 
 public slots:
 
@@ -185,7 +185,7 @@ protected:
 
 private:
 
-  struct hypnogram_dock_param_struct param;
+  hypnogram_dock_param_t param;
 
   QColor annot_ov_q_color[HYPNOGRAM_OVNUM];
 };

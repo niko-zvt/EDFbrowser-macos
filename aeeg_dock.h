@@ -69,13 +69,16 @@ struct aeeg_dock_param_struct
   UI_Mainwindow *mainwindow;
 };
 
+typedef struct aeeg_dock_param_struct aeeg_dock_param_t;
+
+
 
 class UI_aeeg_dock : public QObject
 {
   Q_OBJECT
 
 public:
-  UI_aeeg_dock(QWidget *, struct aeeg_dock_param_struct);
+  UI_aeeg_dock(QWidget *, aeeg_dock_param_t);
   ~UI_aeeg_dock();
 
   UI_Mainwindow  *mainwindow;
@@ -85,7 +88,7 @@ public:
   double w_scaling,
          h_scaling;
 
-  struct aeeg_dock_param_struct param;
+  aeeg_dock_param_t param;
 
 private:
 
@@ -127,7 +130,7 @@ public:
   QSize sizeHint() const {return minimumSizeHint(); }
   QSize minimumSizeHint() const {return QSize(5, 5); }
 
-  void set_params(struct aeeg_dock_param_struct *);
+  void set_params(aeeg_dock_param_t *);
 
   void set_range(int, int);
   void set_scaling(double, double);
@@ -141,7 +144,7 @@ protected:
 
 private:
 
-  struct aeeg_dock_param_struct param;
+  aeeg_dock_param_t param;
 
   log_vruler_indicator *srl_indic;
 
@@ -168,7 +171,7 @@ public:
 
   UI_Mainwindow  *mainwindow;
 
-  void set_params(struct aeeg_dock_param_struct *);
+  void set_params(aeeg_dock_param_t *);
 
   void set_range(int, int);
 
@@ -187,7 +190,7 @@ private:
 
   int marker_pos;
 
-  struct aeeg_dock_param_struct param;
+  aeeg_dock_param_t param;
 
   double aeeg_min,
          aeeg_max,

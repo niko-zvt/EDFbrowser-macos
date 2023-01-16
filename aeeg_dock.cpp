@@ -29,7 +29,7 @@
 #include "aeeg_dock.h"
 
 
-UI_aeeg_dock::UI_aeeg_dock(QWidget *w_parent, struct aeeg_dock_param_struct par)
+UI_aeeg_dock::UI_aeeg_dock(QWidget *w_parent, aeeg_dock_param_t par)
 {
   char str[1024]={""};
 
@@ -322,7 +322,7 @@ void log_vruler_indicator::set_scaling(double w, double h)
 }
 
 
-void log_vruler_indicator::set_params(struct aeeg_dock_param_struct *parms)
+void log_vruler_indicator::set_params(aeeg_dock_param_t *parms)
 {
   param = *parms;
 }
@@ -451,7 +451,7 @@ aeeg_curve_widget::aeeg_curve_widget(QWidget *w_parent) : QWidget(w_parent)
 {
   mainwindow = NULL;
 
-  memset(&param, 0, sizeof(struct aeeg_dock_param_struct));
+  memset(&param, 0, sizeof(aeeg_dock_param_t));
 
   setAttribute(Qt::WA_OpaquePaintEvent);
 
@@ -467,7 +467,7 @@ aeeg_curve_widget::aeeg_curve_widget(QWidget *w_parent) : QWidget(w_parent)
 }
 
 
-void aeeg_curve_widget::set_params(struct aeeg_dock_param_struct *parms)
+void aeeg_curve_widget::set_params(aeeg_dock_param_t *parms)
 {
   param = *parms;
 

@@ -389,9 +389,9 @@ void UI_hypnogram_window::start_button_clicked()
 {
   int i;
 
-  struct hypnogram_dock_param_struct dock_param;
+  hypnogram_dock_param_t dock_param;
 
-  memset(&dock_param, 0, sizeof(struct hypnogram_dock_param_struct));
+  memset(&dock_param, 0, sizeof(hypnogram_dock_param_t));
 
   dock_param.instance_num = instance_num;
 

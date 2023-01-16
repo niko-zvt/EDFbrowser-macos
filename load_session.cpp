@@ -88,17 +88,17 @@ int UI_Mainwindow::read_session_file(const char *path_session)
 
   memset(settings, 0, sizeof(struct spectrumdocksettings[MAXSPECTRUMDOCKS]));
 
-  struct hypnogram_dock_param_struct hypnogram_param;
+  hypnogram_dock_param_t hypnogram_param;
 
-  memset(&hypnogram_param, 0, sizeof(struct hypnogram_dock_param_struct));
+  memset(&hypnogram_param, 0, sizeof(hypnogram_dock_param_t));
 
   struct cdsa_dock_param_struct cdsa_param;
 
   memset(&cdsa_param, 0, sizeof(struct cdsa_dock_param_struct));
 
-  struct aeeg_dock_param_struct aeeg_param;
+  aeeg_dock_param_t aeeg_param;
 
-  memset(&aeeg_param, 0, sizeof(struct aeeg_dock_param_struct));
+  memset(&aeeg_param, 0, sizeof(aeeg_dock_param_t));
 
   if(path_session == NULL) return -999;
 
@@ -2153,7 +2153,7 @@ int UI_Mainwindow::read_session_file(const char *path_session)
   {
     if(!(xml_goto_nth_element_inside(xml_hdl, "hypnogram", i)))
     {
-      memset(&hypnogram_param, 0, sizeof(struct hypnogram_dock_param_struct));
+      memset(&hypnogram_param, 0, sizeof(hypnogram_dock_param_t));
 
       if(xml_goto_nth_element_inside(xml_hdl, "instance_num", 0))
       {
@@ -2661,7 +2661,7 @@ int UI_Mainwindow::read_session_file(const char *path_session)
   {
     if(!(xml_goto_nth_element_inside(xml_hdl, "aeeg", i)))
     {
-      memset(&aeeg_param, 0, sizeof(struct aeeg_dock_param_struct));
+      memset(&aeeg_param, 0, sizeof(aeeg_dock_param_t));
 
       if(xml_goto_nth_element_inside(xml_hdl, "instance_num", 0))
       {

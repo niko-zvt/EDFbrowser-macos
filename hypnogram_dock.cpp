@@ -29,7 +29,7 @@
 #include "hypnogram_dock.h"
 
 
-UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, struct hypnogram_dock_param_struct par)
+UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, hypnogram_dock_param_t par)
 {
   QLabel *ruler_label;
 
@@ -305,7 +305,7 @@ void simple_ruler_indicator2::set_scaling(double w, double h)
 }
 
 
-void simple_ruler_indicator2::set_params(struct hypnogram_dock_param_struct *parms)
+void simple_ruler_indicator2::set_params(hypnogram_dock_param_t *parms)
 {
   param = *parms;
 }
@@ -350,7 +350,7 @@ hypnogram_curve_widget::hypnogram_curve_widget(QWidget *w_parent) : QWidget(w_pa
 }
 
 
-void hypnogram_curve_widget::set_params(struct hypnogram_dock_param_struct *parms)
+void hypnogram_curve_widget::set_params(hypnogram_dock_param_t *parms)
 {
   int i;
 
