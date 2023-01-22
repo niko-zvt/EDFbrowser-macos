@@ -871,20 +871,33 @@
   If you already have the filter coefficients (so-called "filter taps") obtained from another source, simply copy and paste them into<br>
   the Filter taps list and select the signals to which the filter needs to apply to (select/highlight them with the mouse).<br>
 <br>
-  The second method is to use the designer that creates a phase-linear, Windowed Sinc FIR filter with flat passbands.<br>
-<br>
-  The third method is to use the designer that utilizes the Parks-McClellan algorithm to calculate a phase-linear, equiripple FIR filter.<br>
+  The second method is to use the FIR filter designer that creates a phase-linear, Windowed Sinc FIR filter with flat passbands,<br>
+  or a phase-linear filter with a user specified passband and ripple and stopband attenuation, using the Parks-McClellan algorithm.<br>
+</p>
+
+<h4>Windowed Sinc algorithm to calculate a phase-linear, flat passband FIR filter.</h4>
+
+<p>
+  Specify filter type (lowpass, highpass, bandpass, bandstop), samplerate of the selected signal(s), the cutoff frequency and<br>
+  and the transition bandwidth (steepness).
+</p>
+
+<h4>Parks-McClellan algorithm to calculate a phase-linear, equiripple FIR filter.</h4>
+
+<p>
   Specify the pass- and stopbands with their respective start- and stopfrequencies, gain and ripple.<br>
   A passband usually has a gain of 1 (it must be more than zero).<br>
   A stopband must have a gain of zero. Bandwidth must be at least 5% and the transition between bands must be<br>
   at least 5%. After entering the filter specifications press the "Design" button.<br>
-  Example:<br>
+  Examples:<br>
   For a lowpass filter, specify a passband and a stopband (2 bands).<br>
   For a highpass filter, specify a stopband and a passband (2 bands).<br>
   For a bandpass filter, specify a stopband, a passband and a stopband (3 bands).<br>
 <br>
-  The Parks-McClellan algorithm cannot find solutions for all possible filter specifications.<br>
-  In case it's not able to create the filter, try the Windowed Sinc filter instead.<br>
+  Click on the "No predefined" combobox to select one of the predefined filtertypes to help you get started.<br>
+<br>
+  <b>Note</b>: The Parks-McClellan algorithm cannot find solutions for all possible filter specifications.<br>
+  In case it's not able to create the filter, try changing the filter parameters or use the Windowed Sinc filter instead.<br>
 <br>
   Resuming:<br>
   - Select the filter design method by selecting the tab "Windowed Sinc" or "Parks-McClellan".<br>
