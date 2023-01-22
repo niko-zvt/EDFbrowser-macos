@@ -48,13 +48,13 @@ class simple_ruler_indicator3;
 class hrv_curve_widget;
 
 
-struct hrv_dock_param_struct
+typedef struct
 {
   int instance_num;
   char annot_name[MAX_ANNOTATION_LEN];
   edfhdrblck_t *edfhdr;
   UI_Mainwindow *mainwindow;
-};
+} hrv_dock_param_t;
 
 
 class UI_hrv_dock : public QObject
@@ -62,7 +62,7 @@ class UI_hrv_dock : public QObject
   Q_OBJECT
 
 public:
-  UI_hrv_dock(QWidget *, struct hrv_dock_param_struct);
+  UI_hrv_dock(QWidget *, hrv_dock_param_t);
   ~UI_hrv_dock();
 
   UI_Mainwindow  *mainwindow;
@@ -77,7 +77,7 @@ public slots:
 
 private:
 
-  struct hrv_dock_param_struct param;
+  hrv_dock_param_t param;
 
   simple_tracking_indicator3 *trck_indic;
 
@@ -153,7 +153,7 @@ public:
   QSize sizeHint() const {return minimumSizeHint(); }
   QSize minimumSizeHint() const {return QSize(5, 5); }
 
-  void set_params(struct hrv_dock_param_struct *);
+  void set_params(hrv_dock_param_t *);
 
   void set_range(int, int);
   void set_scaling(double, double);
@@ -166,7 +166,7 @@ protected:
 
 private:
 
-  struct hrv_dock_param_struct param;
+  hrv_dock_param_t param;
 
   int max_val;
   int min_val;
@@ -188,7 +188,7 @@ public:
 
   UI_Mainwindow  *mainwindow;
 
-  void set_params(struct hrv_dock_param_struct *);
+  void set_params(hrv_dock_param_t *);
 
   void set_range(int, int);
 
@@ -201,7 +201,7 @@ protected:
 
 private:
 
-  struct hrv_dock_param_struct param;
+  hrv_dock_param_t param;
 
   double bpm_min,
          bpm_max,

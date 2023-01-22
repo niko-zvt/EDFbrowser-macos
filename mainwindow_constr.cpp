@@ -268,7 +268,7 @@ UI_Mainwindow::UI_Mainwindow()
   spectrum_colorbar->auto_adjust = 1;
   spectrum_colorbar->max_colorbar_value = 10.0;
 
-  import_annotations_var = (import_annotations_var_block *)calloc(1, sizeof(struct import_annotations_var_block));
+  import_annotations_var = (import_annotations_var_t *)calloc(1, sizeof(import_annotations_var_t));
   strlcpy(import_annotations_var->separator, "tab", 4);
   import_annotations_var->format = 1;
   import_annotations_var->onsettimeformat = 0;

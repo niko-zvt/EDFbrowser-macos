@@ -405,9 +405,9 @@ void UI_Annotationswindow::show_heart_rate(bool)
     return;
   }
 
-  struct hrv_dock_param_struct dock_param;
+  hrv_dock_param_t dock_param;
 
-  memset(&dock_param, 0, sizeof(struct hrv_dock_param_struct));
+  memset(&dock_param, 0, sizeof(hrv_dock_param_t));
 
   for(instance_num=0; instance_num<MAXHRVDOCKS; instance_num++)
   {

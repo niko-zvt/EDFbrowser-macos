@@ -29,7 +29,7 @@
 #include "hrv_dock.h"
 
 
-UI_hrv_dock::UI_hrv_dock(QWidget *w_parent, struct hrv_dock_param_struct par)
+UI_hrv_dock::UI_hrv_dock(QWidget *w_parent, hrv_dock_param_t par)
 {
   QLabel *ruler_label;
 
@@ -423,7 +423,7 @@ void simple_ruler_indicator3::set_scaling(double w, double h)
 }
 
 
-void simple_ruler_indicator3::set_params(struct hrv_dock_param_struct *parms)
+void simple_ruler_indicator3::set_params(hrv_dock_param_t *parms)
 {
   param = *parms;
 }
@@ -488,7 +488,7 @@ hrv_curve_widget::hrv_curve_widget(QWidget *w_parent) : QWidget(w_parent)
 }
 
 
-void hrv_curve_widget::set_params(struct hrv_dock_param_struct *parms)
+void hrv_curve_widget::set_params(hrv_dock_param_t *parms)
 {
   param = *parms;
 

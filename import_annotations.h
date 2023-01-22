@@ -55,29 +55,6 @@ class UI_Mainwindow;
 
 
 
-struct import_annotations_var_block
-{
-  char separator[4];
-  int format;
-  int onsettimeformat;
-  int onsetcolumn;
-  int descriptioncolumn;
-  int manualdescription;
-  int useduration;
-  int usestoptime;
-  int durationcolumn;
-  int stopcolumn;
-  char description[21];
-  int datastartline;
-  int dceventbittime;
-  double triggerlevel;
-  int ignoreconsecutive;
-  int ascii_txt_encoding;
-  int csv_equal_filename;
-};
-
-
-
 class UI_ImportAnnotationswindow : public QObject
 {
   Q_OBJECT

@@ -369,6 +369,27 @@ long long annot_editor_user_button_epoch_len,
     int txt_encoding;
   } export_annotations_var_t;
 
+  typedef struct
+  {
+    char separator[4];
+    int format;
+    int onsettimeformat;
+    int onsetcolumn;
+    int descriptioncolumn;
+    int manualdescription;
+    int useduration;
+    int usestoptime;
+    int durationcolumn;
+    int stopcolumn;
+    char description[21];
+    int datastartline;
+    int dceventbittime;
+    double triggerlevel;
+    int ignoreconsecutive;
+    int ascii_txt_encoding;
+    int csv_equal_filename;
+  } import_annotations_var_t;
+
   raw2edf_var_t raw2edf_var;
 
   edfhdrblck_t *edfheaderlist[MAXFILES];
@@ -381,7 +402,7 @@ long long annot_editor_user_button_epoch_len,
 
   struct spectrum_markersblock *spectrum_colorbar;
 
-  struct import_annotations_var_block *import_annotations_var;
+  import_annotations_var_t *import_annotations_var;
 
   export_annotations_var_t *export_annotations_var;
 
