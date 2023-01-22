@@ -40,7 +40,8 @@ extern "C" {
 #endif
 
 
-struct ecg_hr_statistics_struct{
+typedef struct
+{
   int beat_cnt;
   double mean_rr;
   double sdnn_rr;
@@ -51,10 +52,10 @@ struct ecg_hr_statistics_struct{
   double pNN20;
   int NN50;
   double pNN50;
-};
+} ecg_hr_statistics_t;
 
 
-int ecg_get_hr_statistics(double *, int, struct ecg_hr_statistics_struct *);
+int ecg_get_hr_statistics(double *, int, ecg_hr_statistics_t *);
 
 
 #ifdef __cplusplus

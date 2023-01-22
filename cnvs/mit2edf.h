@@ -67,7 +67,8 @@ QDialog      *myobjectDialog;
 char  *recent_opendir,
       *recent_savedir;
 
-struct {
+struct
+{
   int chns;
   int sf_base;
   int sf_base_fraction;

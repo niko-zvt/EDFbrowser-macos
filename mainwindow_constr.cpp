@@ -285,7 +285,7 @@ UI_Mainwindow::UI_Mainwindow()
   import_annotations_var->ignoreconsecutive = 0;
   import_annotations_var->csv_equal_filename = 0;
 
-  export_annotations_var = (export_annotations_var_block *)calloc(1, sizeof(struct export_annotations_var_block));
+  export_annotations_var = (export_annotations_var_t *)calloc(1, sizeof(export_annotations_var_t));
   export_annotations_var->separator = 0;
   export_annotations_var->format = 1;
   export_annotations_var->duration = 0;

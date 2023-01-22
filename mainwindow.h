@@ -343,23 +343,33 @@ long long annot_editor_user_button_epoch_len,
          aeeg_lp_hz,
          aeeg_scale_max_amp;
 
-  struct{
-          double crossoverfreq;
-          double z_threshold;
-          double z_hysteresis;
-          int zscore_page_len;
-          int zscore_error_detection;
-        } z_score_var;
+  struct
+  {
+    double crossoverfreq;
+    double z_threshold;
+    double z_hysteresis;
+    int zscore_page_len;
+    int zscore_error_detection;
+  } z_score_var;
 
-  struct{
-          int sz;
-          int active;
-          double *ival;
-          char annot_label[MAX_ANNOTATION_LEN + 1];
-          annotlist_t *annot_list;
-        } toolbar_stats;
+  struct
+  {
+    int sz;
+    int active;
+    double *ival;
+    char annot_label[MAX_ANNOTATION_LEN + 1];
+    annotlist_t *annot_list;
+  } toolbar_stats;
 
-  struct raw2edf_var_struct raw2edf_var;
+  typedef struct
+  {
+    int separator;
+    int format;
+    int duration;
+    int txt_encoding;
+  } export_annotations_var_t;
+
+  raw2edf_var_t raw2edf_var;
 
   edfhdrblck_t *edfheaderlist[MAXFILES];
 
@@ -373,7 +383,7 @@ long long annot_editor_user_button_epoch_len,
 
   struct import_annotations_var_block *import_annotations_var;
 
-  struct export_annotations_var_block *export_annotations_var;
+  export_annotations_var_t *export_annotations_var;
 
   videoplayer_t *video_player;
 

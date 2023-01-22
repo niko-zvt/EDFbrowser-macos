@@ -30,7 +30,7 @@
 #include "ecg_statistics.h"
 
 
-int ecg_get_hr_statistics(double *beat_interval_list, int beat_cnt, struct ecg_hr_statistics_struct *ecg_stats)
+int ecg_get_hr_statistics(double *beat_interval_list, int beat_cnt, ecg_hr_statistics_t *ecg_stats)
 {
   int i,
       NN20=0,

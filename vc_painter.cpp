@@ -935,7 +935,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     if(mainwindow->toolbar_stats.sz)  mainwindow->toolbar_stats.sz--;
   }
 
-  struct ecg_hr_statistics_struct hr_stats;
+  ecg_hr_statistics_t hr_stats;
 
   if((mainwindow->toolbar_stats.active) && (mainwindow->toolbar_stats.sz > 2))
   {

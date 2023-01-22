@@ -93,7 +93,7 @@ int beat_cnt,
     start_ruler,
     end_ruler;
 
-struct ecg_hr_statistics_struct hr_stat;
+ecg_hr_statistics_t hr_stat;
 
 
 private slots:

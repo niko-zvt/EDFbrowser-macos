@@ -51,15 +51,6 @@ class UI_Mainwindow;
 
 
 
-struct export_annotations_var_block
-{
-  int separator;
-  int format;
-  int duration;
-  int txt_encoding;
-};
-
-
 class UI_ExportAnnotationswindow : public QObject
 {
   Q_OBJECT
