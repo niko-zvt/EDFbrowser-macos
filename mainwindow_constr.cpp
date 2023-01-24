@@ -1257,14 +1257,32 @@ UI_Mainwindow::UI_Mainwindow()
   connect(Escape_act, SIGNAL(triggered()), this, SLOT(Escape_fun()));
   maincurve->addAction(Escape_act);
 
-  next_crosshair = new QAction("Next Crosshair", this);
+  next_crosshair_act = new QAction("Next Crosshair", this);
 #if QT_VERSION < 0x060000
-  next_crosshair->setShortcut(Qt::ALT + Qt::SHIFT + Qt::Key_C);
+  next_crosshair_act->setShortcut(Qt::ALT + Qt::SHIFT + Qt::Key_C);
 #else
-  next_crosshair->setShortcut(Qt::ALT | Qt::SHIFT | Qt::Key_C);
+  next_crosshair_act->setShortcut(Qt::ALT | Qt::SHIFT | Qt::Key_C);
 #endif
-  connect(next_crosshair, SIGNAL(triggered()), maincurve, SLOT(next_crosshair_triggered()));
-  maincurve->addAction(next_crosshair);
+  connect(next_crosshair_act, SIGNAL(triggered()), maincurve, SLOT(next_crosshair_act_triggered()));
+  maincurve->addAction(next_crosshair_act);
+
+  shift_vert_scrollbar_up_act = new QAction(this);
+#if QT_VERSION < 0x060000
+  shift_vert_scrollbar_up_act->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Up));
+#else
+  shift_vert_scrollbar_up_act->setShortcut(QKeySequence(Qt::SHIFT | Qt::Key_Up));
+#endif
+  connect(shift_vert_scrollbar_up_act, SIGNAL(triggered()), this, SLOT(shift_vert_scrollbar_up_act_triggered()));
+  maincurve->addAction(shift_vert_scrollbar_up_act);
+
+  shift_vert_scrollbar_down_act = new QAction(this);
+#if QT_VERSION < 0x060000
+  shift_vert_scrollbar_down_act->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Down));
+#else
+  shift_vert_scrollbar_down_act->setShortcut(QKeySequence(Qt::SHIFT | Qt::Key_Down));
+#endif
+  connect(shift_vert_scrollbar_down_act, SIGNAL(triggered()), this, SLOT(shift_vert_scrollbar_down_act_triggered()));
+  maincurve->addAction(shift_vert_scrollbar_down_act);
 
   positionslider = new QSlider(Qt::Horizontal);
   positionslider->setRange(0, 1000000);

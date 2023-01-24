@@ -474,7 +474,9 @@ long long annot_editor_user_button_epoch_len,
                *load_session_act,
                *load_predefined_mtg_act[MAXPREDEFINEDMONTAGES],
                *Escape_act,
-               *video_act;
+               *video_act,
+               *shift_vert_scrollbar_up_act,
+               *shift_vert_scrollbar_down_act;
 
   QActionGroup *timelock_act_group,
                *sel_viewtime_act_group;
@@ -609,7 +611,7 @@ private:
            *no_timesync_act,
            *user_def_sync_act,
            *sel_viewtime_act[MAXFILES],
-           *next_crosshair;
+           *next_crosshair_act;
 
   QActionGroup *AmplitudeGroup,
                *DisplayGroup,
@@ -679,6 +681,8 @@ public slots:
   void signalcomp_invert(int, int n=-1);
   void set_timesync_reference(int);
   void set_timesync(int);
+  void shift_vert_scrollbar_up_act_triggered();
+  void shift_vert_scrollbar_down_act_triggered();
 
 private slots:
   void open_new_file();

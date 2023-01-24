@@ -3624,6 +3624,34 @@ void UI_Mainwindow::set_display_time_whole_rec()
 }
 
 
+void UI_Mainwindow::shift_vert_scrollbar_up_act_triggered()
+{
+  if(!signalcomps)  return;
+
+  if(mc_v_scrollarea_ratio <= 1)  return;
+
+  int val = mc_v_scrollbar->value() - (10000 / mc_v_scrollarea_ratio);
+
+  mc_v_scrollbar->setValue(val);
+
+  maincurve->drawCurve_stage_1();
+}
+
+
+void UI_Mainwindow::shift_vert_scrollbar_down_act_triggered()
+{
+  if(!signalcomps)  return;
+
+  if(mc_v_scrollarea_ratio <= 1)  return;
+
+  int val = mc_v_scrollbar->value() + (10000 / mc_v_scrollarea_ratio);
+
+  mc_v_scrollbar->setValue(val);
+
+  maincurve->drawCurve_stage_1();
+}
+
+
 void UI_Mainwindow::fit_signals_to_pane(int n)
 {
   int i,
@@ -4455,6 +4483,8 @@ void UI_Mainwindow::show_kb_shortcuts()
    "Minus\t\tdecrease amplitude\n"
    "Up Arrow\t\tshift traces up\n"
    "Down Arrow\tshift traces down\n"
+   "Shift+Up Arrow\tmove vertical scrollbar (if enabled)\n"
+   "Shift+Down Arrow\tmove vertical scrollbar (if enabled)\n"
    "Ctrl-Home\t\tgo to start of file\n"
    "Ctrl-End\t\tgo to end of file\n"
    "Ctrl++\t\tzoom in horizontally\n"
@@ -4485,7 +4515,7 @@ void UI_Mainwindow::show_kb_shortcuts()
    "\nCtrl+Space\t\tToggle Playback or Pause\n"
    "Ctrl+Shift+V\tToggle Playback with video\n"
 
-   "\nAnnotation editor user buttons: Ctrl +1, Ctrl + 2, etc.\n",
+   "\nAnnotation editor user buttons: press 1, 2, 3, etc.\n",
    QMessageBox::Close
   );
 

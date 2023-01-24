@@ -3796,7 +3796,7 @@ void ViewCurve::CrosshairButton()
 }
 
 
-void ViewCurve::next_crosshair_triggered()
+void ViewCurve::next_crosshair_act_triggered()
 {
   int i, n=0;
 
