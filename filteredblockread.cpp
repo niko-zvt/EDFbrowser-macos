@@ -115,10 +115,7 @@ double * FilteredBlockReadClass::init_signalcomp(sigcompblck_t *i_signalcomp, in
 
   printf("init_signalcomp(): datarecord_cnt: %i\n", datarecord_cnt);
 #endif
-  if(processed_samples_buf != NULL)
-  {
-    free(processed_samples_buf);
-  }
+  free(processed_samples_buf);
   processed_samples_buf = (double *)malloc(total_samples * sizeof(double));
   if(processed_samples_buf == NULL)
   {
@@ -129,10 +126,7 @@ double * FilteredBlockReadClass::init_signalcomp(sigcompblck_t *i_signalcomp, in
     return NULL;
   }
 
-  if(readbuf != NULL)
-  {
-    free(readbuf);
-  }
+  free(readbuf);
   readbuf = (char *)malloc(hdr->recordsize  * (datarecord_cnt + 1));
   if(readbuf == NULL)
   {
