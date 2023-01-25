@@ -356,7 +356,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
               }
               else
               {
-                if(time_tmp>=TIME_DIMENSION)
+                if(time_tmp>=TIME_FIXP_SCALING)
                 {
                   error = 2;
                   goto END;
@@ -685,7 +685,7 @@ long long EDF_annotations::get_long_time(char *str)
 
   if(hasdot)
   {
-    radix = TIME_DIMENSION;
+    radix = TIME_FIXP_SCALING;
 
     for(i=dotposition-1; i>=0; i--)
     {
@@ -693,7 +693,7 @@ long long EDF_annotations::get_long_time(char *str)
       radix *= 10;
     }
 
-    radix = TIME_DIMENSION / 10;
+    radix = TIME_FIXP_SCALING / 10;
 
     for(i=dotposition+1; i<len; i++)
     {
@@ -703,7 +703,7 @@ long long EDF_annotations::get_long_time(char *str)
   }
   else
   {
-    radix = TIME_DIMENSION;
+    radix = TIME_FIXP_SCALING;
 
     for(i=len-1; i>=0; i--)
     {

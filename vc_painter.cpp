@@ -141,7 +141,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         {
           l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_offset;
 
-          if(((l_tmp + annot->long_duration) > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) && (!annot->hided))
+          if(((l_tmp + annot->long_duration) > (mainwindow->edfheaderlist[i]->viewtime - TIME_FIXP_SCALING)) && (!annot->hided))
           {
             if(l_tmp > (long long)(mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
             {
@@ -249,7 +249,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  m_pagetime = (int)(mainwindow->pagetime / TIME_DIMENSION);
+  m_pagetime = (int)(mainwindow->pagetime / TIME_FIXP_SCALING);
 
   time_ppixel = mainwindow->pagetime / w;
 
@@ -281,7 +281,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     for(x_pix=0; x_pix<w; x_pix++)
     {
-      if((ll_elapsed_time / (TIME_DIMENSION / 10))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION / 10)))
+      if((ll_elapsed_time / (TIME_FIXP_SCALING / 10))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 10)))
       {
         if(printing)
         {
@@ -293,7 +293,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
       }
 
-      if(((ll_elapsed_time / TIME_DIMENSION)!=((ll_elapsed_time + time_ppixel) / TIME_DIMENSION)) ||
+      if(((ll_elapsed_time / TIME_FIXP_SCALING)!=((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) ||
         ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
       {
         if(x_pix)
@@ -303,11 +303,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           painter->drawLine(x_pix, 0, x_pix, h);
           if(ll_elapsed_time < 0LL)
           {
-            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / TIME_DIMENSION)) % 60);
+            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / TIME_FIXP_SCALING)) % 60);
           }
           else
           {
-            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / TIME_DIMENSION)) % 60);
+            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) % 60);
           }
           painter->drawText(x_pix + 2, 20 * h_scaling, str4);
           ruler_pen->setColor(small_ruler_color);
@@ -334,7 +334,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     for(x_pix=0; x_pix<w; x_pix++)
     {
-      if((ll_elapsed_time / (TIME_DIMENSION / 5))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION / 5)))
+      if((ll_elapsed_time / (TIME_FIXP_SCALING / 5))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 5)))
       {
         if(printing)
         {
@@ -346,7 +346,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
       }
 
-      if(((ll_elapsed_time / TIME_DIMENSION)!=((ll_elapsed_time + time_ppixel) / TIME_DIMENSION)) ||
+      if(((ll_elapsed_time / TIME_FIXP_SCALING)!=((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) ||
         ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
       {
         if(x_pix)
@@ -356,18 +356,18 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           painter->drawLine(x_pix, 0, x_pix, h);
           if(ll_elapsed_time < 0LL)
           {
-            if(!(((int)((ll_elapsed_time - time_ppixel) / TIME_DIMENSION)) % 5))
+            if(!(((int)((ll_elapsed_time - time_ppixel) / TIME_FIXP_SCALING)) % 5))
             {
-              snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / TIME_DIMENSION)) % 60);
+              snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / TIME_FIXP_SCALING)) % 60);
 
               painter->drawText(x_pix + 2, 20 * h_scaling, str4);
             }
           }
           else
           {
-            if(!(((int)((ll_elapsed_time + time_ppixel) / TIME_DIMENSION)) % 5))
+            if(!(((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) % 5))
             {
-              snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / TIME_DIMENSION)) % 60);
+              snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) % 60);
 
               painter->drawText(x_pix + 2, 20 * h_scaling, str4);
             }
@@ -408,7 +408,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
       }
 
-      if(((ll_elapsed_time / (TIME_DIMENSION * 10))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 10))) ||
+      if(((ll_elapsed_time / (TIME_FIXP_SCALING * 10))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 10))) ||
         ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
       {
         if(x_pix)
@@ -418,18 +418,18 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           painter->drawLine(x_pix, 0, x_pix, h);
           if(ll_elapsed_time < 0LL)
           {
-            if(!(((int)((ll_elapsed_time - time_ppixel) / TIME_DIMENSION)) % 10))
+            if(!(((int)((ll_elapsed_time - time_ppixel) / TIME_FIXP_SCALING)) % 10))
             {
-              snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / TIME_DIMENSION)) % 60);
+              snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / TIME_FIXP_SCALING)) % 60);
 
               painter->drawText(x_pix + 2, 20 * h_scaling, str4);
             }
           }
           else
           {
-            if(!(((int)((ll_elapsed_time + time_ppixel) / TIME_DIMENSION)) % 10))
+            if(!(((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) % 10))
             {
-              snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / TIME_DIMENSION)) % 60);
+              snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) % 60);
 
               painter->drawText(x_pix + 2, 20 * h_scaling, str4);
             }
@@ -458,7 +458,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     for(x_pix=0; x_pix<w; x_pix++)
     {
-      if((ll_elapsed_time / (TIME_DIMENSION * 10))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 10)))
+      if((ll_elapsed_time / (TIME_FIXP_SCALING * 10))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 10)))
       {
         if(printing)
         {
@@ -470,7 +470,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
       }
 
-      if(((ll_elapsed_time / (TIME_DIMENSION * 60))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 60)))  ||
+      if(((ll_elapsed_time / (TIME_FIXP_SCALING * 60))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 60)))  ||
         ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
       {
         if(x_pix)
@@ -480,15 +480,15 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           painter->drawLine(x_pix, 0, x_pix, h);
           if(ll_elapsed_time < 0LL)
           {
-//            printf("ll_elapsed_time: %lli    time_ppixel: %lli    result:%i\n", ll_elapsed_time, time_ppixel, ((int)((ll_elapsed_time - time_ppixel) / TIME_DIMENSION)) % 60);
+//            printf("ll_elapsed_time: %lli    time_ppixel: %lli    result:%i\n", ll_elapsed_time, time_ppixel, ((int)((ll_elapsed_time - time_ppixel) / TIME_FIXP_SCALING)) % 60);
 
-            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / (TIME_DIMENSION * 60))) % 60);
+            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / (TIME_FIXP_SCALING * 60))) % 60);
           }
           else
           {
-//            printf("ll_elapsed_time: %lli    time_ppixel: %lli    result:%i\n", ll_elapsed_time, time_ppixel, ((int)((ll_elapsed_time + time_ppixel) / TIME_DIMENSION)) % 60);
+//            printf("ll_elapsed_time: %lli    time_ppixel: %lli    result:%i\n", ll_elapsed_time, time_ppixel, ((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) % 60);
 
-            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 60))) % 60);
+            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 60))) % 60);
           }
           painter->drawText(x_pix + 2, 20 * h_scaling, str4);
           ruler_pen->setColor(small_ruler_color);
@@ -515,7 +515,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     for(x_pix=0; x_pix<w; x_pix++)
     {
-      if((ll_elapsed_time / (TIME_DIMENSION * 600))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 600)))
+      if((ll_elapsed_time / (TIME_FIXP_SCALING * 600))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 600)))
       {
         if(printing)
         {
@@ -527,7 +527,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
       }
 
-      if(((ll_elapsed_time / (TIME_DIMENSION * 3600))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 3600))) ||
+      if(((ll_elapsed_time / (TIME_FIXP_SCALING * 3600))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 3600))) ||
         ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
       {
         if(x_pix)
@@ -537,15 +537,15 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           painter->drawLine(x_pix, 0, x_pix, h);
           if(ll_elapsed_time < 0LL)
           {
-//            printf("ll_elapsed_time: %lli    time_ppixel: %lli    result:%i\n", ll_elapsed_time, time_ppixel, ((int)((ll_elapsed_time - time_ppixel) / TIME_DIMENSION)) % 3600);
+//            printf("ll_elapsed_time: %lli    time_ppixel: %lli    result:%i\n", ll_elapsed_time, time_ppixel, ((int)((ll_elapsed_time - time_ppixel) / TIME_FIXP_SCALING)) % 3600);
 
-            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / (TIME_DIMENSION * 3600))) % 24);
+            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / (TIME_FIXP_SCALING * 3600))) % 24);
           }
           else
           {
-//            printf("ll_elapsed_time: %lli    time_ppixel: %lli    result:%i\n", ll_elapsed_time, time_ppixel, ((int)((ll_elapsed_time + time_ppixel) / TIME_DIMENSION)) % 3600);
+//            printf("ll_elapsed_time: %lli    time_ppixel: %lli    result:%i\n", ll_elapsed_time, time_ppixel, ((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) % 3600);
 
-            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 3600))) % 24);
+            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 3600))) % 24);
           }
           painter->drawText(x_pix + 2, 20 * h_scaling, str4);
           ruler_pen->setColor(small_ruler_color);
@@ -572,7 +572,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     for(x_pix=0; x_pix<w; x_pix++)
     {
-      if((ll_elapsed_time / (TIME_DIMENSION * 3600))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 3600)))
+      if((ll_elapsed_time / (TIME_FIXP_SCALING * 3600))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 3600)))
       {
         if(printing)
         {
@@ -584,7 +584,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
       }
 
-      if(((ll_elapsed_time / (TIME_DIMENSION * 86400))!=((ll_elapsed_time + time_ppixel) / (TIME_DIMENSION * 86400))) ||
+      if(((ll_elapsed_time / (TIME_FIXP_SCALING * 86400))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 86400))) ||
          ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
      {
         if(x_pix)
@@ -758,7 +758,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           break;
         }
 
-        if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_DIMENSION)) && (!annot->hided))
+        if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_FIXP_SCALING)) && (!annot->hided))
         {
           if(mainwindow->show_annot_markers)
           {
@@ -825,25 +825,25 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               if(l_tmp < 0LL)
               {
                 snprintf(string, (MAX_ANNOTATION_LEN + 32) / 2, "-%i:%02i:%02i.%04i",
-                        (int)(((-(l_tmp)) / TIME_DIMENSION)/ 3600LL),
-                        (int)((((-(l_tmp)) / TIME_DIMENSION) % 3600LL) / 60LL),
-                        (int)(((-(l_tmp)) / TIME_DIMENSION) % 60LL),
-                        (int)((((-(l_tmp)) % TIME_DIMENSION) / 1000LL)));
+                        (int)(((-(l_tmp)) / TIME_FIXP_SCALING)/ 3600LL),
+                        (int)((((-(l_tmp)) / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                        (int)(((-(l_tmp)) / TIME_FIXP_SCALING) % 60LL),
+                        (int)((((-(l_tmp)) % TIME_FIXP_SCALING) / 1000LL)));
               }
               else
               {
                 snprintf(string, (MAX_ANNOTATION_LEN + 32) / 2, "%i:%02i:%02i.%04i",
-                        (int)((l_tmp / TIME_DIMENSION)/ 3600LL),
-                        (int)(((l_tmp / TIME_DIMENSION) % 3600LL) / 60LL),
-                        (int)((l_tmp / TIME_DIMENSION) % 60LL),
-                        (int)(((l_tmp % TIME_DIMENSION) / 1000LL)));
+                        (int)((l_tmp / TIME_FIXP_SCALING)/ 3600LL),
+                        (int)(((l_tmp / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                        (int)((l_tmp / TIME_FIXP_SCALING) % 60LL),
+                        (int)(((l_tmp % TIME_FIXP_SCALING) / 1000LL)));
               }
             }
             else
             {
               if(mainwindow->viewtime_indicator_type == VIEWTIME_INDICATOR_TYPE_DATE_REAL_RELATIVE)
               {
-                utc_to_date_time((annot->onset / TIME_DIMENSION) + mainwindow->edfheaderlist[i]->utc_starttime, &date_time_str);
+                utc_to_date_time((annot->onset / TIME_FIXP_SCALING) + mainwindow->edfheaderlist[i]->utc_starttime, &date_time_str);
 
                 snprintf(string, 32, "%2i-%s ", date_time_str.day, date_time_str.month_str);
               }
@@ -853,10 +853,10 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               }
 
               snprintf(string + strlen(string), MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%04i",
-                      (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION)/ 3600) % 24),
-                      (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION) % 3600) / 60),
-                      (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_DIMENSION) % 60),
-                      (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) % TIME_DIMENSION) / 1000LL));
+                      (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_FIXP_SCALING)/ 3600) % 24),
+                      (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_FIXP_SCALING) % 3600) / 60),
+                      (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_FIXP_SCALING) % 60),
+                      (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) % TIME_FIXP_SCALING) / 1000LL));
             }
 
             remove_trailing_zeros(string);
@@ -920,7 +920,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             {
               if(mainwindow->toolbar_stats.sz > 0)
               {
-                mainwindow->toolbar_stats.ival[mainwindow->toolbar_stats.sz - 1] = ((double)(annot->onset - l_tmp2)) / (double)TIME_DIMENSION;
+                mainwindow->toolbar_stats.ival[mainwindow->toolbar_stats.sz - 1] = ((double)(annot->onset - l_tmp2)) / (double)TIME_FIXP_SCALING;
               }
 
               l_tmp2 = annot->onset;
@@ -1072,10 +1072,10 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         signalcomp[i]->physdimension);
         painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 40.0) * printsize_y_factor), string);
         snprintf(string, 128, "%2i:%02i:%02i.%04i",
-                        (int)(((crosshair_1.time / TIME_DIMENSION)/ 3600LL) % 24LL),
-                        (int)(((crosshair_1.time / TIME_DIMENSION) % 3600LL) / 60LL),
-                        (int)((crosshair_1.time / TIME_DIMENSION) % 60LL),
-                        (int)((crosshair_1.time % TIME_DIMENSION) / 1000LL));
+                        (int)(((crosshair_1.time / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                        (int)(((crosshair_1.time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                        (int)((crosshair_1.time / TIME_FIXP_SCALING) % 60LL),
+                        (int)((crosshair_1.time % TIME_FIXP_SCALING) / 1000LL));
         painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 25.0) * printsize_y_factor), string);
         if(signalcomp[i]->alias[0] != 0)
         {
@@ -1105,21 +1105,21 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         signalcomp[i]->physdimension);
         painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - (10 + (font_pixel_height * 2)), string);
         snprintf(string, 128, "%2i:%02i:%02i.%04i",
-                        (int)(((crosshair_1.time / TIME_DIMENSION)/ 3600LL) % 24LL),
-                        (int)(((crosshair_1.time / TIME_DIMENSION) % 3600LL) / 60LL),
-                        (int)((crosshair_1.time / TIME_DIMENSION) % 60LL),
-                        (int)((crosshair_1.time % TIME_DIMENSION) / 1000LL));
-        if(crosshair_1.time_relative >= TIME_DIMENSION)
+                        (int)(((crosshair_1.time / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                        (int)(((crosshair_1.time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                        (int)((crosshair_1.time / TIME_FIXP_SCALING) % 60LL),
+                        (int)((crosshair_1.time % TIME_FIXP_SCALING) / 1000LL));
+        if(crosshair_1.time_relative >= TIME_FIXP_SCALING)
         {
           snprintf(string + strlen(string), 32, " (%i:%02i:%02i.%04i)",
-                  (int)((crosshair_1.time_relative / TIME_DIMENSION)/ 3600LL),
-                  (int)(((crosshair_1.time_relative / TIME_DIMENSION) % 3600LL) / 60LL),
-                  (int)((crosshair_1.time_relative / TIME_DIMENSION) % 60LL),
-                  (int)((crosshair_1.time_relative % TIME_DIMENSION) / 1000LL));
+                  (int)((crosshair_1.time_relative / TIME_FIXP_SCALING)/ 3600LL),
+                  (int)(((crosshair_1.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                  (int)((crosshair_1.time_relative / TIME_FIXP_SCALING) % 60LL),
+                  (int)((crosshair_1.time_relative % TIME_FIXP_SCALING) / 1000LL));
         }
         else
         {
-          convert_to_metric_suffix(str3, (double)crosshair_1.time_relative / TIME_DIMENSION, 3, 128);
+          convert_to_metric_suffix(str3, (double)crosshair_1.time_relative / TIME_FIXP_SCALING, 3, 128);
 
           snprintf(string + strlen(string), 32, " (%.26sS)", str3);
         }
@@ -1154,10 +1154,10 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         signalcomp[i]->physdimension);
         painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 70.0) * printsize_y_factor), string);
         snprintf(string, 128, "%2i:%02i:%02i.%04i",
-                        (int)(((crosshair_2.time / TIME_DIMENSION)/ 3600LL) % 24LL),
-                        (int)(((crosshair_2.time / TIME_DIMENSION) % 3600LL) / 60LL),
-                        (int)((crosshair_2.time / TIME_DIMENSION) % 60LL),
-                        (int)((crosshair_2.time % TIME_DIMENSION) / 1000LL));
+                        (int)(((crosshair_2.time / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                        (int)(((crosshair_2.time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                        (int)((crosshair_2.time / TIME_FIXP_SCALING) % 60LL),
+                        (int)((crosshair_2.time % TIME_FIXP_SCALING) / 1000LL));
         painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 55.0) * printsize_y_factor), string);
         snprintf(string, 128, "delta %+f %s",
                         crosshair_2.value - crosshair_1.value,
@@ -1166,10 +1166,10 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         l_time = crosshair_2.time - crosshair_1.time;
         if(l_time<0) l_time = -l_time;
         snprintf(string, 128, "delta %i:%02i:%02i.%04i",
-                        (int)((l_time / TIME_DIMENSION)/ 3600LL),
-                        (int)(((l_time / TIME_DIMENSION) % 3600LL) / 60LL),
-                        (int)((l_time / TIME_DIMENSION) % 60LL),
-                        (int)((l_time % TIME_DIMENSION) / 1000LL));
+                        (int)((l_time / TIME_FIXP_SCALING)/ 3600LL),
+                        (int)(((l_time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                        (int)((l_time / TIME_FIXP_SCALING) % 60LL),
+                        (int)((l_time % TIME_FIXP_SCALING) / 1000LL));
         painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 25.0) * printsize_y_factor), string);
         if(signalcomp[i]->alias[0] != 0)
         {
@@ -1199,21 +1199,21 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         signalcomp[i]->physdimension);
         painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (font_pixel_height * 4)), string);
         snprintf(string, 128, "%2i:%02i:%02i.%04i",
-                        (int)(((crosshair_2.time / TIME_DIMENSION)/ 3600LL) % 24LL),
-                        (int)(((crosshair_2.time / TIME_DIMENSION) % 3600LL) / 60LL),
-                        (int)((crosshair_2.time / TIME_DIMENSION) % 60LL),
-                        (int)((crosshair_2.time % TIME_DIMENSION) / 1000LL));
-        if(crosshair_2.time_relative >= TIME_DIMENSION)
+                        (int)(((crosshair_2.time / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                        (int)(((crosshair_2.time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                        (int)((crosshair_2.time / TIME_FIXP_SCALING) % 60LL),
+                        (int)((crosshair_2.time % TIME_FIXP_SCALING) / 1000LL));
+        if(crosshair_2.time_relative >= TIME_FIXP_SCALING)
         {
           snprintf(string + strlen(string), 32, " (%i:%02i:%02i.%04i)",
-                  (int)((crosshair_2.time_relative / TIME_DIMENSION)/ 3600LL),
-                  (int)(((crosshair_2.time_relative / TIME_DIMENSION) % 3600LL) / 60LL),
-                  (int)((crosshair_2.time_relative / TIME_DIMENSION) % 60LL),
-                  (int)((crosshair_2.time_relative % TIME_DIMENSION) / 1000LL));
+                  (int)((crosshair_2.time_relative / TIME_FIXP_SCALING)/ 3600LL),
+                  (int)(((crosshair_2.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                  (int)((crosshair_2.time_relative / TIME_FIXP_SCALING) % 60LL),
+                  (int)((crosshair_2.time_relative % TIME_FIXP_SCALING) / 1000LL));
         }
         else
         {
-          convert_to_metric_suffix(str3, (double)crosshair_2.time_relative / TIME_DIMENSION, 3, 128);
+          convert_to_metric_suffix(str3, (double)crosshair_2.time_relative / TIME_FIXP_SCALING, 3, 128);
 
           snprintf(string + strlen(string), 32, " (%.26sS)", str3);
         }
@@ -1225,17 +1225,17 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (font_pixel_height * 2)), string);
         l_time = crosshair_2.time - crosshair_1.time;
         if(l_time<0) l_time = -l_time;
-        if(l_time >= TIME_DIMENSION)
+        if(l_time >= TIME_FIXP_SCALING)
         {
           snprintf(string, 128, "delta %i:%02i:%02i.%04i",
-                          (int)((l_time / TIME_DIMENSION)/ 3600LL),
-                          (int)(((l_time / TIME_DIMENSION) % 3600LL) / 60LL),
-                          (int)((l_time / TIME_DIMENSION) % 60LL),
-                          (int)((l_time % TIME_DIMENSION) / 1000LL));
+                          (int)((l_time / TIME_FIXP_SCALING)/ 3600LL),
+                          (int)(((l_time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                          (int)((l_time / TIME_FIXP_SCALING) % 60LL),
+                          (int)((l_time % TIME_FIXP_SCALING) / 1000LL));
         }
         else
         {
-          convert_to_metric_suffix(str3, (double)l_time / TIME_DIMENSION, 3, 128);
+          convert_to_metric_suffix(str3, (double)l_time / TIME_FIXP_SCALING, 3, 128);
 
           snprintf(string, 32, "delta %.24sS", str3);
         }
@@ -1335,7 +1335,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
     else
     {
-      if((mainwindow->pagetime >= (TIME_DIMENSION / 10)) && (mainwindow->pagetime < (3600LL * TIME_DIMENSION)))
+      if((mainwindow->pagetime >= (TIME_FIXP_SCALING / 10)) && (mainwindow->pagetime < (3600LL * TIME_FIXP_SCALING)))
       {
         for(int r=0; r<64; r++)
         {
@@ -1343,20 +1343,20 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
           if(mainwindow->pagetime_string[r] == '(')
           {
-            if(mainwindow->pagetime > (600LL * TIME_DIMENSION))
+            if(mainwindow->pagetime > (600LL * TIME_FIXP_SCALING))
             {
               snprintf(mainwindow->pagetime_string + r, 64, "(%i mm/min)",
-                      (int)((w * mainwindow->x_pixelsizefactor * 600) / (((double)mainwindow->pagetime) / TIME_DIMENSION) + 0.5));
+                      (int)((w * mainwindow->x_pixelsizefactor * 600) / (((double)mainwindow->pagetime) / TIME_FIXP_SCALING) + 0.5));
             }
-            else if(mainwindow->pagetime >= (60LL * TIME_DIMENSION))
+            else if(mainwindow->pagetime >= (60LL * TIME_FIXP_SCALING))
               {
                 snprintf(mainwindow->pagetime_string + r, 64, "(%.1f mm/sec)",
-                        (w * mainwindow->x_pixelsizefactor * 10) / (((double)mainwindow->pagetime) / TIME_DIMENSION));
+                        (w * mainwindow->x_pixelsizefactor * 10) / (((double)mainwindow->pagetime) / TIME_FIXP_SCALING));
               }
               else
               {
                 snprintf(mainwindow->pagetime_string + r, 64, "(%i mm/sec)",
-                        (int)((w * mainwindow->x_pixelsizefactor * 10) / (((double)mainwindow->pagetime) / TIME_DIMENSION) + 0.5));
+                        (int)((w * mainwindow->x_pixelsizefactor * 10) / (((double)mainwindow->pagetime) / TIME_FIXP_SCALING) + 0.5));
               }
 
             remove_trailing_zeros(mainwindow->pagetime_string);
@@ -1398,17 +1398,17 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
 
   if(floating_ruler_use_var_width)
   {
-    if((mainwindow->pagetime / (TIME_DIMENSION / 10LL)) < 2LL)
+    if((mainwindow->pagetime / (TIME_FIXP_SCALING / 10LL)) < 2LL)
     {
       h_use_exp = 1;
     }
   }
-  else if((mainwindow->pagetime / TIME_DIMENSION) < 2LL)
+  else if((mainwindow->pagetime / TIME_FIXP_SCALING) < 2LL)
     {
       h_use_exp = 1;
     }
 
-  if((mainwindow->pagetime / TIME_DIMENSION) > 60LL)
+  if((mainwindow->pagetime / TIME_FIXP_SCALING) > 60LL)
   {
     h_use_exp = 1;
   }
@@ -1426,7 +1426,7 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
   x_pos *= printsize_x_factor;
   y_pos *= printsize_y_factor;
 
-  pixels_per_second = ((double)w) / (((double)mainwindow->pagetime) / ((double)TIME_DIMENSION));
+  pixels_per_second = ((double)w) / (((double)mainwindow->pagetime) / ((double)TIME_FIXP_SCALING));
 
   h_size = 4.0 * painter_pixelsizefactor;
 

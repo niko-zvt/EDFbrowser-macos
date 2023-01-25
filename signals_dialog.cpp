@@ -509,7 +509,7 @@ void UI_Signalswindow::DisplayButtonClicked()
 
   if((i) && (mainwindow->files_open == 1) && (old_scomps == 0))
   {
-    if((mainwindow->signalcomp[0]->file_duration / TIME_DIMENSION) < 5)
+    if((mainwindow->signalcomp[0]->file_duration / TIME_FIXP_SCALING) < 5)
     {
       mainwindow->pagetime = mainwindow->signalcomp[0]->file_duration;
     }
@@ -764,15 +764,15 @@ void UI_Signalswindow::show_signals(int row)
   file_duration = mainwindow->edfheaderlist[row]->long_data_record_duration * mainwindow->edfheaderlist[row]->datarecords;
   snprintf(str, 256,
           "Duration:  %2i:%02i:%02i.%07i",
-          (int)((file_duration / TIME_DIMENSION) / 3600LL),
-          (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
-          (int)((file_duration / TIME_DIMENSION) % 60LL),
-          (int)(file_duration % TIME_DIMENSION));
+          (int)((file_duration / TIME_FIXP_SCALING) / 3600LL),
+          (int)(((file_duration / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+          (int)((file_duration / TIME_FIXP_SCALING) % 60LL),
+          (int)(file_duration % TIME_FIXP_SCALING));
   remove_trailing_zeros(str);
   label4->setText(str);
 
   utc_to_date_time(mainwindow->edfheaderlist[row]->utc_starttime +
-   ((file_duration + mainwindow->edfheaderlist[row]->starttime_offset) / TIME_DIMENSION), &date_time);
+   ((file_duration + mainwindow->edfheaderlist[row]->starttime_offset) / TIME_FIXP_SCALING), &date_time);
 
   date_time.month_str[0] += 32;
   date_time.month_str[1] += 32;
@@ -786,9 +786,9 @@ void UI_Signalswindow::show_signals(int row)
           date_time.minute,
           date_time.second);
 #ifdef Q_OS_WIN32
-  __mingw_snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_offset + file_duration) % TIME_DIMENSION);
+  __mingw_snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_offset + file_duration) % TIME_FIXP_SCALING);
 #else
-  snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_offset + file_duration) % TIME_DIMENSION);
+  snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_offset + file_duration) % TIME_FIXP_SCALING);
 #endif
   remove_trailing_zeros(str);
 

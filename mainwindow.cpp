@@ -528,77 +528,77 @@ void UI_Mainwindow::slider_moved(int value)
     new_viewtime *= value;
   }
 
-  if(pagetime >= (3600LL * TIME_DIMENSION))
+  if(pagetime >= (3600LL * TIME_FIXP_SCALING))
   {
-    tmp = new_viewtime % (360LL * TIME_DIMENSION);
+    tmp = new_viewtime % (360LL * TIME_FIXP_SCALING);
 
     new_viewtime -= tmp;
   }
-  else if(pagetime >= (1200LL * TIME_DIMENSION))
+  else if(pagetime >= (1200LL * TIME_FIXP_SCALING))
     {
-      tmp = new_viewtime % (120LL * TIME_DIMENSION);
+      tmp = new_viewtime % (120LL * TIME_FIXP_SCALING);
 
       new_viewtime -= tmp;
     }
-    else if(pagetime >= (300LL * TIME_DIMENSION))
+    else if(pagetime >= (300LL * TIME_FIXP_SCALING))
       {
-        tmp = new_viewtime % (30LL * TIME_DIMENSION);
+        tmp = new_viewtime % (30LL * TIME_FIXP_SCALING);
 
         new_viewtime -= tmp;
       }
-      else if(pagetime >= (60LL * TIME_DIMENSION))
+      else if(pagetime >= (60LL * TIME_FIXP_SCALING))
         {
-          tmp = new_viewtime % (6LL * TIME_DIMENSION);
+          tmp = new_viewtime % (6LL * TIME_FIXP_SCALING);
 
           new_viewtime -= tmp;
         }
-        else if(pagetime >= (30LL * TIME_DIMENSION))
+        else if(pagetime >= (30LL * TIME_FIXP_SCALING))
           {
-            tmp = new_viewtime % (3LL * TIME_DIMENSION);
+            tmp = new_viewtime % (3LL * TIME_FIXP_SCALING);
 
             new_viewtime -= tmp;
           }
-          else if(pagetime >= (20LL * TIME_DIMENSION))
+          else if(pagetime >= (20LL * TIME_FIXP_SCALING))
             {
-              tmp = new_viewtime % (2LL * TIME_DIMENSION);
+              tmp = new_viewtime % (2LL * TIME_FIXP_SCALING);
 
               new_viewtime -= tmp;
             }
-            else if(pagetime >= (10LL * TIME_DIMENSION))
+            else if(pagetime >= (10LL * TIME_FIXP_SCALING))
               {
-                tmp = new_viewtime % TIME_DIMENSION;
+                tmp = new_viewtime % TIME_FIXP_SCALING;
 
                 new_viewtime -= tmp;
               }
-              else if(pagetime >= TIME_DIMENSION)
+              else if(pagetime >= TIME_FIXP_SCALING)
                 {
-                  tmp = new_viewtime % (TIME_DIMENSION / 10LL);
+                  tmp = new_viewtime % (TIME_FIXP_SCALING / 10LL);
 
                   new_viewtime -= tmp;
                 }
-                else if(pagetime >= (TIME_DIMENSION / 10LL))
+                else if(pagetime >= (TIME_FIXP_SCALING / 10LL))
                   {
-                    tmp = new_viewtime % (TIME_DIMENSION / 100LL);
+                    tmp = new_viewtime % (TIME_FIXP_SCALING / 100LL);
 
                     new_viewtime -= tmp;
                   }
-                  else if(pagetime >= (TIME_DIMENSION / 100LL))
+                  else if(pagetime >= (TIME_FIXP_SCALING / 100LL))
                     {
-                      tmp = new_viewtime % (TIME_DIMENSION / 1000LL);
+                      tmp = new_viewtime % (TIME_FIXP_SCALING / 1000LL);
 
                       new_viewtime -= tmp;
                     }
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
-    video_player_seek((int)((new_viewtime + (pagetime / 2LL)) / TIME_DIMENSION));
+    video_player_seek((int)((new_viewtime + (pagetime / 2LL)) / TIME_FIXP_SCALING));
 
     return;
   }
 
   if(video_player->status == VIDEO_STATUS_PAUSED)
   {
-    video_player_seek((int)((new_viewtime + (pagetime / 2LL)) / TIME_DIMENSION));
+    video_player_seek((int)((new_viewtime + (pagetime / 2LL)) / TIME_FIXP_SCALING));
   }
 
   set_viewtime(new_viewtime);
@@ -667,7 +667,7 @@ void UI_Mainwindow::set_timesync(QAction *)
     {
       if(i!=sel_viewtime)
       {
-        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_DIMENSION) - edfheaderlist[i]->starttime_offset;
+        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING) - edfheaderlist[i]->starttime_offset;
       }
     }
   }
@@ -706,7 +706,7 @@ void UI_Mainwindow::set_timesync(int mode)
         {
           if(i!=sel_viewtime)
           {
-            edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_DIMENSION) - edfheaderlist[i]->starttime_offset;
+            edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING) - edfheaderlist[i]->starttime_offset;
           }
         }
       }
@@ -917,14 +917,14 @@ void UI_Mainwindow::jump_to_start()
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
-    video_player_seek((int)((pagetime / 2LL) / TIME_DIMENSION));
+    video_player_seek((int)((pagetime / 2LL) / TIME_FIXP_SCALING));
 
     return;
   }
 
   if(video_player->status == VIDEO_STATUS_PAUSED)
   {
-    video_player_seek((int)((pagetime / 2LL) / TIME_DIMENSION));
+    video_player_seek((int)((pagetime / 2LL) / TIME_FIXP_SCALING));
   }
 
   set_viewtime(0LL);
@@ -935,7 +935,7 @@ void UI_Mainwindow::jump_to_time_millisec(long long milliseconds)
 {
   if(!files_open)  return;
 
-  set_viewtime(milliseconds * (TIME_DIMENSION / 1000));
+  set_viewtime(milliseconds * (TIME_FIXP_SCALING / 1000));
 }
 
 
@@ -978,7 +978,7 @@ void UI_Mainwindow::set_viewtime(long long new_viewtime)
     {
       if(i!=sel_viewtime)
       {
-        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_DIMENSION);
+        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING);
       }
     }
   }
@@ -1170,14 +1170,14 @@ void UI_Mainwindow::former_page()
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - (pagetime / 2LL)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - (pagetime / 2LL)) / TIME_FIXP_SCALING));
 
     return;
   }
 
   if(video_player->status == VIDEO_STATUS_PAUSED)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - (pagetime / 2LL)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime - (pagetime / 2LL)) / TIME_FIXP_SCALING));
   }
 
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
@@ -1205,14 +1205,14 @@ void UI_Mainwindow::shift_page_left()
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) - (pagetime / 10)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) - (pagetime / 10)) / TIME_FIXP_SCALING));
 
     return;
   }
 
   if(video_player->status == VIDEO_STATUS_PAUSED)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) - (pagetime / 10)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) - (pagetime / 10)) / TIME_FIXP_SCALING));
   }
 
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
@@ -1240,14 +1240,14 @@ void UI_Mainwindow::shift_page_right()
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) + (pagetime / 10)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) + (pagetime / 10)) / TIME_FIXP_SCALING));
 
     return;
   }
 
   if(video_player->status == VIDEO_STATUS_PAUSED)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) + (pagetime / 10)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + (pagetime / 2LL) + (pagetime / 10)) / TIME_FIXP_SCALING));
   }
 
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
@@ -1357,14 +1357,14 @@ void UI_Mainwindow::next_page()
 
   if(video_player->status == VIDEO_STATUS_PLAYING)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + pagetime + (pagetime / 2LL)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + pagetime + (pagetime / 2LL)) / TIME_FIXP_SCALING));
 
     return;
   }
 
   if(video_player->status == VIDEO_STATUS_PAUSED)
   {
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + pagetime + (pagetime / 2LL)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + pagetime + (pagetime / 2LL)) / TIME_FIXP_SCALING));
   }
 
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
@@ -1394,7 +1394,7 @@ void UI_Mainwindow::next_epoch(long long epoch_len)
   {
     if(epoch_len < 2)  return;
 
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + epoch_len + (epoch_len / 2LL)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + epoch_len + (epoch_len / 2LL)) / TIME_FIXP_SCALING));
 
     return;
   }
@@ -1403,7 +1403,7 @@ void UI_Mainwindow::next_epoch(long long epoch_len)
   {
     if(epoch_len < 2)  return;
 
-    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + epoch_len + (epoch_len / 2LL)) / TIME_DIMENSION));
+    video_player_seek((int)((edfheaderlist[sel_viewtime]->viewtime + epoch_len + (epoch_len / 2LL)) / TIME_FIXP_SCALING));
   }
 
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
@@ -2085,7 +2085,7 @@ void UI_Mainwindow::open_new_file()
 
       if(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)
       {
-        edfheaderlist[files_open]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset - edfheaderlist[files_open]->starttime_offset - ((edfheaderlist[files_open]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_DIMENSION);
+        edfheaderlist[files_open]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset - edfheaderlist[files_open]->starttime_offset - ((edfheaderlist[files_open]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING);
       }
 
       if(viewtime_sync==VIEWTIME_USER_DEF_SYNCED)
@@ -3045,7 +3045,7 @@ void UI_Mainwindow::close_all_files()
 
   sel_viewtime = 0;
 
-  pagetime = 10 * TIME_DIMENSION;
+  pagetime = 10 * TIME_FIXP_SCALING;
 
   timescale_doubler = 10;
 
@@ -3060,7 +3060,7 @@ void UI_Mainwindow::close_all_files()
   zoomhistory->history_size_head = 0;
   for(i=0; i<MAXZOOMHISTORY; i++)
   {
-    zoomhistory->pagetime[i] = 10 * TIME_DIMENSION;
+    zoomhistory->pagetime[i] = 10 * TIME_FIXP_SCALING;
     for(j=0; j<MAXFILES; j++)
     {
       zoomhistory->viewtime[i][j] = 0;
@@ -3105,7 +3105,7 @@ void UI_Mainwindow::show_about_dialog()
 
 void UI_Mainwindow::page_10mmmin()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * 60;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING * 60;
 
   setup_viewbuf();
 }
@@ -3113,7 +3113,7 @@ void UI_Mainwindow::page_10mmmin()
 
 void UI_Mainwindow::page_15mmmin()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * 40;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING * 40;
 
   setup_viewbuf();
 }
@@ -3121,7 +3121,7 @@ void UI_Mainwindow::page_15mmmin()
 
 void UI_Mainwindow::page_30mmmin()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * 20;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING * 20;
 
   setup_viewbuf();
 }
@@ -3129,7 +3129,7 @@ void UI_Mainwindow::page_30mmmin()
 
 void UI_Mainwindow::page_1mmsec()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * 10;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING * 10;
 
   setup_viewbuf();
 }
@@ -3137,7 +3137,7 @@ void UI_Mainwindow::page_1mmsec()
 
 void UI_Mainwindow::page_2mmsec()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * 5;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING * 5;
 
   setup_viewbuf();
 }
@@ -3145,7 +3145,7 @@ void UI_Mainwindow::page_2mmsec()
 
 void UI_Mainwindow::page_5mmsec()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * 2;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING * 2;
 
   setup_viewbuf();
 }
@@ -3153,7 +3153,7 @@ void UI_Mainwindow::page_5mmsec()
 
 void UI_Mainwindow::page_10mmsec()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING;
 
   setup_viewbuf();
 }
@@ -3161,7 +3161,7 @@ void UI_Mainwindow::page_10mmsec()
 
 void UI_Mainwindow::page_15mmsec()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 1.5;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING / 1.5;
 
   setup_viewbuf();
 }
@@ -3169,7 +3169,7 @@ void UI_Mainwindow::page_15mmsec()
 
 void UI_Mainwindow::page_25mmsec()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 2.5;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING / 2.5;
 
   setup_viewbuf();
 }
@@ -3177,7 +3177,7 @@ void UI_Mainwindow::page_25mmsec()
 
 void UI_Mainwindow::page_30mmsec()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 3.0;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING / 3.0;
 
   setup_viewbuf();
 }
@@ -3185,7 +3185,7 @@ void UI_Mainwindow::page_30mmsec()
 
 void UI_Mainwindow::page_50mmsec()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 5.0;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING / 5.0;
 
   setup_viewbuf();
 }
@@ -3193,7 +3193,7 @@ void UI_Mainwindow::page_50mmsec()
 
 void UI_Mainwindow::page_60mmsec()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 6.0;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING / 6.0;
 
   setup_viewbuf();
 }
@@ -3201,7 +3201,7 @@ void UI_Mainwindow::page_60mmsec()
 
 void UI_Mainwindow::page_120mmsec()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 12.0;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING / 12.0;
 
   setup_viewbuf();
 }
@@ -3209,7 +3209,7 @@ void UI_Mainwindow::page_120mmsec()
 
 void UI_Mainwindow::page_250mmsec()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 25.0;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING / 25.0;
 
   setup_viewbuf();
 }
@@ -3217,7 +3217,7 @@ void UI_Mainwindow::page_250mmsec()
 
 void UI_Mainwindow::page_500mmsec()
 {
-  pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION / 50.0;
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING / 50.0;
 
   setup_viewbuf();
 }
@@ -3244,16 +3244,16 @@ void UI_Mainwindow::set_page_div2()
 
 //       if(viewtime_sync!=VIEWTIME_USER_DEF_SYNCED)
 //       {
-//         l_tmp = edfheaderlist[i]->viewtime % TIME_DIMENSION;
+//         l_tmp = edfheaderlist[i]->viewtime % TIME_FIXP_SCALING;
 //
 //         if(l_tmp < trshld)
 //         {
 //           edfheaderlist[i]->viewtime -= l_tmp;
 //         }
 //
-//         if(l_tmp > (TIME_DIMENSION - trshld))
+//         if(l_tmp > (TIME_FIXP_SCALING - trshld))
 //         {
-//           edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
+//           edfheaderlist[i]->viewtime += (TIME_FIXP_SCALING - l_tmp);
 //         }
 //       }
     }
@@ -3270,16 +3270,16 @@ void UI_Mainwindow::set_page_div2()
       edfheaderlist[sel_viewtime]->viewtime += (pagetime / 4);
     }
 
-//     l_tmp = edfheaderlist[sel_viewtime]->viewtime % TIME_DIMENSION;
+//     l_tmp = edfheaderlist[sel_viewtime]->viewtime % TIME_FIXP_SCALING;
 //
 //     if(l_tmp < trshld)
 //     {
 //       edfheaderlist[sel_viewtime]->viewtime -= l_tmp;
 //     }
 //
-//     if(l_tmp > (TIME_DIMENSION - trshld))
+//     if(l_tmp > (TIME_FIXP_SCALING - trshld))
 //     {
-//       edfheaderlist[sel_viewtime]->viewtime += (TIME_DIMENSION - l_tmp);
+//       edfheaderlist[sel_viewtime]->viewtime += (TIME_FIXP_SCALING - l_tmp);
 //     }
   }
 
@@ -3330,16 +3330,16 @@ void UI_Mainwindow::set_page_mult2()
 
 //       if(viewtime_sync!=VIEWTIME_USER_DEF_SYNCED)
 //       {
-//         l_tmp = edfheaderlist[i]->viewtime % TIME_DIMENSION;
+//         l_tmp = edfheaderlist[i]->viewtime % TIME_FIXP_SCALING;
 //
 //         if(l_tmp < trshld)
 //         {
 //           edfheaderlist[i]->viewtime -= l_tmp;
 //         }
 //
-//         if(l_tmp > (TIME_DIMENSION - trshld))
+//         if(l_tmp > (TIME_FIXP_SCALING - trshld))
 //         {
-//           edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
+//           edfheaderlist[i]->viewtime += (TIME_FIXP_SCALING - l_tmp);
 //         }
 //       }
     }
@@ -3356,16 +3356,16 @@ void UI_Mainwindow::set_page_mult2()
       edfheaderlist[sel_viewtime]->viewtime -= (pagetime / 2);
     }
 
-//     l_tmp = edfheaderlist[sel_viewtime]->viewtime % TIME_DIMENSION;
+//     l_tmp = edfheaderlist[sel_viewtime]->viewtime % TIME_FIXP_SCALING;
 //
 //     if(l_tmp < trshld)
 //     {
 //       edfheaderlist[sel_viewtime]->viewtime -= l_tmp;
 //     }
 //
-//     if(l_tmp > (TIME_DIMENSION - trshld))
+//     if(l_tmp > (TIME_FIXP_SCALING - trshld))
 //     {
-//       edfheaderlist[sel_viewtime]->viewtime += (TIME_DIMENSION - l_tmp);
+//       edfheaderlist[sel_viewtime]->viewtime += (TIME_FIXP_SCALING - l_tmp);
 //     }
   }
 
@@ -3399,134 +3399,134 @@ void UI_Mainwindow::set_display_time(QAction *action)
 {
   if(action==page_10u)
   {
-    pagetime = TIME_DIMENSION / 100000;
+    pagetime = TIME_FIXP_SCALING / 100000;
 
     timescale_doubler = 10;
   }
   else if(action==page_20u)
   {
-    pagetime = TIME_DIMENSION / 50000;
+    pagetime = TIME_FIXP_SCALING / 50000;
 
     timescale_doubler = 20;
   }
   else if(action==page_50u)
   {
-    pagetime = TIME_DIMENSION / 20000;
+    pagetime = TIME_FIXP_SCALING / 20000;
 
     timescale_doubler = 50;
   }
   else if(action==page_100u)
   {
-    pagetime = TIME_DIMENSION / 10000;
+    pagetime = TIME_FIXP_SCALING / 10000;
 
     timescale_doubler = 10;
   }
   else if(action==page_200u)
   {
-    pagetime = TIME_DIMENSION / 5000;
+    pagetime = TIME_FIXP_SCALING / 5000;
 
     timescale_doubler = 20;
   }
   else if(action==page_500u)
   {
-    pagetime = TIME_DIMENSION / 2000;
+    pagetime = TIME_FIXP_SCALING / 2000;
 
     timescale_doubler = 50;
   }
   else if(action==page_1m)
   {
-    pagetime = TIME_DIMENSION / 1000;
+    pagetime = TIME_FIXP_SCALING / 1000;
 
     timescale_doubler = 10;
   }
   else if(action==page_2m)
   {
-    pagetime = TIME_DIMENSION / 500;
+    pagetime = TIME_FIXP_SCALING / 500;
 
     timescale_doubler = 20;
   }
   else if(action==page_5m)
   {
-    pagetime = TIME_DIMENSION / 200;
+    pagetime = TIME_FIXP_SCALING / 200;
 
     timescale_doubler = 50;
   }
   else if(action==page_10m)
   {
-    pagetime = TIME_DIMENSION / 100;
+    pagetime = TIME_FIXP_SCALING / 100;
 
     timescale_doubler = 10;
   }
   else if(action==page_20m)
   {
-    pagetime = TIME_DIMENSION / 50;
+    pagetime = TIME_FIXP_SCALING / 50;
 
     timescale_doubler = 20;
   }
   else if(action==page_50m)
   {
-    pagetime = TIME_DIMENSION / 20;
+    pagetime = TIME_FIXP_SCALING / 20;
 
     timescale_doubler = 50;
   }
   else if(action==page_100m)
   {
-    pagetime = TIME_DIMENSION / 10;
+    pagetime = TIME_FIXP_SCALING / 10;
 
     timescale_doubler = 10;
   }
   else if(action==page_200m)
   {
-    pagetime = TIME_DIMENSION / 5;
+    pagetime = TIME_FIXP_SCALING / 5;
 
     timescale_doubler = 20;
   }
   else if(action==page_500m)
   {
-    pagetime = TIME_DIMENSION / 2;
+    pagetime = TIME_FIXP_SCALING / 2;
 
     timescale_doubler = 50;
   }
   else if(action==page_1)
   {
-    pagetime = TIME_DIMENSION;
+    pagetime = TIME_FIXP_SCALING;
 
     timescale_doubler = 10;
   }
   else if(action==page_2)
   {
-    pagetime = TIME_DIMENSION * 2;
+    pagetime = TIME_FIXP_SCALING * 2;
 
     timescale_doubler = 20;
   }
   else if(action==page_5)
   {
-    pagetime = TIME_DIMENSION * 5;
+    pagetime = TIME_FIXP_SCALING * 5;
 
     timescale_doubler = 50;
   }
   else if(action==page_10)
   {
-    pagetime = TIME_DIMENSION * 10;
+    pagetime = TIME_FIXP_SCALING * 10;
 
     timescale_doubler = 10;
   }
-  else if(action==page_15)    pagetime = TIME_DIMENSION * 15;
+  else if(action==page_15)    pagetime = TIME_FIXP_SCALING * 15;
   else if(action==page_20)
   {
-    pagetime = TIME_DIMENSION * 20;
+    pagetime = TIME_FIXP_SCALING * 20;
 
     timescale_doubler = 20;
   }
-  else if(action==page_30)    pagetime = TIME_DIMENSION * 30;
-  else if(action==page_60)    pagetime = TIME_DIMENSION * 60;
-  else if(action==page_300)   pagetime = TIME_DIMENSION * 300;
-  else if(action==page_1200)  pagetime = TIME_DIMENSION * 1200;
-  else if(action==page_3600)  pagetime = TIME_DIMENSION * 3600;
-  else if(action==page_8h)    pagetime = TIME_DIMENSION * 3600 * 8;
-  else if(action==page_12h)   pagetime = TIME_DIMENSION * 3600 * 12;
-  else if(action==page_24h)   pagetime = TIME_DIMENSION * 3600 * 24;
-  else if(action==page_48h)   pagetime = TIME_DIMENSION * 3600 * 48;
+  else if(action==page_30)    pagetime = TIME_FIXP_SCALING * 30;
+  else if(action==page_60)    pagetime = TIME_FIXP_SCALING * 60;
+  else if(action==page_300)   pagetime = TIME_FIXP_SCALING * 300;
+  else if(action==page_1200)  pagetime = TIME_FIXP_SCALING * 1200;
+  else if(action==page_3600)  pagetime = TIME_FIXP_SCALING * 3600;
+  else if(action==page_8h)    pagetime = TIME_FIXP_SCALING * 3600 * 8;
+  else if(action==page_12h)   pagetime = TIME_FIXP_SCALING * 3600 * 12;
+  else if(action==page_24h)   pagetime = TIME_FIXP_SCALING * 3600 * 24;
+  else if(action==page_48h)   pagetime = TIME_FIXP_SCALING * 3600 * 48;
 
   setup_viewbuf();
 }
@@ -3579,7 +3579,7 @@ void UI_Mainwindow::set_display_time_whole_rec()
     {
       if(i!=sel_viewtime)
       {
-        edfheaderlist[i]->viewtime = ((edfheaderlist[sel_viewtime]->utc_starttime - edfheaderlist[i]->utc_starttime) * TIME_DIMENSION) + edfheaderlist[sel_viewtime]->starttime_offset - - edfheaderlist[i]->starttime_offset;
+        edfheaderlist[i]->viewtime = ((edfheaderlist[sel_viewtime]->utc_starttime - edfheaderlist[i]->utc_starttime) * TIME_FIXP_SCALING) + edfheaderlist[sel_viewtime]->starttime_offset - - edfheaderlist[i]->starttime_offset;
       }
     }
   }
@@ -4206,7 +4206,7 @@ long long UI_Mainwindow::get_long_time(char *str)
 
   if(hasdot)
   {
-    radix = TIME_DIMENSION;
+    radix = TIME_FIXP_SCALING;
 
     for(i=dotposition-1; i>=0; i--)
     {
@@ -4214,7 +4214,7 @@ long long UI_Mainwindow::get_long_time(char *str)
         radix *= 10;
     }
 
-    radix = TIME_DIMENSION / 10;
+    radix = TIME_FIXP_SCALING / 10;
 
     for(i=dotposition+1; i<len; i++)
     {
@@ -4224,7 +4224,7 @@ long long UI_Mainwindow::get_long_time(char *str)
   }
   else
   {
-    radix = TIME_DIMENSION;
+    radix = TIME_FIXP_SCALING;
 
     for(i=len-1; i>=0; i--)
     {

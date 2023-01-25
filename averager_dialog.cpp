@@ -245,8 +245,8 @@ void UI_AveragerWindow::startButtonClicked()
   time1 = timeEdit1->time();
   time2 = timeEdit2->time();
 
-  l_time1 = (((time1.hour() * 3600) + (time1.minute() * 60) + (time1.second())) * TIME_DIMENSION) + (time1.msec() * TIME_DIMENSION / 1000LL) + (day_spinbox1->value() * 86400LL * TIME_DIMENSION);
-  l_time2 = (((time2.hour() * 3600) + (time2.minute() * 60) + (time2.second())) * TIME_DIMENSION) + (time2.msec() * TIME_DIMENSION / 1000LL) + (day_spinbox2->value() * 86400LL * TIME_DIMENSION);
+  l_time1 = (((time1.hour() * 3600) + (time1.minute() * 60) + (time1.second())) * TIME_FIXP_SCALING) + (time1.msec() * TIME_FIXP_SCALING / 1000LL) + (day_spinbox1->value() * 86400LL * TIME_FIXP_SCALING);
+  l_time2 = (((time2.hour() * 3600) + (time2.minute() * 60) + (time2.second())) * TIME_FIXP_SCALING) + (time2.msec() * TIME_FIXP_SCALING / 1000LL) + (day_spinbox2->value() * 86400LL * TIME_FIXP_SCALING);
 
   if(l_time1 >= l_time2)
   {
@@ -271,7 +271,7 @@ void UI_AveragerWindow::startButtonClicked()
 
   backup_timescale = mainwindow->pagetime;
 
-  mainwindow->pagetime = avg_periodspinbox->value() * (TIME_DIMENSION / 1000LL);
+  mainwindow->pagetime = avg_periodspinbox->value() * (TIME_FIXP_SCALING / 1000LL);
 
   mainwindow->setup_viewbuf();
 
@@ -751,9 +751,9 @@ void UI_AveragerWindow::set_end_button_clicked()
 
 void UI_AveragerWindow::set_display_range_button_clicked()
 {
-  long long starttime = edf_hdr->viewtime / TIME_DIMENSION;
+  long long starttime = edf_hdr->viewtime / TIME_FIXP_SCALING;
 
-  long long endtime = (edf_hdr->viewtime + mainwindow->pagetime) / TIME_DIMENSION;
+  long long endtime = (edf_hdr->viewtime + mainwindow->pagetime) / TIME_FIXP_SCALING;
 
   time1.setHMS((starttime / 3600) % 24, (starttime % 3600) / 60, starttime % 60, 0);
 

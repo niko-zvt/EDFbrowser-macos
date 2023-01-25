@@ -1185,7 +1185,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       return;
     }
     timescale = atof(result);
-    timescale /= TIME_DIMENSION;
+    timescale /= TIME_FIXP_SCALING;
     snprintf(composition_txt, 2048, "Timescale: %f seconds", timescale);
     remove_trailing_zeros(composition_txt);
     parentItem->appendRow(new QStandardItem(composition_txt));

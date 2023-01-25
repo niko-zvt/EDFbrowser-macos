@@ -403,7 +403,7 @@ void UI_ZScoreWindow::startButtonClicked()
 
   smp_per_record = hdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
 
-  dftblocksize = ((long long)smp_per_record * (ZSCORE_EPOCH_LEN * TIME_DIMENSION)) / hdr->long_data_record_duration;
+  dftblocksize = ((long long)smp_per_record * (ZSCORE_EPOCH_LEN * TIME_FIXP_SCALING)) / hdr->long_data_record_duration;
 
   if(dftblocksize < (ZSCORE_EPOCH_LEN * 100))
   {
@@ -417,7 +417,7 @@ void UI_ZScoreWindow::startButtonClicked()
 
   epochs = (hdr->datarecords * (long long)smp_per_record) / (long long)smpls_in_epoch;
 
-  samplefreq = (double)smp_per_record / ((double)hdr->long_data_record_duration / TIME_DIMENSION);
+  samplefreq = (double)smp_per_record / ((double)hdr->long_data_record_duration / TIME_FIXP_SCALING);
   if(dblcmp(samplefreq, 100.0) < 0)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency of the selected signal must be at least 100 Hz.");
@@ -986,7 +986,7 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
       {
         memset(&annotation, 0, sizeof(annotblck_t));
 
-        annotation.onset = i * zscore_page_len * 2LL * TIME_DIMENSION;
+        annotation.onset = i * zscore_page_len * 2LL * TIME_FIXP_SCALING;
         if(awake)
         {
           strlcpy(annotation.description, "Wake", MAX_ANNOTATION_LEN_II + 1);
@@ -1261,11 +1261,11 @@ void UI_ZScoreWindow::jumpButtonClicked()
 
   if(plot_type)
   {
-    onset = position * zscore_page_len * 2 * TIME_DIMENSION;
+    onset = position * zscore_page_len * 2 * TIME_FIXP_SCALING;
   }
   else
   {
-    onset = position * ZSCORE_EPOCH_LEN * TIME_DIMENSION;
+    onset = position * ZSCORE_EPOCH_LEN * TIME_FIXP_SCALING;
   }
 
   file_num = mainwindow->get_filenum(mainwindow->signalcomp[signalnr]->edfhdr);

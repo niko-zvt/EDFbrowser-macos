@@ -297,7 +297,7 @@ void UI_JumpMenuDialog::jumpbutton_pressed()
 
   milliseconds += ((long long)daybox1->value() * 86400000LL);
 
-  mainwindow->set_viewtime(milliseconds * (TIME_DIMENSION / 1000LL));
+  mainwindow->set_viewtime(milliseconds * (TIME_FIXP_SCALING / 1000LL));
 
   jump_dialog->close();
 }

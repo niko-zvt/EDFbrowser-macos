@@ -236,9 +236,9 @@ void UI_AnnotFilterWindow::apply_filter()
 
   filter_params->tmax = t2_val;
 
-  t_min = filter_params->tmin * (TIME_DIMENSION / 1000LL);
+  t_min = filter_params->tmin * (TIME_FIXP_SCALING / 1000LL);
 
-  t_max = filter_params->tmax * (TIME_DIMENSION / 1000LL);
+  t_max = filter_params->tmax * (TIME_FIXP_SCALING / 1000LL);
 
   sz = edfplus_annotation_size(annot_list);
 

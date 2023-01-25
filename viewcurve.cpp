@@ -284,7 +284,7 @@ void ViewCurve::annot_sidemenu_act_by_crosshair(bool)
 
   mainwindow->signalcomp[i]->annot_created_by_rect_draw_onset = crosshair_1.time_relative;
 
-  mainwindow->signalcomp[i]->annot_created_by_rect_draw_duration = -TIME_DIMENSION;
+  mainwindow->signalcomp[i]->annot_created_by_rect_draw_duration = -TIME_FIXP_SCALING;
 
   if(mainwindow->signalcomp[i]->hascursor2)
   {
@@ -331,16 +331,16 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
             mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime / 4);
           }
 
-          l_tmp = mainwindow->edfheaderlist[i]->viewtime % TIME_DIMENSION;
+          l_tmp = mainwindow->edfheaderlist[i]->viewtime % TIME_FIXP_SCALING;
 
           if(l_tmp < trshld)
           {
             mainwindow->edfheaderlist[i]->viewtime -= l_tmp;
           }
 
-          if(l_tmp > (TIME_DIMENSION - trshld))
+          if(l_tmp > (TIME_FIXP_SCALING - trshld))
           {
-            mainwindow->edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
+            mainwindow->edfheaderlist[i]->viewtime += (TIME_FIXP_SCALING - l_tmp);
           }
         }
       }
@@ -356,16 +356,16 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
           mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime / 4);
         }
 
-        l_tmp = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_DIMENSION;
+        l_tmp = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_FIXP_SCALING;
 
         if(l_tmp < trshld)
         {
           mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= l_tmp;
         }
 
-        if(l_tmp > (TIME_DIMENSION - trshld))
+        if(l_tmp > (TIME_FIXP_SCALING - trshld))
         {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (TIME_DIMENSION - l_tmp);
+          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (TIME_FIXP_SCALING - l_tmp);
         }
       }
 
@@ -406,16 +406,16 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
             mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime / 2);
           }
 
-          l_tmp = mainwindow->edfheaderlist[i]->viewtime % TIME_DIMENSION;
+          l_tmp = mainwindow->edfheaderlist[i]->viewtime % TIME_FIXP_SCALING;
 
           if(l_tmp < trshld)
           {
             mainwindow->edfheaderlist[i]->viewtime -= l_tmp;
           }
 
-          if(l_tmp > (TIME_DIMENSION - trshld))
+          if(l_tmp > (TIME_FIXP_SCALING - trshld))
           {
-            mainwindow->edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
+            mainwindow->edfheaderlist[i]->viewtime += (TIME_FIXP_SCALING - l_tmp);
           }
         }
       }
@@ -431,16 +431,16 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
           mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime / 2);
         }
 
-        l_tmp = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_DIMENSION;
+        l_tmp = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_FIXP_SCALING;
 
         if(l_tmp < trshld)
         {
           mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= l_tmp;
         }
 
-        if(l_tmp > (TIME_DIMENSION - trshld))
+        if(l_tmp > (TIME_FIXP_SCALING - trshld))
         {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (TIME_DIMENSION - l_tmp);
+          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (TIME_FIXP_SCALING - l_tmp);
         }
       }
 
@@ -477,11 +477,11 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
       if(wheel_event->delta() > 0)
 #endif
       {
-        mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime - (mainwindow->pagetime / mainwindow->mousewheelsens)) / TIME_DIMENSION));
+        mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime - (mainwindow->pagetime / mainwindow->mousewheelsens)) / TIME_FIXP_SCALING));
       }
       else
       {
-        mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime + (mainwindow->pagetime / mainwindow->mousewheelsens)) / TIME_DIMENSION));
+        mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime + (mainwindow->pagetime / mainwindow->mousewheelsens)) / TIME_FIXP_SCALING));
       }
 
       if(mainwindow->video_player->status == VIDEO_STATUS_PLAYING)  return;

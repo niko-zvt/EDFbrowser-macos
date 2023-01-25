@@ -146,11 +146,11 @@ UI_Mainwindow::UI_Mainwindow()
 
   annot_editor_user_button_stay_on_epoch_boundary = 0;
 
-  annot_editor_user_button_epoch_len = 30LL * TIME_DIMENSION;
+  annot_editor_user_button_epoch_len = 30LL * TIME_FIXP_SCALING;
 
-  annot_editor_user_button_page_len = 30LL * TIME_DIMENSION;
+  annot_editor_user_button_page_len = 30LL * TIME_FIXP_SCALING;
 
-  hypnogram_epoch_len_threshold = TIME_DIMENSION / 10LL;
+  hypnogram_epoch_len_threshold = TIME_FIXP_SCALING / 10LL;
 
   hypnogram_use_epoch_len = 0;
 
@@ -1304,7 +1304,7 @@ UI_Mainwindow::UI_Mainwindow()
   signalcomps = 0;
   sel_viewtime = 0;
   viewtime_sync = VIEWTIME_SYNCED_ABSOLUT;
-  pagetime = 10 * TIME_DIMENSION;
+  pagetime = 10 * TIME_FIXP_SCALING;
   viewtime_string[0] = 0;
   pagetime_string[0] = 0;
   totalviewbufsize_bytes = 0LL;
@@ -1327,7 +1327,7 @@ UI_Mainwindow::UI_Mainwindow()
   zoomhistory->history_size_head = 0;
   for(i=0; i<MAXZOOMHISTORY; i++)
   {
-    zoomhistory->pagetime[i] = 10 * TIME_DIMENSION;
+    zoomhistory->pagetime[i] = 10 * TIME_FIXP_SCALING;
     for(j=0; j<MAXFILES; j++)
     {
       zoomhistory->viewtime[i][j] = 0;

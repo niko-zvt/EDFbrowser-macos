@@ -258,14 +258,14 @@ void UI_ReduceSignalsWindow::spinBox1changed(int value)
   {
     return;
   }
-  days = (int)((((value - 1) * edfhdr->long_data_record_duration) / TIME_DIMENSION) / 86400LL);
-  seconds = ((value - 1) * edfhdr->long_data_record_duration) / TIME_DIMENSION;
+  days = (int)((((value - 1) * edfhdr->long_data_record_duration) / TIME_FIXP_SCALING) / 86400LL);
+  seconds = ((value - 1) * edfhdr->long_data_record_duration) / TIME_FIXP_SCALING;
   if(seconds < 0)
   {
     seconds = 0;
   }
   seconds %= 86400LL;
-  milliSec = ((value - 1) * edfhdr->long_data_record_duration) % TIME_DIMENSION;
+  milliSec = ((value - 1) * edfhdr->long_data_record_duration) % TIME_FIXP_SCALING;
   milliSec /= 10000LL;
   if(days)
   {
@@ -296,10 +296,10 @@ void UI_ReduceSignalsWindow::spinBox2changed(int value)
   {
     return;
   }
-  days = (int)(((value * edfhdr->long_data_record_duration) / TIME_DIMENSION) / 86400LL);
-  seconds = (value * edfhdr->long_data_record_duration) / TIME_DIMENSION;
+  days = (int)(((value * edfhdr->long_data_record_duration) / TIME_FIXP_SCALING) / 86400LL);
+  seconds = (value * edfhdr->long_data_record_duration) / TIME_FIXP_SCALING;
   seconds %= 86400LL;
-  milliSec = (value * edfhdr->long_data_record_duration) % TIME_DIMENSION;
+  milliSec = (value * edfhdr->long_data_record_duration) % TIME_FIXP_SCALING;
   milliSec /= 10000LL;
   if(days)
   {
@@ -340,10 +340,10 @@ void UI_ReduceSignalsWindow::radioButton1Toggled(bool checked)
     spinBox2->setValue(edfhdr->datarecords);
     spinBox1->setMaximum(edfhdr->datarecords);
 
-    days = (int)(((edfhdr->datarecords * edfhdr->long_data_record_duration) / TIME_DIMENSION) / 86400LL);
-    seconds = (edfhdr->datarecords * edfhdr->long_data_record_duration) / TIME_DIMENSION;
+    days = (int)(((edfhdr->datarecords * edfhdr->long_data_record_duration) / TIME_FIXP_SCALING) / 86400LL);
+    seconds = (edfhdr->datarecords * edfhdr->long_data_record_duration) / TIME_FIXP_SCALING;
     seconds %= 86400LL;
-    milliSec = (edfhdr->datarecords * edfhdr->long_data_record_duration) % TIME_DIMENSION;
+    milliSec = (edfhdr->datarecords * edfhdr->long_data_record_duration) % TIME_FIXP_SCALING;
     milliSec /= 10000LL;
 
     if(days > 0)
@@ -628,10 +628,10 @@ void UI_ReduceSignalsWindow::SelectFileButton()
   radioButton2->setEnabled(true);
 
   label4->setText("0:00:00.000");
-  days = (int)(((edfhdr->datarecords * edfhdr->long_data_record_duration) / TIME_DIMENSION) / 86400LL);
-  seconds = (edfhdr->datarecords * edfhdr->long_data_record_duration) / TIME_DIMENSION;
+  days = (int)(((edfhdr->datarecords * edfhdr->long_data_record_duration) / TIME_FIXP_SCALING) / 86400LL);
+  seconds = (edfhdr->datarecords * edfhdr->long_data_record_duration) / TIME_FIXP_SCALING;
   seconds %= 86400LL;
-  milliSec = (edfhdr->datarecords * edfhdr->long_data_record_duration) % TIME_DIMENSION;
+  milliSec = (edfhdr->datarecords * edfhdr->long_data_record_duration) % TIME_FIXP_SCALING;
   milliSec /= 10000LL;
   if(days)
   {
@@ -731,7 +731,7 @@ void UI_ReduceSignalsWindow::StartConversion()
 
   time_diff = (long long)(spinBox1->value() - 1) * edfhdr->long_data_record_duration;
 
-  taltime = (time_diff + edfhdr->starttime_offset) % TIME_DIMENSION;
+  taltime = (time_diff + edfhdr->starttime_offset) % TIME_FIXP_SCALING;
 
   endtime = (long long)(spinBox2->value() - (spinBox1->value() - 1)) * edfhdr->long_data_record_duration + taltime;
 
@@ -784,9 +784,9 @@ void UI_ReduceSignalsWindow::StartConversion()
       }
     }
 
-    new_starttime = edfhdr->utc_starttime + ((time_diff + edfhdr->starttime_offset) / TIME_DIMENSION);
+    new_starttime = edfhdr->utc_starttime + ((time_diff + edfhdr->starttime_offset) / TIME_FIXP_SCALING);
 
-    onset_diff = (new_starttime - edfhdr->utc_starttime) * TIME_DIMENSION;
+    onset_diff = (new_starttime - edfhdr->utc_starttime) * TIME_FIXP_SCALING;
 
     annot_list_sz = edfplus_annotation_size(&new_annot_list);
 
@@ -921,7 +921,7 @@ void UI_ReduceSignalsWindow::StartConversion()
     goto END_3;
   }
 
-  new_starttime = edfhdr->utc_starttime + ((time_diff + edfhdr->starttime_offset) / TIME_DIMENSION);
+  new_starttime = edfhdr->utc_starttime + ((time_diff + edfhdr->starttime_offset) / TIME_FIXP_SCALING);
 
   utc_to_date_time(new_starttime, &dts);
 
@@ -1329,21 +1329,21 @@ void UI_ReduceSignalsWindow::StartConversion()
     {
       switch(timestamp_decimals)
       {
-        case 0 : tallen = fprintf(outputfile, "+%i", (int)(taltime / TIME_DIMENSION));
+        case 0 : tallen = fprintf(outputfile, "+%i", (int)(taltime / TIME_FIXP_SCALING));
                   break;
-        case 1 : tallen = fprintf(outputfile, "+%i.%01i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 1000000LL));
+        case 1 : tallen = fprintf(outputfile, "+%i.%01i", (int)(taltime / TIME_FIXP_SCALING), (int)((taltime % TIME_FIXP_SCALING) / 1000000LL));
                   break;
-        case 2 : tallen = fprintf(outputfile, "+%i.%02i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 100000LL));
+        case 2 : tallen = fprintf(outputfile, "+%i.%02i", (int)(taltime / TIME_FIXP_SCALING), (int)((taltime % TIME_FIXP_SCALING) / 100000LL));
                   break;
-        case 3 : tallen = fprintf(outputfile, "+%i.%03i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 10000LL));
+        case 3 : tallen = fprintf(outputfile, "+%i.%03i", (int)(taltime / TIME_FIXP_SCALING), (int)((taltime % TIME_FIXP_SCALING) / 10000LL));
                   break;
-        case 4 : tallen = fprintf(outputfile, "+%i.%04i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 1000LL));
+        case 4 : tallen = fprintf(outputfile, "+%i.%04i", (int)(taltime / TIME_FIXP_SCALING), (int)((taltime % TIME_FIXP_SCALING) / 1000LL));
                   break;
-        case 5 : tallen = fprintf(outputfile, "+%i.%05i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 100LL));
+        case 5 : tallen = fprintf(outputfile, "+%i.%05i", (int)(taltime / TIME_FIXP_SCALING), (int)((taltime % TIME_FIXP_SCALING) / 100LL));
                   break;
-        case 6 : tallen = fprintf(outputfile, "+%i.%06i", (int)(taltime / TIME_DIMENSION), (int)((taltime % TIME_DIMENSION) / 10LL));
+        case 6 : tallen = fprintf(outputfile, "+%i.%06i", (int)(taltime / TIME_FIXP_SCALING), (int)((taltime % TIME_FIXP_SCALING) / 10LL));
                   break;
-        case 7 : tallen = fprintf(outputfile, "+%i.%07i", (int)(taltime / TIME_DIMENSION), (int)(taltime % TIME_DIMENSION));
+        case 7 : tallen = fprintf(outputfile, "+%i.%07i", (int)(taltime / TIME_FIXP_SCALING), (int)(taltime % TIME_FIXP_SCALING));
                   break;
       }
 
@@ -1362,8 +1362,8 @@ void UI_ReduceSignalsWindow::StartConversion()
           annot_ptr = edfplus_annotation_get_item(&new_annot_list, annot_cnt++);
 
           len = snprintf(scratchpad, 256, "%+i.%07i",
-          (int)(annot_ptr->onset / TIME_DIMENSION),
-          (int)(annot_ptr->onset % TIME_DIMENSION));
+          (int)(annot_ptr->onset / TIME_FIXP_SCALING),
+          (int)(annot_ptr->onset % TIME_FIXP_SCALING));
 
           for(j=0; j<7; j++)
           {

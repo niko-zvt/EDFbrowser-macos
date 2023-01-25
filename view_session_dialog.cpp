@@ -302,10 +302,10 @@ void UI_ViewSessionwindow::SelectButtonClicked()
   }
   timescale = atoll(result);
   snprintf(str2, 2048, "Timescale: %i:%02i:%02i.%04i",
-                       ((int)(timescale / TIME_DIMENSION)) / 3600,
-                       (((int)(timescale / TIME_DIMENSION)) % 3600) / 60,
-                       ((int)(timescale / TIME_DIMENSION)) % 60,
-                       ((int)(timescale % TIME_DIMENSION)) / 1000);
+                       ((int)(timescale / TIME_FIXP_SCALING)) / 3600,
+                       (((int)(timescale / TIME_FIXP_SCALING)) % 3600) / 60,
+                       ((int)(timescale / TIME_FIXP_SCALING)) % 60,
+                       ((int)(timescale % TIME_FIXP_SCALING)) / 1000);
   remove_trailing_zeros(str2);
   parentItem->appendRow(new QStandardItem(str2));
   xml_go_up(xml_hdl);
@@ -380,18 +380,18 @@ void UI_ViewSessionwindow::SelectButtonClicked()
     {
       viewtime *= -1;
       snprintf(str2, 2048, "File position: -%i:%02i:%02i.%04i",
-                           ((int)(viewtime / TIME_DIMENSION)) / 3600,
-                           (((int)(viewtime / TIME_DIMENSION)) % 3600) / 60,
-                           ((int)(viewtime / TIME_DIMENSION)) % 60,
-                           ((int)(viewtime % TIME_DIMENSION)) / 1000);
+                           ((int)(viewtime / TIME_FIXP_SCALING)) / 3600,
+                           (((int)(viewtime / TIME_FIXP_SCALING)) % 3600) / 60,
+                           ((int)(viewtime / TIME_FIXP_SCALING)) % 60,
+                           ((int)(viewtime % TIME_FIXP_SCALING)) / 1000);
     }
     else
     {
       snprintf(str2, 2048, "File position: %i:%02i:%02i.%04i",
-                           ((int)(viewtime / TIME_DIMENSION)) / 3600,
-                           (((int)(viewtime / TIME_DIMENSION)) % 3600) / 60,
-                           ((int)(viewtime / TIME_DIMENSION)) % 60,
-                           ((int)(viewtime % TIME_DIMENSION)) / 1000);
+                           ((int)(viewtime / TIME_FIXP_SCALING)) / 3600,
+                           (((int)(viewtime / TIME_FIXP_SCALING)) % 3600) / 60,
+                           ((int)(viewtime / TIME_FIXP_SCALING)) % 60,
+                           ((int)(viewtime % TIME_FIXP_SCALING)) / 1000);
     }
     remove_trailing_zeros(str2);
     parentItem->appendRow(new QStandardItem(str2));

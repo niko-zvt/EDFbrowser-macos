@@ -579,9 +579,9 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
     {
       hr_ival = annot->onset - former_onset;
 
-      bpm = (60.0 * TIME_DIMENSION) / (double)hr_ival;
+      bpm = (60.0 * TIME_FIXP_SCALING) / (double)hr_ival;
 
-      pos_x2 = (((double)(annot->onset) * pixel_per_sec) / ((double)TIME_DIMENSION)) + 0.5;
+      pos_x2 = (((double)(annot->onset) * pixel_per_sec) / ((double)TIME_FIXP_SCALING)) + 0.5;
 
       if(skip_first || annot->hided_in_list)
       {

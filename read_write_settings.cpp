@@ -1939,9 +1939,9 @@ void UI_Mainwindow::read_general_settings()
       }
 
       annot_editor_user_button_epoch_len = atoll(result);
-      if((annot_editor_user_button_epoch_len < TIME_DIMENSION) || (annot_editor_user_button_epoch_len > (300LL * TIME_DIMENSION)))
+      if((annot_editor_user_button_epoch_len < TIME_FIXP_SCALING) || (annot_editor_user_button_epoch_len > (300LL * TIME_FIXP_SCALING)))
       {
-        annot_editor_user_button_epoch_len = 30LL * TIME_DIMENSION;
+        annot_editor_user_button_epoch_len = 30LL * TIME_FIXP_SCALING;
       }
 
       xml_go_up(xml_hdl);
@@ -1956,9 +1956,9 @@ void UI_Mainwindow::read_general_settings()
       }
 
       annot_editor_user_button_page_len = atoll(result);
-      if((annot_editor_user_button_page_len < TIME_DIMENSION) || (annot_editor_user_button_page_len > (300LL * TIME_DIMENSION)))
+      if((annot_editor_user_button_page_len < TIME_FIXP_SCALING) || (annot_editor_user_button_page_len > (300LL * TIME_FIXP_SCALING)))
       {
-        annot_editor_user_button_page_len = 30LL * TIME_DIMENSION;
+        annot_editor_user_button_page_len = 30LL * TIME_FIXP_SCALING;
       }
 
       xml_go_up(xml_hdl);

@@ -421,12 +421,12 @@ void UI_ECGExport::Export_RR_intervals()
 
         if(type == 2)
         {
-          fprintf(outputfile, "%.4f\t%.4f\n", ((double)l_time) / TIME_DIMENSION, beat_interval_list[i]);
+          fprintf(outputfile, "%.4f\t%.4f\n", ((double)l_time) / TIME_FIXP_SCALING, beat_interval_list[i]);
         }
 
         if(type == 3)
         {
-          fprintf(outputfile, "%.4f\n", ((double)l_time) / TIME_DIMENSION);
+          fprintf(outputfile, "%.4f\n", ((double)l_time) / TIME_FIXP_SCALING);
         }
       }
     }

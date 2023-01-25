@@ -771,7 +771,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   spinbox7_2 = new QSpinBox;
   spinbox7_2->setSuffix(" sec.");
   spinbox7_2->setRange(1, 300);
-  spinbox7_2->setValue((int)(mainwindow->annot_editor_user_button_page_len / TIME_DIMENSION));
+  spinbox7_2->setValue((int)(mainwindow->annot_editor_user_button_page_len / TIME_FIXP_SCALING));
   if(!mainwindow->annot_editor_user_button_jump_to_next_page)
   {
     spinbox7_2->setEnabled(false);
@@ -786,7 +786,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   spinbox7_1 = new QSpinBox;
   spinbox7_1->setSuffix(" sec.");
   spinbox7_1->setRange(1, 300);
-  spinbox7_1->setValue((int)(mainwindow->annot_editor_user_button_epoch_len / TIME_DIMENSION));
+  spinbox7_1->setValue((int)(mainwindow->annot_editor_user_button_epoch_len / TIME_FIXP_SCALING));
   if(!mainwindow->annot_editor_user_button_jump_to_next_page)
   {
     spinbox7_1->setEnabled(false);
@@ -2369,13 +2369,13 @@ void UI_OptionsDialog::checkbox7_7Clicked(int state)
 
 void UI_OptionsDialog::spinBox7_1ValueChanged(int val)
 {
-  mainwindow->annot_editor_user_button_epoch_len = val * TIME_DIMENSION;
+  mainwindow->annot_editor_user_button_epoch_len = val * TIME_FIXP_SCALING;
 }
 
 
 void UI_OptionsDialog::spinBox7_2ValueChanged(int val)
 {
-  mainwindow->annot_editor_user_button_page_len = val * TIME_DIMENSION;
+  mainwindow->annot_editor_user_button_page_len = val * TIME_FIXP_SCALING;
 }
 
 

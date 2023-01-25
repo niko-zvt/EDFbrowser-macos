@@ -365,7 +365,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
   edfhdr->l_starttime += 60 * atoi(scratchpad + 3);
   edfhdr->l_starttime += atoi(scratchpad + 6);
 
-  edfhdr->l_starttime *= TIME_DIMENSION;
+  edfhdr->l_starttime *= TIME_FIXP_SCALING;
 
 /***************** NUMBER OF SIGNALS IN HEADER *******************************/
 
@@ -1192,13 +1192,13 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
     {
       edfhdr->edfparam[i].sf_f = (double)(edfhdr->edfparam[i].smp_per_record) / edfhdr->data_record_duration;
 
-      if(((long long)(edfhdr->edfparam[i].smp_per_record) * TIME_DIMENSION) % edfhdr->long_data_record_duration)
+      if(((long long)(edfhdr->edfparam[i].smp_per_record) * TIME_FIXP_SCALING) % edfhdr->long_data_record_duration)
       {
         edfhdr->edfparam[i].sf_int = 0;
       }
       else
       {
-        edfhdr->edfparam[i].sf_int = ((long long)(edfhdr->edfparam[i].smp_per_record) * TIME_DIMENSION) / edfhdr->long_data_record_duration;
+        edfhdr->edfparam[i].sf_int = ((long long)(edfhdr->edfparam[i].smp_per_record) * TIME_FIXP_SCALING) / edfhdr->long_data_record_duration;
       }
     }
 
@@ -1734,7 +1734,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
     edfhdr->edfparam[i].offset = edfhdr->edfparam[i].phys_max / edfhdr->edfparam[i].bitvalue - edfhdr->edfparam[i].dig_max;
   }
 
-  edfhdr->recording_len_sec = (int)((edfhdr->datarecords * edfhdr->long_data_record_duration) / TIME_DIMENSION);
+  edfhdr->recording_len_sec = (int)((edfhdr->datarecords * edfhdr->long_data_record_duration) / TIME_FIXP_SCALING);
 
   txt_string[0] = 0;
 
@@ -1939,7 +1939,7 @@ long long EDFfileCheck::get_long_duration(char *str)
 
   if(hasdot)
   {
-    radix = TIME_DIMENSION;
+    radix = TIME_FIXP_SCALING;
 
     for(i=dotposition-1; i>=0; i--)
     {
@@ -1947,7 +1947,7 @@ long long EDFfileCheck::get_long_duration(char *str)
         radix *= 10;
     }
 
-    radix = TIME_DIMENSION / 10;
+    radix = TIME_FIXP_SCALING / 10;
 
     for(i=dotposition+1; i<len; i++)
     {
@@ -1957,7 +1957,7 @@ long long EDFfileCheck::get_long_duration(char *str)
   }
   else
   {
-    radix = TIME_DIMENSION;
+    radix = TIME_FIXP_SCALING;
 
     for(i=len-1; i>=0; i--)
     {

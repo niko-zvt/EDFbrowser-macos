@@ -406,23 +406,23 @@ void UI_AnnotationEditwindow::annotEditSetOnset(long long onset)
 
   if(onset < 0LL)
   {
-    onset_daySpinbox->setValue((-(onset)) / TIME_DIMENSION / 86400);
+    onset_daySpinbox->setValue((-(onset)) / TIME_FIXP_SCALING / 86400);
 
-    ta.setHMS(((-(onset)) / TIME_DIMENSION / 3600) % 24,
-            (((-(onset)) / TIME_DIMENSION) % 3600) / 60,
-            ((-(onset)) / TIME_DIMENSION) % 60,
-            ((-(onset)) % TIME_DIMENSION) / 10000);
+    ta.setHMS(((-(onset)) / TIME_FIXP_SCALING / 3600) % 24,
+            (((-(onset)) / TIME_FIXP_SCALING) % 3600) / 60,
+            ((-(onset)) / TIME_FIXP_SCALING) % 60,
+            ((-(onset)) % TIME_FIXP_SCALING) / 10000);
 
     posNegTimebox->setCurrentIndex(1);
   }
   else
   {
-    onset_daySpinbox->setValue(onset / TIME_DIMENSION / 86400);
+    onset_daySpinbox->setValue(onset / TIME_FIXP_SCALING / 86400);
 
-    ta.setHMS((onset / TIME_DIMENSION / 3600) % 24,
-            ((onset / TIME_DIMENSION) % 3600) / 60,
-            (onset / TIME_DIMENSION) % 60,
-            (onset % TIME_DIMENSION) / 10000);
+    ta.setHMS((onset / TIME_FIXP_SCALING / 3600) % 24,
+            ((onset / TIME_FIXP_SCALING) % 3600) / 60,
+            (onset / TIME_FIXP_SCALING) % 60,
+            (onset % TIME_FIXP_SCALING) / 10000);
 
     posNegTimebox->setCurrentIndex(0);
   }
@@ -440,8 +440,8 @@ long long UI_AnnotationEditwindow::annotEditGetOnset(void)
   tmp += onset_timeEdit->time().hour() * 3600;
   tmp += onset_timeEdit->time().minute() * 60;
   tmp += onset_timeEdit->time().second();
-  tmp *= TIME_DIMENSION;
-  tmp += (onset_timeEdit->time().msec() * (TIME_DIMENSION / 1000));
+  tmp *= TIME_FIXP_SCALING;
+  tmp += (onset_timeEdit->time().msec() * (TIME_FIXP_SCALING / 1000));
 
   if(posNegTimebox->currentIndex() == 1)
   {
@@ -454,7 +454,7 @@ long long UI_AnnotationEditwindow::annotEditGetOnset(void)
 
 void UI_AnnotationEditwindow::annotEditSetDuration(long long duration)
 {
-  duration_spinbox->setValue(((double)duration) / TIME_DIMENSION);
+  duration_spinbox->setValue(((double)duration) / TIME_FIXP_SCALING);
 }
 
 
@@ -500,23 +500,23 @@ void UI_AnnotationEditwindow::set_selected_annotation(int annot_nr)
 
   if(l_tmp < 0LL)
   {
-    onset_daySpinbox->setValue((-(l_tmp)) / TIME_DIMENSION / 86400);
+    onset_daySpinbox->setValue((-(l_tmp)) / TIME_FIXP_SCALING / 86400);
 
-    ta.setHMS(((-(l_tmp)) / TIME_DIMENSION / 3600) % 24,
-            (((-(l_tmp)) / TIME_DIMENSION) % 3600) / 60,
-            ((-(l_tmp)) / TIME_DIMENSION) % 60,
-            ((-(l_tmp)) % TIME_DIMENSION) / 10000);
+    ta.setHMS(((-(l_tmp)) / TIME_FIXP_SCALING / 3600) % 24,
+            (((-(l_tmp)) / TIME_FIXP_SCALING) % 3600) / 60,
+            ((-(l_tmp)) / TIME_FIXP_SCALING) % 60,
+            ((-(l_tmp)) % TIME_FIXP_SCALING) / 10000);
 
     posNegTimebox->setCurrentIndex(1);
   }
   else
   {
-    onset_daySpinbox->setValue(l_tmp / TIME_DIMENSION / 86400);
+    onset_daySpinbox->setValue(l_tmp / TIME_FIXP_SCALING / 86400);
 
-    ta.setHMS((l_tmp / TIME_DIMENSION / 3600) % 24,
-            ((l_tmp / TIME_DIMENSION) % 3600) / 60,
-            (l_tmp / TIME_DIMENSION) % 60,
-            (l_tmp % TIME_DIMENSION) / 10000);
+    ta.setHMS((l_tmp / TIME_FIXP_SCALING / 3600) % 24,
+            ((l_tmp / TIME_FIXP_SCALING) % 3600) / 60,
+            (l_tmp / TIME_FIXP_SCALING) % 60,
+            (l_tmp % TIME_FIXP_SCALING) / 10000);
 
     posNegTimebox->setCurrentIndex(0);
   }
@@ -571,23 +571,23 @@ void UI_AnnotationEditwindow::set_selected_annotation(annotblck_t *annot)
 
   if(l_tmp < 0LL)
   {
-    onset_daySpinbox->setValue((-(l_tmp)) / TIME_DIMENSION / 86400);
+    onset_daySpinbox->setValue((-(l_tmp)) / TIME_FIXP_SCALING / 86400);
 
-    ta.setHMS(((-(l_tmp)) / TIME_DIMENSION / 3600) % 24,
-            (((-(l_tmp)) / TIME_DIMENSION) % 3600) / 60,
-            ((-(l_tmp)) / TIME_DIMENSION) % 60,
-            ((-(l_tmp)) % TIME_DIMENSION) / 10000);
+    ta.setHMS(((-(l_tmp)) / TIME_FIXP_SCALING / 3600) % 24,
+            (((-(l_tmp)) / TIME_FIXP_SCALING) % 3600) / 60,
+            ((-(l_tmp)) / TIME_FIXP_SCALING) % 60,
+            ((-(l_tmp)) % TIME_FIXP_SCALING) / 10000);
 
     posNegTimebox->setCurrentIndex(1);
   }
   else
   {
-    onset_daySpinbox->setValue(l_tmp / TIME_DIMENSION / 86400);
+    onset_daySpinbox->setValue(l_tmp / TIME_FIXP_SCALING / 86400);
 
-    ta.setHMS((l_tmp / TIME_DIMENSION / 3600) % 24,
-            ((l_tmp / TIME_DIMENSION) % 3600) / 60,
-            (l_tmp / TIME_DIMENSION) % 60,
-            (l_tmp % TIME_DIMENSION) / 10000);
+    ta.setHMS((l_tmp / TIME_FIXP_SCALING / 3600) % 24,
+            ((l_tmp / TIME_FIXP_SCALING) % 3600) / 60,
+            (l_tmp / TIME_FIXP_SCALING) % 60,
+            (l_tmp % TIME_FIXP_SCALING) / 10000);
 
     posNegTimebox->setCurrentIndex(0);
   }

@@ -807,7 +807,7 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
     import_aux_info = 0;
   }
 
-  sampletime = TIME_DIMENSION / SampleTimeSpinbox->value();
+  sampletime = TIME_FIXP_SCALING / SampleTimeSpinbox->value();
 
   strlcpy(path, QFileDialog::getOpenFileName(0, "Open MIT WFDB annotation file", QString::fromLocal8Bit(mainwindow->recent_opendir),
                                              "MIT annotation files (*.ari *.ecg *.trigger *.qrs *.atr *.apn *.st *.pwave *.marker *.seizures);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
@@ -1092,7 +1092,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
         date_time.second = atoi(result + 17);
         date_time_to_utc(&utc_time, date_time);
         onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-        onset *= TIME_DIMENSION;
+        onset *= TIME_FIXP_SCALING;
 
         if(strlen(result) > 19)
         {
@@ -1108,7 +1108,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
             result[20 + digits] = 0;
             if(digits)
             {
-              l_temp = (atoi(result + 20) * TIME_DIMENSION);
+              l_temp = (atoi(result + 20) * TIME_FIXP_SCALING);
               for(; digits>0; digits--)
               {
                 l_temp /= 10LL;
@@ -1635,13 +1635,13 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
               {
                 annotation.long_duration -= annotation.onset;
 
-                tmp_len = snprintf(annotation.duration, 16, "%i", (int)(annotation.long_duration / TIME_DIMENSION));
+                tmp_len = snprintf(annotation.duration, 16, "%i", (int)(annotation.long_duration / TIME_FIXP_SCALING));
 
-                if(annotation.long_duration % TIME_DIMENSION)
+                if(annotation.long_duration % TIME_FIXP_SCALING)
                 {
                   if(tmp_len < 14)
                   {
-                    snprintf(annotation.duration + tmp_len, 16 - tmp_len, ".%07i", (int)(annotation.long_duration % TIME_DIMENSION));
+                    snprintf(annotation.duration + tmp_len, 16 - tmp_len, ".%07i", (int)(annotation.long_duration % TIME_FIXP_SCALING));
                     remove_trailing_zeros(duration);
                   }
                 }
@@ -1781,7 +1781,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   starttime_diff = edfhdr->utc_starttime - mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime;
 
-  starttime_diff *= TIME_DIMENSION;
+  starttime_diff *= TIME_FIXP_SCALING;
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
@@ -2179,7 +2179,7 @@ int UI_ImportAnnotationswindow::get_samplefreq_inf(void)
 
   if(!smps)  return 0;
 
-  return ((long long)smps * TIME_DIMENSION) / mainwindow->edfheaderlist[0]->long_data_record_duration;
+  return ((long long)smps * TIME_FIXP_SCALING) / mainwindow->edfheaderlist[0]->long_data_record_duration;
 }
 
 
@@ -2198,7 +2198,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
 
   if(encoding == 0)
   {
-    onset = atoll_x(scratchpad, TIME_DIMENSION);
+    onset = atoll_x(scratchpad, TIME_FIXP_SCALING);
     onset += mainwindow->edfheaderlist[0]->starttime_offset;
 
     *onset_time = onset;
@@ -2216,11 +2216,11 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         onset = atoi(scratchpad) * 3600LL;
         onset += (atoi(scratchpad + 3) * 60LL);
         onset += (long long)(atoi(scratchpad + 6));
-        onset *= TIME_DIMENSION;
+        onset *= TIME_FIXP_SCALING;
         onset -= mainwindow->edfheaderlist[0]->l_starttime;
         if(onset < *last_onset)
         {
-          onset += (86400LL * TIME_DIMENSION);
+          onset += (86400LL * TIME_FIXP_SCALING);
           *last_onset = onset;
         }
 
@@ -2237,11 +2237,11 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         onset = atoi(scratchpad) * 3600LL;
         onset += (atoi(scratchpad + 2) * 60LL);
         onset += (long long)(atoi(scratchpad + 5));
-        onset *= TIME_DIMENSION;
+        onset *= TIME_FIXP_SCALING;
         onset -= mainwindow->edfheaderlist[0]->l_starttime;
         if(onset < *last_onset)
         {
-          onset += (86400LL * TIME_DIMENSION);
+          onset += (86400LL * TIME_FIXP_SCALING);
           *last_onset = onset;
         }
 
@@ -2269,10 +2269,10 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         onset = atoi(scratchpad) * 3600LL;
         onset += (atoi(scratchpad + 3) * 60LL);
         onset += (long long)(atoi(scratchpad + 6));
-        onset *= TIME_DIMENSION;
+        onset *= TIME_FIXP_SCALING;
         if(digits)
         {
-          l_temp = (atoi(scratchpad + 9) * TIME_DIMENSION);
+          l_temp = (atoi(scratchpad + 9) * TIME_FIXP_SCALING);
           for(; digits>0; digits--)
           {
             l_temp /= 10LL;
@@ -2282,7 +2282,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         onset -= mainwindow->edfheaderlist[0]->l_starttime;
         if(onset < *last_onset)
         {
-          onset += (86400LL * TIME_DIMENSION);
+          onset += (86400LL * TIME_FIXP_SCALING);
           *last_onset = onset;
         }
 
@@ -2306,10 +2306,10 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         onset = atoi(scratchpad) * 3600LL;
         onset += (atoi(scratchpad + 2) * 60LL);
         onset += (long long)(atoi(scratchpad + 5));
-        onset *= TIME_DIMENSION;
+        onset *= TIME_FIXP_SCALING;
         if(digits)
         {
-          l_temp = (atoi(scratchpad + 8) * TIME_DIMENSION);
+          l_temp = (atoi(scratchpad + 8) * TIME_FIXP_SCALING);
           for(; digits>0; digits--)
           {
             l_temp /= 10LL;
@@ -2319,7 +2319,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         onset -= mainwindow->edfheaderlist[0]->l_starttime;
         if(onset < *last_onset)
         {
-          onset += (86400LL * TIME_DIMENSION);
+          onset += (86400LL * TIME_FIXP_SCALING);
           *last_onset = onset;
         }
 
@@ -2345,7 +2345,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         date_time.second = atoi(scratchpad + 17);
         date_time_to_utc(&utc_time, date_time);
         onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-        onset *= TIME_DIMENSION;
+        onset *= TIME_FIXP_SCALING;
 
         *onset_time = onset;
 
@@ -2376,10 +2376,10 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         date_time.second = atoi(scratchpad + 17);
         date_time_to_utc(&utc_time, date_time);
         onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
-        onset *= TIME_DIMENSION;
+        onset *= TIME_FIXP_SCALING;
         if(digits)
         {
-          l_temp = (atoi(scratchpad + 20) * TIME_DIMENSION);
+          l_temp = (atoi(scratchpad + 20) * TIME_FIXP_SCALING);
           for(; digits>0; digits--)
           {
             l_temp /= 10LL;

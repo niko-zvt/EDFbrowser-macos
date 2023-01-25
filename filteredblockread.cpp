@@ -151,7 +151,7 @@ double * FilteredBlockReadClass::init_signalcomp(sigcompblck_t *i_signalcomp, in
 
       printf("init_signalcomp(): datarecord_duration: %lli    smp_in_datarecord: %i    sf: %f Hz   total samples in file: %lli\n",
              edfhdr.datarecord_duration, edfhdr.signalparam[0].smp_in_datarecord,
-             (edfhdr.signalparam[0].smp_in_datarecord * EDFLIB_TIME_DIMENSION) / (double)edfhdr.datarecord_duration,
+             (edfhdr.signalparam[0].smp_in_datarecord * EDFLIB_TIME_FIXP_SCALING) / (double)edfhdr.datarecord_duration,
               edfhdr.signalparam[0].smp_in_file);
 
       edf_ibuf = (int *)malloc(total_samples * sizeof(int));

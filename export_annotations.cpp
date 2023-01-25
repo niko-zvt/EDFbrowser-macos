@@ -488,25 +488,25 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       {
         if(include_duration)
         {
-          fprintf(annotationfile, "%+.7f%c%s%c%s\n", (double)(annot->onset - hdr->starttime_offset) / TIME_DIMENSION, separator, annot->duration, separator, str);
+          fprintf(annotationfile, "%+.7f%c%s%c%s\n", (double)(annot->onset - hdr->starttime_offset) / TIME_FIXP_SCALING, separator, annot->duration, separator, str);
         }
         else
         {
-          fprintf(annotationfile, "%+.7f%c%s\n", (double)(annot->onset - hdr->starttime_offset) / TIME_DIMENSION, separator, str);
+          fprintf(annotationfile, "%+.7f%c%s\n", (double)(annot->onset - hdr->starttime_offset) / TIME_FIXP_SCALING, separator, str);
         }
       }
 
       if(csv_format == 2)
       {
-        temp = annot->onset % TIME_DIMENSION;
+        temp = annot->onset % TIME_FIXP_SCALING;
 
         if(temp < 0)
         {
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION) - 1, &tm);
+          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
         }
         else
         {
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION), &tm);
+          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
         }
 
         if(include_duration)
@@ -521,15 +521,15 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
       if(csv_format == 3)
       {
-        temp = annot->onset % TIME_DIMENSION;
+        temp = annot->onset % TIME_FIXP_SCALING;
 
         if(temp < 0)
         {
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION) - 1, &tm);
+          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
         }
         else
         {
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION), &tm);
+          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
         }
 
         if(include_duration)
@@ -544,17 +544,17 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
       if(csv_format == 4)
       {
-        temp = annot->onset % TIME_DIMENSION;
+        temp = annot->onset % TIME_FIXP_SCALING;
 
         if(temp < 0)
         {
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION) - 1, &tm);
+          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
 
-          temp = TIME_DIMENSION + temp;
+          temp = TIME_FIXP_SCALING + temp;
         }
         else
         {
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION), &tm);
+          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
         }
 
         if(include_duration)
@@ -569,17 +569,17 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
       if(csv_format == 5)
       {
-        temp = annot->onset % TIME_DIMENSION;
+        temp = annot->onset % TIME_FIXP_SCALING;
 
         if(temp < 0)
         {
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION) - 1, &tm);
+          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
 
-          temp = TIME_DIMENSION + temp;
+          temp = TIME_FIXP_SCALING + temp;
         }
         else
         {
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION), &tm);
+          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
         }
 
         if(include_duration)
@@ -640,17 +640,17 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
         break;
       }
 
-      temp = annot->onset % TIME_DIMENSION;
+      temp = annot->onset % TIME_FIXP_SCALING;
 
       if(temp < 0)
       {
-        utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION) - 1, &tm);
+        utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
 
-        temp = TIME_DIMENSION + temp;
+        temp = TIME_FIXP_SCALING + temp;
       }
       else
       {
-        utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_DIMENSION), &tm);
+        utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
       }
 
       fprintf(annotationfile, " <annotation>\n"

@@ -68,7 +68,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
 
   datarecords = hdr->datarecords;
 
-  time = (hdr->datarecords * hdr->long_data_record_duration) / TIME_DIMENSION;
+  time = (hdr->datarecords * hdr->long_data_record_duration) / TIME_FIXP_SCALING;
 
   timestamp_decimals = edfplus_annotation_get_tal_timestamp_decimal_cnt(hdr);
   if(timestamp_decimals < 0)
@@ -471,41 +471,41 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
 #ifdef Q_OS_WIN32
     switch(timestamp_decimals)
     {
-      case 0 : p = __mingw_snprintf(annot_buf, 16, "+%lli", time / TIME_DIMENSION);
+      case 0 : p = __mingw_snprintf(annot_buf, 16, "+%lli", time / TIME_FIXP_SCALING);
                 break;
-      case 1 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%01lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 1000000LL);
+      case 1 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%01lli", time / TIME_FIXP_SCALING, (time % TIME_FIXP_SCALING) / 1000000LL);
                 break;
-      case 2 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%02lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 100000LL);
+      case 2 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%02lli", time / TIME_FIXP_SCALING, (time % TIME_FIXP_SCALING) / 100000LL);
                 break;
-      case 3 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%03lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 10000LL);
+      case 3 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%03lli", time / TIME_FIXP_SCALING, (time % TIME_FIXP_SCALING) / 10000LL);
                 break;
-      case 4 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%04lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 1000LL);
+      case 4 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%04lli", time / TIME_FIXP_SCALING, (time % TIME_FIXP_SCALING) / 1000LL);
                 break;
-      case 5 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%05lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 100LL);
+      case 5 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%05lli", time / TIME_FIXP_SCALING, (time % TIME_FIXP_SCALING) / 100LL);
                 break;
-      case 6 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%06lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 10LL);
+      case 6 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%06lli", time / TIME_FIXP_SCALING, (time % TIME_FIXP_SCALING) / 10LL);
                 break;
-      case 7 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%07lli", time / TIME_DIMENSION, time % TIME_DIMENSION);
+      case 7 : p = __mingw_snprintf(annot_buf, 16, "+%lli.%07lli", time / TIME_FIXP_SCALING, time % TIME_FIXP_SCALING);
                 break;
     }
 #else
     switch(timestamp_decimals)
     {
-      case 0 : p = snprintf(annot_buf, 16, "+%lli", time / TIME_DIMENSION);
+      case 0 : p = snprintf(annot_buf, 16, "+%lli", time / TIME_FIXP_SCALING);
                 break;
-      case 1 : p = snprintf(annot_buf, 16, "+%lli.%01lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 1000000LL);
+      case 1 : p = snprintf(annot_buf, 16, "+%lli.%01lli", time / TIME_FIXP_SCALING, (time % TIME_FIXP_SCALING) / 1000000LL);
                 break;
-      case 2 : p = snprintf(annot_buf, 16, "+%lli.%02lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 100000LL);
+      case 2 : p = snprintf(annot_buf, 16, "+%lli.%02lli", time / TIME_FIXP_SCALING, (time % TIME_FIXP_SCALING) / 100000LL);
                 break;
-      case 3 : p = snprintf(annot_buf, 16, "+%lli.%03lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 10000LL);
+      case 3 : p = snprintf(annot_buf, 16, "+%lli.%03lli", time / TIME_FIXP_SCALING, (time % TIME_FIXP_SCALING) / 10000LL);
                 break;
-      case 4 : p = snprintf(annot_buf, 16, "+%lli.%04lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 1000LL);
+      case 4 : p = snprintf(annot_buf, 16, "+%lli.%04lli", time / TIME_FIXP_SCALING, (time % TIME_FIXP_SCALING) / 1000LL);
                 break;
-      case 5 : p = snprintf(annot_buf, 16, "+%lli.%05lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 100LL);
+      case 5 : p = snprintf(annot_buf, 16, "+%lli.%05lli", time / TIME_FIXP_SCALING, (time % TIME_FIXP_SCALING) / 100LL);
                 break;
-      case 6 : p = snprintf(annot_buf, 16, "+%lli.%06lli", time / TIME_DIMENSION, (time % TIME_DIMENSION) / 10LL);
+      case 6 : p = snprintf(annot_buf, 16, "+%lli.%06lli", time / TIME_FIXP_SCALING, (time % TIME_FIXP_SCALING) / 10LL);
                 break;
-      case 7 : p = snprintf(annot_buf, 16, "+%lli.%07lli", time / TIME_DIMENSION, time % TIME_DIMENSION);
+      case 7 : p = snprintf(annot_buf, 16, "+%lli.%07lli", time / TIME_FIXP_SCALING, time % TIME_FIXP_SCALING);
                 break;
     }
 #endif
@@ -528,17 +528,17 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
           if(annot_ptr->onset<0)
           {
 #ifdef Q_OS_WIN32
-            p += __mingw_snprintf(annot_buf + p, 20, "-%lli.%07lli", -(annot_ptr->onset / TIME_DIMENSION), -(annot_ptr->onset % TIME_DIMENSION));
+            p += __mingw_snprintf(annot_buf + p, 20, "-%lli.%07lli", -(annot_ptr->onset / TIME_FIXP_SCALING), -(annot_ptr->onset % TIME_FIXP_SCALING));
 #else
-            p += snprintf(annot_buf + p, 20, "-%lli.%07lli", -(annot_ptr->onset / TIME_DIMENSION), -(annot_ptr->onset % TIME_DIMENSION));
+            p += snprintf(annot_buf + p, 20, "-%lli.%07lli", -(annot_ptr->onset / TIME_FIXP_SCALING), -(annot_ptr->onset % TIME_FIXP_SCALING));
 #endif
           }
           else
           {
 #ifdef Q_OS_WIN32
-            p += __mingw_snprintf(annot_buf + p, 20, "+%lli.%07lli", annot_ptr->onset / TIME_DIMENSION, annot_ptr->onset % TIME_DIMENSION);
+            p += __mingw_snprintf(annot_buf + p, 20, "+%lli.%07lli", annot_ptr->onset / TIME_FIXP_SCALING, annot_ptr->onset % TIME_FIXP_SCALING);
 #else
-            p += snprintf(annot_buf + p, 20, "+%lli.%07lli", annot_ptr->onset / TIME_DIMENSION, annot_ptr->onset % TIME_DIMENSION);
+            p += snprintf(annot_buf + p, 20, "+%lli.%07lli", annot_ptr->onset / TIME_FIXP_SCALING, annot_ptr->onset % TIME_FIXP_SCALING);
 #endif
           }
 

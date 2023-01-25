@@ -300,10 +300,10 @@ void UI_EDFhdrwindow::show_params(int row)
 
   snprintf(str, 512,
           "%2i:%02i:%02i.%07i",
-          (int)((file_duration / TIME_DIMENSION) / 3600LL),
-          (int)(((file_duration / TIME_DIMENSION) % 3600LL) / 60LL),
-          (int)((file_duration / TIME_DIMENSION) % 60LL),
-          (int)(file_duration % TIME_DIMENSION));
+          (int)((file_duration / TIME_FIXP_SCALING) / 3600LL),
+          (int)(((file_duration / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+          (int)((file_duration / TIME_FIXP_SCALING) % 60LL),
+          (int)(file_duration % TIME_FIXP_SCALING));
 
   remove_trailing_zeros(str);
 
@@ -311,7 +311,7 @@ void UI_EDFhdrwindow::show_params(int row)
   line_edit4a->setText(str);
 
   utc_to_date_time(mainwindow->edfheaderlist[row]->utc_starttime +
-   ((file_duration + mainwindow->edfheaderlist[row]->starttime_offset) / TIME_DIMENSION), &date_time);
+   ((file_duration + mainwindow->edfheaderlist[row]->starttime_offset) / TIME_FIXP_SCALING), &date_time);
 
   date_time.month_str[0] += 32;
   date_time.month_str[1] += 32;
@@ -325,9 +325,9 @@ void UI_EDFhdrwindow::show_params(int row)
           date_time.minute,
           date_time.second);
 #ifdef Q_OS_WIN32
-  __mingw_snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_offset + file_duration) % TIME_DIMENSION);
+  __mingw_snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_offset + file_duration) % TIME_FIXP_SCALING);
 #else
-  snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_offset + file_duration) % TIME_DIMENSION);
+  snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_offset + file_duration) % TIME_FIXP_SCALING);
 #endif
   remove_trailing_zeros(str);
 

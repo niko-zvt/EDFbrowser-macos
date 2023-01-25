@@ -228,7 +228,7 @@ UI_StatisticWindow::UI_StatisticWindow(sigcompblck_t *signalcomp,
               fabs((signalcomp->stat_sum_rectified / signalcomp->stat_cnt) * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue),
               signalcomp->physdimension,
               signalcomp->stat_zero_crossing_cnt,
-              (((double)signalcomp->stat_zero_crossing_cnt / 2.0)) / ((double)pagetime / (double)TIME_DIMENSION),
+              (((double)signalcomp->stat_zero_crossing_cnt / 2.0)) / ((double)pagetime / (double)TIME_FIXP_SCALING),
               signalcomp->max_dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue,
               signalcomp->physdimension,
               signalcomp->min_dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue,
@@ -270,7 +270,7 @@ UI_StatisticWindow::UI_StatisticWindow(sigcompblck_t *signalcomp,
         {
           if(beat_cnt)
           {
-            beat_interval_list[beat_cnt - 1] = ((double)(tmp_annot->onset - l_tmp)) / (double)TIME_DIMENSION;
+            beat_interval_list[beat_cnt - 1] = ((double)(tmp_annot->onset - l_tmp)) / (double)TIME_FIXP_SCALING;
           }
 
           l_tmp = tmp_annot->onset;

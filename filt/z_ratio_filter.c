@@ -34,7 +34,7 @@
 #define ZRATIO_F3       (12.0)
 #define ZRATIO_F4       (25.0)
 
-#define ZR_TIME_DIMENSION  (10000000LL)
+#define ZR_TIME_FIXP_SCALING  (10000000LL)
 
 
 zratiofiltset_t * create_zratio_filter(int smp_per_record, long long long_data_record_duration, double crossoverf, double bitval)
@@ -51,7 +51,7 @@ zratiofiltset_t * create_zratio_filter(int smp_per_record, long long long_data_r
 
   settings->bitvalue = bitval;
 
-  settings->dftblocksize = ((long long)smp_per_record * (ZRATIO_EPOCH_LEN * ZR_TIME_DIMENSION)) / long_data_record_duration;
+  settings->dftblocksize = ((long long)smp_per_record * (ZRATIO_EPOCH_LEN * ZR_TIME_FIXP_SCALING)) / long_data_record_duration;
 
   if(settings->dftblocksize < (ZRATIO_EPOCH_LEN * 100))
   {
@@ -59,7 +59,7 @@ zratiofiltset_t * create_zratio_filter(int smp_per_record, long long long_data_r
     return NULL;
   }
 
-  settings->samplefreq = (double)smp_per_record / ((double)long_data_record_duration / ZR_TIME_DIMENSION);
+  settings->samplefreq = (double)smp_per_record / ((double)long_data_record_duration / ZR_TIME_FIXP_SCALING);
   if(dblcmp(settings->samplefreq, 100.0) < 0)
   {
     free(settings);

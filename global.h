@@ -76,7 +76,7 @@
 #define MAXSIGNALS                         (640)
 #define MAXFILTERS                          (16)
 #define MAXMATHFUNCS                        (16)
-#define TIME_DIMENSION              (10000000LL)
+#define TIME_FIXP_SCALING           (10000000LL)
 #define MAX_ANNOTATION_LEN                 (512)
 #define MAX_UNIQUE_ANNOTATIONS              (64)
 #define VIEWTIME_SYNCED_OFFSET               (0)

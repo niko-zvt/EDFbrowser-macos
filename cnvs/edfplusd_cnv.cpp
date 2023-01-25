@@ -405,11 +405,11 @@ void UI_EDFDwindow::SelectFileButton()
 
           fseeko(outputfile, 0LL, SEEK_CUR);
 
-          cnt += fprintf(outputfile, "+%i", (int)((annot_ptr->onset - new_hdr_timestamp) / TIME_DIMENSION));
+          cnt += fprintf(outputfile, "+%i", (int)((annot_ptr->onset - new_hdr_timestamp) / TIME_FIXP_SCALING));
 
-          if(annot_ptr->onset%TIME_DIMENSION)
+          if(annot_ptr->onset%TIME_FIXP_SCALING)
           {
-            cnt += fprintf(outputfile, ".%07i", (int)((annot_ptr->onset - new_hdr_timestamp) % TIME_DIMENSION));
+            cnt += fprintf(outputfile, ".%07i", (int)((annot_ptr->onset - new_hdr_timestamp) % TIME_FIXP_SCALING));
 
             fflush(outputfile);
 
@@ -466,7 +466,7 @@ void UI_EDFDwindow::SelectFileButton()
 
       new_hdr_timestamp = next_timestamp;
 
-      new_hdr_timestamp -= next_timestamp % TIME_DIMENSION;
+      new_hdr_timestamp -= next_timestamp % TIME_FIXP_SCALING;
 
       chunk_starttime = next_timestamp;
 
@@ -519,11 +519,11 @@ void UI_EDFDwindow::SelectFileButton()
       }
     }
 
-    cnt = snprintf(tal, 16, "+%i", (int)((next_timestamp - new_hdr_timestamp) / TIME_DIMENSION));
+    cnt = snprintf(tal, 16, "+%i", (int)((next_timestamp - new_hdr_timestamp) / TIME_FIXP_SCALING));
 
-    if((next_timestamp - new_hdr_timestamp)%TIME_DIMENSION)
+    if((next_timestamp - new_hdr_timestamp)%TIME_FIXP_SCALING)
     {
-      cnt += snprintf(tal + cnt, 10, ".%07i", (int)((next_timestamp - new_hdr_timestamp) % TIME_DIMENSION));
+      cnt += snprintf(tal + cnt, 10, ".%07i", (int)((next_timestamp - new_hdr_timestamp) % TIME_FIXP_SCALING));
 
       for(i=cnt-1; i>0; i--)
       {
@@ -580,11 +580,11 @@ void UI_EDFDwindow::SelectFileButton()
 
       fseeko(outputfile, 0LL, SEEK_CUR);
 
-      cnt += fprintf(outputfile, "+%i", (int)((annot_ptr->onset - new_hdr_timestamp) / TIME_DIMENSION));
+      cnt += fprintf(outputfile, "+%i", (int)((annot_ptr->onset - new_hdr_timestamp) / TIME_FIXP_SCALING));
 
-      if(annot_ptr->onset%TIME_DIMENSION)
+      if(annot_ptr->onset%TIME_FIXP_SCALING)
       {
-        cnt += fprintf(outputfile, ".%07i", (int)((annot_ptr->onset - new_hdr_timestamp) % TIME_DIMENSION));
+        cnt += fprintf(outputfile, ".%07i", (int)((annot_ptr->onset - new_hdr_timestamp) % TIME_FIXP_SCALING));
 
         fflush(outputfile);
 
@@ -657,7 +657,7 @@ void UI_EDFDwindow::write_values_to_hdr(FILE *outputfile, long long timestamp, i
 
   date_time_t date_time;
 
-  utc_to_date_time(edfhdr->utc_starttime + (timestamp / TIME_DIMENSION), &date_time);
+  utc_to_date_time(edfhdr->utc_starttime + (timestamp / TIME_FIXP_SCALING), &date_time);
 
   fseeko(outputfile, 98LL, SEEK_SET);
   if(fgetc(outputfile) != 'X')
@@ -726,7 +726,7 @@ long long UI_EDFDwindow::get_datarecord_timestamp(char *str)
 
   if(hasdot)
   {
-    radix = TIME_DIMENSION;
+    radix = TIME_FIXP_SCALING;
 
     for(i=dotposition-1; i>=1; i--)
     {
@@ -734,7 +734,7 @@ long long UI_EDFDwindow::get_datarecord_timestamp(char *str)
         radix *= 10;
     }
 
-    radix = TIME_DIMENSION / 10;
+    radix = TIME_FIXP_SCALING / 10;
 
     for(i=dotposition+1; i<len; i++)
     {
@@ -744,7 +744,7 @@ long long UI_EDFDwindow::get_datarecord_timestamp(char *str)
   }
   else
   {
-    radix = TIME_DIMENSION;
+    radix = TIME_FIXP_SCALING;
 
     for(i=len-1; i>=1; i--)
     {

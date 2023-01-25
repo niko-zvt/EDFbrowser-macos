@@ -29,9 +29,9 @@
 #include "edf_annot_list.h"
 
 
-#define EDF_ANNOT_MEMBLOCKSZ_II   (1000)
+#define EDF_ANNOT_MEMBLOCKSZ_II      (1000)
 
-#define TIME_DIMENSION_II (10000000LL)
+#define TIME_FIXP_SCALING_II   (10000000LL)
 
 
 
@@ -500,9 +500,9 @@ int edfplus_annotation_get_max_annotation_strlen(annotlist_t *list)
   {
     annot = &list->items[list->idx[i]];
 #ifdef _WIN32
-    len = __mingw_snprintf(scratchpad, 256, "%lli", annot->onset / TIME_DIMENSION_II);
+    len = __mingw_snprintf(scratchpad, 256, "%lli", annot->onset / TIME_FIXP_SCALING_II);
 #else
-    len = snprintf(scratchpad, 256, "%lli", annot->onset / TIME_DIMENSION_II);
+    len = snprintf(scratchpad, 256, "%lli", annot->onset / TIME_FIXP_SCALING_II);
 #endif
 
     if(len > timestamp_digits)
@@ -590,7 +590,7 @@ long long edfplus_annotation_get_long_from_number(const char *str)
 
   if(hasdot)
   {
-    radix = TIME_DIMENSION_II;
+    radix = TIME_FIXP_SCALING_II;
 
     for(i=dotposition-1; i>=0; i--)
     {
@@ -598,7 +598,7 @@ long long edfplus_annotation_get_long_from_number(const char *str)
       radix *= 10;
     }
 
-    radix = TIME_DIMENSION_II / 10;
+    radix = TIME_FIXP_SCALING_II / 10;
 
     for(i=dotposition+1; i<len; i++)
     {
@@ -608,7 +608,7 @@ long long edfplus_annotation_get_long_from_number(const char *str)
   }
   else
   {
-    radix = TIME_DIMENSION_II;
+    radix = TIME_FIXP_SCALING_II;
 
     for(i=len-1; i>=0; i--)
     {

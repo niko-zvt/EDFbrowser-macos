@@ -428,13 +428,13 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
       {
         if(!strcmp(str, param.annot_ov_name[j]))
         {
-          pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_DIMENSION;
+          pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_FIXP_SCALING;
 
           if(param.use_epoch_len)
           {
             if(annot->long_duration > 0LL)
             {
-              pos_x1 = ((double)(annot->long_duration) * pixel_per_sec) / TIME_DIMENSION;
+              pos_x1 = ((double)(annot->long_duration) * pixel_per_sec) / TIME_FIXP_SCALING;
 
               painter.fillRect(pos_x2, 0, pos_x1, h, annot_ov_q_color[j]);
             }
@@ -482,7 +482,7 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
     {
       if(!strcmp(str, param.annot_name[j]))
       {
-        pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_DIMENSION;
+        pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_FIXP_SCALING;
 
         if(param.use_epoch_len)
         {
@@ -490,7 +490,7 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
           {
             annot_end = annot->onset + annot->long_duration;
 
-            pos_x1 = ((double)(annot_end) * pixel_per_sec) / TIME_DIMENSION;
+            pos_x1 = ((double)(annot_end) * pixel_per_sec) / TIME_FIXP_SCALING;
 
             painter.drawLine(pos_x1, offset + (j * pixel_per_unit) + 0.5,
                              pos_x2, offset + (j * pixel_per_unit) + 0.5);
@@ -521,17 +521,17 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
 
             if(tdiff > mainwindow->hypnogram_epoch_len_threshold)
             {
-              painter.fillRect((int)(((double)(prev_annot_end) * pixel_per_sec) / TIME_DIMENSION),
+              painter.fillRect((int)(((double)(prev_annot_end) * pixel_per_sec) / TIME_FIXP_SCALING),
                                0,
-                               ((int)(((double)(tdiff) * pixel_per_sec) / TIME_DIMENSION)) + 2,
+                               ((int)(((double)(tdiff) * pixel_per_sec) / TIME_FIXP_SCALING)) + 2,
                                h,
                                QColor(128, 0, 0, 48));
             }
             else if(tdiff < -mainwindow->hypnogram_epoch_len_threshold)
               {
-                painter.fillRect((int)(((double)(prev_annot_end) * pixel_per_sec) / TIME_DIMENSION),
+                painter.fillRect((int)(((double)(prev_annot_end) * pixel_per_sec) / TIME_FIXP_SCALING),
                                  0,
-                                 ((int)(((double)(tdiff) * pixel_per_sec) / TIME_DIMENSION)) - 2,
+                                 ((int)(((double)(tdiff) * pixel_per_sec) / TIME_FIXP_SCALING)) - 2,
                                  h,
                                  QColor(128, 0, 0, 48));
               }

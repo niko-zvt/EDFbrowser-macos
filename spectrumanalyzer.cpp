@@ -92,28 +92,28 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(sigcompblck_t *signal_comp, char *v
     if(signalcomp->alias[0] != 0)
     {
       snprintf(signallabel, 1024, "   %s   %i:%02i:%02i.%04i   %s", signalcomp->alias,
-                (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION)/ 3600LL),
-                (int)(((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 3600LL) / 60LL),
-                (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 60LL),
-                (int)((signalcomp->edfhdr->viewtime % TIME_DIMENSION) / 1000LL),
+                (int)((signalcomp->edfhdr->viewtime / TIME_FIXP_SCALING)/ 3600LL),
+                (int)(((signalcomp->edfhdr->viewtime / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                (int)((signalcomp->edfhdr->viewtime / TIME_FIXP_SCALING) % 60LL),
+                (int)((signalcomp->edfhdr->viewtime % TIME_FIXP_SCALING) / 1000LL),
                 signalcomp->edfhdr->filename + i);
     }
     else
     {
       snprintf(signallabel, 1024, "   %s   %i:%02i:%02i.%04i   %s", signalcomp->signallabel,
-                (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION)/ 3600LL),
-                (int)(((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 3600LL) / 60LL),
-                (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 60LL),
-                (int)((signalcomp->edfhdr->viewtime % TIME_DIMENSION) / 1000LL),
+                (int)((signalcomp->edfhdr->viewtime / TIME_FIXP_SCALING)/ 3600LL),
+                (int)(((signalcomp->edfhdr->viewtime / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                (int)((signalcomp->edfhdr->viewtime / TIME_FIXP_SCALING) % 60LL),
+                (int)((signalcomp->edfhdr->viewtime % TIME_FIXP_SCALING) / 1000LL),
                 signalcomp->edfhdr->filename + i);
     }
   }
   else
   {
-    l_temp = signalcomp->edfhdr->l_starttime + ((signalcomp->edfhdr->viewtime + signalcomp->edfhdr->starttime_offset) % (86400LL * TIME_DIMENSION));
+    l_temp = signalcomp->edfhdr->l_starttime + ((signalcomp->edfhdr->viewtime + signalcomp->edfhdr->starttime_offset) % (86400LL * TIME_FIXP_SCALING));
     if(l_temp<=0)
     {
-      l_temp = (86400LL * TIME_DIMENSION) + l_temp;
+      l_temp = (86400LL * TIME_FIXP_SCALING) + l_temp;
     }
 
     l_temp = -signalcomp->edfhdr->viewtime;
@@ -121,19 +121,19 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(sigcompblck_t *signal_comp, char *v
     if(signalcomp->alias[0] != 0)
     {
       snprintf(signallabel, 1024, "   %s   -%i:%02i:%02i.%04i   %s", signalcomp->alias,
-              (int)((l_temp / TIME_DIMENSION)/ 3600LL),
-              (int)(((l_temp / TIME_DIMENSION) % 3600LL) / 60LL),
-              (int)((l_temp / TIME_DIMENSION) % 60LL),
-              (int)((l_temp % TIME_DIMENSION) / 1000LL),
+              (int)((l_temp / TIME_FIXP_SCALING)/ 3600LL),
+              (int)(((l_temp / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+              (int)((l_temp / TIME_FIXP_SCALING) % 60LL),
+              (int)((l_temp % TIME_FIXP_SCALING) / 1000LL),
               signalcomp->edfhdr->filename + i);
     }
     else
     {
       snprintf(signallabel, 1024, "   %s   -%i:%02i:%02i.%04i   %s", signalcomp->signallabel,
-              (int)((l_temp / TIME_DIMENSION)/ 3600LL),
-              (int)(((l_temp / TIME_DIMENSION) % 3600LL) / 60LL),
-              (int)((l_temp / TIME_DIMENSION) % 60LL),
-              (int)((l_temp % TIME_DIMENSION) / 1000LL),
+              (int)((l_temp / TIME_FIXP_SCALING)/ 3600LL),
+              (int)(((l_temp / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+              (int)((l_temp / TIME_FIXP_SCALING) % 60LL),
+              (int)((l_temp % TIME_FIXP_SCALING) / 1000LL),
               signalcomp->edfhdr->filename + i);
     }
   }

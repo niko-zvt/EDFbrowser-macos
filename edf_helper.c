@@ -58,7 +58,7 @@ int edfplus_annotation_get_tal_timestamp_digit_cnt(edfhdrblck_t *hdr)
     return -1;
   }
 
-  time = (hdr->datarecords * hdr->long_data_record_duration) / TIME_DIMENSION;
+  time = (hdr->datarecords * hdr->long_data_record_duration) / TIME_FIXP_SCALING;
 
 #ifdef _WIN32
   timestamp_digits = __mingw_snprintf(scratchpad, 256, "%lli", time);

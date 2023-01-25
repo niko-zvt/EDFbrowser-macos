@@ -56,7 +56,7 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(sigcompblck_t *signal_comp, QWidget
 
   pagetime = apagetime;
 
-  pagetime /= TIME_DIMENSION;
+  pagetime /= TIME_FIXP_SCALING;
 
   avgbuf = abuf;
 

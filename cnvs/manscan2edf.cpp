@@ -504,7 +504,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
     date_time_to_utc(&ll_tmp, dtm_struct);
 
-    ll_tmp += segment_properties->starttime_offset / TIME_DIMENSION;
+    ll_tmp += segment_properties->starttime_offset / TIME_FIXP_SCALING;
 
     utc_to_date_time(ll_tmp, &dtm_struct);
 
@@ -1919,7 +1919,7 @@ long long UI_MANSCAN2EDFwindow::get_long_time(const char *str)
   long long value=0LL, radix, sign=1LL;
 
 
-  for(radix = TIME_DIMENSION; radix > 1LL; radix /=10)
+  for(radix = TIME_FIXP_SCALING; radix > 1LL; radix /=10)
   {
     decimals++;
   }
@@ -1972,7 +1972,7 @@ long long UI_MANSCAN2EDFwindow::get_long_time(const char *str)
 
   if(hasdot)
   {
-    radix = TIME_DIMENSION;
+    radix = TIME_FIXP_SCALING;
 
     for(i=dotposition-1; i>=0; i--)
     {
@@ -1980,7 +1980,7 @@ long long UI_MANSCAN2EDFwindow::get_long_time(const char *str)
         radix *= 10;
     }
 
-    radix = TIME_DIMENSION / 10;
+    radix = TIME_FIXP_SCALING / 10;
 
     for(i=dotposition+1; i<len; i++)
     {
@@ -1990,7 +1990,7 @@ long long UI_MANSCAN2EDFwindow::get_long_time(const char *str)
   }
   else
   {
-    radix = TIME_DIMENSION;
+    radix = TIME_FIXP_SCALING;
 
     for(i=len-1; i>=0; i--)
     {

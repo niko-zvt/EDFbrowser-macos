@@ -1143,9 +1143,9 @@ int UI_Mainwindow::process_rc_cmd_timescale(const char *cmd_args, int *cmds_pars
       return 203;
     }
 #ifdef Q_OS_WIN32
-    len = __mingw_snprintf(tx_msg_str, 1024, "%llu.%07llu\n", pagetime / TIME_DIMENSION, pagetime % TIME_DIMENSION);
+    len = __mingw_snprintf(tx_msg_str, 1024, "%llu.%07llu\n", pagetime / TIME_FIXP_SCALING, pagetime % TIME_FIXP_SCALING);
 #else
-    len = snprintf(tx_msg_str, 1024, "%llu.%07llu\n", pagetime / TIME_DIMENSION, pagetime % TIME_DIMENSION);
+    len = snprintf(tx_msg_str, 1024, "%llu.%07llu\n", pagetime / TIME_FIXP_SCALING, pagetime % TIME_FIXP_SCALING);
 #endif
     rc_host_sock->write(tx_msg_str, len);
     return 0;
@@ -1157,8 +1157,8 @@ int UI_Mainwindow::process_rc_cmd_timescale(const char *cmd_args, int *cmds_pars
         return 204;
       }
       if(is_number(cmd_args))  return 203;
-      ltmp = atoll_x(cmd_args, TIME_DIMENSION);
-      if((ltmp < 100LL) || (ltmp > (7LL * 24LL * 3600LL * TIME_DIMENSION)))  return 208;
+      ltmp = atoll_x(cmd_args, TIME_FIXP_SCALING);
+      if((ltmp < 100LL) || (ltmp > (7LL * 24LL * 3600LL * TIME_FIXP_SCALING)))  return 208;
       pagetime = ltmp;
       setup_viewbuf();
       return 0;
@@ -1169,7 +1169,7 @@ int UI_Mainwindow::process_rc_cmd_timescale(const char *cmd_args, int *cmds_pars
         {
           return 203;
         }
-        len = snprintf(tx_msg_str, 1024, "%f\n", (maincurve->width() * x_pixelsizefactor * 10) / (((double)pagetime) / TIME_DIMENSION));
+        len = snprintf(tx_msg_str, 1024, "%f\n", (maincurve->width() * x_pixelsizefactor * 10) / (((double)pagetime) / TIME_FIXP_SCALING));
         rc_host_sock->write(tx_msg_str, len);
         return 0;
       }
@@ -1180,9 +1180,9 @@ int UI_Mainwindow::process_rc_cmd_timescale(const char *cmd_args, int *cmds_pars
             return 204;
           }
           if(is_number(cmd_args))  return 203;
-          ltmp = atoll_x(cmd_args, TIME_DIMENSION);
-          if((ltmp < 100LL) || (ltmp > (100000LL * TIME_DIMENSION)))  return 208;
-          pagetime = maincurve->width() * x_pixelsizefactor * TIME_DIMENSION * ((10.0 * TIME_DIMENSION) / ltmp);
+          ltmp = atoll_x(cmd_args, TIME_FIXP_SCALING);
+          if((ltmp < 100LL) || (ltmp > (100000LL * TIME_FIXP_SCALING)))  return 208;
+          pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING * ((10.0 * TIME_FIXP_SCALING) / ltmp);
           setup_viewbuf();
           return 0;
         }
@@ -1221,9 +1221,9 @@ int UI_Mainwindow::process_rc_cmd_viewtime(const char *cmd_args, int *cmds_parse
       return 0;
     }
 #ifdef Q_OS_WIN32
-    len = __mingw_snprintf(tx_msg_str, 1024, "%lli.%07lli\n", edfheaderlist[sel_viewtime]->viewtime / TIME_DIMENSION, edfheaderlist[sel_viewtime]->viewtime % TIME_DIMENSION);
+    len = __mingw_snprintf(tx_msg_str, 1024, "%lli.%07lli\n", edfheaderlist[sel_viewtime]->viewtime / TIME_FIXP_SCALING, edfheaderlist[sel_viewtime]->viewtime % TIME_FIXP_SCALING);
 #else
-    len = snprintf(tx_msg_str, 1024, "%lli.%07lli\n", edfheaderlist[sel_viewtime]->viewtime / TIME_DIMENSION, edfheaderlist[sel_viewtime]->viewtime % TIME_DIMENSION);
+    len = snprintf(tx_msg_str, 1024, "%lli.%07lli\n", edfheaderlist[sel_viewtime]->viewtime / TIME_FIXP_SCALING, edfheaderlist[sel_viewtime]->viewtime % TIME_FIXP_SCALING);
 #endif
     rc_host_sock->write(tx_msg_str, len);
     return 0;
@@ -1236,8 +1236,8 @@ int UI_Mainwindow::process_rc_cmd_viewtime(const char *cmd_args, int *cmds_parse
       }
       if(is_number(cmd_args))  return 203;
       if(!files_open)  return 205;
-      ltmp = atoll_x(cmd_args, TIME_DIMENSION);
-      if((ltmp < (-30LL * TIME_DIMENSION)) || (ltmp > (7LL * 24LL * 3600LL * TIME_DIMENSION)))  return 208;
+      ltmp = atoll_x(cmd_args, TIME_FIXP_SCALING);
+      if((ltmp < (-30LL * TIME_FIXP_SCALING)) || (ltmp > (7LL * 24LL * 3600LL * TIME_FIXP_SCALING)))  return 208;
       set_viewtime(ltmp);
       return 0;
     }

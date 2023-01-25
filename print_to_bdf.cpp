@@ -245,7 +245,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
     strlcat(datrecduration, "        ", 32);
 
-    duration = TIME_DIMENSION / smpl_rate_divider;
+    duration = TIME_FIXP_SCALING / smpl_rate_divider;
 
     datrec_multiple_int = 0;
   }
@@ -289,9 +289,9 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   if(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime<0)
   {
-    if((-mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime) % TIME_DIMENSION)
+    if((-mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime) % TIME_FIXP_SCALING)
     {
-      preamble = TIME_DIMENSION - ((-mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime) % TIME_DIMENSION);
+      preamble = TIME_FIXP_SCALING - ((-mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime) % TIME_FIXP_SCALING);
 
       referencetime--;
 
@@ -300,7 +300,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
   }
   else
   {
-    preamble = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_DIMENSION;
+    preamble = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_FIXP_SCALING;
 
     if(preamble)  add_one_sec = 1;
   }
@@ -310,7 +310,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     smpls_preamble[i] = (preamble * signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record) / signalcomp[i]->edfhdr->long_data_record_duration;
   }
 
-  referencetime += (mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime / TIME_DIMENSION);
+  referencetime += (mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime / TIME_FIXP_SCALING);
 
   utc_to_date_time(referencetime, &date_time);
 
@@ -502,7 +502,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   if(add_one_sec)
   {
-    records += TIME_DIMENSION / duration;
+    records += TIME_FIXP_SCALING / duration;
   }
 
   fprintf(outputfile, "%-8i", records);
@@ -1371,8 +1371,8 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     if(bdfplus)
     {
       tallen = fprintf(outputfile, "+%i.%07i",
-      (int)(taltime / TIME_DIMENSION),
-      (int)(taltime % TIME_DIMENSION));
+      (int)(taltime / TIME_FIXP_SCALING),
+      (int)(taltime % TIME_FIXP_SCALING));
 
       fputc(20, outputfile);
       fputc(20, outputfile);
@@ -1400,17 +1400,17 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
           if(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)
           {
-            annot_difftime = (referencetime - mainwindow->edfheaderlist[annotationlist_nr]->utc_starttime) * TIME_DIMENSION;
+            annot_difftime = (referencetime - mainwindow->edfheaderlist[annotationlist_nr]->utc_starttime) * TIME_FIXP_SCALING;
           }
 
           if(mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)
           {
-            annot_difftime = (referencetime - mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime) * TIME_DIMENSION;
+            annot_difftime = (referencetime - mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING;
           }
 
           if((mainwindow->viewtime_sync==VIEWTIME_UNSYNCED) || (mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
           {
-            annot_difftime = (referencetime - mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime) * TIME_DIMENSION;
+            annot_difftime = (referencetime - mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING;
             annot_difftime += (mainwindow->edfheaderlist[annotationlist_nr]->viewtime - mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime);
           }
 
@@ -1429,11 +1429,11 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
           l_temp = annot_ptr->onset - annot_difftime;
 
-          if((l_temp >= 0LL) && ((unsigned long long)l_temp < (mainwindow->pagetime + TIME_DIMENSION)))
+          if((l_temp >= 0LL) && ((unsigned long long)l_temp < (mainwindow->pagetime + TIME_FIXP_SCALING)))
           {
             tallen += fprintf(outputfile, "%+i.%07i",
-            (int)(l_temp / TIME_DIMENSION),
-            (int)(l_temp % TIME_DIMENSION));
+            (int)(l_temp / TIME_FIXP_SCALING),
+            (int)(l_temp % TIME_FIXP_SCALING));
 
             if(annot_ptr->duration[0]!=0)
             {

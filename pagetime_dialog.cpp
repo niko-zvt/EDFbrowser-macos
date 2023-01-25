@@ -122,11 +122,11 @@ void UI_Userdefined_timepage_Dialog::okbutton_pressed()
       return;
     }
 
-    mainwindow->pagetime = milliseconds * (TIME_DIMENSION / 1000);
+    mainwindow->pagetime = milliseconds * (TIME_FIXP_SCALING / 1000);
   }
   else
   {
-    mainwindow->pagetime = mainwindow->maincurve->width() * mainwindow->x_pixelsizefactor * TIME_DIMENSION * (10.0 / ScaleBox->value());
+    mainwindow->pagetime = mainwindow->maincurve->width() * mainwindow->x_pixelsizefactor * TIME_FIXP_SCALING * (10.0 / ScaleBox->value());
   }
 
   mainwindow->setup_viewbuf();
