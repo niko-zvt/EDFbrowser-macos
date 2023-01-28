@@ -51,7 +51,7 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, sigcompblck_t *signalcomp_)
 
   annotblck_t annotation;
 
-  FilteredBlockReadClass fbr;
+  flt_blck_rd_t *fbr=NULL;
 
   QProgressDialog progress("Processing file...", "Abort", 0, 1);
   progress.setWindowModality(Qt::WindowModal);
@@ -107,8 +107,8 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, sigcompblck_t *signalcomp_)
 
   total_datrecs = signalcomp->edfhdr->datarecords;
 
-  processed_samples_buf = fbr.init_signalcomp(signalcomp, 1, 0, 0, NULL);
-  if(processed_samples_buf == NULL)
+  fbr = create_flt_blck_rd(signalcomp, 1, 0, 0, NULL, &processed_samples_buf);
+  if(fbr == NULL)
   {
     goto OUT_EXIT_RETURN;
   }
@@ -130,11 +130,16 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, sigcompblck_t *signalcomp_)
       }
     }
 
-    if(fbr.process_signalcomp(i))
+    if(run_flt_blck_rd(fbr, i))
     {
       goto OUT_EXIT_RETURN;
     }
   }
+
+  free_flt_blck_rd(fbr);
+  fbr = NULL;
+  free(processed_samples_buf);
+  processed_samples_buf = NULL;
 
   progress.reset();
 

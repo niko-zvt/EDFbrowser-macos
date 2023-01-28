@@ -40,7 +40,7 @@
 #include "utils.h"
 #include "edf_annot_list.h"
 #include "edf_helper.h"
-#include "filteredblockread.h"
+#include "filtered_block_read.h"
 #include "hrv_dock.h"
 
 #include "filt/pt_qrs.h"
