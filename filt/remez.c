@@ -130,7 +130,9 @@ static int dblcmp(double val1, double val2)
 
 static double get_linear_freq(t_rz_spec *spec, double w)
 {
-  for(int i=0; i<spec->num_bands; i++)
+  int i;
+
+  for(i=0; i<spec->num_bands; i++)
   {
     if(w < spec->band[i].stop - spec->band[i].start)
     {
@@ -326,9 +328,11 @@ static int get_taps(t_rz_spec *spec, double *h)
 
 static int is_in_limits(t_rz_spec *spec, double w)
 {
+  int i;
+
   double gain;
 
-  for(int i=0;  i<spec->num_bands; i++)
+  for(i=0;  i<spec->num_bands; i++)
   {
     if((w >= spec->band[i].start) && (w <= spec->band[i].stop))
     {
@@ -351,7 +355,9 @@ static int is_in_limits(t_rz_spec *spec, double w)
 
 static double get_weight(t_rz_spec *spec, double w)
 {
-  for(int i=0; i<spec->num_bands; i++)
+  int i;
+
+  for(i=0; i<spec->num_bands; i++)
   {
     if(w >= spec->band[i].start && w <= spec->band[i].stop)
     {
@@ -365,7 +371,9 @@ static double get_weight(t_rz_spec *spec, double w)
 
 static double get_desired_gain(t_rz_spec *spec, double w)
 {
-  for(int i=0; i<spec->num_bands; i++)
+  int i;
+
+  for(i=0; i<spec->num_bands; i++)
   {
     if(w >= spec->band[i].start && w <= spec->band[i].stop)
     {
@@ -437,9 +445,11 @@ static void calc_delta(t_rz_spec *spec)
 
 static double calc_max_error(t_rz_fq_er *extrema, int num_extrema)
 {
+  int i;
+
   double maxerror = 0;
 
-  for(int i=0; i<num_extrema; i++)
+  for(i=0; i<num_extrema; i++)
   {
     if(fabs(extrema[i].error) > maxerror)
     {
