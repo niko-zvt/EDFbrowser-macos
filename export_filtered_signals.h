@@ -43,7 +43,7 @@
 #include "active_file_chooser.h"
 #include "edf_annot_list.h"
 #include "edf_helper.h"
-#include "filteredblockread.h"
+#include "filtered_block_read.h"
 
 #include "filt/filter.h"
 #include "filt/fir_filter.h"
@@ -102,8 +102,6 @@ FILE *inputfile,
      *outputfile;
 
 edfhdrblck_t *edfhdr;
-
-void showpopupmessage(const char *, const char *);
 
 private slots:
 

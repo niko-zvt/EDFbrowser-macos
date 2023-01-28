@@ -427,7 +427,7 @@ void UI_ExportFilteredSignalsWindow::SelectFileButton()
 
 void UI_ExportFilteredSignalsWindow::StartExport()
 {
-  int i, j, k, p,
+  int i, j, k, p, err=0,
       type,
       new_edfsignals,
       datarecords=0,
@@ -470,17 +470,19 @@ void UI_ExportFilteredSignalsWindow::StartExport()
   date_time_t dts;
 
   annotlist_t new_annot_list,
-                         *annot_list=NULL;
+              *annot_list=NULL;
 
   annotblck_t *annot_ptr=NULL;
 
-  FilteredBlockReadClass *block_reader[MAXSIGNALS];
+  flt_blck_rd_t *block_reader[MAXSIGNALS];
 
   sigcompblck_t *signalcomp[MAXSIGNALS];
 
   for(i=0; i<MAXSIGNALS; i++)
   {
     block_reader[i] = NULL;
+    signalcomp[i] = NULL;
+    filtered_blockread_buf[i] = NULL;
   }
 
   memset(&new_annot_list, 0, sizeof(annotlist_t));
@@ -524,18 +526,28 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
     signalslist[new_edfsignals] = signalcomp[new_edfsignals]->edfsignal[0];
 
-    block_reader[new_edfsignals] = new FilteredBlockReadClass;
+    block_reader[new_edfsignals] = create_flt_blck_rd(signalcomp[new_edfsignals], 1, 0, 0, NULL, &(filtered_blockread_buf[new_edfsignals]));
+    if(block_reader[new_edfsignals] == NULL)
+    {
+      err = 1;
+      break;
+    }
 
-    filtered_blockread_buf[new_edfsignals] = block_reader[new_edfsignals]->init_signalcomp(signalcomp[new_edfsignals], 1, 0, 0, NULL);
-
-    smp_per_record[new_edfsignals] = block_reader[new_edfsignals]->samples_in_buf();
+    smp_per_record[new_edfsignals] = get_samples_flt_blck_rd(block_reader[new_edfsignals]);
 
     new_edfsignals++;
   }
 
+  if(err)
+  {
+    snprintf(str, 1024, "create_flt_blck_rd() returned an error,   line %i file %s", __LINE__, __FILE__);
+    QMessageBox::critical(myobjectDialog, "Error", str);
+    goto END_1;
+  }
+
   if(!new_edfsignals)
   {
-    showpopupmessage("Error", "No signals present on screen for selected file.");
+    QMessageBox::critical(myobjectDialog, "Error", "No signals present on screen for selected file.");
     goto END_1;
   }
 
@@ -548,14 +560,14 @@ void UI_ExportFilteredSignalsWindow::StartExport()
     timestamp_decimals = edfplus_annotation_get_tal_timestamp_decimal_cnt(edfhdr);
     if(timestamp_decimals < 0)
     {
-      showpopupmessage("Error", "Internal error, get_tal_timestamp_decimal_cnt()");
+      QMessageBox::critical(myobjectDialog, "Error", "Internal error, get_tal_timestamp_decimal_cnt()");
       goto END_1;
     }
 
     timestamp_digits = edfplus_annotation_get_tal_timestamp_digit_cnt(edfhdr);
     if(timestamp_digits < 0)
     {
-      showpopupmessage("Error", "Internal error, get_tal_timestamp_digit_cnt()");
+      QMessageBox::critical(myobjectDialog, "Error", "Internal error, get_tal_timestamp_digit_cnt()");
       goto END_1;
     }
 
@@ -676,14 +688,14 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
   if(mainwindow->file_is_opened(outputpath))
   {
-    showpopupmessage("Error", "Selected file is in use.");
+    QMessageBox::critical(myobjectDialog, "Error", "Selected file is in use.");
     goto END_3;
   }
 
   outputfile = fopeno(outputpath, "wb");
   if(outputfile==NULL)
   {
-    showpopupmessage("Error", "Can not open outputfile for writing.");
+    QMessageBox::critical(myobjectDialog, "Error", "Can not open outputfile for writing.");
     goto END_3;
   }
 
@@ -694,7 +706,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
   rewind(inputfile);
   if(fread(scratchpad, 168, 1, inputfile)!=1)
   {
-    showpopupmessage("Error", "Read error (1).");
+    QMessageBox::critical(myobjectDialog, "Error", "Read error (1).");
     goto END_4;
   }
 
@@ -710,7 +722,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
   if(fwrite(scratchpad, 168, 1, outputfile)!=1)
   {
-    showpopupmessage("Error", "Write error (1).");
+    QMessageBox::critical(myobjectDialog, "Error", "Write error (1).");
     goto END_4;
   }
 
@@ -817,7 +829,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
       snprintf(str, 1024,
                "signal %i has been set to \"inverted\" but the physical minimum field has no free space left to write the minus sign",
                i + 1);
-      showpopupmessage("Error", str);
+      QMessageBox::critical(myobjectDialog, "Error", str);
       goto END_4;
     }
     snprintf(scratchpad, 256, "%f", edfhdr->edfparam[signalslist[i]].phys_min * signalcomp[i]->polarity);
@@ -840,7 +852,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
       snprintf(str, 1024,
                "signal %i has been set to \"inverted\" but the physical maximum field has no free space left to write the minus sign",
                i + 1);
-      showpopupmessage("Error", str);
+      QMessageBox::critical(myobjectDialog, "Error", str);
       goto END_4;
     }
     snprintf(scratchpad, 256, "%f", edfhdr->edfparam[signalslist[i]].phys_max * signalcomp[i]->polarity);
@@ -1022,7 +1034,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
     if(fwrite(scratchpad, 80, 1, outputfile)!=1)
     {
-      showpopupmessage("Error", "Write error (2).");
+      QMessageBox::critical(myobjectDialog, "Error", "Write error (2).");
       goto END_4;
     }
   }
@@ -1079,10 +1091,10 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
     for(i=0; i<new_edfsignals; i++)
     {
-      if(block_reader[i]->process_signalcomp(start_datarecord))
+      if(run_flt_blck_rd(block_reader[i], start_datarecord))
       {
         progress.reset();
-        showpopupmessage("Error", "Read error (2).");
+        QMessageBox::critical(myobjectDialog, "Error", "Read error (2).");
         goto END_4;
       }
     }
@@ -1120,7 +1132,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
         if(fputc((value>>8)&0xff, outputfile)==EOF)
         {
           progress.reset();
-          showpopupmessage("Error", "Write error (4).");
+          QMessageBox::critical(myobjectDialog, "Error", "Write error (4).");
           goto END_4;
         }
 
@@ -1192,7 +1204,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
           if(fwrite(scratchpad, len, 1, outputfile) != 1)
           {
             progress.reset();
-            showpopupmessage("Error", "Write error (5).");
+            QMessageBox::critical(myobjectDialog, "Error", "Write error (5).");
             goto END_4;
           }
 
@@ -1227,7 +1239,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
   }
 
   progress.reset();
-  showpopupmessage("Ready", "Done.");
+  QMessageBox::information(myobjectDialog, "Ready", "Done.");
 
 END_4:
 
@@ -1258,17 +1270,11 @@ END_1:
   {
     if(block_reader[i] != NULL)
     {
-      delete block_reader[i];
+      free_flt_blck_rd(block_reader[i]);
+
+      free(filtered_blockread_buf[i]);
     }
   }
-}
-
-
-void UI_ExportFilteredSignalsWindow::showpopupmessage(const char *str1, const char *str2)
-{
-  QMessageBox messagewindow(QMessageBox::NoIcon, str1, str2);
-
-  messagewindow.exec();
 }
 
 
