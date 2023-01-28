@@ -109,8 +109,6 @@ edfhdrblck_t *edfhdr;
 
 ravgfiltset_t *filterlist[MAXSIGNALS][REDUCER_MAX_AA_FILTERS];
 
-void showpopupmessage(const char *, const char *);
-
 private slots:
 
 void SelectFileButton();

@@ -535,7 +535,7 @@ void UI_BDF2EDFwindow::StartConversion()
   fseeko(inputfile, 8LL, SEEK_SET);
   if(fread(scratchpad, 176, 1, inputfile)!=1)
   {
-    showpopupmessage("Error", "Read error (1).");
+    QMessageBox::critical(myobjectDialog, "Error", "Read error (1).");
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Read error (1).");
     messagewindow.exec();
     goto END_3;
@@ -756,7 +756,7 @@ void UI_BDF2EDFwindow::StartConversion()
     if(fread(readbuf, edfhdr->recordsize, 1, inputfile) != 1)
     {
       progress.reset();
-      showpopupmessage("Error", "Read error (2).");
+      QMessageBox::critical(myobjectDialog, "Error", "Read error (2).");
       goto END_3;
     }
 
@@ -767,7 +767,7 @@ void UI_BDF2EDFwindow::StartConversion()
         if(fwrite(readbuf + edfhdr->edfparam[signalslist[i]].buf_offset, edfhdr->edfparam[signalslist[i]].smp_per_record * 3, 1, outputfile)!=1)
         {
           progress.reset();
-          showpopupmessage("Error", "Write error (2).");
+          QMessageBox::critical(myobjectDialog, "Error", "Write error (2).");
           goto END_3;
         }
 
@@ -776,7 +776,7 @@ void UI_BDF2EDFwindow::StartConversion()
           if(fputc(0, outputfile)==EOF)
           {
             progress.reset();
-            showpopupmessage("Error", "Write error (3).");
+            QMessageBox::critical(myobjectDialog, "Error", "Write error (3).");
             goto END_3;
           }
         }
@@ -819,7 +819,7 @@ void UI_BDF2EDFwindow::StartConversion()
           if(fputc(var2.two_bytes[1], outputfile)==EOF)
           {
             progress.reset();
-            showpopupmessage("Error", "Write error (4).");
+            QMessageBox::critical(myobjectDialog, "Error", "Write error (4).");
             goto END_3;
           }
         }
@@ -828,7 +828,7 @@ void UI_BDF2EDFwindow::StartConversion()
   }
 
   progress.reset();
-  showpopupmessage("Ready", "Done.");
+  QMessageBox::information(myobjectDialog, "Ready", "Done.");
 
 END_3:
 
@@ -857,13 +857,6 @@ END_1:
   label1->setText("");
 
   SignalsTablewidget->setRowCount(0);
-}
-
-
-void UI_BDF2EDFwindow::showpopupmessage(const char *str1, const char *str2)
-{
-  QMessageBox messagewindow(QMessageBox::NoIcon, str1, str2);
-  messagewindow.exec();
 }
 
 

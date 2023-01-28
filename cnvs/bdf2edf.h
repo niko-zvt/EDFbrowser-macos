@@ -95,8 +95,6 @@ edfhdrblck_t *edfhdr;
 
 filtset_t *filterlist[MAXSIGNALS];
 
-void showpopupmessage(const char *, const char *);
-
 private slots:
 
 void SelectFileButton();

@@ -757,14 +757,14 @@ void UI_ReduceSignalsWindow::StartConversion()
     timestamp_decimals = edfplus_annotation_get_tal_timestamp_decimal_cnt(edfhdr);
     if(timestamp_decimals < 0)
     {
-      showpopupmessage("Error", "Internal error, get_tal_timestamp_decimal_cnt(");
+      QMessageBox::critical(myobjectDialog, "Error", "Internal error, get_tal_timestamp_decimal_cnt(");
       goto END_1;
     }
 
     timestamp_digits = edfplus_annotation_get_tal_timestamp_digit_cnt(edfhdr);
     if(timestamp_digits < 0)
     {
-      showpopupmessage("Error", "Internal error, get_tal_timestamp_digit_cnt(");
+      QMessageBox::critical(myobjectDialog, "Error", "Internal error, get_tal_timestamp_digit_cnt(");
       goto END_1;
     }
 
@@ -855,7 +855,7 @@ void UI_ReduceSignalsWindow::StartConversion()
   readbuf = (char *)malloc(edfhdr->recordsize);
   if(readbuf==NULL)
   {
-    showpopupmessage("Error", "Malloc error, (readbuf).");
+    QMessageBox::critical(myobjectDialog, "Error", "Malloc error, (readbuf).");
     goto END_2;
   }
 ///////////////////////////////////////////////////////////////////
@@ -870,7 +870,7 @@ void UI_ReduceSignalsWindow::StartConversion()
 
         if(filterlist[i][j] == NULL)
         {
-          showpopupmessage("Error", "Malloc error, (create_ravg_filter()).");
+          QMessageBox::critical(myobjectDialog, "Error", "Malloc error, (create_ravg_filter()).");
 
           goto END_3;
         }
@@ -910,14 +910,14 @@ void UI_ReduceSignalsWindow::StartConversion()
 
   if(mainwindow->file_is_opened(outputpath))
   {
-    showpopupmessage("Reduce signals", "Error, selected file is in use.");
+    QMessageBox::critical(myobjectDialog, "Error", "Error, selected file is in use.");
     goto END_3;
   }
 
   outputfile = fopeno(outputpath, "wb");
   if(outputfile==NULL)
   {
-    showpopupmessage("Error", "Can not open outputfile for writing.");
+    QMessageBox::critical(myobjectDialog, "Error", "Can not open outputfile for writing.");
     goto END_3;
   }
 
@@ -928,7 +928,7 @@ void UI_ReduceSignalsWindow::StartConversion()
   rewind(inputfile);
   if(fread(scratchpad, 168, 1, inputfile)!=1)
   {
-    showpopupmessage("Error", "Read error (1).");
+    QMessageBox::critical(myobjectDialog, "Error", "Read error (1).");
     goto END_4;
   }
 
@@ -944,7 +944,7 @@ void UI_ReduceSignalsWindow::StartConversion()
 
   if(fwrite(scratchpad, 168, 1, outputfile)!=1)
   {
-    showpopupmessage("Error", "Write error (1).");
+    QMessageBox::critical(myobjectDialog, "Error", "Write error (1).");
     goto END_4;
   }
 
@@ -1154,7 +1154,7 @@ void UI_ReduceSignalsWindow::StartConversion()
     if(fread(readbuf, edfhdr->recordsize, 1, inputfile) != 1)
     {
       progress.reset();
-      showpopupmessage("Error", "Read error (2).");
+      QMessageBox::critical(myobjectDialog, "Error", "Read error (2).");
       goto END_4;
     }
 
@@ -1183,7 +1183,7 @@ void UI_ReduceSignalsWindow::StartConversion()
             if(fputc(val >> 8, outputfile)==EOF)
             {
               progress.reset();
-              showpopupmessage("Error", "Write error (4).");
+              QMessageBox::critical(myobjectDialog, "Error", "Write error (4).");
               goto END_4;
             }
           }
@@ -1223,7 +1223,7 @@ void UI_ReduceSignalsWindow::StartConversion()
             if(fputc((tmp >> 8) & 0xff, outputfile)==EOF)
             {
               progress.reset();
-              showpopupmessage("Error", "Write error (4).");
+              QMessageBox::critical(myobjectDialog, "Error", "Write error (4).");
               goto END_4;
             }
           }
@@ -1266,7 +1266,7 @@ void UI_ReduceSignalsWindow::StartConversion()
             if(fputc(var.four[2], outputfile)==EOF)
             {
               progress.reset();
-              showpopupmessage("Error", "Write error (4).");
+              QMessageBox::critical(myobjectDialog, "Error", "Write error (4).");
               goto END_4;
             }
           }
@@ -1317,7 +1317,7 @@ void UI_ReduceSignalsWindow::StartConversion()
             if(fputc((l_tmp >> 16) & 0xff, outputfile)==EOF)
             {
               progress.reset();
-              showpopupmessage("Error", "Write error (4).");
+              QMessageBox::critical(myobjectDialog, "Error", "Write error (4).");
               goto END_4;
             }
           }
@@ -1386,7 +1386,7 @@ void UI_ReduceSignalsWindow::StartConversion()
           if(fwrite(scratchpad, len, 1, outputfile) != 1)
           {
             progress.reset();
-            showpopupmessage("Error", "Write error (5).");
+            QMessageBox::critical(myobjectDialog, "Error", "Write error (5).");
             goto END_4;
           }
 
@@ -1421,7 +1421,7 @@ void UI_ReduceSignalsWindow::StartConversion()
   }
 
   progress.reset();
-  showpopupmessage("Ready", "Done.");
+  QMessageBox::information(myobjectDialog, "Ready", "Done.");
 
 END_4:
 
@@ -1466,14 +1466,6 @@ END_1:
   edfplus_annotation_empty_list(&new_annot_list);
 
   SignalsTablewidget->setRowCount(0);
-}
-
-
-void UI_ReduceSignalsWindow::showpopupmessage(const char *str1, const char *str2)
-{
-  QMessageBox messagewindow(QMessageBox::NoIcon, str1, str2);
-
-  messagewindow.exec();
 }
 
 
