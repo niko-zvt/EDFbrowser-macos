@@ -39,7 +39,7 @@
 #include "mainwindow.h"
 #include "edf_annot_list.h"
 #include "utils.h"
-#include "filteredblockread.h"
+#include "filtered_block_read.h"
 #include "signalcurve.h"
 #include "annotations_dock.h"
 

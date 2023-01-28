@@ -542,10 +542,8 @@ void UI_ZScoreWindow::startButtonClicked()
 
   cfg = kiss_fftr_alloc(dftblocksize, 0, NULL, NULL);
 
-  FilteredBlockReadClass blockread;
-
-  buf = blockread.init_signalcomp(signalcomp, 1, 0, 0, NULL);
-  if(buf == NULL)
+  flt_blck_rd_t *blockread = create_flt_blck_rd(signalcomp, 1, 0, 0, NULL, &buf);
+  if(blockread == NULL)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error: init_signalcomp()");
     messagewindow.exec();
@@ -644,7 +642,7 @@ void UI_ZScoreWindow::startButtonClicked()
       }
     }
 
-    if(blockread.process_signalcomp(datrec_offset))
+    if(run_flt_blck_rd(blockread, datrec_offset))
     {
       progress.reset();
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "A read-error occurred.");
@@ -659,7 +657,7 @@ void UI_ZScoreWindow::startButtonClicked()
       return;
     }
 
-    smpls = blockread.samples_in_buf();
+    smpls = get_samples_flt_blck_rd(blockread);
 
 // fwrite(buf, smpls * sizeof(double), 1, test_file1);
 
@@ -934,6 +932,8 @@ void UI_ZScoreWindow::startButtonClicked()
   free(fft_outputbuf);
   free(cfg);
   free(kiss_fftbuf);
+  free_flt_blck_rd(blockread);
+  free(buf);
 
   mainwindow->setup_viewbuf();
 
