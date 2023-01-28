@@ -978,7 +978,7 @@ void UI_Mainwindow::set_viewtime(long long new_viewtime)
     {
       if(i!=sel_viewtime)
       {
-        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING);
+        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING) - edfheaderlist[i]->starttime_offset;
       }
     }
   }
