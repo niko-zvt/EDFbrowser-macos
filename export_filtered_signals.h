@@ -46,6 +46,7 @@
 #include "filteredblockread.h"
 
 #include "filt/filter.h"
+#include "filt/fir_filter.h"
 #include "filt/ravg_filter.h"
 #include "filt/spike_filter.h"
 #include "filt/math_func.h"
