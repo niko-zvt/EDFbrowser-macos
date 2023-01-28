@@ -42,7 +42,7 @@
 #include "mainwindow.h"
 #include "viewcurve.h"
 #include "utils.h"
-#include "filteredblockread.h"
+#include "filtered_block_read.h"
 #include "edf_annot_list.h"
 
 

@@ -131,25 +131,27 @@ void UI_ECGExport::Export_RR_intervals()
       import_as_annots=0,
       filenum=0;
 
-  char path[MAX_PATH_LENGTH],
-       str[2048];
+  char path[MAX_PATH_LENGTH]={""},
+       str[2048]={""};
 
-  double *beat_interval_list,
-         *buf;
+  double *beat_interval_list=NULL,
+         *buf=NULL;
 
-  long long *beat_onset_list,
+  long long *beat_onset_list=NULL,
             datrecs,
             smpls_left,
             l_time=0LL;
 
-  sigcompblck_t *signalcomp;
+  sigcompblck_t *signalcomp=NULL;
 
 
-  FILE *outputfile;
+  FILE *outputfile=NULL;
 
   QList<QListWidgetItem *> selectedlist;
 
   annotblck_t annotation;
+
+  flt_blck_rd_t *blockrd=NULL;
 
 
   selectedlist = list->selectedItems();
@@ -188,17 +190,15 @@ void UI_ECGExport::Export_RR_intervals()
   {
     whole_recording = 1;
 
-    class FilteredBlockReadClass blockrd;
-
-    buf = blockrd.init_signalcomp(signalcomp, 1, 0, 0, NULL);
-    if(buf == NULL)
+    blockrd = create_flt_blck_rd(signalcomp, 1, 0, 0, NULL, &buf);
+    if(blockrd == NULL)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Error, cannot initialize FilteredBlockReadClass.");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "create_flt_blck_rd() returned an error.");
       messagewindow.exec();
       return;
     }
 
-    samples_cnt = blockrd.samples_in_buf();
+    samples_cnt = get_samples_flt_blck_rd(blockrd);
     if(samples_cnt < 1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Error, samples_cnt is < 1.");
@@ -238,18 +238,27 @@ void UI_ECGExport::Export_RR_intervals()
 
         if(progress.wasCanceled() == true)
         {
+          free_flt_blck_rd(blockrd);
+          free(buf);
           return;
         }
       }
 
-      if(blockrd.process_signalcomp(i) != 0)
+      if(run_flt_blck_rd(blockrd, i))
       {
         progress.reset();
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Error while reading file.");
         messagewindow.exec();
+        free_flt_blck_rd(blockrd);
+        free(buf);
         return;
       }
     }
+
+    free_flt_blck_rd(blockrd);
+    blockrd = NULL;
+    free(buf);
+    buf = NULL;
 
     progress.reset();
   }
@@ -264,6 +273,8 @@ void UI_ECGExport::Export_RR_intervals()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Error, not enough beats.");
     messagewindow.exec();
+    free_flt_blck_rd(blockrd);
+    free(buf);
     return;
   }
 
@@ -352,6 +363,8 @@ void UI_ECGExport::Export_RR_intervals()
 
     if(!strcmp(path, ""))
     {
+      free_flt_blck_rd(blockrd);
+      free(buf);
       return;
     }
 
@@ -362,6 +375,8 @@ void UI_ECGExport::Export_RR_intervals()
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Error, cannot open outputfile for writing.");
       messagewindow.exec();
+      free_flt_blck_rd(blockrd);
+      free(buf);
       return;
     }
 
