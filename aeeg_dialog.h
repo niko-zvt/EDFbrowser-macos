@@ -39,7 +39,7 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "utils.h"
-#include "filteredblockread.h"
+#include "filtered_block_read.h"
 #include "aeeg_dock.h"
 #include "third_party/fidlib/fidlib.h"
 

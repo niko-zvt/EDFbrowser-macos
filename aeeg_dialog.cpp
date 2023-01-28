@@ -380,22 +380,18 @@ void UI_aeeg_window::start_button_clicked()
     return;
   }
 
-  FilteredBlockReadClass fbr;
-
   ret_err = 0;
 
-  smplbuf = fbr.init_signalcomp(signalcomp, smpls_in_segment, 0, 1, &ret_err);
-  if(smplbuf == NULL)
+  flt_blck_rd_t *fbr = create_flt_blck_rd(signalcomp, smpls_in_segment, 0, 1, &ret_err, &smplbuf);
+  if(fbr == NULL)
   {
     if(ret_err == 1)
     {
-      QMessageBox msgBox(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.", QMessageBox::Close);
-      msgBox.exec();
+      QMessageBox::critical(myobjectDialog, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
     }
     else
     {
-      QMessageBox msgBox(QMessageBox::Critical, "Error", "Internal error (-1)", QMessageBox::Close);
-      msgBox.exec();
+      QMessageBox::critical(myobjectDialog, "Error", "Internal error (-1)");
     }
     free(max_seg_val);
     free(min_seg_val);
@@ -423,6 +419,8 @@ void UI_aeeg_window::start_button_clicked()
     free(min_seg_val);
     free(max_median_val);
     free(min_median_val);
+    free_flt_blck_rd(fbr);
+    free(smplbuf);
     return;
   }
 
@@ -450,6 +448,8 @@ void UI_aeeg_window::start_button_clicked()
     free(min_seg_val);
     free(max_median_val);
     free(min_median_val);
+    free_flt_blck_rd(fbr);
+    free(smplbuf);
     return;
   }
 
@@ -480,15 +480,16 @@ void UI_aeeg_window::start_button_clicked()
       free(fidfilter_lp);
       fid_run_free(fid_run_lp);
       fid_run_freebuf(fidbuf_lp);
+      free_flt_blck_rd(fbr);
+      free(smplbuf);
       return;
     }
 
-    err = fbr.process_signalcomp(i * smpls_in_segment);
+    err = run_flt_blck_rd(fbr, i * smpls_in_segment);
     if(err)
     {
       progress.reset();
-      QMessageBox msgBox(QMessageBox::Critical, "Error", "Internal error (-4)", QMessageBox::Close);
-      msgBox.exec();
+      QMessageBox::critical(myobjectDialog, "Error", "Internal error (-4)");
       return;
     }
 
@@ -531,6 +532,8 @@ void UI_aeeg_window::start_button_clicked()
   free(fidfilter_lp);
   fid_run_free(fid_run_lp);
   fid_run_freebuf(fidbuf_lp);
+  free_flt_blck_rd(fbr);
+  free(smplbuf);
 
   progress.reset();
 

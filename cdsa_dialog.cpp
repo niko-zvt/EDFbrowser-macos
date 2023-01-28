@@ -660,8 +660,6 @@ void UI_cdsa_window::start_button_clicked()
 
   h = h_max - h_min;
 
-  FilteredBlockReadClass fbr;
-
   ret_err = 0;
 
   if(export_data)
@@ -749,18 +747,16 @@ void UI_cdsa_window::start_button_clicked()
     fprintf(dat_f, "\n");
   }
 
-  smplbuf = fbr.init_signalcomp(signalcomp, smpls_in_segment, 0, 1, &ret_err);
-  if(smplbuf == NULL)
+  flt_blck_rd_t *fbr = create_flt_blck_rd(signalcomp, smpls_in_segment, 0, 1, &ret_err, &smplbuf);
+  if(fbr == NULL)
   {
     if(ret_err == 1)
     {
-      QMessageBox msgBox(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.", QMessageBox::Close);
-      msgBox.exec();
+      QMessageBox::critical(myobjectDialog, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
     }
     else
     {
-      QMessageBox msgBox(QMessageBox::Critical, "Error", "Internal error (-1)", QMessageBox::Close);
-      msgBox.exec();
+      QMessageBox::critical(myobjectDialog, "Error", "Internal error (-1)");
     }
     if(dat_f)
     {
@@ -811,10 +807,10 @@ void UI_cdsa_window::start_button_clicked()
       return;
     }
 
-    err = fbr.process_signalcomp(i * smpls_in_segment);
+    err = run_flt_blck_rd(fbr, i * smpls_in_segment);
     if(err)
     {
-      snprintf(str, 1024, "Internal error (-3)  fbr() error: %i file: %s line %i", err, __FILE__, __LINE__);
+      snprintf(str, 1024, "Internal error (-3)  run_flt_blck_rd() error: %i file: %s line %i", err, __FILE__, __LINE__);
       progress.reset();
       QMessageBox::critical(myobjectDialog, "Error", str, QMessageBox::Close);
       if(dat_f)
@@ -917,6 +913,8 @@ void UI_cdsa_window::start_button_clicked()
   progress.reset();
 
   free_fft_wrap(dft);
+  free_flt_blck_rd(fbr);
+  free(smplbuf);
 
   dock_param.signalcomp = signalcomp;
   dock_param.sf = sf;
