@@ -57,7 +57,7 @@
  * In that case a file with a duration of five minutes contains 300 datarecords. The duration of a datarecord can be freely choosen but, if possible, use values from
  * 0.1 to 1 second for easier handling. Just make sure that the total size of one datarecord, expressed in bytes, does not exceed 10MByte (15MBytes for BDF(+)).
  *
- * The RECOMMENDATION of a maximum datarecordsize of 61440 bytes in the EDF and EDF+ specification was usefull in the time people were still using DOS as their main operating system.
+ * The RECOMMENDATION of a maximum datarecordsize of 61440 bytes in the EDF and EDF+ specification was useful in the time people were still using DOS as their main operating system.
  * Using DOS and fast (near) pointers (16-bit pointers), the maximum allocatable block of memory was 64KByte.
  * This is not a concern anymore so the maximum datarecord size now is limited to 10MByte for EDF(+) and 15MByte for BDF(+). This helps to accommodate for higher samplingrates
  * used by modern Analog to Digital Converters.
