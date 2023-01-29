@@ -1207,21 +1207,21 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
 
     if(relative)
     {
-      if((annot->onset - edf_hdr->starttime_offset) < 0LL)
+      if((annot->onset - edf_hdr->starttime_subsec) < 0LL)
       {
         snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "  -%2i:%02i:%02i.%04i",
-                (int)((-(annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING)/ 3600),
-                (int)(((-(annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING) % 3600) / 60),
-                (int)((-(annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING) % 60),
-                (int)((-(annot->onset - edf_hdr->starttime_offset) % TIME_FIXP_SCALING) / 1000LL));
+                (int)((-(annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING)/ 3600),
+                (int)(((-(annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING) % 3600) / 60),
+                (int)((-(annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING) % 60),
+                (int)((-(annot->onset - edf_hdr->starttime_subsec) % TIME_FIXP_SCALING) / 1000LL));
       }
       else
       {
         snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "  %3i:%02i:%02i.%04i",
-                (int)(((annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING)/ 3600),
-                (int)((((annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING) % 3600) / 60),
-                (int)(((annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING) % 60),
-                (int)(((annot->onset - edf_hdr->starttime_offset) % TIME_FIXP_SCALING) / 1000LL));
+                (int)(((annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING)/ 3600),
+                (int)((((annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING) % 3600) / 60),
+                (int)(((annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING) % 60),
+                (int)(((annot->onset - edf_hdr->starttime_subsec) % TIME_FIXP_SCALING) / 1000LL));
       }
     }
     else
@@ -1263,21 +1263,21 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
       listitem->setForeground(mainwindow->maincurve->text_color);
     }
 
-    if((annot->onset - edf_hdr->starttime_offset) < 0LL)
+    if((annot->onset - edf_hdr->starttime_subsec) < 0LL)
     {
       len = snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "onset: -%i:%02i:%02i.%04i",
-              (int)((-(annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING)/ 3600),
-              (int)(((-(annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING) % 3600) / 60),
-              (int)((-(annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING) % 60),
-              (int)((-(annot->onset - edf_hdr->starttime_offset) % TIME_FIXP_SCALING) / 1000LL));
+              (int)((-(annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING)/ 3600),
+              (int)(((-(annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING) % 3600) / 60),
+              (int)((-(annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING) % 60),
+              (int)((-(annot->onset - edf_hdr->starttime_subsec) % TIME_FIXP_SCALING) / 1000LL));
     }
     else
     {
       len = snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "onset: %2i:%02i:%02i.%04i",
-              (int)(((annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING)/ 3600),
-              (int)((((annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING) % 3600) / 60),
-              (int)(((annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING) % 60),
-              (int)(((annot->onset - edf_hdr->starttime_offset) % TIME_FIXP_SCALING) / 1000LL));
+              (int)(((annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING)/ 3600),
+              (int)((((annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING) % 3600) / 60),
+              (int)(((annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING) % 60),
+              (int)(((annot->onset - edf_hdr->starttime_subsec) % TIME_FIXP_SCALING) / 1000LL));
     }
 
     if(annot->duration[0]!=0)
@@ -1421,14 +1421,14 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
 
   if(mainwindow->video_player->status == VIDEO_STATUS_PLAYING)
   {
-    mainwindow->video_player_seek((int)((annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING));
+    mainwindow->video_player_seek((int)((annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING));
 
     return;
   }
 
   if(mainwindow->video_player->status == VIDEO_STATUS_PAUSED)
   {
-    mainwindow->video_player_seek((int)((annot->onset - edf_hdr->starttime_offset) / TIME_FIXP_SCALING));
+    mainwindow->video_player_seek((int)((annot->onset - edf_hdr->starttime_subsec) / TIME_FIXP_SCALING));
   }
 
   if(mainwindow->annot_editor_active)
@@ -1441,11 +1441,11 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
 
   if(centered)
   {
-    mainwindow->set_viewtime((annot->onset - edf_hdr->starttime_offset) - (mainwindow->pagetime / 2));
+    mainwindow->set_viewtime((annot->onset - edf_hdr->starttime_subsec) - (mainwindow->pagetime / 2));
   }
   else
   {
-    mainwindow->set_viewtime(annot->onset - edf_hdr->starttime_offset);
+    mainwindow->set_viewtime(annot->onset - edf_hdr->starttime_subsec);
   }
 }
 

@@ -144,7 +144,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   annot_smp_per_record += 11;
 
-  taltime = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->starttime_offset;
+  taltime = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->starttime_subsec;
 
   duration = 0;
 
@@ -1416,8 +1416,8 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
           if(annotationlist_nr != mainwindow->sel_viewtime)
           {
-            annot_difftime -= mainwindow->edfheaderlist[mainwindow->sel_viewtime]->starttime_offset;
-            annot_difftime += mainwindow->edfheaderlist[annotationlist_nr]->starttime_offset;
+            annot_difftime -= mainwindow->edfheaderlist[mainwindow->sel_viewtime]->starttime_subsec;
+            annot_difftime += mainwindow->edfheaderlist[annotationlist_nr]->starttime_subsec;
           }
         }
 

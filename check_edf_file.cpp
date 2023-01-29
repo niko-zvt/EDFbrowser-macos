@@ -361,6 +361,8 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
 
   date_time_to_utc(&edfhdr->utc_starttime, date_time);
 
+  edfhdr->utc_starttime_hr = edfhdr->utc_starttime * TIME_FIXP_SCALING;
+
   edfhdr->l_starttime = 3600 * atoi(scratchpad);
   edfhdr->l_starttime += 60 * atoi(scratchpad + 3);
   edfhdr->l_starttime += atoi(scratchpad + 6);

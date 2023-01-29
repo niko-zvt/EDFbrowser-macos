@@ -1,4 +1,11 @@
 
+ version 2.00      to be defined
+ --------------
+
+ - Fixed a bug that could potentially misalign the timing when more than one file was opened at the same time
+   and the files had subsecond starttime offsets (EDF+).
+
+
  version 1.99      January 28, 2023
  --------------
 

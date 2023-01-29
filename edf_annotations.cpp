@@ -259,7 +259,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == true)
+      if((progress.wasCanceled() == true) && i)  /* read at least the first datarecord so that we have the subsecond starttime */
       {
         edf_hdr->annots_not_read = 1;
 
@@ -363,7 +363,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
                 }
                 else
                 {
-                  edf_hdr->starttime_offset = time_tmp;
+                  edf_hdr->starttime_subsec = time_tmp;
                 }
               }
               elapsedtime = time_tmp;
@@ -552,7 +552,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
               memset(&annotblock, 0, sizeof(annotblck_t));
               annotblock.edfhdr = edf_hdr;
               annotblock.onset = ((long long)i * data_record_duration) + ((long long)k * nk_trigger_sample_duration);
-              annotblock.onset += edf_hdr->starttime_offset;
+              annotblock.onset += edf_hdr->starttime_subsec;
               strlcpy(annotblock.description, nk_triggerlabel[j], MAX_ANNOTATION_LEN_II + 1);
               annotblock.ident = (1 << ANNOT_ID_NK_TRIGGER);
 

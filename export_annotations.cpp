@@ -488,11 +488,11 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       {
         if(include_duration)
         {
-          fprintf(annotationfile, "%+.7f%c%s%c%s\n", (double)(annot->onset - hdr->starttime_offset) / TIME_FIXP_SCALING, separator, annot->duration, separator, str);
+          fprintf(annotationfile, "%+.7f%c%s%c%s\n", (double)(annot->onset - hdr->starttime_subsec) / TIME_FIXP_SCALING, separator, annot->duration, separator, str);
         }
         else
         {
-          fprintf(annotationfile, "%+.7f%c%s\n", (double)(annot->onset - hdr->starttime_offset) / TIME_FIXP_SCALING, separator, str);
+          fprintf(annotationfile, "%+.7f%c%s\n", (double)(annot->onset - hdr->starttime_subsec) / TIME_FIXP_SCALING, separator, str);
         }
       }
 
@@ -630,7 +630,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
     utc_to_date_time(hdr->utc_starttime, &tm);
 
     fprintf(annotationfile, " <recording_start_time>%04i-%02i-%02iT%02i:%02i:%02i.%07i</recording_start_time>\n",
-                            tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, (int)hdr->starttime_offset);
+                            tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, (int)hdr->starttime_subsec);
 
     for(j=0; j < annot_cnt; j++)
     {

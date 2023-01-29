@@ -667,7 +667,7 @@ void UI_Mainwindow::set_timesync(QAction *)
     {
       if(i!=sel_viewtime)
       {
-        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING) - edfheaderlist[i]->starttime_offset;
+        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING) - edfheaderlist[i]->starttime_subsec;
       }
     }
   }
@@ -706,7 +706,7 @@ void UI_Mainwindow::set_timesync(int mode)
         {
           if(i!=sel_viewtime)
           {
-            edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING) - edfheaderlist[i]->starttime_offset;
+            edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING) - edfheaderlist[i]->starttime_subsec;
           }
         }
       }
@@ -744,8 +744,8 @@ void UI_Mainwindow::sync_by_crosshairs()
       viewtime_sync = VIEWTIME_USER_DEF_SYNCED;
 
       maincurve->crosshair_2.edf_hdr->viewtime
-      -= ((maincurve->crosshair_1.time - maincurve->crosshair_1.edf_hdr->l_starttime - maincurve->crosshair_1.edf_hdr->viewtime - maincurve->crosshair_1.edf_hdr->starttime_offset)
-      - (maincurve->crosshair_2.time - maincurve->crosshair_2.edf_hdr->l_starttime - maincurve->crosshair_2.edf_hdr->viewtime - maincurve->crosshair_2.edf_hdr->starttime_offset));
+      -= ((maincurve->crosshair_1.time - maincurve->crosshair_1.edf_hdr->l_starttime - maincurve->crosshair_1.edf_hdr->viewtime - maincurve->crosshair_1.edf_hdr->starttime_subsec)
+      - (maincurve->crosshair_2.time - maincurve->crosshair_2.edf_hdr->l_starttime - maincurve->crosshair_2.edf_hdr->viewtime - maincurve->crosshair_2.edf_hdr->starttime_subsec));
 
       maincurve->crosshair_2.x_position = maincurve->crosshair_1.x_position;
 
@@ -978,7 +978,7 @@ void UI_Mainwindow::set_viewtime(long long new_viewtime)
     {
       if(i!=sel_viewtime)
       {
-        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING) - edfheaderlist[i]->starttime_offset;
+        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING) - edfheaderlist[i]->starttime_subsec;
       }
     }
   }
@@ -2046,6 +2046,8 @@ void UI_Mainwindow::open_new_file()
       }
     }
 
+    edfhdr->utc_starttime_hr = (edfhdr->utc_starttime * TIME_FIXP_SCALING) + edfhdr->starttime_subsec;
+
     if((edfhdr->bdf && (!edfhdr->bdfplus) && read_biosemi_status_signal) && (!live_stream_active))
     {
       if((edfhdr->datarecords * (unsigned long long)edfhdr->recordsize) <= maxfilesize_to_readin_annotations)
@@ -2085,7 +2087,10 @@ void UI_Mainwindow::open_new_file()
 
       if(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)
       {
-        edfheaderlist[files_open]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset - edfheaderlist[files_open]->starttime_offset - ((edfheaderlist[files_open]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING);
+        edfheaderlist[files_open]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec -
+                                              edfheaderlist[files_open]->starttime_subsec -
+                                              ((edfheaderlist[files_open]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) *
+                                              TIME_FIXP_SCALING);
       }
 
       if(viewtime_sync==VIEWTIME_USER_DEF_SYNCED)
@@ -3579,7 +3584,7 @@ void UI_Mainwindow::set_display_time_whole_rec()
     {
       if(i!=sel_viewtime)
       {
-        edfheaderlist[i]->viewtime = ((edfheaderlist[sel_viewtime]->utc_starttime - edfheaderlist[i]->utc_starttime) * TIME_FIXP_SCALING) + edfheaderlist[sel_viewtime]->starttime_offset - - edfheaderlist[i]->starttime_offset;
+        edfheaderlist[i]->viewtime = ((edfheaderlist[sel_viewtime]->utc_starttime - edfheaderlist[i]->utc_starttime) * TIME_FIXP_SCALING) + edfheaderlist[sel_viewtime]->starttime_subsec - - edfheaderlist[i]->starttime_subsec;
       }
     }
   }

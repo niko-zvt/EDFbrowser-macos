@@ -211,7 +211,7 @@ int BDF_triggers::get_triggers(edfhdrblck_t *hdr)
         {
           annotation.edfhdr = hdr;
           annotation.onset = (records_read * TIME_FIXP_SCALING) + ((long long)(i / 3) * status_sample_duration);
-          annotation.onset += hdr->starttime_offset;
+          annotation.onset += hdr->starttime_subsec;
           strlcpy(annotation.description, "new epoch", MAX_ANNOTATION_LEN_II + 1);
           annotation.ident = (1 << ANNOT_ID_BS_TRIGGER);
           if(edfplus_annotation_add_item(annot_list, annotation))
@@ -244,7 +244,7 @@ int BDF_triggers::get_triggers(edfhdrblck_t *hdr)
           {
             annotation.edfhdr = hdr;
             annotation.onset = (records_read * TIME_FIXP_SCALING) + ((long long)(i / 3) * status_sample_duration);
-            annotation.onset += hdr->starttime_offset;
+            annotation.onset += hdr->starttime_subsec;
             snprintf(annotation.description, MAX_ANNOTATION_LEN_II + 1, "Trigger Input %i", j + 1);
             annotation.ident = (1 << ANNOT_ID_BS_TRIGGER);
             if(edfplus_annotation_add_item(annot_list, annotation))

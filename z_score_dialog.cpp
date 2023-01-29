@@ -1278,7 +1278,7 @@ void UI_ZScoreWindow::jumpButtonClicked()
 
       mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime / 2);
 
-      mainwindow->edfheaderlist[i]->viewtime -= mainwindow->edfheaderlist[file_num]->starttime_offset;
+      mainwindow->edfheaderlist[i]->viewtime -= mainwindow->edfheaderlist[file_num]->starttime_subsec;
     }
   }
 
@@ -1288,14 +1288,14 @@ void UI_ZScoreWindow::jumpButtonClicked()
 
     mainwindow->edfheaderlist[file_num]->viewtime -= (mainwindow->pagetime / 2);
 
-    mainwindow->edfheaderlist[file_num]->viewtime -= mainwindow->edfheaderlist[file_num]->starttime_offset;
+    mainwindow->edfheaderlist[file_num]->viewtime -= mainwindow->edfheaderlist[file_num]->starttime_subsec;
   }
 
   if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
   {
     temp = onset - mainwindow->edfheaderlist[file_num]->viewtime;
 
-    temp -= mainwindow->edfheaderlist[file_num]->starttime_offset;
+    temp -= mainwindow->edfheaderlist[file_num]->starttime_subsec;
 
     temp -= (mainwindow->pagetime / 2);
 

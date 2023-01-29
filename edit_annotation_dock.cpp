@@ -257,7 +257,7 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
 
   annot->onset = annotEditGetOnset();
 
-  annot->onset += edf_hdr->starttime_offset;
+  annot->onset += edf_hdr->starttime_subsec;
 
   if(dblcmp(duration_spinbox->value(), 0.0) > 0)
   {
@@ -354,7 +354,7 @@ void UI_AnnotationEditwindow::createButtonClicked()
 
   annotation.onset = annotEditGetOnset();
 
-  annotation.onset += edf_hdr->starttime_offset;
+  annotation.onset += edf_hdr->starttime_subsec;
 
   annotation.edfhdr = edf_hdr;
 
@@ -496,7 +496,7 @@ void UI_AnnotationEditwindow::set_selected_annotation(int annot_nr)
 
   annot_descript_lineEdit->setText(QString::fromUtf8(annot->description));
 
-  l_tmp = annot->onset - ((edfhdrblck_t *)(annot->edfhdr))->starttime_offset;
+  l_tmp = annot->onset - ((edfhdrblck_t *)(annot->edfhdr))->starttime_subsec;
 
   if(l_tmp < 0LL)
   {
@@ -567,7 +567,7 @@ void UI_AnnotationEditwindow::set_selected_annotation(annotblck_t *annot)
 
   annot_descript_lineEdit->setText(QString::fromUtf8(annot->description));
 
-  l_tmp = annot->onset - ((edfhdrblck_t *)(annot->edfhdr))->starttime_offset;
+  l_tmp = annot->onset - ((edfhdrblck_t *)(annot->edfhdr))->starttime_subsec;
 
   if(l_tmp < 0LL)
   {

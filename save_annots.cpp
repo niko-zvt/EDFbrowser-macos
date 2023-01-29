@@ -414,7 +414,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
 
   fseeko(inputfile, (long long)(hdr->hdrsize), SEEK_SET);
 
-  time = hdr->starttime_offset;
+  time = hdr->starttime_subsec;
 
   annot_cnt = edfplus_annotation_size(annot_list);
 

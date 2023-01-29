@@ -99,7 +99,7 @@ int edfplus_annotation_get_tal_timestamp_decimal_cnt(edfhdrblck_t *hdr)
 
     for(i=7; i>0; i--)
     {
-      if(hdr->starttime_offset % j)
+      if(hdr->starttime_subsec % j)
       {
         break;
       }

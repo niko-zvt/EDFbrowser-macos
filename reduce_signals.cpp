@@ -731,7 +731,7 @@ void UI_ReduceSignalsWindow::StartConversion()
 
   time_diff = (long long)(spinBox1->value() - 1) * edfhdr->long_data_record_duration;
 
-  taltime = (time_diff + edfhdr->starttime_offset) % TIME_FIXP_SCALING;
+  taltime = (time_diff + edfhdr->starttime_subsec) % TIME_FIXP_SCALING;
 
   endtime = (long long)(spinBox2->value() - (spinBox1->value() - 1)) * edfhdr->long_data_record_duration + taltime;
 
@@ -784,7 +784,7 @@ void UI_ReduceSignalsWindow::StartConversion()
       }
     }
 
-    new_starttime = edfhdr->utc_starttime + ((time_diff + edfhdr->starttime_offset) / TIME_FIXP_SCALING);
+    new_starttime = edfhdr->utc_starttime + ((time_diff + edfhdr->starttime_subsec) / TIME_FIXP_SCALING);
 
     onset_diff = (new_starttime - edfhdr->utc_starttime) * TIME_FIXP_SCALING;
 
@@ -921,7 +921,7 @@ void UI_ReduceSignalsWindow::StartConversion()
     goto END_3;
   }
 
-  new_starttime = edfhdr->utc_starttime + ((time_diff + edfhdr->starttime_offset) / TIME_FIXP_SCALING);
+  new_starttime = edfhdr->utc_starttime + ((time_diff + edfhdr->starttime_subsec) / TIME_FIXP_SCALING);
 
   utc_to_date_time(new_starttime, &dts);
 

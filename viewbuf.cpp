@@ -815,7 +815,7 @@ void UI_Mainwindow::setup_viewbuf()
 
     if(viewtime_indicator_type == VIEWTIME_INDICATOR_TYPE_DATE_REAL_RELATIVE)
     {
-      l_temp = (edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_FIXP_SCALING;
+      l_temp = (edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec) / TIME_FIXP_SCALING;
       l_temp += edfheaderlist[sel_viewtime]->utc_starttime;
       utc_to_date_time(l_temp, &date_time_str);
 
@@ -827,10 +827,10 @@ void UI_Mainwindow::setup_viewbuf()
       if(viewtime_indicator_type != VIEWTIME_INDICATOR_TYPE_RELATIVE)
       {
         snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "%2i:%02i:%02i.%04i (",
-                (int)((((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
-                (int)((((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                (int)(((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_FIXP_SCALING) % 60LL),
-                (int)(((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) % TIME_FIXP_SCALING) / 1000LL));
+                (int)((((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec) / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                (int)((((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec) / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                (int)(((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec) / TIME_FIXP_SCALING) % 60LL),
+                (int)(((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec) % TIME_FIXP_SCALING) / 1000LL));
       }
 
       snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "%i:%02i:%02i.%04i",
@@ -846,7 +846,7 @@ void UI_Mainwindow::setup_viewbuf()
     }
     else
     {
-      l_temp = edfheaderlist[sel_viewtime]->l_starttime + ((edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) % (86400LL * TIME_FIXP_SCALING));
+      l_temp = edfheaderlist[sel_viewtime]->l_starttime + ((edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec) % (86400LL * TIME_FIXP_SCALING));
       if(l_temp<=0)
       {
         l_temp += (86400LL * TIME_FIXP_SCALING);

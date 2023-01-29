@@ -748,12 +748,12 @@ void UI_Signalswindow::show_signals(int row)
           date_time.minute,
           date_time.second);
 
-  if(mainwindow->edfheaderlist[row]->starttime_offset != 0LL)
+  if(mainwindow->edfheaderlist[row]->starttime_subsec != 0LL)
   {
 #ifdef Q_OS_WIN32
-    __mingw_snprintf(str + strlen(str), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_offset);
+    __mingw_snprintf(str + strlen(str), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_subsec);
 #else
-    snprintf(str + strlen(str), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_offset);
+    snprintf(str + strlen(str), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_subsec);
 #endif
 
     remove_trailing_zeros(str);
@@ -772,7 +772,7 @@ void UI_Signalswindow::show_signals(int row)
   label4->setText(str);
 
   utc_to_date_time(mainwindow->edfheaderlist[row]->utc_starttime +
-   ((file_duration + mainwindow->edfheaderlist[row]->starttime_offset) / TIME_FIXP_SCALING), &date_time);
+   ((file_duration + mainwindow->edfheaderlist[row]->starttime_subsec) / TIME_FIXP_SCALING), &date_time);
 
   date_time.month_str[0] += 32;
   date_time.month_str[1] += 32;
@@ -786,9 +786,9 @@ void UI_Signalswindow::show_signals(int row)
           date_time.minute,
           date_time.second);
 #ifdef Q_OS_WIN32
-  __mingw_snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_offset + file_duration) % TIME_FIXP_SCALING);
+  __mingw_snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_subsec + file_duration) % TIME_FIXP_SCALING);
 #else
-  snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_offset + file_duration) % TIME_FIXP_SCALING);
+  snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_subsec + file_duration) % TIME_FIXP_SCALING);
 #endif
   remove_trailing_zeros(str);
 

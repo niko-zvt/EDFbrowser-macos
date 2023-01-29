@@ -2082,7 +2082,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
                 {
                   memset(&annotation, 0, sizeof(annotblck_t));
                   annotation.onset = ((trigger_datrec * signalcomp->edfhdr->long_data_record_duration) + (trigger_sample * time_per_sample));
-                  annotation.onset += signalcomp->edfhdr->starttime_offset;
+                  annotation.onset += signalcomp->edfhdr->starttime_subsec;
                   annotation.edfhdr = signalcomp->edfhdr;
                   strncpy(annotation.description, scratchpad, MAX_ANNOTATION_LEN);
                   annotation.description[MAX_ANNOTATION_LEN] = 0;
@@ -2199,7 +2199,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
   if(encoding == 0)
   {
     onset = atoll_x(scratchpad, TIME_FIXP_SCALING);
-    onset += mainwindow->edfheaderlist[0]->starttime_offset;
+    onset += mainwindow->edfheaderlist[0]->starttime_subsec;
 
     *onset_time = onset;
 
