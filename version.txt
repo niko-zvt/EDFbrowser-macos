@@ -1,5 +1,5 @@
 
- version 2.00      to be defined
+ version 2.00      January 29, 2023
  --------------
 
  - Fixed a bug that could potentially misalign the timing when more than one file was opened at the same time
