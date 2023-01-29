@@ -175,12 +175,12 @@ public:
          h_scaling;
 
   graphbuf_t *graphicBuf,
-            *printBuf;
+             *printBuf;
 
   activemarkersblck_t *active_markers;
 
   crosshair_t crosshair_1,
-                         crosshair_2;
+              crosshair_2;
 
   QColor backgroundcolor,
          small_ruler_color,

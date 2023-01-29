@@ -667,7 +667,7 @@ void UI_Mainwindow::set_timesync(QAction *)
     {
       if(i!=sel_viewtime)
       {
-        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING) - edfheaderlist[i]->starttime_subsec;
+        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + (edfheaderlist[sel_viewtime]->utc_starttime_hr - edfheaderlist[i]->utc_starttime_hr);
       }
     }
   }
@@ -706,7 +706,7 @@ void UI_Mainwindow::set_timesync(int mode)
         {
           if(i!=sel_viewtime)
           {
-            edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING) - edfheaderlist[i]->starttime_subsec;
+            edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + (edfheaderlist[sel_viewtime]->utc_starttime_hr - edfheaderlist[i]->utc_starttime_hr);
           }
         }
       }
@@ -734,28 +734,25 @@ void UI_Mainwindow::set_timesync(int mode)
 
 void UI_Mainwindow::sync_by_crosshairs()
 {
-  if(files_open<2)  return;
-  if(signalcomps<2)  return;
+  if((files_open < 2) || (signalcomps < 2))  return;
 
-  if(maincurve->crosshair_1.active&&maincurve->crosshair_2.active)
-  {
-    if(maincurve->crosshair_1.edf_hdr != maincurve->crosshair_2.edf_hdr)
-    {
-      viewtime_sync = VIEWTIME_USER_DEF_SYNCED;
+  if(!maincurve->crosshair_1.active || !maincurve->crosshair_2.active)  return;
 
-      maincurve->crosshair_2.edf_hdr->viewtime
-      -= ((maincurve->crosshair_1.time - maincurve->crosshair_1.edf_hdr->l_starttime - maincurve->crosshair_1.edf_hdr->viewtime - maincurve->crosshair_1.edf_hdr->starttime_subsec)
-      - (maincurve->crosshair_2.time - maincurve->crosshair_2.edf_hdr->l_starttime - maincurve->crosshair_2.edf_hdr->viewtime - maincurve->crosshair_2.edf_hdr->starttime_subsec));
+  if(maincurve->crosshair_1.edf_hdr == maincurve->crosshair_2.edf_hdr)  return;
 
-      maincurve->crosshair_2.x_position = maincurve->crosshair_1.x_position;
+  viewtime_sync = VIEWTIME_USER_DEF_SYNCED;
 
-      user_def_sync_act->setChecked(true);
+  maincurve->crosshair_2.edf_hdr->viewtime
+  -= ((maincurve->crosshair_1.time_clock - maincurve->crosshair_1.edf_hdr->l_starttime - maincurve->crosshair_1.edf_hdr->viewtime - maincurve->crosshair_1.edf_hdr->starttime_subsec)
+  - (maincurve->crosshair_2.time_clock - maincurve->crosshair_2.edf_hdr->l_starttime - maincurve->crosshair_2.edf_hdr->viewtime - maincurve->crosshair_2.edf_hdr->starttime_subsec));
 
-      viewtime_sync = VIEWTIME_USER_DEF_SYNCED;
+  maincurve->crosshair_2.x_position = maincurve->crosshair_1.x_position;
 
-      setup_viewbuf();
-    }
-  }
+  user_def_sync_act->setChecked(true);
+
+  viewtime_sync = VIEWTIME_USER_DEF_SYNCED;
+
+  setup_viewbuf();
 }
 
 
@@ -978,7 +975,7 @@ void UI_Mainwindow::set_viewtime(long long new_viewtime)
     {
       if(i!=sel_viewtime)
       {
-        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec - ((edfheaderlist[i]->utc_starttime - edfheaderlist[sel_viewtime]->utc_starttime) * TIME_FIXP_SCALING) - edfheaderlist[i]->starttime_subsec;
+        edfheaderlist[i]->viewtime = edfheaderlist[sel_viewtime]->viewtime + (edfheaderlist[sel_viewtime]->utc_starttime_hr - edfheaderlist[i]->utc_starttime_hr);
       }
     }
   }

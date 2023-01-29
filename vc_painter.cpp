@@ -1072,10 +1072,10 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         signalcomp[i]->physdimension);
         painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 40.0) * printsize_y_factor), string);
         snprintf(string, 128, "%2i:%02i:%02i.%04i",
-                        (int)(((crosshair_1.time / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
-                        (int)(((crosshair_1.time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                        (int)((crosshair_1.time / TIME_FIXP_SCALING) % 60LL),
-                        (int)((crosshair_1.time % TIME_FIXP_SCALING) / 1000LL));
+                        (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                        (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                        (int)((crosshair_1.time_clock / TIME_FIXP_SCALING) % 60LL),
+                        (int)((crosshair_1.time_clock % TIME_FIXP_SCALING) / 1000LL));
         painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 25.0) * printsize_y_factor), string);
         if(signalcomp[i]->alias[0] != 0)
         {
@@ -1105,10 +1105,10 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         signalcomp[i]->physdimension);
         painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - (10 + (font_pixel_height * 2)), string);
         snprintf(string, 128, "%2i:%02i:%02i.%04i",
-                        (int)(((crosshair_1.time / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
-                        (int)(((crosshair_1.time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                        (int)((crosshair_1.time / TIME_FIXP_SCALING) % 60LL),
-                        (int)((crosshair_1.time % TIME_FIXP_SCALING) / 1000LL));
+                        (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                        (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                        (int)((crosshair_1.time_clock / TIME_FIXP_SCALING) % 60LL),
+                        (int)((crosshair_1.time_clock % TIME_FIXP_SCALING) / 1000LL));
         if(crosshair_1.time_relative >= TIME_FIXP_SCALING)
         {
           snprintf(string + strlen(string), 32, " (%i:%02i:%02i.%04i)",
@@ -1154,16 +1154,16 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         signalcomp[i]->physdimension);
         painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 70.0) * printsize_y_factor), string);
         snprintf(string, 128, "%2i:%02i:%02i.%04i",
-                        (int)(((crosshair_2.time / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
-                        (int)(((crosshair_2.time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                        (int)((crosshair_2.time / TIME_FIXP_SCALING) % 60LL),
-                        (int)((crosshair_2.time % TIME_FIXP_SCALING) / 1000LL));
+                        (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                        (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                        (int)((crosshair_2.time_clock / TIME_FIXP_SCALING) % 60LL),
+                        (int)((crosshair_2.time_clock % TIME_FIXP_SCALING) / 1000LL));
         painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 55.0) * printsize_y_factor), string);
         snprintf(string, 128, "delta %+f %s",
                         crosshair_2.value - crosshair_1.value,
                         signalcomp[i]->physdimension);
         painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 40.0) * printsize_y_factor), string);
-        l_time = crosshair_2.time - crosshair_1.time;
+        l_time = crosshair_2.time_clock - crosshair_1.time_clock;
         if(l_time<0) l_time = -l_time;
         snprintf(string, 128, "delta %i:%02i:%02i.%04i",
                         (int)((l_time / TIME_FIXP_SCALING)/ 3600LL),
@@ -1199,10 +1199,10 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         signalcomp[i]->physdimension);
         painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (font_pixel_height * 4)), string);
         snprintf(string, 128, "%2i:%02i:%02i.%04i",
-                        (int)(((crosshair_2.time / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
-                        (int)(((crosshair_2.time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                        (int)((crosshair_2.time / TIME_FIXP_SCALING) % 60LL),
-                        (int)((crosshair_2.time % TIME_FIXP_SCALING) / 1000LL));
+                        (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                        (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                        (int)((crosshair_2.time_clock / TIME_FIXP_SCALING) % 60LL),
+                        (int)((crosshair_2.time_clock % TIME_FIXP_SCALING) / 1000LL));
         if(crosshair_2.time_relative >= TIME_FIXP_SCALING)
         {
           snprintf(string + strlen(string), 32, " (%i:%02i:%02i.%04i)",
@@ -1223,7 +1223,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         crosshair_2.value - crosshair_1.value,
                         signalcomp[i]->physdimension);
         painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (font_pixel_height * 2)), string);
-        l_time = crosshair_2.time - crosshair_1.time;
+        l_time = crosshair_2.time_clock - crosshair_1.time_clock;
         if(l_time<0) l_time = -l_time;
         if(l_time >= TIME_FIXP_SCALING)
         {

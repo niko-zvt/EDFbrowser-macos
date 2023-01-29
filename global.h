@@ -232,8 +232,8 @@ typedef struct
   int       plus_recording_additional_offset;
   long long l_starttime;       /* high resolution clocktime (24 hours, no date), multiplied by TIME_FIXP_SCALING */
   long long utc_starttime;     /* seconds since the epoch january 1, 1970 */
-  long long utc_starttime_hr;  /* high resolution, multiplied by TIME_FIXP_SCALING */
-  long long starttime_subsec;  /* subsecond starttime (used by EDF+) */
+  long long utc_starttime_hr;  /* high resolution, multiplied by TIME_FIXP_SCALING (includes the subsecond starttime) */
+  long long starttime_subsec;  /* subsecond starttime (used by EDF+), multiplied by TIME_FIXP_SCALING */
   char      reserved[45];
   int       hdrsize;
   int       edfsignals;
@@ -411,8 +411,8 @@ typedef struct
   int y_position;
   int y_value;
   double value;
-  long long time;
-  long long time_relative;
+  long long time_clock;     /* clocktime (24 hours), multiplied by TIME_FIXP_SCALING */
+  long long time_relative;  /* time relative to start of recording, multiplied by TIME_FIXP_SCALING */
   int has_hor_line;
   int dot_sz;
 } crosshair_t;
