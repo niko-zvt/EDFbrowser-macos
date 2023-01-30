@@ -171,7 +171,7 @@ static int init_frequencies(t_rz_spec *spec)
     {
       spec->error = -2;
       snprintf(spec->err_msg, T_RZ_MAX_MSG_LEN, "init_frequencies(): reached max frequencies: %i   line: %i  file: %s\n", spec->r, __LINE__, __FILE__);
-      fprintf(stderr, spec->err_msg);
+      fprintf(stderr, "%s", spec->err_msg);
       return -2;
     }
 
@@ -1021,7 +1021,7 @@ static int func_b(t_rz_spec *spec, int n)
   {
     snprintf(spec->err_msg, T_RZ_MAX_MSG_LEN, "func_b() error: %i   line: %i  file: %s\n", err, __LINE__, __FILE__);
     spec->error = -1;
-    fprintf(stderr, spec->err_msg);
+    fprintf(stderr, "%s", spec->err_msg);
     err = 1;
   }
 
