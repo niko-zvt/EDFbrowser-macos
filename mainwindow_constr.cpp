@@ -416,6 +416,8 @@ UI_Mainwindow::UI_Mainwindow()
   hypnogram_annot_ov_color[4] = QColor(0, 64, 192, 32);
   hypnogram_annot_ov_color[5] = QColor(128, 192, 64, 32);
 
+  hypnogramdock_height = 150;
+
   strlcpy(ecg_qrs_rpeak_descr, "R-peak", 32);
 
   use_signallabel_in_annot_descr = 1;

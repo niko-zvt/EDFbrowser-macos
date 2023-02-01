@@ -264,6 +264,7 @@ public:
       channel_linked_annotations,
       hypnogram_use_epoch_len,
       hypnogram_use_overlays,
+      hypnogramdock_height,
       dig_min_max_overflow,
       dig_min_max_overflow_warning_showed,
       options_dialog_idx,

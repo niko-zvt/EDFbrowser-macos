@@ -53,8 +53,9 @@ UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, hypnogram_dock_param_t p
   frame->setContentsMargins(0, 0, 0, 0);
 
   hypnogram_curve = new hypnogram_curve_widget;
-  hypnogram_curve->setMinimumHeight(100 * h_scaling);
-  hypnogram_curve->setMinimumWidth(100 * w_scaling);
+  hypnogram_curve->setMinimumHeight(mainwindow->hypnogramdock_height);
+  hypnogram_curve->setMaximumHeight(mainwindow->hypnogramdock_height);
+  hypnogram_curve->setMinimumWidth(100);
   hypnogram_curve->setContentsMargins(0, 0, 0, 0);
   hypnogram_curve->set_params(&param);
 
@@ -90,15 +91,16 @@ UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, hypnogram_dock_param_t p
   hypnogram_dock->setContextMenuPolicy(Qt::CustomContextMenu);
 
   context_menu = new QMenu(hypnogram_dock);
-//  QAction *settings_act = new QAction("Settings", this);
+  QAction *settings_act = new QAction("Settings", this);
   QAction *close_act = new QAction("Close", this);
-//  context_menu->addAction(settings_act);
+  context_menu->addAction(settings_act);
   context_menu->addAction(close_act);
 
   QObject::connect(mainwindow,     SIGNAL(file_position_changed(long long)),   this, SLOT(file_pos_changed(long long)));
   QObject::connect(mainwindow,     SIGNAL(file_position_changed(long long)),   this, SLOT(file_pos_changed(long long)));
   QObject::connect(hypnogram_dock, SIGNAL(destroyed(QObject *)),               this, SLOT(hypnogram_dock_destroyed(QObject *)));
   QObject::connect(hypnogram_dock, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(show_context_menu(QPoint)));
+  QObject::connect(settings_act,   SIGNAL(triggered(bool)),                    this, SLOT(show_settings(bool)));
   QObject::connect(close_act,      SIGNAL(triggered(bool)),                    this, SLOT(close_dock(bool)));
 
   file_pos_changed(0);
@@ -184,6 +186,59 @@ void UI_hypnogram_dock::show_context_menu(QPoint)
 void UI_hypnogram_dock::file_pos_changed(long long)
 {
   trck_indic->set_position((int)((param.edfhdr->viewtime + (mainwindow->pagetime / 2)) / 10000000LL));
+}
+
+
+void UI_hypnogram_dock::show_settings(bool)
+{
+  QDialog *settings_dialog = new QDialog;
+  settings_dialog->setMinimumSize(300, 200);
+  settings_dialog->setWindowTitle("Hypnogram");
+  settings_dialog->setModal(true);
+  settings_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+
+  height_spinbox = new QSpinBox;
+  height_spinbox->setRange(80, 500);
+  height_spinbox->setSingleStep(10);
+  height_spinbox->setSuffix(" px");
+  height_spinbox->setValue(mainwindow->hypnogramdock_height);
+
+  QPushButton *pushButton1 = new QPushButton;
+  pushButton1->setText("Close");
+
+  QHBoxLayout *hlayout1 = new QHBoxLayout;
+  hlayout1->addStretch(1000);
+  hlayout1->addWidget(pushButton1);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addWidget(height_spinbox);
+  hlayout2->addStretch(1000);
+
+  QFormLayout *flayout = new QFormLayout;
+  flayout->addRow("Dock height: ", hlayout2);
+
+  QVBoxLayout *vlayout1 = new QVBoxLayout;
+  vlayout1->addStretch(1000);
+  vlayout1->addLayout(flayout);
+  vlayout1->addStretch(1000);
+  vlayout1->addSpacing(20);
+  vlayout1->addLayout(hlayout1);
+
+  settings_dialog->setLayout(vlayout1);
+
+  QObject::connect(pushButton1,    SIGNAL(clicked()),         settings_dialog, SLOT(close()));
+  QObject::connect(height_spinbox, SIGNAL(valueChanged(int)), this,            SLOT(height_spinbox_changed(int)));
+
+  settings_dialog->exec();
+}
+
+
+void UI_hypnogram_dock::height_spinbox_changed(int val)
+{
+  mainwindow->hypnogramdock_height = val;
+
+  hypnogram_curve->setMinimumHeight(mainwindow->hypnogramdock_height);
+  hypnogram_curve->setMaximumHeight(mainwindow->hypnogramdock_height);
 }
 
 

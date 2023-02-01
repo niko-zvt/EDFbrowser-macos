@@ -287,6 +287,7 @@ void UI_aeeg_dock::plot_margins_checkbox_changed(int)
   aeeg_curve->update();
 }
 
+
 void UI_aeeg_dock::height_spinbox_changed(int val)
 {
   mainwindow->aeegdock_height = val;

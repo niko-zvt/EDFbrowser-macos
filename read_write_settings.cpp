@@ -2056,6 +2056,23 @@ void UI_Mainwindow::read_general_settings()
       xml_go_up(xml_hdl);
     }
 
+    if(!(xml_goto_nth_element_inside(xml_hdl, "hypnogramdock_height", 0)))
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        xml_close(xml_hdl);
+        return;
+      }
+
+      hypnogramdock_height = atoi(result);
+      if((hypnogramdock_height < 80) || (hypnogramdock_height > 500))
+      {
+        hypnogramdock_height = 150;
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
     xml_go_up(xml_hdl);
   }
 
@@ -3526,6 +3543,7 @@ void UI_Mainwindow::write_settings()
     }
     fprintf(cfgfile, "      <hypnogram_use_epoch_len>%i</hypnogram_use_epoch_len>\n", hypnogram_use_epoch_len);
     fprintf(cfgfile, "      <use_overlays>%i</use_overlays>\n", hypnogram_use_overlays);
+    fprintf(cfgfile, "      <hypnogramdock_height>%i</hypnogramdock_height>\n", hypnogramdock_height);
     fprintf(cfgfile, "    </hypnogram>\n");
 
     fprintf(cfgfile, "    <ecg_qrs>\n");

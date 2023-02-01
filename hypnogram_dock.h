@@ -88,6 +88,8 @@ private:
 
   QMenu *context_menu;
 
+  QSpinBox *height_spinbox;
+
   simple_tracking_indicator2 *trck_indic;
 
   simple_ruler_indicator2 *srl_indic;
@@ -100,8 +102,10 @@ private slots:
 
   void file_pos_changed(long long);
   void hypnogram_dock_destroyed(QObject *);
+  void show_settings(bool);
   void close_dock(bool);
   void show_context_menu(QPoint);
+  void height_spinbox_changed(int);
 
 };
 
