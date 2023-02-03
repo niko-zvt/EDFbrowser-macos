@@ -214,6 +214,8 @@ void UI_RAW2EDFapp::gobuttonpressed()
       *buf,
       datarecords,
       tmp,
+      tmp1,
+      tmp2,
       straightbinary,
       samplesize,
       skipblocksize,
@@ -221,9 +223,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
       skipblockcntr,
       bytecntr,
       big_endian,
-      odd_even=0,
-      tmp1,
-      tmp2;
+      odd_even=0;
 
   char str[1024],
        path[MAX_PATH_LENGTH];
@@ -535,8 +535,8 @@ void UI_RAW2EDFapp::gobuttonpressed()
               {
                 for(r=0; r<skipbytes; r++)
                 {
-                  tmp = fgetc(inputfile);
-                  if(tmp == EOF)
+                  tmp1 = fgetc(inputfile);
+                  if(tmp1 == EOF)
                   {
                     goto END_1;
                   }
@@ -570,7 +570,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
           {
             goto END_1;
           }
-  //         bytecntr++;
+          bytecntr++;
 
   //         printf("3: skipblockcntr is %i    tmp is %02X   bytecntr is %i\n", skipblockcntr, tmp, bytecntr);
 
@@ -580,8 +580,8 @@ void UI_RAW2EDFapp::gobuttonpressed()
             {
               for(r=0; r<skipbytes; r++)
               {
-                tmp = fgetc(inputfile);
-                if(tmp == EOF)
+                tmp1 = fgetc(inputfile);
+                if(tmp1 == EOF)
                 {
                   goto END_1;
                 }
@@ -615,6 +615,11 @@ void UI_RAW2EDFapp::gobuttonpressed()
           }
 
           buf[j + (k * sf)] = var.two[0];
+
+//           if(bytecntr <= 72)
+//           {
+//             printf("%2i   0x%02X\n", bytecntr, (int)(var.two[0]));
+//           }
         }
       }
 
