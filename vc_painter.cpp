@@ -32,8 +32,9 @@
 void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, int print_linewidth)
 {
   int i, j, k, x_pix=0, x_tmp,
-      signalcomps,
-      baseline,
+      signalcomps=0,
+      baseline=0,
+      p_decimals=0,
       m_pagetime=10,
       vert_ruler_offset,
       vertical_distance,
@@ -44,8 +45,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       font_pixel_width=12;
 
   char *viewbuf=NULL,
-       string[600]="",
-       str2[32]="",
+       str1[600]="",
        str3[128]="",
        str4[1024]="",
        *chp=NULL;
@@ -625,30 +625,28 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
       if(dtmp < 0.001)
       {
-        strlcpy(str2, "%+.5f ", 32);
+        p_decimals = 5;
       }
       else if(dtmp < 0.01)
         {
-          strlcpy(str2, "%+.4f ", 32);
+          p_decimals = 4;
         }
         else if(dtmp < 0.1)
           {
-            strlcpy(str2, "%+.3f ", 32);
+            p_decimals = 3;
           }
           else if(dtmp < 1.0)
-                {
-                  strlcpy(str2, "%+.2f ", 32);
-                }
-                else if(dtmp < 10.0)
-                    {
-                      strlcpy(str2, "%+.1f ", 32);
-                    }
-                    else
-                    {
-                      strlcpy(str2, "%+.0f ", 32);
-                    }
-
-      strlcat(str2, signalcomp[i]->physdimension, 32);
+            {
+              p_decimals = 2;
+            }
+            else if(dtmp < 10.0)
+              {
+                p_decimals = 1;
+              }
+              else
+              {
+                p_decimals = 0;
+              }
 
       for(j=1; j<24; j++)
       {
@@ -688,37 +686,37 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
         painter->drawLine(0, baseline - vert_ruler_offset - scroll_h_offset, w, baseline - vert_ruler_offset - scroll_h_offset);
 
-#pragma GCC diagnostic ignored "-Wformat-nonliteral"
-
         if(printing)
         {
-          snprintf(string, 128, str2,
-            ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor))) * (double)signalcomp[i]->polarity);
+          snprintf(str1, 128, "%+.*f %s", p_decimals,
+            ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor))) * (double)signalcomp[i]->polarity,
+            signalcomp[i]->physdimension);
         }
         else
         {
-          snprintf(string, 128, str2,
-            ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / painter_pixelsizefactor)) * (double)signalcomp[i]->polarity);
+          snprintf(str1, 128, "%+.*f %s", p_decimals,
+            ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / painter_pixelsizefactor)) * (double)signalcomp[i]->polarity,
+            signalcomp[i]->physdimension);
         }
 
-        painter->drawText(5 * printsize_x_factor, baseline - vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, string);
+        painter->drawText(5 * printsize_x_factor, baseline - vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1);
 
         painter->drawLine(0, baseline + vert_ruler_offset - scroll_h_offset, w, baseline + vert_ruler_offset - scroll_h_offset);
 
         if(printing)
         {
-          snprintf(string, 128, str2,
-            (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor)) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity);
+          snprintf(str1, 128, "%+.*f %s", p_decimals,
+            (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor)) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity,
+            signalcomp[i]->physdimension);
         }
         else
         {
-          snprintf(string, 128, str2,
-            (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / painter_pixelsizefactor) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity);
+          snprintf(str1, 128, "%+.*f %s", p_decimals,
+            (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / painter_pixelsizefactor) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity,
+            signalcomp[i]->physdimension);
         }
 
-#pragma GCC diagnostic warning "-Wformat-nonliteral"
-
-        painter->drawText(5 * printsize_x_factor, baseline + vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, string);
+        painter->drawText(5 * printsize_x_factor, baseline + vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1);
       }
     }
   }
@@ -824,7 +822,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             {
               if(l_tmp < 0LL)
               {
-                snprintf(string, (MAX_ANNOTATION_LEN + 32) / 2, "-%i:%02i:%02i.%04i",
+                snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "-%i:%02i:%02i.%04i",
                         (int)(((-(l_tmp)) / TIME_FIXP_SCALING)/ 3600LL),
                         (int)((((-(l_tmp)) / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)(((-(l_tmp)) / TIME_FIXP_SCALING) % 60LL),
@@ -832,7 +830,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               }
               else
               {
-                snprintf(string, (MAX_ANNOTATION_LEN + 32) / 2, "%i:%02i:%02i.%04i",
+                snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "%i:%02i:%02i.%04i",
                         (int)((l_tmp / TIME_FIXP_SCALING)/ 3600LL),
                         (int)(((l_tmp / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)((l_tmp / TIME_FIXP_SCALING) % 60LL),
@@ -845,53 +843,53 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               {
                 utc_to_date_time((annot->onset / TIME_FIXP_SCALING) + mainwindow->edfheaderlist[i]->utc_starttime, &date_time_str);
 
-                snprintf(string, 32, "%2i-%s ", date_time_str.day, date_time_str.month_str);
+                snprintf(str1, 32, "%2i-%s ", date_time_str.day, date_time_str.month_str);
               }
               else
               {
-                string[0] = 0;
+                str1[0] = 0;
               }
 
-              snprintf(string + strlen(string), MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%04i",
+              snprintf(str1 + strlen(str1), MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%04i",
                       (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_FIXP_SCALING)/ 3600) % 24),
                       (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_FIXP_SCALING) % 3600) / 60),
                       (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_FIXP_SCALING) % 60),
                       (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) % TIME_FIXP_SCALING) / 1000LL));
             }
 
-            remove_trailing_zeros(string);
+            remove_trailing_zeros(str1);
 
             if((annot->duration[0]) && (mainwindow->annotations_show_duration))
             {
-              strlcat(string, " Duration: ", 600);
+              strlcat(str1, " Duration: ", 600);
 
-              strlcat(string, annot->duration, 600);
+              strlcat(str1, annot->duration, 600);
 
-              remove_trailing_zeros(string);
+              remove_trailing_zeros(str1);
 
-              strlcat(string, " sec", 600);
+              strlcat(str1, " sec", 600);
             }
 
             if(printing)
             {
-              painter->drawText(marker_x + (5  * printsize_x_factor), h - (25  * printsize_y_factor), string);
+              painter->drawText(marker_x + (5  * printsize_x_factor), h - (25  * printsize_y_factor), str1);
             }
             else
             {
-              painter->drawText(marker_x + 5, (h - 5) - ((j % 3) * font_pixel_height * 2), string);
+              painter->drawText(marker_x + 5, (h - 5) - ((j % 3) * font_pixel_height * 2), str1);
             }
 
-            strlcpy(string, annot->description, 80);
+            strlcpy(str1, annot->description, 80);
 
-            utf8_set_char_len(string, 20);
+            utf8_set_char_len(str1, 20);
 
             if(printing)
             {
-              painter->drawText(marker_x + (5  * printsize_x_factor), h - (40  * printsize_y_factor), QString::fromUtf8(string));
+              painter->drawText(marker_x + (5  * printsize_x_factor), h - (40  * printsize_y_factor), QString::fromUtf8(str1));
             }
             else
             {
-              painter->drawText(marker_x + 5, ((h - 5) - font_pixel_height) - ((j % 3) * font_pixel_height * 2), QString::fromUtf8(string));
+              painter->drawText(marker_x + 5, ((h - 5) - font_pixel_height) - ((j % 3) * font_pixel_height * 2), QString::fromUtf8(str1));
             }
 
             if(!annot_marker_moving)
@@ -1067,16 +1065,16 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         painter->setPen((Qt::GlobalColor)crosshair_1.color);
         painter->drawLine(0, crosshair_1.y_value, w, crosshair_1.y_value);
         painter->drawLine((int)((double)crosshair_1.x_position * printsize_x_factor), 0, (int)((double)crosshair_1.x_position * printsize_x_factor), h);
-        snprintf(string, 128, "%+f %s",
+        snprintf(str1, 128, "%+f %s",
                         crosshair_1.value,
                         signalcomp[i]->physdimension);
-        painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 40.0) * printsize_y_factor), string);
-        snprintf(string, 128, "%2i:%02i:%02i.%04i",
+        painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 40.0) * printsize_y_factor), str1);
+        snprintf(str1, 128, "%2i:%02i:%02i.%04i",
                         (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
                         (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)((crosshair_1.time_clock / TIME_FIXP_SCALING) % 60LL),
                         (int)((crosshair_1.time_clock % TIME_FIXP_SCALING) / 1000LL));
-        painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 25.0) * printsize_y_factor), string);
+        painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 25.0) * printsize_y_factor), str1);
         if(signalcomp[i]->alias[0] != 0)
         {
           painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 10.0) * printsize_y_factor), signalcomp[i]->alias);
@@ -1100,18 +1098,18 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           painter->drawEllipse(crosshair_1.x_position - crosshair_1.dot_sz, crosshair_1.y_value - crosshair_1.dot_sz - scroll_h_offset, crosshair_1.dot_sz * 2 + 1, crosshair_1.dot_sz * 2 + 1);
         }
         painter->drawLine(crosshair_1.x_position, 0, crosshair_1.x_position, h);
-        snprintf(string, 128, "%+f %s",
+        snprintf(str1, 128, "%+f %s",
                         crosshair_1.value,
                         signalcomp[i]->physdimension);
-        painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - (10 + (font_pixel_height * 2)), string);
-        snprintf(string, 128, "%2i:%02i:%02i.%04i",
+        painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - (10 + (font_pixel_height * 2)), str1);
+        snprintf(str1, 128, "%2i:%02i:%02i.%04i",
                         (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
                         (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)((crosshair_1.time_clock / TIME_FIXP_SCALING) % 60LL),
                         (int)((crosshair_1.time_clock % TIME_FIXP_SCALING) / 1000LL));
         if(crosshair_1.time_relative >= TIME_FIXP_SCALING)
         {
-          snprintf(string + strlen(string), 32, " (%i:%02i:%02i.%04i)",
+          snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%04i)",
                   (int)((crosshair_1.time_relative / TIME_FIXP_SCALING)/ 3600LL),
                   (int)(((crosshair_1.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                   (int)((crosshair_1.time_relative / TIME_FIXP_SCALING) % 60LL),
@@ -1121,10 +1119,10 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         {
           convert_to_metric_suffix(str3, (double)crosshair_1.time_relative / TIME_FIXP_SCALING, 3, 128);
 
-          snprintf(string + strlen(string), 32, " (%.26sS)", str3);
+          snprintf(str1 + strlen(str1), 32, " (%.26sS)", str3);
         }
 
-        painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - (10 + font_pixel_height), string);
+        painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - (10 + font_pixel_height), str1);
         if(signalcomp[i]->alias[0] != 0)
         {
           painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - 10, signalcomp[i]->alias);
@@ -1149,28 +1147,28 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         painter->setPen((Qt::GlobalColor)crosshair_2.color);
         painter->drawLine(0, crosshair_2.y_value, w, crosshair_2.y_value);
         painter->drawLine((int)((double)crosshair_2.x_position * printsize_x_factor), 0, (int)((double)crosshair_2.x_position * printsize_x_factor), h);
-        snprintf(string, 128, "%+f %s",
+        snprintf(str1, 128, "%+f %s",
                         crosshair_2.value,
                         signalcomp[i]->physdimension);
-        painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 70.0) * printsize_y_factor), string);
-        snprintf(string, 128, "%2i:%02i:%02i.%04i",
+        painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 70.0) * printsize_y_factor), str1);
+        snprintf(str1, 128, "%2i:%02i:%02i.%04i",
                         (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
                         (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)((crosshair_2.time_clock / TIME_FIXP_SCALING) % 60LL),
                         (int)((crosshair_2.time_clock % TIME_FIXP_SCALING) / 1000LL));
-        painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 55.0) * printsize_y_factor), string);
-        snprintf(string, 128, "delta %+f %s",
+        painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 55.0) * printsize_y_factor), str1);
+        snprintf(str1, 128, "delta %+f %s",
                         crosshair_2.value - crosshair_1.value,
                         signalcomp[i]->physdimension);
-        painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 40.0) * printsize_y_factor), string);
+        painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 40.0) * printsize_y_factor), str1);
         l_time = crosshair_2.time_clock - crosshair_1.time_clock;
         if(l_time<0) l_time = -l_time;
-        snprintf(string, 128, "delta %i:%02i:%02i.%04i",
+        snprintf(str1, 128, "delta %i:%02i:%02i.%04i",
                         (int)((l_time / TIME_FIXP_SCALING)/ 3600LL),
                         (int)(((l_time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)((l_time / TIME_FIXP_SCALING) % 60LL),
                         (int)((l_time % TIME_FIXP_SCALING) / 1000LL));
-        painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 25.0) * printsize_y_factor), string);
+        painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 25.0) * printsize_y_factor), str1);
         if(signalcomp[i]->alias[0] != 0)
         {
           painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 10.0) * printsize_y_factor), signalcomp[i]->alias);
@@ -1194,18 +1192,18 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           painter->drawEllipse(crosshair_2.x_position - crosshair_2.dot_sz, crosshair_2.y_value - crosshair_2.dot_sz - scroll_h_offset, crosshair_2.dot_sz * 2 + 1, crosshair_2.dot_sz * 2 + 1);
         }
         painter->drawLine(crosshair_2.x_position, 0, crosshair_2.x_position, h);
-        snprintf(string, 128, "%+f %s",
+        snprintf(str1, 128, "%+f %s",
                         crosshair_2.value,
                         signalcomp[i]->physdimension);
-        painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (font_pixel_height * 4)), string);
-        snprintf(string, 128, "%2i:%02i:%02i.%04i",
+        painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (font_pixel_height * 4)), str1);
+        snprintf(str1, 128, "%2i:%02i:%02i.%04i",
                         (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
                         (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)((crosshair_2.time_clock / TIME_FIXP_SCALING) % 60LL),
                         (int)((crosshair_2.time_clock % TIME_FIXP_SCALING) / 1000LL));
         if(crosshair_2.time_relative >= TIME_FIXP_SCALING)
         {
-          snprintf(string + strlen(string), 32, " (%i:%02i:%02i.%04i)",
+          snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%04i)",
                   (int)((crosshair_2.time_relative / TIME_FIXP_SCALING)/ 3600LL),
                   (int)(((crosshair_2.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                   (int)((crosshair_2.time_relative / TIME_FIXP_SCALING) % 60LL),
@@ -1215,19 +1213,19 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         {
           convert_to_metric_suffix(str3, (double)crosshair_2.time_relative / TIME_FIXP_SCALING, 3, 128);
 
-          snprintf(string + strlen(string), 32, " (%.26sS)", str3);
+          snprintf(str1 + strlen(str1), 32, " (%.26sS)", str3);
         }
 
-        painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (font_pixel_height * 3)), string);
-        snprintf(string, 128, "delta %+f %s",
+        painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (font_pixel_height * 3)), str1);
+        snprintf(str1, 128, "delta %+f %s",
                         crosshair_2.value - crosshair_1.value,
                         signalcomp[i]->physdimension);
-        painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (font_pixel_height * 2)), string);
+        painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (font_pixel_height * 2)), str1);
         l_time = crosshair_2.time_clock - crosshair_1.time_clock;
         if(l_time<0) l_time = -l_time;
         if(l_time >= TIME_FIXP_SCALING)
         {
-          snprintf(string, 128, "delta %i:%02i:%02i.%04i",
+          snprintf(str1, 128, "delta %i:%02i:%02i.%04i",
                           (int)((l_time / TIME_FIXP_SCALING)/ 3600LL),
                           (int)(((l_time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                           (int)((l_time / TIME_FIXP_SCALING) % 60LL),
@@ -1237,9 +1235,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         {
           convert_to_metric_suffix(str3, (double)l_time / TIME_FIXP_SCALING, 3, 128);
 
-          snprintf(string, 32, "delta %.24sS", str3);
+          snprintf(str1, 32, "delta %.24sS", str3);
         }
-        painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + font_pixel_height), string);
+        painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + font_pixel_height), str1);
         if(signalcomp[i]->alias[0] != 0)
         {
           painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - 10, signalcomp[i]->alias);
@@ -1254,22 +1252,22 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     if(signalcomp[i]->hasoffsettracking)
     {
-      snprintf(string, 128, "offset: %f %s",
+      snprintf(str1, 128, "offset: %f %s",
         -signalcomp[i]->screen_offset * mainwindow->y_pixelsizefactor * signalcomp[i]->voltpercm,
         signalcomp[i]->physdimension);
       painter->fillRect(132 * w_scaling, baseline - (2 * h_scaling) - scroll_h_offset, 190 * w_scaling, -15 * h_scaling, backgroundcolor);
       painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
-      painter->drawText(135 * w_scaling, baseline - (5 * h_scaling) - scroll_h_offset, string);
+      painter->drawText(135 * w_scaling, baseline - (5 * h_scaling) - scroll_h_offset, str1);
     }
 
     if(signalcomp[i]->hasgaintracking)
     {
-      snprintf(string, 128, "amplitude: %f %s/cm",
+      snprintf(str1, 128, "amplitude: %f %s/cm",
         signalcomp[i]->voltpercm,
         signalcomp[i]->physdimension);
       painter->fillRect(132 * w_scaling, baseline - (2 * h_scaling) - scroll_h_offset, 190 * w_scaling, -15 * h_scaling, backgroundcolor);
       painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
-      painter->drawText(135 * w_scaling, baseline - (5 * h_scaling) - scroll_h_offset, string);
+      painter->drawText(135 * w_scaling, baseline - (5 * h_scaling) - scroll_h_offset, str1);
     }
   }
 
