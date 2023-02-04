@@ -1600,7 +1600,7 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
 
   for(i=0; i<7; i++)
   {
-    painter->drawText(x_pos - ((w / 60.0) * w_scaling), y_pos + (h / 204.8) + d_tmp2 + (d_tmp * i) + (h_scaling * 3.0 - 3.0), str_hz[i]);
+    painter->drawText(x_pos - 2 - (strlen(str_hz[i]) * mainwindow->font_pixel_width), y_pos + (h / 204.8) + d_tmp2 + (d_tmp * i) + (h_scaling * 3.0 - 3.0), str_hz[i]);
   }
 
   for(i=0; i<8; i++)
@@ -1645,7 +1645,7 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
 
   for(i=0; i<5; i++)
   {
-    painter->drawText(x_pos - ((w / 80.0) * w_scaling), y_pos + ((double)h / 204.8) + (d_tmp * i) + (h_scaling * 3.0 - 3.0), str_uv[i]);
+    painter->drawText(x_pos - 2 - (strlen(str_uv[i]) * mainwindow->font_pixel_width), y_pos + ((double)h / 204.8) + (d_tmp * i) + (h_scaling * 3.0 - 3.0), str_uv[i]);
 
     painter->drawLine(x_pos + ((double)w / 160.0), y_pos + (d_tmp * i), x_pos + ((double)w / 45.7), y_pos + (d_tmp * i));
   }
@@ -1674,7 +1674,7 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
 
   for(i=0; i<4; i++)
   {
-    painter->drawText(x_pos - ((w / 50.0) * w_scaling) + (d_tmp2 * i), y_pos + ((double)h / 204.8) + (d_tmp * i), str_s[i]);
+    painter->drawText(x_pos - 2 - (strlen(str_s[i]) * mainwindow->font_pixel_width) + (d_tmp2 * i), y_pos + ((double)h / 204.8) + (d_tmp * i), str_s[i]);
   }
 
   painter->drawText(x_pos + ((double)w / 125.0) + w_size, y_pos + ((double)h / 204.8), "Sec");

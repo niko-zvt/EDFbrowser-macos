@@ -1449,7 +1449,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   checkbox4_9 = new QCheckBox;
   checkbox4_9->setTristate(false);
-  checkbox4_9->setToolTip("If checked, the ruler will adjust the width in order to show integer numbers for Hz");
+  checkbox4_9->setToolTip("If checked, the ruler will adjust it's width in order to show integer numbers for Hz");
   if(mainwindow->maincurve->floating_ruler_use_var_width)
   {
     checkbox4_9->setCheckState(Qt::Checked);
