@@ -1910,7 +1910,7 @@ double round_down_step125(double val, double *ratio)
 
 int convert_to_metric_suffix(char *dest, double value, int decimals, int sz)
 {
-  double ltmp;
+  double ftmp;
 
   char suffix=' ';
 
@@ -1918,103 +1918,67 @@ int convert_to_metric_suffix(char *dest, double value, int decimals, int sz)
 
   if(value < 0)
   {
-      ltmp = value * -1;
+      ftmp = value * -1;
   }
   else
   {
-      ltmp = value;
+      ftmp = value;
   }
 
-  if(ltmp > 0.999999e12 && ltmp < 0.999999e15)
+  if(ftmp > 0.999999e12 && ftmp < 0.999999e15)
   {
-      ltmp = ltmp / 1e12;
+      ftmp = ftmp / 1e12;
 
       suffix = 'T';
   }
-  else if(ltmp > 0.999999e9)
+  else if(ftmp > 0.999999e9)
     {
-        ltmp = ltmp / 1e9;
+        ftmp = ftmp / 1e9;
 
         suffix = 'G';
     }
-    else if(ltmp > 0.999999e6)
+    else if(ftmp > 0.999999e6)
       {
-          ltmp = ltmp / 1e6;
+          ftmp = ftmp / 1e6;
 
           suffix = 'M';
       }
-      else if(ltmp > 0.999999e3)
+      else if(ftmp > 0.999999e3)
         {
-          ltmp /= 1e3;
+          ftmp /= 1e3;
 
           suffix = 'K';
         }
-        else if(ltmp > 0.999999e-3 && ltmp < 0.999999)
+        else if(ftmp > 0.999999e-3 && ftmp < 0.999999)
           {
-            ltmp *= 1e3;
+            ftmp *= 1e3;
 
             suffix = 'm';
           }
-          else if( ltmp > 0.999999e-6 && ltmp < 0.999999e-3)
+          else if( ftmp > 0.999999e-6 && ftmp < 0.999999e-3)
             {
-              ltmp *= 1e6;
+              ftmp *= 1e6;
 
               suffix = 'u';
             }
-            else if(ltmp > 0.999999e-9 && ltmp < 0.999999e-6)
+            else if(ftmp > 0.999999e-9 && ftmp < 0.999999e-6)
               {
-                ltmp *= 1e9;
+                ftmp *= 1e9;
 
                 suffix = 'n';
               }
-              else if(ltmp > 0.999999e-12 && ltmp < 0.999999e-9)
+              else if(ftmp > 0.999999e-12 && ftmp < 0.999999e-9)
                 {
-                  ltmp *= 1e12;
+                  ftmp *= 1e12;
 
                   suffix = 'p';
                 }
 
-  if(value >= 0)
-  {
-    switch(decimals)
-    {
-      case 0: return snprintf(dest, sz, "%.0f%c", ltmp, suffix);
-              break;
-      case 1: return snprintf(dest, sz, "%.1f%c", ltmp, suffix);
-              break;
-      case 2: return snprintf(dest, sz, "%.2f%c", ltmp, suffix);
-              break;
-      case 3: return snprintf(dest, sz, "%.3f%c", ltmp, suffix);
-              break;
-      case 4: return snprintf(dest, sz, "%.4f%c", ltmp, suffix);
-              break;
-      case 5: return snprintf(dest, sz, "%.5f%c", ltmp, suffix);
-              break;
-      case 6: return snprintf(dest, sz, "%.6f%c", ltmp, suffix);
-              break;
-      default: return snprintf(dest, sz, "%.3f%c", ltmp, suffix);
-              break;
-    }
-  }
+  if((decimals < 0) || (decimals > 6))  decimals = 3;
 
-  if(value < 0)
-  {
-    switch(decimals)
-    {
-      case 0: return snprintf(dest, sz, "%.0f%c", ltmp * -1, suffix);
-              break;
-      case 1: return snprintf(dest, sz, "%.1f%c", ltmp * -1, suffix);
-              break;
-      case 2: return snprintf(dest, sz, "%.2f%c", ltmp * -1, suffix);
-              break;
-      default: return snprintf(dest, sz, "%.3f%c", ltmp * -1, suffix);
-              break;
-    }
-  }
+  if(value < 0)  ftmp *=-1;
 
-  strlcpy(dest, "0", sz);
-
-  return 1;
+  return snprintf(dest, sz, "%.*f%c", decimals, ftmp, suffix);
 }
 
 
