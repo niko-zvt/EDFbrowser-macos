@@ -577,13 +577,11 @@ void UI_Mainwindow::setup_viewbuf()
         / (double)signalcomp[i]->edfhdr->long_data_record_duration)
         * (double)signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].smp_per_record;
 
-      if(d_temp>2147483648.0)
+      signalcomp[i]->sample_start = d_temp + 0.5;
+
+      if(signalcomp[i]->sample_start > 0x7fffffffLL)
       {
-        signalcomp[i]->sample_start = 2147483647LL;
-      }
-      else
-      {
-        signalcomp[i]->sample_start = (int)d_temp;
+        signalcomp[i]->sample_start = 0x7fffffffLL;
       }
     }
     else
