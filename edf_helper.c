@@ -324,14 +324,16 @@ void run_filter_list(sigcompblck_t *sig_comp, unsigned long long s, double *val)
   {
     if(s==sig_comp->sample_start)
     {
-      if(sig_comp->edfhdr->viewtime<=0)
+      if((sig_comp->edfhdr->viewtime<=0) && sig_comp->fir_filter_setup[k])
       {
-        reset_fir_filter(0, sig_comp->fir_filter[k]);
+        reset_fir_filter(*val, sig_comp->fir_filter[k]);
       }
       else
       {
         fir_filter_restore_buf(sig_comp->fir_filter[k]);
       }
+
+      sig_comp->fir_filter_setup[k] = 0;
     }
 
     *val = run_fir_filter(*val, sig_comp->fir_filter[k]);

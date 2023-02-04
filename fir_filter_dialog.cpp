@@ -706,6 +706,8 @@ void UI_FIRFilterDialog::ApplyButtonClicked()
     }
     else
     {
+      mainwindow->signalcomp[s]->fir_filter_setup[mainwindow->signalcomp[s]->fir_filter_cnt] = 1;
+
       mainwindow->signalcomp[s]->fir_filter_cnt++;
     }
   }

@@ -346,6 +346,7 @@ typedef struct
   ecgfiltset_t *ecg_filter;
   int fir_filter_cnt;
   firfiltset_t *fir_filter[MAXFILTERS];
+  int fir_filter_setup[MAXFILTERS];
   double spike_filter_velocity;
   int spike_filter_holdoff;
   spikefiltset_t *spike_filter;

@@ -1105,6 +1105,8 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
       newsignalcomp->ravg_filter_type[filters_read] = type;
 
+      newsignalcomp->ravg_filter_setup[filters_read] = 1;
+
       newsignalcomp->ravg_filter_cnt = filters_read + 1;
 
       xml_go_up(xml_hdl);
@@ -1673,6 +1675,8 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       {
         return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
       }
+
+      newsignalcomp->fir_filter_setup[filters_read] = 1;
 
       newsignalcomp->fir_filter_cnt++;
 

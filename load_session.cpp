@@ -1479,6 +1479,8 @@ int UI_Mainwindow::read_session_file(const char *path_session)
         return session_format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
       }
 
+      newsignalcomp->fir_filter_setup[filters_read] = 1;
+
       newsignalcomp->fir_filter_cnt++;
 
       free(fir_vars);
