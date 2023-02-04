@@ -224,10 +224,191 @@ int to_edf_startdate(int day, int month, int year, char *dest)
 }
 
 
+void run_filter_list(sigcompblck_t *sig_comp, unsigned long long s, double *val)
+{
+  int k, n, runin_samples;
 
+  if(sig_comp->spike_filter)
+  {
+    if(s==sig_comp->sample_start)
+    {
+      if(sig_comp->edfhdr->viewtime <= 0)
+      {
+        reset_spike_filter(sig_comp->spike_filter);
+      }
+      else
+      {
+        spike_filter_restore_buf(sig_comp->spike_filter);
+      }
+    }
 
+    *val = run_spike_filter(*val, sig_comp->spike_filter);
+  }
 
+  for(k=0; k<sig_comp->math_func_cnt_before; k++)
+  {
+    *val = run_math_func(*val, sig_comp->math_func_before[k]);
+  }
 
+  for(k=0; k<sig_comp->filter_cnt; k++)
+  {
+    if(s==sig_comp->sample_start)
+    {
+      if(sig_comp->edfhdr->viewtime == 0)
+      {
+        reset_filter(*val, sig_comp->filter[k]);
+      }
+      else
+      {
+        sig_comp->filter[k]->old_input = sig_comp->filterpreset_a[k];
+        sig_comp->filter[k]->old_output = sig_comp->filterpreset_b[k];
+      }
+    }
 
+    *val = first_order_filter(*val, sig_comp->filter[k]);
+  }
+
+  for(k=0; k<sig_comp->ravg_filter_cnt; k++)
+  {
+    if(s==sig_comp->sample_start)
+    {
+      if((sig_comp->edfhdr->viewtime <= 0) && sig_comp->ravg_filter_setup[k])
+      {
+        reset_ravg_filter(*val, sig_comp->ravg_filter[k]);
+      }
+      else
+      {
+        ravg_filter_restore_buf(sig_comp->ravg_filter[k]);
+      }
+
+      sig_comp->ravg_filter_setup[k] = 0;
+    }
+
+    *val = run_ravg_filter(*val, sig_comp->ravg_filter[k]);
+  }
+
+  for(k=0; k<sig_comp->fidfilter_cnt; k++)
+  {
+    if(s==sig_comp->sample_start)
+    {
+      if((sig_comp->edfhdr->viewtime <= 0) && sig_comp->fidfilter_setup[k])
+      {
+        runin_samples = sig_comp->edfhdr->edfparam[sig_comp->edfsignal[0]].sf_f / sig_comp->fidfilter_freq[k];
+
+        runin_samples *= 26;
+
+        if(runin_samples < 10)
+        {
+          runin_samples = 10;
+        }
+
+        for(n=0; n<runin_samples; n++)
+        {
+          sig_comp->fidfuncp[k](sig_comp->fidbuf[k], *val);
+        }
+
+        memcpy(sig_comp->fidbuf2[k], sig_comp->fidbuf[k], fid_run_bufsize(sig_comp->fid_run[k]));
+      }
+      else
+      {
+        memcpy(sig_comp->fidbuf[k], sig_comp->fidbuf2[k], fid_run_bufsize(sig_comp->fid_run[k]));
+      }
+
+      sig_comp->fidfilter_setup[k] = 0;
+    }
+
+    *val = sig_comp->fidfuncp[k](sig_comp->fidbuf[k], *val);
+  }
+
+  for(k=0; k<sig_comp->fir_filter_cnt; k++)
+  {
+    if(s==sig_comp->sample_start)
+    {
+      if(sig_comp->edfhdr->viewtime<=0)
+      {
+        reset_fir_filter(0, sig_comp->fir_filter[k]);
+      }
+      else
+      {
+        fir_filter_restore_buf(sig_comp->fir_filter[k]);
+      }
+    }
+
+    *val = run_fir_filter(*val, sig_comp->fir_filter[k]);
+  }
+
+  for(k=0; k<sig_comp->math_func_cnt_after; k++)
+  {
+    *val = run_math_func(*val, sig_comp->math_func_after[k]);
+  }
+
+  if(sig_comp->plif_ecg_filter)
+  {
+    if(s==sig_comp->sample_start)
+    {
+      if(sig_comp->edfhdr->viewtime<=0)
+      {
+        plif_ecg_reset_subtract_filter(sig_comp->plif_ecg_filter, 0);
+      }
+      else
+      {
+        plif_ecg_subtract_filter_state_copy(sig_comp->plif_ecg_filter, sig_comp->plif_ecg_filter_sav);
+      }
+    }
+
+    *val = plif_ecg_run_subtract_filter(*val, sig_comp->plif_ecg_filter);
+  }
+
+  if(sig_comp->plif_eeg_filter)
+  {
+    if(s==sig_comp->sample_start)
+    {
+      if(sig_comp->edfhdr->viewtime<=0)
+      {
+        plif_eeg_reset_subtract_filter(sig_comp->plif_eeg_filter);
+      }
+      else
+      {
+        plif_eeg_subtract_filter_state_copy(sig_comp->plif_eeg_filter, sig_comp->plif_eeg_filter_sav);
+      }
+    }
+
+    *val = plif_eeg_run_subtract_filter(*val, sig_comp->plif_eeg_filter);
+  }
+
+  if(sig_comp->ecg_filter != NULL)
+  {
+    if(s==sig_comp->sample_start)
+    {
+      if(sig_comp->edfhdr->viewtime <= 0LL)
+      {
+        reset_ecg_filter(sig_comp->ecg_filter);
+      }
+      else
+      {
+        ecg_filter_restore_buf(sig_comp->ecg_filter);
+      }
+    }
+
+    *val = run_ecg_filter(*val, sig_comp->ecg_filter);
+  }
+
+  if(sig_comp->zratio_filter != NULL)
+  {
+    if(s==sig_comp->sample_start)
+    {
+      if(sig_comp->edfhdr->viewtime <= 0LL)
+      {
+        reset_zratio_filter(sig_comp->zratio_filter);
+      }
+      else
+      {
+        zratio_filter_restore_buf(sig_comp->zratio_filter);
+      }
+    }
+
+    *val = run_zratio_filter(*val, sig_comp->zratio_filter);
+  }
+}
 
 

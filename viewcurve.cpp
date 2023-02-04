@@ -1747,14 +1747,13 @@ void ViewCurve::print_to_image(int w_img, int h_img)
 
 void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, int print_linewidth)
 {
-  int i, j, k, n, x1, y1, x2, y2,
+  int i, j, n, x1, y1, x2, y2,
       tmp,
       signalcomps,
       baseline,
       value,
       minimum,
       maximum,
-      runin_samples,
       stat_zero_crossing=0;
 
   char *viewbuf;
@@ -2017,187 +2016,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
           dig_value += f_tmp;
         }
 
-        if(signalcomp[i]->spike_filter)
-        {
-          if(s==signalcomp[i]->sample_start)
-          {
-            if(signalcomp[i]->edfhdr->viewtime <= 0)
-            {
-              reset_spike_filter(signalcomp[i]->spike_filter);
-            }
-            else
-            {
-              spike_filter_restore_buf(signalcomp[i]->spike_filter);
-            }
-          }
-
-          dig_value = run_spike_filter(dig_value, signalcomp[i]->spike_filter);
-        }
-
-        for(k=0; k<signalcomp[i]->math_func_cnt_before; k++)
-        {
-          dig_value = run_math_func(dig_value, signalcomp[i]->math_func_before[k]);
-        }
-
-        for(k=0; k<signalcomp[i]->filter_cnt; k++)
-        {
-          if(s==signalcomp[i]->sample_start)
-          {
-            if(signalcomp[i]->edfhdr->viewtime == 0)
-            {
-              reset_filter(dig_value, signalcomp[i]->filter[k]);
-            }
-            else
-            {
-              signalcomp[i]->filter[k]->old_input = signalcomp[i]->filterpreset_a[k];
-              signalcomp[i]->filter[k]->old_output = signalcomp[i]->filterpreset_b[k];
-            }
-          }
-
-          dig_value = first_order_filter(dig_value, signalcomp[i]->filter[k]);
-        }
-
-        for(k=0; k<signalcomp[i]->ravg_filter_cnt; k++)
-        {
-          if(s==signalcomp[i]->sample_start)
-          {
-            if((signalcomp[i]->edfhdr->viewtime <= 0) && signalcomp[i]->ravg_filter_setup[k])
-            {
-              reset_ravg_filter(dig_value, signalcomp[i]->ravg_filter[k]);
-            }
-            else
-            {
-              ravg_filter_restore_buf(signalcomp[i]->ravg_filter[k]);
-            }
-
-            signalcomp[i]->ravg_filter_setup[k] = 0;
-          }
-
-          dig_value = run_ravg_filter(dig_value, signalcomp[i]->ravg_filter[k]);
-        }
-
-        for(k=0; k<signalcomp[i]->fidfilter_cnt; k++)
-        {
-          if(s==signalcomp[i]->sample_start)
-          {
-            if((signalcomp[i]->edfhdr->viewtime <= 0) && signalcomp[i]->fidfilter_setup[k])
-            {
-              runin_samples = signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].sf_f / signalcomp[i]->fidfilter_freq[k];
-
-              runin_samples *= 26;
-
-              if(runin_samples < 10)
-              {
-                runin_samples = 10;
-              }
-
-              for(n=0; n<runin_samples; n++)
-              {
-                signalcomp[i]->fidfuncp[k](signalcomp[i]->fidbuf[k], dig_value);
-              }
-
-              memcpy(signalcomp[i]->fidbuf2[k], signalcomp[i]->fidbuf[k], fid_run_bufsize(signalcomp[i]->fid_run[k]));
-            }
-            else
-            {
-              memcpy(signalcomp[i]->fidbuf[k], signalcomp[i]->fidbuf2[k], fid_run_bufsize(signalcomp[i]->fid_run[k]));
-            }
-
-            signalcomp[i]->fidfilter_setup[k] = 0;
-          }
-
-          dig_value = signalcomp[i]->fidfuncp[k](signalcomp[i]->fidbuf[k], dig_value);
-        }
-
-        for(k=0; k<signalcomp[i]->fir_filter_cnt; k++)
-        {
-          if(s==signalcomp[i]->sample_start)
-          {
-            if(signalcomp[i]->edfhdr->viewtime<=0)
-            {
-              reset_fir_filter(0, signalcomp[i]->fir_filter[k]);
-            }
-            else
-            {
-              fir_filter_restore_buf(signalcomp[i]->fir_filter[k]);
-            }
-          }
-
-          dig_value = run_fir_filter(dig_value, signalcomp[i]->fir_filter[k]);
-        }
-
-        for(k=0; k<signalcomp[i]->math_func_cnt_after; k++)
-        {
-          dig_value = run_math_func(dig_value, signalcomp[i]->math_func_after[k]);
-        }
-
-        if(signalcomp[i]->plif_ecg_filter)
-        {
-          if(s==signalcomp[i]->sample_start)
-          {
-            if(signalcomp[i]->edfhdr->viewtime<=0)
-            {
-              plif_ecg_reset_subtract_filter(signalcomp[i]->plif_ecg_filter, 0);
-            }
-            else
-            {
-              plif_ecg_subtract_filter_state_copy(signalcomp[i]->plif_ecg_filter, signalcomp[i]->plif_ecg_filter_sav);
-            }
-          }
-
-          dig_value = plif_ecg_run_subtract_filter(dig_value, signalcomp[i]->plif_ecg_filter);
-        }
-
-        if(signalcomp[i]->plif_eeg_filter)
-        {
-          if(s==signalcomp[i]->sample_start)
-          {
-            if(signalcomp[i]->edfhdr->viewtime<=0)
-            {
-              plif_eeg_reset_subtract_filter(signalcomp[i]->plif_eeg_filter);
-            }
-            else
-            {
-              plif_eeg_subtract_filter_state_copy(signalcomp[i]->plif_eeg_filter, signalcomp[i]->plif_eeg_filter_sav);
-            }
-          }
-
-          dig_value = plif_eeg_run_subtract_filter(dig_value, signalcomp[i]->plif_eeg_filter);
-        }
-
-        if(signalcomp[i]->ecg_filter != NULL)
-        {
-          if(s==signalcomp[i]->sample_start)
-          {
-            if(signalcomp[i]->edfhdr->viewtime <= 0LL)
-            {
-              reset_ecg_filter(signalcomp[i]->ecg_filter);
-            }
-            else
-            {
-              ecg_filter_restore_buf(signalcomp[i]->ecg_filter);
-            }
-          }
-
-          dig_value = run_ecg_filter(dig_value, signalcomp[i]->ecg_filter);
-        }
-
-        if(signalcomp[i]->zratio_filter != NULL)
-        {
-          if(s==signalcomp[i]->sample_start)
-          {
-            if(signalcomp[i]->edfhdr->viewtime <= 0LL)
-            {
-              reset_zratio_filter(signalcomp[i]->zratio_filter);
-            }
-            else
-            {
-              zratio_filter_restore_buf(signalcomp[i]->zratio_filter);
-            }
-          }
-
-          dig_value = run_zratio_filter(dig_value, signalcomp[i]->zratio_filter);
-        }
+        run_filter_list(signalcomp[i], s, &dig_value);
 
         if(printing)
         {
@@ -2446,13 +2265,12 @@ void drawCurve_stage_1_thread::init_vars(UI_Mainwindow *mainwindow_a, sigcompblc
 
 void drawCurve_stage_1_thread::run()
 {
-  int j, k, n, x1, y1, x2, y2,
+  int j, x1, y1, x2, y2,
       tmp,
       baseline,
       value,
       minimum,
       maximum,
-      runin_samples,
       stat_zero_crossing;
 
   unsigned long long s, s2;
@@ -2581,187 +2399,7 @@ void drawCurve_stage_1_thread::run()
         dig_value += f_tmp;
       }
 
-      if(signalcomp->spike_filter)
-      {
-        if(s==signalcomp->sample_start)
-        {
-          if(signalcomp->edfhdr->viewtime<=0)
-          {
-            reset_spike_filter(signalcomp->spike_filter);
-          }
-          else
-          {
-            spike_filter_restore_buf(signalcomp->spike_filter);
-          }
-        }
-
-        dig_value = run_spike_filter(dig_value, signalcomp->spike_filter);
-      }
-
-      for(k=0; k<signalcomp->math_func_cnt_before; k++)
-      {
-        dig_value = run_math_func(dig_value, signalcomp->math_func_before[k]);
-      }
-
-      for(k=0; k<signalcomp->filter_cnt; k++)
-      {
-        if(s==signalcomp->sample_start)
-        {
-          if(signalcomp->edfhdr->viewtime==0)
-          {
-            reset_filter(dig_value, signalcomp->filter[k]);
-          }
-          else
-          {
-            signalcomp->filter[k]->old_input = signalcomp->filterpreset_a[k];
-            signalcomp->filter[k]->old_output = signalcomp->filterpreset_b[k];
-          }
-        }
-
-        dig_value = first_order_filter(dig_value, signalcomp->filter[k]);
-      }
-
-      for(k=0; k<signalcomp->ravg_filter_cnt; k++)
-      {
-        if(s==signalcomp->sample_start)
-        {
-          if((signalcomp->edfhdr->viewtime <= 0) && signalcomp->ravg_filter_setup[k])
-          {
-            reset_ravg_filter(dig_value, signalcomp->ravg_filter[k]);
-          }
-          else
-          {
-            ravg_filter_restore_buf(signalcomp->ravg_filter[k]);
-          }
-
-          signalcomp->ravg_filter_setup[k] = 0;
-        }
-
-        dig_value = run_ravg_filter(dig_value, signalcomp->ravg_filter[k]);
-      }
-
-      for(k=0; k<signalcomp->fidfilter_cnt; k++)
-      {
-        if(s==signalcomp->sample_start)
-        {
-          if((signalcomp->edfhdr->viewtime <= 0) && signalcomp->fidfilter_setup[k])
-          {
-            runin_samples = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f / signalcomp->fidfilter_freq[k];
-
-            runin_samples *= 26;
-
-            if(runin_samples < 10)
-            {
-              runin_samples = 10;
-            }
-
-            for(n=0; n<runin_samples; n++)
-            {
-              signalcomp->fidfuncp[k](signalcomp->fidbuf[k], dig_value);
-            }
-
-            memcpy(signalcomp->fidbuf2[k], signalcomp->fidbuf[k], fid_run_bufsize(signalcomp->fid_run[k]));
-          }
-          else
-          {
-            memcpy(signalcomp->fidbuf[k], signalcomp->fidbuf2[k], fid_run_bufsize(signalcomp->fid_run[k]));
-          }
-
-          signalcomp->fidfilter_setup[k] = 0;
-        }
-
-        dig_value = signalcomp->fidfuncp[k](signalcomp->fidbuf[k], dig_value);
-      }
-
-      for(k=0; k<signalcomp->fir_filter_cnt; k++)
-      {
-        if(s==signalcomp->sample_start)
-        {
-          if(signalcomp->edfhdr->viewtime<=0)
-          {
-            reset_fir_filter(0, signalcomp->fir_filter[k]);
-          }
-          else
-          {
-            fir_filter_restore_buf(signalcomp->fir_filter[k]);
-          }
-        }
-
-        dig_value = run_fir_filter(dig_value, signalcomp->fir_filter[k]);
-      }
-
-      for(k=0; k<signalcomp->math_func_cnt_after; k++)
-      {
-        dig_value = run_math_func(dig_value, signalcomp->math_func_after[k]);
-      }
-
-      if(signalcomp->plif_ecg_filter)
-      {
-        if(s==signalcomp->sample_start)
-        {
-          if(signalcomp->edfhdr->viewtime<=0)
-          {
-            plif_ecg_reset_subtract_filter(signalcomp->plif_ecg_filter, 0);
-          }
-          else
-          {
-            plif_ecg_subtract_filter_state_copy(signalcomp->plif_ecg_filter, signalcomp->plif_ecg_filter_sav);
-          }
-        }
-
-        dig_value = plif_ecg_run_subtract_filter(dig_value, signalcomp->plif_ecg_filter);
-      }
-
-      if(signalcomp->plif_eeg_filter)
-      {
-        if(s==signalcomp->sample_start)
-        {
-          if(signalcomp->edfhdr->viewtime<=0)
-          {
-            plif_eeg_reset_subtract_filter(signalcomp->plif_eeg_filter);
-          }
-          else
-          {
-            plif_eeg_subtract_filter_state_copy(signalcomp->plif_eeg_filter, signalcomp->plif_eeg_filter_sav);
-          }
-        }
-
-        dig_value = plif_eeg_run_subtract_filter(dig_value, signalcomp->plif_eeg_filter);
-      }
-
-      if(signalcomp->ecg_filter != NULL)
-      {
-        if(s==signalcomp->sample_start)
-        {
-          if(signalcomp->edfhdr->viewtime <= 0LL)
-          {
-            reset_ecg_filter(signalcomp->ecg_filter);
-          }
-          else
-          {
-            ecg_filter_restore_buf(signalcomp->ecg_filter);
-          }
-        }
-
-        dig_value = run_ecg_filter(dig_value, signalcomp->ecg_filter);
-      }
-
-      if(signalcomp->zratio_filter != NULL)
-      {
-        if(s==signalcomp->sample_start)
-        {
-          if(signalcomp->edfhdr->viewtime <= 0LL)
-          {
-            reset_zratio_filter(signalcomp->zratio_filter);
-          }
-          else
-          {
-            zratio_filter_restore_buf(signalcomp->zratio_filter);
-          }
-        }
-
-        dig_value = run_zratio_filter(dig_value, signalcomp->zratio_filter);
-      }
+      run_filter_list(signalcomp, s, &dig_value);
 
       if(printing)
       {

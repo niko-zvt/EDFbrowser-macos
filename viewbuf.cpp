@@ -441,6 +441,11 @@ void UI_Mainwindow::setup_viewbuf()
           dig_value = run_spike_filter(dig_value, signalcomp[i]->spike_filter);
         }
 
+        for(j=0; j<signalcomp[i]->math_func_cnt_before; j++)
+        {
+          dig_value = run_math_func(dig_value, signalcomp[i]->math_func_before[j]);
+        }
+
         for(j=0; j<signalcomp[i]->filter_cnt; j++)
         {
           dig_value = first_order_filter(dig_value, signalcomp[i]->filter[j]);
@@ -459,6 +464,11 @@ void UI_Mainwindow::setup_viewbuf()
         for(j=0; j<signalcomp[i]->fir_filter_cnt; j++)
         {
           dig_value = run_fir_filter(dig_value, signalcomp[i]->fir_filter[j]);
+        }
+
+        for(j=0; j<signalcomp[i]->math_func_cnt_after; j++)
+        {
+          dig_value = run_math_func(dig_value, signalcomp[i]->math_func_after[j]);
         }
 
         if(signalcomp[i]->plif_ecg_filter)

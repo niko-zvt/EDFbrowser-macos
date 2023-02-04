@@ -34,6 +34,7 @@
 #include <string.h>
 
 #include "global.h"
+#include "edf_helper.h"
 
 #include "filt/filter.h"
 #include "filt/fir_filter.h"

@@ -45,6 +45,7 @@ int edfplus_annotation_get_tal_timestamp_decimal_cnt(edfhdrblck_t *);
 int strip_types_from_label(char *);
 int utc_to_edf_startdate(long long, char *);
 int to_edf_startdate(int, int, int, char *);
+void run_filter_list(sigcompblck_t *, unsigned long long, double *);
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -43,6 +43,7 @@
 #include "edf_annot_list.h"
 #include "averager_curve_wnd.h"
 #include "utils.h"
+#include "edf_helper.h"
 
 #include "filt/filter.h"
 #include "filt/ravg_filter.h"

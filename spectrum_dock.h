@@ -41,6 +41,7 @@
 #include "mainwindow.h"
 #include "signalcurve.h"
 #include "utils.h"
+#include "edf_helper.h"
 #include "flywheel.h"
 
 #include "filt/fft_wrap.h"
