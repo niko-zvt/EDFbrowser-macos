@@ -1537,6 +1537,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   spinbox5_1->setRange(8, 24);
   spinbox5_1->setValue(mainwindow->font_size);
   textEdit5_1 = new QTextEdit;
+  textEdit5_1->setFont(*mainwindow->myfont);
   textEdit5_1->setPlainText(font_sz_example_txt);
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->setAlignment(Qt::AlignCenter);

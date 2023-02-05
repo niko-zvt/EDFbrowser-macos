@@ -492,6 +492,34 @@ UI_Mainwindow::UI_Mainwindow()
 //
 //   printf("\nfont_pixel_height: %.2f    font_pixel_width: %.2f\n", font_pixel_height, font_pixel_width);
 
+//////////////////////////////// START MONO-FONT /////////////////////////////////////////////
+
+  QFontMetrics fm_mono(*myfont);
+
+  mono_font_pixel_height = fm_mono.ascent();
+
+  h_scaling_mono = fm_mono.height() / 18.0;
+
+#if QT_VERSION >= 0x050B00
+  w_scaling_mono = fm_mono.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
+#else
+  w_scaling_mono = fm_mono.width("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
+#endif
+
+  if(w_scaling_mono > 8)  w_scaling_mono = 8;
+  if(w_scaling_mono < 1)  w_scaling_mono = 1;
+
+  if(h_scaling_mono > 8)  h_scaling_mono = 8;
+  if(h_scaling_mono < 1)  h_scaling_mono = 1;
+
+  mono_font_pixel_width = w_scaling_mono * 7.5;
+
+//   printf("\nw_scaling_mono: %.2f    h_scaling_mono: %.2f\n", w_scaling_mono, h_scaling_mono);
+//
+//   printf("\nmono_font_pixel_height: %.2f    mono_font_pixel_width: %.2f\n", mono_font_pixel_height, mono_font_pixel_width);
+
+//////////////////////////////// END MONO-FONT /////////////////////////////////////////////
+
   QApplication::setFont(*myfont);
 
   maincurve = new ViewCurve(this);
