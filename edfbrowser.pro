@@ -190,6 +190,7 @@ SOURCES += videoplayer.cpp
 SOURCES += read_write_settings.cpp
 SOURCES += viewcurve.cpp
 SOURCES += vc_painter.cpp
+SOURCES += vc_signal_props.cpp
 SOURCES += check_edf_file.cpp
 SOURCES += show_edf_hdr.cpp
 SOURCES += signals_dialog.cpp
