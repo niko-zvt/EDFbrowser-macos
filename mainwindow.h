@@ -463,6 +463,8 @@ long long annot_editor_user_button_epoch_len,
 
   int rc_cmd2key(const char *);
 
+  void set_font_metrics(int);
+
 #ifdef Q_OS_WIN32
   QString specialFolder(int);
 #endif

@@ -3440,6 +3440,12 @@ void UI_OptionsDialog::ApplyButton5Clicked()
   mainwindow->font_size = spinbox5_1->value();
   mainwindow->monofont_size = spinbox5_2->value();
 
+  mainwindow->monofont->setPointSize(mainwindow->monofont_size);
+  mainwindow->maincurve->setFont(*mainwindow->monofont);
+
+  mainwindow->set_font_metrics(0);
+  mainwindow->maincurve->update();
+
   QMessageBox::information(optionsdialog, "Font size changed", "You need to restart the application for the changes to take effect.");
 
   ApplyButton5->setEnabled(false);

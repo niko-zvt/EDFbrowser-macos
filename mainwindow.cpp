@@ -5284,6 +5284,14 @@ void UI_Mainwindow::signalcomp_invert(int inv, int n)
 
 void UI_Mainwindow::desktop_resized()
 {
+  set_font_metrics(0);
+
+  maincurve->update();
+}
+
+
+void UI_Mainwindow::set_font_metrics(int starting_up)
+{
   QFontMetrics fm(*normfont);
 
   norm_font_pixel_height = fm.height();
@@ -5296,7 +5304,7 @@ void UI_Mainwindow::desktop_resized()
 
 //   printf("\nw_scaling: %.2f    h_scaling: %.2f\n", w_scaling, h_scaling);
 //
-//   printf("\nfont_pixel_height: %.2f    font_pixel_width: %.2f\n", font_pixel_height, font_pixel_width);
+//   printf("\nnorm_font_pixel_height: %.2f    norm_font_pixel_width: %.2f\n", norm_font_pixel_height, norm_font_pixel_width);
 
 //////////////////////////////// START MONO-FONT /////////////////////////////////////////////
 
@@ -5310,20 +5318,21 @@ void UI_Mainwindow::desktop_resized()
 
 //////////////////////////////// END MONO-FONT /////////////////////////////////////////////
 
-  dpix = maincurve->physicalDpiX();
-
-  dpiy = maincurve->physicalDpiY();
-
-//  printf("dpix: %i    dpiy: %i\n", dpix, dpiy);
-
-  if(auto_dpi)
+  if(!starting_up)
   {
-    y_pixelsizefactor = 2.54 / dpiy;
+    dpix = maincurve->physicalDpiX();
 
-    x_pixelsizefactor = 2.54 / dpix;
+    dpiy = maincurve->physicalDpiY();
+
+//    printf("dpix: %i    dpiy: %i\n", dpix, dpiy);
+
+    if(auto_dpi)
+    {
+      y_pixelsizefactor = 2.54 / dpiy;
+
+      x_pixelsizefactor = 2.54 / dpix;
+    }
   }
-
-  maincurve->update();
 }
 
 
