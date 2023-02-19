@@ -145,6 +145,7 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   signals_list = new QListWidget;
   signals_list->setSelectionBehavior(QAbstractItemView::SelectRows);
   signals_list->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  signals_list->setMinimumWidth(150 * mainwindow->w_scaling);
 
   CancelButton = new QPushButton;
   CancelButton->setText("&Cancel");

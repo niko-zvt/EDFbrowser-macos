@@ -1537,7 +1537,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   spinbox5_1->setRange(8, 24);
   spinbox5_1->setValue(mainwindow->font_size);
   textEdit5_1 = new QTextEdit;
-  textEdit5_1->setFont(*mainwindow->myfont);
+  textEdit5_1->setFont(*mainwindow->normfont);
   textEdit5_1->setPlainText(font_sz_example_txt);
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->setAlignment(Qt::AlignCenter);
@@ -3448,9 +3448,9 @@ void UI_OptionsDialog::ApplyButton5Clicked()
 
 void UI_OptionsDialog::spinBox5_1ValueChanged(int val)
 {
-  QFont myfont = *mainwindow->myfont;
-  myfont.setPointSize(val);
-  textEdit5_1->setFont(myfont);
+  QFont normfont = *mainwindow->normfont;
+  normfont.setPointSize(val);
+  textEdit5_1->setFont(normfont);
   textEdit5_1->setPlainText(font_sz_example_txt);
 
   ApplyButton5->setEnabled(true);

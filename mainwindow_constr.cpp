@@ -36,21 +36,21 @@ UI_Mainwindow::UI_Mainwindow()
 
   bool ret;
 
-  myfont = new QFont;
+  normfont = new QFont;
   monofont = new QFont;
 #if QT_VERSION >= 0x050200
-  *myfont = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
+  *normfont = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
   *monofont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
 #else
 #ifdef Q_OS_WIN32
-  myfont->setFamily("Tahoma");
-  myfont->setPixelSize(11);
+  normfont->setFamily("Tahoma");
+  normfont->setPixelSize(11);
 
   monofont->setFamily("courier");
   monofont->setPixelSize(12);
 #else
-  myfont->setFamily("Arial");
-  myfont->setPixelSize(11);
+  normfont->setFamily("Arial");
+  normfont->setPixelSize(11);
 
   monofont->setFamily("Monospace");
   monofont->setPixelSize(12);
@@ -457,36 +457,28 @@ UI_Mainwindow::UI_Mainwindow()
 
   vlc_sock = NULL;
 
-  font_size = myfont->pointSize();
-  sys_font_size = myfont->pointSize();
+  font_size = normfont->pointSize();
+  sys_font_size = normfont->pointSize();
 
   monofont_size = monofont->pointSize();
   sys_monofont_size = monofont->pointSize();
 
   read_general_settings();
 
-  myfont->setPointSize(font_size);
+  normfont->setPointSize(font_size);
   monofont->setPointSize(monofont_size);
 
-  QFontMetrics fm(*myfont);
+//////////////////////////////// START NORMAL-FONT /////////////////////////////////////////////
 
-  font_pixel_height = fm.ascent();
+  QFontMetrics fm(*normfont);
+
+  norm_font_pixel_height = fm.height();
 
   h_scaling = fm.height() / 18.0;
 
-#if QT_VERSION >= 0x050B00
-  w_scaling = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
-#else
-  w_scaling = fm.width("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
-#endif
+  w_scaling = fm.tightBoundingRect("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789").width() / 260.0;
 
-  if(w_scaling > 8)  w_scaling = 8;
-  if(w_scaling < 1)  w_scaling = 1;
-
-  if(h_scaling > 8)  h_scaling = 8;
-  if(h_scaling < 1)  h_scaling = 1;
-
-  font_pixel_width = w_scaling * 7.5;
+  norm_font_pixel_width = w_scaling * 7.03;
 
 //   printf("\nw_scaling: %.2f    h_scaling: %.2f\n", w_scaling, h_scaling);
 //
@@ -494,33 +486,17 @@ UI_Mainwindow::UI_Mainwindow()
 
 //////////////////////////////// START MONO-FONT /////////////////////////////////////////////
 
-  QFontMetrics fm_mono(*myfont);
+  QFontMetrics fm_mono(*monofont);
 
-  mono_font_pixel_height = fm_mono.ascent();
+  mono_font_pixel_height = fm_mono.height();
 
-  h_scaling_mono = fm_mono.height() / 18.0;
+  mono_font_pixel_width = fm_mono.tightBoundingRect("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789").width() / 36.0;
 
-#if QT_VERSION >= 0x050B00
-  w_scaling_mono = fm_mono.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
-#else
-  w_scaling_mono = fm_mono.width("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
-#endif
-
-  if(w_scaling_mono > 8)  w_scaling_mono = 8;
-  if(w_scaling_mono < 1)  w_scaling_mono = 1;
-
-  if(h_scaling_mono > 8)  h_scaling_mono = 8;
-  if(h_scaling_mono < 1)  h_scaling_mono = 1;
-
-  mono_font_pixel_width = w_scaling_mono * 7.5;
-
-//   printf("\nw_scaling_mono: %.2f    h_scaling_mono: %.2f\n", w_scaling_mono, h_scaling_mono);
-//
-//   printf("\nmono_font_pixel_height: %.2f    mono_font_pixel_width: %.2f\n", mono_font_pixel_height, mono_font_pixel_width);
+//  printf("\nmono_font_pixel_height: %.2f    mono_font_pixel_width: %.2f\n", mono_font_pixel_height, mono_font_pixel_width);
 
 //////////////////////////////// END MONO-FONT /////////////////////////////////////////////
 
-  QApplication::setFont(*myfont);
+  QApplication::setFont(*normfont);
 
   maincurve = new ViewCurve(this);
 
@@ -530,16 +506,16 @@ UI_Mainwindow::UI_Mainwindow()
 
 //  printf("dpix: %i    dpiy: %i\n", dpix, dpiy);
 
-  maincurve->setAcceptDrops(true);
-
-  QObject::connect(maincurve, SIGNAL(annot_created_by_rect_draw()), this, SLOT(create_annot_by_rect_draw()));
-
   if(auto_dpi)
   {
     y_pixelsizefactor = 2.54 / dpiy;  /* cm per pixel vertical */
 
     x_pixelsizefactor = 2.54 / dpix;  /* cm per pixel horizontal */
   }
+
+  maincurve->setAcceptDrops(true);
+
+  QObject::connect(maincurve, SIGNAL(annot_created_by_rect_draw()), this, SLOT(create_annot_by_rect_draw()));
 
   read_color_settings();
 

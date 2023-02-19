@@ -90,12 +90,13 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
   textEdit = new QPlainTextEdit;
   textEdit->setReadOnly(false);
   textEdit->setToolTip("Copy & paste your filter coefficients here");
+  textEdit->setFont(*mainwindow->monofont);
 
   signals_list = new QListWidget;
   signals_list->setSelectionBehavior(QAbstractItemView::SelectRows);
   signals_list->setSelectionMode(QAbstractItemView::ExtendedSelection);
   signals_list->setFont(*mainwindow->monofont);
-  signals_list->setMinimumWidth(100 * mainwindow->w_scaling);
+  signals_list->setMinimumWidth(150 * mainwindow->w_scaling);
   signals_list->setToolTip("Select and highlight with the mouse the signals which you want to apply the filter to");
 
   curve1 = new FilterCurve;
@@ -179,7 +180,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
     signals_list->addItem(item);
   }
 
-  signals_list->setMinimumWidth(max_len * mainwindow->font_pixel_width);
+  signals_list->setMinimumWidth(max_len * mainwindow->norm_font_pixel_width);
 
   n = signals_list->count();
 
@@ -585,7 +586,7 @@ void UI_FIRFilterDialog::check_text()
     snprintf(filter_description_txt_2, 512, "Customized or user provided coefficients");
   }
 
-  textEdit->setMinimumWidth(max_len * mainwindow->font_pixel_width);
+  textEdit->setMinimumWidth((max_len + 2) * mainwindow->norm_font_pixel_width);
 
   err = fir_filter_freqz(taps, n_taps, z, deg, FIR_FILTER_MAX_MEAS_PNTS);
   if(err)

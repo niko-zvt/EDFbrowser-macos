@@ -31,7 +31,7 @@
 
 void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, int print_linewidth)
 {
-  int i, j, k, x_pix=0, x_tmp,
+  int i, j, k, x_pix=0, x_tmp, n,
       signalcomps=0,
       baseline=0,
       p_decimals=0,
@@ -1252,20 +1252,20 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     if(signalcomp[i]->hasoffsettracking)
     {
-      snprintf(str1, 128, "offset: %f %s",
+      n = snprintf(str1, 128, "offset: %f %s",
         -signalcomp[i]->screen_offset * mainwindow->y_pixelsizefactor * signalcomp[i]->voltpercm,
         signalcomp[i]->physdimension);
-      painter->fillRect(132 * w_scaling, baseline - (2 * h_scaling) - scroll_h_offset, 190 * w_scaling, -15 * h_scaling, backgroundcolor);
+      painter->fillRect((135 * w_scaling) - (mono_font_pixel_width / 2), baseline - (2 * h_scaling) - scroll_h_offset, (n + 1) * mono_font_pixel_width, -15 * h_scaling, backgroundcolor);
       painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
       painter->drawText(135 * w_scaling, baseline - (5 * h_scaling) - scroll_h_offset, str1);
     }
 
     if(signalcomp[i]->hasgaintracking)
     {
-      snprintf(str1, 128, "amplitude: %f %s/cm",
+      n = snprintf(str1, 128, "amplitude: %f %s/cm",
         signalcomp[i]->voltpercm,
         signalcomp[i]->physdimension);
-      painter->fillRect(132 * w_scaling, baseline - (2 * h_scaling) - scroll_h_offset, 190 * w_scaling, -15 * h_scaling, backgroundcolor);
+      painter->fillRect((135 * w_scaling) - (mono_font_pixel_width / 2), baseline - (2 * h_scaling) - scroll_h_offset, (n + 1) * mono_font_pixel_width, -15 * h_scaling, backgroundcolor);
       painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
       painter->drawText(135 * w_scaling, baseline - (5 * h_scaling) - scroll_h_offset, str1);
     }
@@ -1276,25 +1276,26 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   for(i=0; i<signalcomps; i++)
   {
     baseline = vertical_distance * (i + 1);
+    baseline -= scroll_h_offset;
 
     if(signalcomp[i]->alias[0] != 0)
     {
-      painter->fillRect(2 * w_scaling, baseline - (2 * h_scaling) - scroll_h_offset, strlen(signalcomp[i]->alias) * mono_font_pixel_width + 3, (-2 * h_scaling) - mono_font_pixel_height, backgroundcolor);
+      painter->fillRect(2 * w_scaling, baseline - (2 * h_scaling), (strlen(signalcomp[i]->alias) * mono_font_pixel_width) + (5 * w_scaling), (-2 * h_scaling) - mono_font_pixel_height, backgroundcolor);
     }
     else
     {
-      painter->fillRect(2 * w_scaling, baseline - (2 * h_scaling) - scroll_h_offset, strlen(signalcomp[i]->signallabel) * mono_font_pixel_width + 3, (-2 * h_scaling) - mono_font_pixel_height, backgroundcolor);
+      painter->fillRect(2 * w_scaling, baseline - (2 * h_scaling), (strlen(signalcomp[i]->signallabel) * mono_font_pixel_width) + (5 * w_scaling), (-2 * h_scaling) - mono_font_pixel_height, backgroundcolor);
     }
 
     painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
 
     if(signalcomp[i]->alias[0] != 0)
     {
-      painter->drawText(5 * w_scaling, baseline - (5 * h_scaling) - scroll_h_offset, signalcomp[i]->alias);
+      painter->drawText(5 * w_scaling, baseline - (5 * h_scaling), signalcomp[i]->alias);
     }
     else
     {
-      painter->drawText(5 * w_scaling, baseline - (5 * h_scaling) - scroll_h_offset, signalcomp[i]->signallabel);
+      painter->drawText(5 * w_scaling, baseline - (5 * h_scaling), signalcomp[i]->signallabel);
     }
 
     if(signalcomp[i]->hasruler)
@@ -1324,12 +1325,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   }
   else
   {
-//    painter->fillRect(5, h - (4 + mono_font_pixel_height), strlen(mainwindow->viewtime_string) * mono_font_pixel_width, (4 + mono_font_pixel_height), backgroundcolor);
+    painter->fillRect(6, h - (4 + mono_font_pixel_height), 4 + (strlen(mainwindow->viewtime_string) * mono_font_pixel_width), mono_font_pixel_height + 1, backgroundcolor);
     painter->drawText(8, h - 4, mainwindow->viewtime_string);
-//    painter->fillRect(w - 63, h - (4 + mono_font_pixel_height), 60, (4 + mono_font_pixel_height), backgroundcolor);
     if((old_w == w) || (!mainwindow->display_pagetime_mmsec))
     {
-      painter->drawText(w - strlen(mainwindow->pagetime_string) * mono_font_pixel_width, h - 4, mainwindow->pagetime_string);
+      painter->fillRect(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - mono_font_pixel_height - 1,
+                        (strlen(mainwindow->pagetime_string) + 1) * mono_font_pixel_width, (4 + mono_font_pixel_height),
+                        backgroundcolor);
+      painter->drawText(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - 4, mainwindow->pagetime_string);
     }
     else
     {
@@ -1364,7 +1367,10 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
       }
 
-      painter->drawText(w - strlen(mainwindow->pagetime_string) * mono_font_pixel_width, h - 4, mainwindow->pagetime_string);
+      painter->fillRect(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - mono_font_pixel_height - 1,
+                        (strlen(mainwindow->pagetime_string) + 1) * mono_font_pixel_width, (4 + mono_font_pixel_height),
+                        backgroundcolor);
+      painter->drawText(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - 4, mainwindow->pagetime_string);
     }
   }
 

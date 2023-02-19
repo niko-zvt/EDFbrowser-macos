@@ -33,7 +33,7 @@ UI_Mainwindow::~UI_Mainwindow()
   delete splash_pixmap;
   delete splash;
   delete startup_timer;
-  delete myfont;
+  delete normfont;
   delete monofont;
   delete maincurve;
   delete annotationEditDock;
@@ -5284,33 +5284,37 @@ void UI_Mainwindow::signalcomp_invert(int inv, int n)
 
 void UI_Mainwindow::desktop_resized()
 {
-  QFontMetrics fm(*myfont);
+  QFontMetrics fm(*normfont);
 
-  font_pixel_height = fm.ascent();
+  norm_font_pixel_height = fm.height();
 
   h_scaling = fm.height() / 18.0;
 
-#if QT_VERSION >= 0x050B00
-  w_scaling = fm.horizontalAdvance("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
-#else
-  w_scaling = fm.width("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") / 260.0;
-#endif
+  w_scaling = fm.tightBoundingRect("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789").width() / 260.0;
 
-  if(w_scaling > 8)  w_scaling = 8;
-  if(w_scaling < 1)  w_scaling = 1;
-
-  if(h_scaling > 8)  h_scaling = 8;
-  if(h_scaling < 1)  h_scaling = 1;
-
-  font_pixel_width = w_scaling * 7.5;
+  norm_font_pixel_width = w_scaling * 7.03;
 
 //   printf("\nw_scaling: %.2f    h_scaling: %.2f\n", w_scaling, h_scaling);
 //
 //   printf("\nfont_pixel_height: %.2f    font_pixel_width: %.2f\n", font_pixel_height, font_pixel_width);
 
+//////////////////////////////// START MONO-FONT /////////////////////////////////////////////
+
+  QFontMetrics fm_mono(*monofont);
+
+  mono_font_pixel_height = fm_mono.height();
+
+  mono_font_pixel_width = fm_mono.tightBoundingRect("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789").width() / 36.0;
+
+//  printf("\nmono_font_pixel_height: %.2f    mono_font_pixel_width: %.2f\n", mono_font_pixel_height, mono_font_pixel_width);
+
+//////////////////////////////// END MONO-FONT /////////////////////////////////////////////
+
   dpix = maincurve->physicalDpiX();
 
   dpiy = maincurve->physicalDpiY();
+
+//  printf("dpix: %i    dpiy: %i\n", dpix, dpiy);
 
   if(auto_dpi)
   {

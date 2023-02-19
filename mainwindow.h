@@ -333,16 +333,14 @@ long long annot_editor_user_button_epoch_len,
 
   double y_pixelsizefactor,
          x_pixelsizefactor,
-         font_pixel_height,
-         font_pixel_width,
+         norm_font_pixel_height,
+         norm_font_pixel_width,
          mono_font_pixel_height,
          mono_font_pixel_width,
          default_amplitude,
          cdsa_max_voltage,
          w_scaling,
          h_scaling,
-         w_scaling_mono,
-         h_scaling_mono,
          aeeg_bp_min_hz,
          aeeg_bp_max_hz,
          aeeg_lp_hz,
@@ -471,7 +469,7 @@ long long annot_editor_user_button_epoch_len,
 
   ViewCurve    *maincurve;
 
-  QFont        *myfont,
+  QFont        *normfont,
                *monofont;
 
   QAction      *save_act,
