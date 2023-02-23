@@ -392,7 +392,7 @@ void UI_AverageCurveWindow::export_edf(void)
     if(p>80)  break;
   }
 
-  if(signalcomp->fir_filter)
+  for(j=0; j<signalcomp->fir_filter_cnt; j++)
   {
     p += snprintf(str + p, 4096 - p, "FIR ");
   }
