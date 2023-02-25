@@ -296,7 +296,9 @@ extern FidFilter *mkfilter(char *, ...);
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wpointer-sign"
-
+#if (__GNUC__ >= 12)
+#pragma GCC diagnostic ignored "-Wuse-after-free"
+#endif
 
 static void (*error_handler)(char *err)= 0;
 
