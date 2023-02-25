@@ -1084,6 +1084,7 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addAction("Convert FM Audio ECG to EDF", this, SLOT(convert_fm_audio_to_edf()));
   toolsmenu->addAction("Convert Mortara ECG XML to EDF", this, SLOT(convert_mortara_to_edf()));
   toolsmenu->addAction("Convert ISHNE ECG to EDF", this, SLOT(convert_ishne_to_edf()));
+  toolsmenu->addAction("Convert CardioTrak EDF to EDF+", this, SLOT(convert_cardiotrak_to_edf()));
   toolsmenu->addAction("Convert Binary/raw data to EDF", this, SLOT(convert_binary_to_edf()));
   toolsmenu->addSeparator();
   toolsmenu->addAction("Unify resolution", this, SLOT(unify_resolution()));

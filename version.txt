@@ -2,7 +2,13 @@
  version 2.01      to be defined
  --------------
 
- - Fixed a bug int the bin/raw to EDF converter.
+ - Added a CardioTrak EDF to EDF+ converter which extracts non-compliant events to EDF+ annotations.
+
+ - Hypnogram: the height of the dock is now adjustable.
+
+ - Fixed a bug in the bin/raw to EDF converter.
+
+ - Fixed some compiler warnings.
 
 
  version 2.00      January 29, 2023

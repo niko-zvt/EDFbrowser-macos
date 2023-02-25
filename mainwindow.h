@@ -134,6 +134,7 @@
 #include "cnvs/scp_ecg2edf.h"
 #include "cnvs/unisens2edf.h"
 #include "cnvs/wav2edf.h"
+#include "cnvs/cardiotrak2edf.h"
 
 #include "filt/ecg_filter.h"
 #include "filt/filter.h"
@@ -761,6 +762,7 @@ private slots:
   void convert_fm_audio_to_edf();
   void convert_mortara_to_edf();
   void convert_ishne_to_edf();
+  void convert_cardiotrak_to_edf();
   void convert_nexfin_to_edf();
   void edfd_converter();
   void slider_moved(int);

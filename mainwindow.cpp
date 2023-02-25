@@ -810,6 +810,12 @@ void UI_Mainwindow::convert_ishne_to_edf()
 }
 
 
+void UI_Mainwindow::convert_cardiotrak_to_edf()
+{
+  UI_CardiotrakEDFwindow ctrak2edf(this, recent_opendir, recent_savedir);
+}
+
+
 void UI_Mainwindow::convert_nexfin_to_edf()
 {
   UI_NEXFIN2EDFwindow nexfin2edf(this, recent_opendir, recent_savedir);

@@ -156,6 +156,7 @@ HEADERS += cnvs/raw2edf.h
 HEADERS += cnvs/scp_ecg2edf.h
 HEADERS += cnvs/unisens2edf.h
 HEADERS += cnvs/wav2edf.h
+HEADERS += cnvs/cardiotrak2edf.h
 
 HEADERS += filt/ecg_filter.h
 HEADERS += filt/fft_wrap.h
@@ -281,6 +282,7 @@ SOURCES += cnvs/raw2edf.cpp
 SOURCES += cnvs/scp_ecg2edf.cpp
 SOURCES += cnvs/unisens2edf.cpp
 SOURCES += cnvs/wav2edf.cpp
+SOURCES += cnvs/cardiotrak2edf.cpp
 
 SOURCES += filt/ecg_filter.c
 SOURCES += filt/fft_wrap.c
