@@ -97,7 +97,6 @@ UI_hypnogram_dock::UI_hypnogram_dock(QWidget *w_parent, hypnogram_dock_param_t p
   context_menu->addAction(close_act);
 
   QObject::connect(mainwindow,     SIGNAL(file_position_changed(long long)),   this, SLOT(file_pos_changed(long long)));
-  QObject::connect(mainwindow,     SIGNAL(file_position_changed(long long)),   this, SLOT(file_pos_changed(long long)));
   QObject::connect(hypnogram_dock, SIGNAL(destroyed(QObject *)),               this, SLOT(hypnogram_dock_destroyed(QObject *)));
   QObject::connect(hypnogram_dock, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(show_context_menu(QPoint)));
   QObject::connect(settings_act,   SIGNAL(triggered(bool)),                    this, SLOT(show_settings(bool)));

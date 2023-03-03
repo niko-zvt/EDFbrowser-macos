@@ -2,6 +2,10 @@
  version 2.01      to be defined
  --------------
 
+ - Annotationlist: added option "Auto scroll" when browsing.
+
+ - Waveform window: prevent that annotation descriptions are stacked upon each other.
+
  - Added a CardioTrak EDF to EDF+ converter which extracts non-compliant events to EDF+ annotations.
 
  - Hypnogram: the height of the dock is now adjustable.

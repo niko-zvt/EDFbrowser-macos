@@ -149,39 +149,75 @@ UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_paren
 
   updateList(0);
 
-  QObject::connect(list,                       SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(annotation_selected(QListWidgetItem *)));
-  QObject::connect(list,                       SIGNAL(itemPressed(QListWidgetItem *)), this, SLOT(annotation_pressed(QListWidgetItem *)));
-  QObject::connect(docklist,                   SIGNAL(visibilityChanged(bool)),        this, SLOT(hide_editdock(bool)));
-  QObject::connect(checkbox1,                  SIGNAL(stateChanged(int)),              this, SLOT(checkbox1_clicked(int)));
-  QObject::connect(checkbox2,                  SIGNAL(stateChanged(int)),              this, SLOT(checkbox2_clicked(int)));
-  QObject::connect(more_button,                SIGNAL(clicked(bool)),                  this, SLOT(more_button_clicked(bool)));
-  QObject::connect(hide_annot_act,             SIGNAL(triggered(bool)),                this, SLOT(hide_annot(bool)));
-  QObject::connect(unhide_annot_act,           SIGNAL(triggered(bool)),                this, SLOT(unhide_annot(bool)));
-  QObject::connect(hide_same_annots_act,       SIGNAL(triggered(bool)),                this, SLOT(hide_same_annots(bool)));
-  QObject::connect(unhide_same_annots_act,     SIGNAL(triggered(bool)),                this, SLOT(unhide_same_annots(bool)));
-  QObject::connect(unhide_all_annots_act,      SIGNAL(triggered(bool)),                this, SLOT(unhide_all_annots(bool)));
-  QObject::connect(average_annot_act,          SIGNAL(triggered(bool)),                this, SLOT(average_annot(bool)));
-  QObject::connect(show_between_act,           SIGNAL(triggered(bool)),                this, SLOT(show_between(bool)));
-  QObject::connect(hide_all_NK_triggers_act,   SIGNAL(triggered(bool)),                this, SLOT(hide_all_NK_triggers(bool)));
-  QObject::connect(hide_all_BS_triggers_act,   SIGNAL(triggered(bool)),                this, SLOT(hide_all_BS_triggers(bool)));
-  QObject::connect(unhide_all_NK_triggers_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_all_NK_triggers(bool)));
-  QObject::connect(unhide_all_BS_triggers_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_all_BS_triggers(bool)));
-  QObject::connect(filt_ival_time_act,         SIGNAL(triggered(bool)),                this, SLOT(filt_ival_time(bool)));
-  QObject::connect(show_stats_act,             SIGNAL(triggered(bool)),                this, SLOT(show_stats(bool)));
-  QObject::connect(show_heart_rate_act,        SIGNAL(triggered(bool)),                this, SLOT(show_heart_rate(bool)));
-  QObject::connect(search_line_edit,           SIGNAL(textEdited(const QString)),      this, SLOT(filter_edited(const QString)));
+  QObject::connect(list,                       SIGNAL(itemClicked(QListWidgetItem *)),   this, SLOT(annotation_selected(QListWidgetItem *)));
+  QObject::connect(list,                       SIGNAL(itemPressed(QListWidgetItem *)),   this, SLOT(annotation_pressed(QListWidgetItem *)));
+  QObject::connect(docklist,                   SIGNAL(visibilityChanged(bool)),          this, SLOT(hide_editdock(bool)));
+  QObject::connect(checkbox1,                  SIGNAL(stateChanged(int)),                this, SLOT(checkbox1_clicked(int)));
+  QObject::connect(checkbox2,                  SIGNAL(stateChanged(int)),                this, SLOT(checkbox2_clicked(int)));
+  QObject::connect(more_button,                SIGNAL(clicked(bool)),                    this, SLOT(more_button_clicked(bool)));
+  QObject::connect(hide_annot_act,             SIGNAL(triggered(bool)),                  this, SLOT(hide_annot(bool)));
+  QObject::connect(unhide_annot_act,           SIGNAL(triggered(bool)),                  this, SLOT(unhide_annot(bool)));
+  QObject::connect(hide_same_annots_act,       SIGNAL(triggered(bool)),                  this, SLOT(hide_same_annots(bool)));
+  QObject::connect(unhide_same_annots_act,     SIGNAL(triggered(bool)),                  this, SLOT(unhide_same_annots(bool)));
+  QObject::connect(unhide_all_annots_act,      SIGNAL(triggered(bool)),                  this, SLOT(unhide_all_annots(bool)));
+  QObject::connect(average_annot_act,          SIGNAL(triggered(bool)),                  this, SLOT(average_annot(bool)));
+  QObject::connect(show_between_act,           SIGNAL(triggered(bool)),                  this, SLOT(show_between(bool)));
+  QObject::connect(hide_all_NK_triggers_act,   SIGNAL(triggered(bool)),                  this, SLOT(hide_all_NK_triggers(bool)));
+  QObject::connect(hide_all_BS_triggers_act,   SIGNAL(triggered(bool)),                  this, SLOT(hide_all_BS_triggers(bool)));
+  QObject::connect(unhide_all_NK_triggers_act, SIGNAL(triggered(bool)),                  this, SLOT(unhide_all_NK_triggers(bool)));
+  QObject::connect(unhide_all_BS_triggers_act, SIGNAL(triggered(bool)),                  this, SLOT(unhide_all_BS_triggers(bool)));
+  QObject::connect(filt_ival_time_act,         SIGNAL(triggered(bool)),                  this, SLOT(filt_ival_time(bool)));
+  QObject::connect(show_stats_act,             SIGNAL(triggered(bool)),                  this, SLOT(show_stats(bool)));
+  QObject::connect(show_heart_rate_act,        SIGNAL(triggered(bool)),                  this, SLOT(show_heart_rate(bool)));
+  QObject::connect(search_line_edit,           SIGNAL(textEdited(const QString)),        this, SLOT(filter_edited(const QString)));
 
-  QObject::connect(edit_annotations_act,       SIGNAL(triggered(bool)),                mainwindow, SLOT(annotation_editor()));
+  QObject::connect(edit_annotations_act,       SIGNAL(triggered(bool)),                  mainwindow, SLOT(annotation_editor()));
 
-  QObject::connect(remove_duplicates_act,      SIGNAL(triggered(bool)),                mainwindow, SLOT(edfplus_remove_duplicate_annotations()));
+  QObject::connect(remove_duplicates_act,      SIGNAL(triggered(bool)),                  mainwindow, SLOT(edfplus_remove_duplicate_annotations()));
 
-  QObject::connect(rename_all_act,             SIGNAL(triggered(bool)),                this, SLOT(rename_all()));
+  QObject::connect(rename_all_act,             SIGNAL(triggered(bool)),                  this, SLOT(rename_all()));
 
-  QObject::connect(delete_annots_act,          SIGNAL(triggered(bool)),                this, SLOT(delete_annots()));
+  QObject::connect(delete_annots_act,          SIGNAL(triggered(bool)),                  this, SLOT(delete_annots()));
 
-  QObject::connect(delete_all_annots_act,      SIGNAL(triggered(bool)),                this, SLOT(delete_all_annots()));
+  QObject::connect(delete_all_annots_act,      SIGNAL(triggered(bool)),                  this, SLOT(delete_all_annots()));
 
-  QObject::connect(delayed_list_filter_update_timer, SIGNAL(timeout()),                this, SLOT(delayed_list_filter_update()));
+  QObject::connect(delayed_list_filter_update_timer, SIGNAL(timeout()),                  this, SLOT(delayed_list_filter_update()));
+
+  QObject::connect(mainwindow,                 SIGNAL(file_position_changed(long long)), this, SLOT(file_pos_changed(long long)));
+}
+
+
+void UI_Annotationswindow::file_pos_changed(long long viewtime)
+{
+  if(!mainwindow->annotlist_scrolltoitem_while_browsing)  return;
+
+  int i;
+
+  long long pagetime = mainwindow->pagetime;
+
+  annotblck_t *annot;
+
+  annotlist_t *annot_list = &(edf_hdr->annot_list);
+
+  int sz = edfplus_annotation_size(annot_list);
+
+  for(i=0; i<sz; i++)
+  {
+    annot = edfplus_annotation_get_item(annot_list, i);
+
+    if(annot->hided_in_list)
+    {
+      continue;
+    }
+
+    if((annot->onset >= viewtime) && (annot->onset < (viewtime + pagetime)))
+    {
+      list->scrollToBottom();
+      list->scrollToItem(list->item(i));
+
+      break;
+    }
+  }
 }
 
 

@@ -1511,6 +1511,25 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   flayout4_2->labelForField(hlayout_tmp)->setToolTip("Annotation filter affects the annotation list only, not the annotation markers in the signal window");
   QObject::connect(checkbox4_12, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_12Clicked(int)));
 
+  checkbox4_17 = new QCheckBox;
+  checkbox4_17->setTristate(false);
+  checkbox4_17->setToolTip("If enabled annotationlist will scroll to items visible on the page when browsing");
+  if(mainwindow->annotlist_scrolltoitem_while_browsing)
+  {
+    checkbox4_17->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox4_17->setCheckState(Qt::Unchecked);
+  }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(checkbox4_17);
+  hlayout_tmp->addStretch(1000);
+  flayout4_2->addRow("Annotationlist auto scroll", hlayout_tmp);
+  flayout4_2->labelForField(hlayout_tmp)->setToolTip("If enabled annotationlist will scroll to items visible on the page when browsing");
+  QObject::connect(checkbox4_17, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_17Clicked(int)));
+
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->setAlignment(Qt::AlignCenter);
   hlayout_tmp->addLayout(flayout4_1);
@@ -1603,7 +1622,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   mainLayout->addSpacing(20);
   mainLayout->addLayout(horLayout);
 
-  optionsdialog->setMinimumSize(900 * mainwindow->w_scaling, 600 * mainwindow->h_scaling);
+  optionsdialog->setMinimumSize(900 * mainwindow->w_scaling, 700 * mainwindow->h_scaling);
 
   optionsdialog->setLayout(mainLayout);
 
@@ -2046,6 +2065,19 @@ void UI_OptionsDialog::checkbox4_12Clicked(int state)
   else
   {
     mainwindow->annot_filter->hide_in_list_only = 0;
+  }
+}
+
+
+void UI_OptionsDialog::checkbox4_17Clicked(int state)
+{
+  if(state==Qt::Checked)
+  {
+    mainwindow->annotlist_scrolltoitem_while_browsing = 1;
+  }
+  else
+  {
+    mainwindow->annotlist_scrolltoitem_while_browsing = 0;
   }
 }
 

@@ -3047,6 +3047,23 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "annotlist_scrolltoitem_while_browsing", 0)))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    annotlist_scrolltoitem_while_browsing = atoi(result);
+    if(annotlist_scrolltoitem_while_browsing != 1)
+    {
+      annotlist_scrolltoitem_while_browsing = 0;
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
   if(!(xml_goto_nth_element_inside(xml_hdl, "auto_update_annot_onset", 0)))
   {
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
@@ -3729,6 +3746,8 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "    <annot_onset_at_start_of_page_on_jump>%i</annot_onset_at_start_of_page_on_jump>\n", annot_onset_at_start_of_page_on_jump);
 
     fprintf(cfgfile, "    <auto_update_annot_onset>%i</auto_update_annot_onset>\n", auto_update_annot_onset);
+
+    fprintf(cfgfile, "    <annotlist_scrolltoitem_while_browsing>%i</annotlist_scrolltoitem_while_browsing>\n", annotlist_scrolltoitem_while_browsing);
 
     fprintf(cfgfile, "    <use_diverse_signal_colors>%i</use_diverse_signal_colors>\n", use_diverse_signal_colors);
 

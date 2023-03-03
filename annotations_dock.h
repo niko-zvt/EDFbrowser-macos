@@ -144,6 +144,7 @@ private slots:
   void rename_all();
   void delete_annots();
   void delete_all_annots();
+  void file_pos_changed(long long);
 };
 
 

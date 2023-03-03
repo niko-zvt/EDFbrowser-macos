@@ -104,6 +104,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   annot_onset_at_start_of_page_on_jump = 0;
 
+  annotlist_scrolltoitem_while_browsing = 0;
+
   auto_reload_mtg = 1;
 
   read_biosemi_status_signal = 1;
