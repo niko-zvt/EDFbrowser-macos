@@ -40,7 +40,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       vertical_distance,
       marker_x,
       marker_x2,
-      annot_list_sz=0;
+      annot_list_sz=0,
+      annot_text_stack_idx=0;
 
   double mono_font_pixel_height=20,
          mono_font_pixel_width=12,
@@ -56,7 +57,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             ll_elapsed_time,
             l_time,
             l_tmp,
-            l_tmp2=0;
+            l_tmp2=0LL,
+            former_annot_onset = 0x8000000000000000;
 
   static int old_w=100;
 
@@ -816,6 +818,13 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               painter->drawLine(marker_x, 0, marker_x, h);
             }
 
+            if(l_tmp > (former_annot_onset + ((long long)mainwindow->pagetime / 10LL)))
+            {
+              annot_text_stack_idx = 0;
+
+              former_annot_onset = l_tmp;
+            }
+
             l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_subsec;
 
             if(mainwindow->annotations_onset_relative)
@@ -876,7 +885,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             }
             else
             {
-              painter->drawText(marker_x + 5, (h - 5) - ((j % 3) * mono_font_pixel_height * 2), str1);
+              painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height * 2), str1);
             }
 
             strlcpy(str1, annot->description, 80);
@@ -889,8 +898,10 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             }
             else
             {
-              painter->drawText(marker_x + 5, ((h - 5) - mono_font_pixel_height) - ((j % 3) * mono_font_pixel_height * 2), QString::fromUtf8(str1));
+              painter->drawText(marker_x + 5, ((h - 5) - mono_font_pixel_height) - (annot_text_stack_idx * mono_font_pixel_height * 2), QString::fromUtf8(str1));
             }
+
+            annot_text_stack_idx++;
 
             if(!annot_marker_moving)
             {
