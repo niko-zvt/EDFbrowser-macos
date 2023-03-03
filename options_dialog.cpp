@@ -234,7 +234,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp->addWidget(AnnotDurationButton);
   hlayout_tmp->addWidget(AnnotDurationSelectedButton);
   hlayout_tmp->addStretch(1000);
-  flayout1_2->addRow("Annotation duration background", hlayout_tmp);
+  flayout1_2->addRow("Annotation's duration overlay color", hlayout_tmp);
 
   checkbox2_2 = new QCheckBox;
   checkbox2_2->setTristate(false);
@@ -246,12 +246,13 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox2_2->setCheckState(Qt::Unchecked);
   }
-  checkbox2_2->setToolTip("Show the colored background only at the bottom of the screen");
+  checkbox2_2->setToolTip("Show the overlay color of the annotation's duration only at the bottom of the screen");
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->setAlignment(Qt::AlignCenter);
   hlayout_tmp->addWidget(checkbox2_2);
   hlayout_tmp->addStretch(1000);
   flayout1_2->addRow("Show only at screen bottom", hlayout_tmp);
+  flayout1_2->labelForField(hlayout_tmp)->setToolTip("Show the overlay color of the annotation's duration only at the bottom of the screen");
 
   checkbox1 = new QCheckBox;
   checkbox1->setTristate(false);
