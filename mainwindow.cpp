@@ -5350,6 +5350,45 @@ void UI_Mainwindow::mc_v_scrollbar_changed(int val)
 }
 
 
+void UI_Mainwindow::set_view_markers(bool checked)
+{
+  if(checked == true)
+  {
+    show_annot_markers = 1;
+  }
+  else
+  {
+    show_annot_markers = 0;
+  }
+
+  maincurve->update();
+}
+
+
+void UI_Mainwindow::set_vert_scrollbar(bool checked)
+{
+  if(checked == true)
+  {
+    mc_v_scrollarea_auto = 1;
+
+    mc_v_scrollbar->setVisible(true);
+  }
+  else
+  {
+    mc_v_scrollarea_auto = 0;
+
+    mc_v_scrollbar->setVisible(false);
+  }
+
+  maincurve->drawCurve_stage_1();
+}
+
+
+
+
+
+
+
 
 
 

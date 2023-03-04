@@ -1971,10 +1971,14 @@ void UI_OptionsDialog::checkbox2Clicked(int state)
   if(state==Qt::Checked)
   {
     mainwindow->show_annot_markers = 1;
+
+    mainwindow->view_markers_act->setChecked(true);
   }
   else
   {
     mainwindow->show_annot_markers = 0;
+
+    mainwindow->view_markers_act->setChecked(false);
   }
 
   mainwindow->maincurve->update();
@@ -2230,6 +2234,8 @@ void UI_OptionsDialog::checkbox4_16Clicked(int state)
 
     spinbox4_6->setEnabled(true);
 
+    mainwindow->vert_scrollbar_act->setChecked(true);
+
     mainwindow->mc_v_scrollbar->setVisible(true);
   }
   else
@@ -2237,6 +2243,8 @@ void UI_OptionsDialog::checkbox4_16Clicked(int state)
     mainwindow->mc_v_scrollarea_auto = 0;
 
     spinbox4_6->setEnabled(false);
+
+    mainwindow->vert_scrollbar_act->setChecked(false);
 
     mainwindow->mc_v_scrollbar->setVisible(false);
   }

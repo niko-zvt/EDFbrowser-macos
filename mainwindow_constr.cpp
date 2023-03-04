@@ -976,6 +976,36 @@ UI_Mainwindow::UI_Mainwindow()
   AmplitudeGroup->addAction(amp_50000);
   connect(AmplitudeGroup, SIGNAL(triggered(QAction *)), this, SLOT(set_amplitude(QAction *)));
 
+  view_markers_act = new QAction("Annotation Markers", this);
+  view_markers_act->setCheckable(true);
+  if(show_annot_markers)
+  {
+    view_markers_act->setChecked(true);
+  }
+  else
+  {
+    view_markers_act->setChecked(false);
+  }
+  connect(view_markers_act, SIGNAL(toggled(bool)), this, SLOT(set_view_markers(bool)));
+
+  vert_scrollbar_act = new QAction("Vertical scrollbar", this);
+  vert_scrollbar_act->setCheckable(true);
+  if(mc_v_scrollarea_auto)
+  {
+    vert_scrollbar_act->setChecked(true);
+  }
+  else
+  {
+    vert_scrollbar_act->setChecked(false);
+  }
+  connect(vert_scrollbar_act, SIGNAL(toggled(bool)), this, SLOT(set_vert_scrollbar(bool)));
+
+  viewmenu = new QMenu(this);
+  viewmenu->setTitle("View");
+  viewmenu->addAction(view_markers_act);
+  viewmenu->addAction(vert_scrollbar_act);
+  menubar->addMenu(viewmenu);
+
   math_func_menu = new QMenu(this);
   math_func_menu->setTitle("&Math");
   math_func_menu->addAction("New", this, SLOT(add_new_math_func()));

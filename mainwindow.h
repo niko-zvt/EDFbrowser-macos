@@ -483,7 +483,9 @@ long long annot_editor_user_button_epoch_len,
                *Escape_act,
                *video_act,
                *shift_vert_scrollbar_up_act,
-               *shift_vert_scrollbar_down_act;
+               *shift_vert_scrollbar_down_act,
+               *view_markers_act,
+               *vert_scrollbar_act;
 
   QActionGroup *timelock_act_group,
                *sel_viewtime_act_group;
@@ -512,6 +514,7 @@ private:
                *timescalemenu,
                *timescale_mmsec_menu,
                *amplitudemenu,
+               *viewmenu,
                *toolsmenu,
                *settingsmenu,
                *helpmenu,
@@ -708,6 +711,8 @@ private slots:
   void set_amplitude(QAction *);
   void set_amplitude_div2();
   void set_amplitude_mult2();
+  void set_vert_scrollbar(bool);
+  void set_view_markers(bool);
   void former_page();
   void playback_file();
   void stop_playback();
