@@ -640,7 +640,7 @@ UI_Mainwindow::UI_Mainwindow()
   connect(load_session_act, SIGNAL(triggered()), this, SLOT(load_session()));
 
   sessionmenu = new QMenu(this);
-  sessionmenu->setTitle("Session");
+  sessionmenu->setTitle("Sessio&n");
   sessionmenu->addAction("View saved sessions", this, SLOT(view_session()));
   sessionmenu->addAction(save_session_act);
   sessionmenu->addAction(load_session_act);
@@ -1013,7 +1013,7 @@ UI_Mainwindow::UI_Mainwindow()
   connect(linear_interpol_act, SIGNAL(toggled(bool)), this, SLOT(set_linear_interpol(bool)));
 
   viewmenu = new QMenu(this);
-  viewmenu->setTitle("View");
+  viewmenu->setTitle("&View");
   viewmenu->addAction(view_markers_act);
   viewmenu->addAction(vert_scrollbar_act);
   viewmenu->addAction(linear_interpol_act);
@@ -1025,7 +1025,7 @@ UI_Mainwindow::UI_Mainwindow()
   math_func_menu->addAction("Remove all", this, SLOT(remove_all_math_funcs()));
 
   filtermenu = new QMenu(this);
-  filtermenu->setTitle("&Filter");
+  filtermenu->setTitle("Filte&r");
   filtermenu->addAction("Classic Butterworth, Bessel, Chebyshev, etc.", this, SLOT(add_new_filter()));
   filtermenu->addAction("Adjust classic filters", this, SLOT(filterproperties_dialog()));
   filtermenu->addAction("Remove all classic filters", this, SLOT(remove_all_filters()));
