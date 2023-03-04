@@ -1000,10 +1000,23 @@ UI_Mainwindow::UI_Mainwindow()
   }
   connect(vert_scrollbar_act, SIGNAL(toggled(bool)), this, SLOT(set_vert_scrollbar(bool)));
 
+  linear_interpol_act = new QAction("Linear interpolation", this);
+  linear_interpol_act->setCheckable(true);
+  if(linear_interpol)
+  {
+    linear_interpol_act->setChecked(true);
+  }
+  else
+  {
+    linear_interpol_act->setChecked(false);
+  }
+  connect(linear_interpol_act, SIGNAL(toggled(bool)), this, SLOT(set_linear_interpol(bool)));
+
   viewmenu = new QMenu(this);
   viewmenu->setTitle("View");
   viewmenu->addAction(view_markers_act);
   viewmenu->addAction(vert_scrollbar_act);
+  viewmenu->addAction(linear_interpol_act);
   menubar->addMenu(viewmenu);
 
   math_func_menu = new QMenu(this);

@@ -485,7 +485,8 @@ long long annot_editor_user_button_epoch_len,
                *shift_vert_scrollbar_up_act,
                *shift_vert_scrollbar_down_act,
                *view_markers_act,
-               *vert_scrollbar_act;
+               *vert_scrollbar_act,
+               *linear_interpol_act;
 
   QActionGroup *timelock_act_group,
                *sel_viewtime_act_group;
@@ -713,6 +714,7 @@ private slots:
   void set_amplitude_mult2();
   void set_vert_scrollbar(bool);
   void set_view_markers(bool);
+  void set_linear_interpol(bool);
   void former_page();
   void playback_file();
   void stop_playback();

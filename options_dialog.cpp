@@ -2309,10 +2309,14 @@ void UI_OptionsDialog::checkbox4_6Clicked(int state)
   if(state==Qt::Checked)
   {
     mainwindow->linear_interpol = 1;
+
+    mainwindow->linear_interpol_act->setChecked(true);
   }
   else
   {
     mainwindow->linear_interpol = 0;
+
+    mainwindow->linear_interpol_act->setChecked(false);
   }
 
   mainwindow->setup_viewbuf();

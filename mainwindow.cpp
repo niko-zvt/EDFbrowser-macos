@@ -5384,6 +5384,21 @@ void UI_Mainwindow::set_vert_scrollbar(bool checked)
 }
 
 
+void UI_Mainwindow::set_linear_interpol(bool checked)
+{
+  if(checked == true)
+  {
+    linear_interpol = 1;
+  }
+  else
+  {
+    linear_interpol = 0;
+  }
+
+  setup_viewbuf();
+}
+
+
 
 
 
