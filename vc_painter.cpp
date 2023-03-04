@@ -40,8 +40,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       vertical_distance,
       marker_x,
       marker_x2,
+      former_marker_x,
       annot_list_sz=0,
-      annot_text_stack_idx=0;
+      annot_text_stack_idx=0,
+      viewtimestr_end_x=0,
+      pagetimestr_start_x=0;
 
   double mono_font_pixel_height=20,
          mono_font_pixel_width=12,
@@ -57,8 +60,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             ll_elapsed_time,
             l_time,
             l_tmp,
-            l_tmp2=0LL,
-            former_annot_onset = 0x8000000000000000;
+            l_tmp2=0LL;
 
   static int old_w=100;
 
@@ -738,6 +740,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     for(i=0; i<mainwindow->files_open; i++)
     {
+      former_marker_x = -10000;
+
       annot_list = &mainwindow->edfheaderlist[i]->annot_list;
 
       annot_list_sz = edfplus_annotation_size(annot_list);
@@ -818,11 +822,30 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               painter->drawLine(marker_x, 0, marker_x, h);
             }
 
-            if(l_tmp > (former_annot_onset + ((long long)mainwindow->pagetime / 10LL)))
-            {
-              annot_text_stack_idx = 0;
 
-              former_annot_onset = l_tmp;
+            viewtimestr_end_x = 4 + ((strlen(mainwindow->viewtime_string) + 1) * mono_font_pixel_width);
+
+            if(mainwindow->display_pagetime_mmsec)
+            {
+              pagetimestr_start_x = w - (33 * mono_font_pixel_width);
+            }
+            else
+            {
+              pagetimestr_start_x = w - (20 * mono_font_pixel_width);
+            }
+
+            if(marker_x > (former_marker_x + (mono_font_pixel_width * 20)))
+            {
+              if((marker_x > viewtimestr_end_x) && (marker_x < pagetimestr_start_x))
+              {
+                annot_text_stack_idx = 0;
+              }
+              else
+              {
+                annot_text_stack_idx = 1;
+              }
+
+              former_marker_x = marker_x;
             }
 
             l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_subsec;
