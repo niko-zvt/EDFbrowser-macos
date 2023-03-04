@@ -5318,7 +5318,7 @@ void UI_Mainwindow::set_font_metrics(int starting_up)
 
   mono_font_pixel_height = fm_mono.height();
 
-  mono_font_pixel_width = fm_mono.tightBoundingRect("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789").width() / 36.0;
+  mono_font_pixel_width = fm_mono.tightBoundingRect("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789").width() / 35.0;
 
 //  printf("\nmono_font_pixel_height: %.2f    mono_font_pixel_width: %.2f\n", mono_font_pixel_height, mono_font_pixel_width);
 

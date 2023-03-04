@@ -1359,12 +1359,12 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   }
   else
   {
-    painter->fillRect(6, h - (4 + mono_font_pixel_height), 4 + (strlen(mainwindow->viewtime_string) * mono_font_pixel_width), mono_font_pixel_height + 1, backgroundcolor);
+    painter->fillRect(6, h - mono_font_pixel_height, 4 + (strlen(mainwindow->viewtime_string) * mono_font_pixel_width), mono_font_pixel_height, backgroundcolor);
     painter->drawText(8, h - 4, mainwindow->viewtime_string);
     if((old_w == w) || (!mainwindow->display_pagetime_mmsec))
     {
-      painter->fillRect(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - mono_font_pixel_height - 1,
-                        (strlen(mainwindow->pagetime_string) + 1) * mono_font_pixel_width, (4 + mono_font_pixel_height),
+      painter->fillRect(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - mono_font_pixel_height,
+                        (strlen(mainwindow->pagetime_string) + 1) * mono_font_pixel_width, mono_font_pixel_height,
                         backgroundcolor);
       painter->drawText(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - 4, mainwindow->pagetime_string);
     }
