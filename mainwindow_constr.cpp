@@ -1020,7 +1020,7 @@ UI_Mainwindow::UI_Mainwindow()
   menubar->addMenu(viewmenu);
 
   math_func_menu = new QMenu(this);
-  math_func_menu->setTitle("&Math");
+  math_func_menu->setTitle("Math");
   math_func_menu->addAction("New", this, SLOT(add_new_math_func()));
   math_func_menu->addAction("Remove all", this, SLOT(remove_all_math_funcs()));
 
