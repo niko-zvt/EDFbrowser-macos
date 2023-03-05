@@ -1304,11 +1304,13 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   combobox4_2->addItem("real (relative)");
   combobox4_2->addItem("date real (relative)");
   combobox4_2->setCurrentIndex(mainwindow->viewtime_indicator_type);
+  combobox4_2->setToolTip("Formatting of the viewtime/fileposition indicator");
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->setAlignment(Qt::AlignCenter);
   hlayout_tmp->addWidget(combobox4_2);
   hlayout_tmp->addStretch(1000);
   flayout4_2->addRow("Viewtime / fileposition indicator", hlayout_tmp);
+  flayout4_2->labelForField(hlayout_tmp)->setToolTip("Formatting of the viewtime/fileposition indicator");
   QObject::connect(combobox4_2, SIGNAL(currentIndexChanged(int)), this, SLOT(combobox4_2IndexChanged(int)));
 
   checkbox4_7 = new QCheckBox;

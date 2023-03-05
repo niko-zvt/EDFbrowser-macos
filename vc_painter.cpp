@@ -70,8 +70,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   annotblck_t *annot=NULL;
 
-  date_time_t date_time_str;
-
   if(mainwindow->exit_in_progress)
   {
     return;
@@ -827,11 +825,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             if(mainwindow->display_pagetime_mmsec)
             {
-              pagetimestr_start_x = w - (33 * mono_font_pixel_width);
+              pagetimestr_start_x = w - (35 * mono_font_pixel_width);
             }
             else
             {
-              pagetimestr_start_x = w - (20 * mono_font_pixel_width);
+              pagetimestr_start_x = w - (22 * mono_font_pixel_width);
             }
 
             if(marker_x > (former_marker_x + (mono_font_pixel_width * 20)))
@@ -846,6 +844,19 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               }
 
               former_marker_x = marker_x;
+            }
+
+            if((annot->duration[0]) && (mainwindow->annotations_show_duration))
+            {
+              strlcpy(str1, annot->duration, 600);
+
+              remove_trailing_zeros(str1);
+
+              strlcat(str1, " sec", 600);
+
+              painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), str1);    //FIXME  (printing)
+
+              annot_text_stack_idx++;
             }
 
             l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_subsec;
@@ -871,18 +882,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             }
             else
             {
-              if(mainwindow->viewtime_indicator_type == VIEWTIME_INDICATOR_TYPE_DATE_REAL_RELATIVE)
-              {
-                utc_to_date_time((annot->onset / TIME_FIXP_SCALING) + mainwindow->edfheaderlist[i]->utc_starttime, &date_time_str);
-
-                snprintf(str1, 32, "%2i-%s ", date_time_str.day, date_time_str.month_str);
-              }
-              else
-              {
-                str1[0] = 0;
-              }
-
-              snprintf(str1 + strlen(str1), MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%04i",
+              snprintf(str1, MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%04i",
                       (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_FIXP_SCALING)/ 3600) % 24),
                       (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_FIXP_SCALING) % 3600) / 60),
                       (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_FIXP_SCALING) % 60),
@@ -891,25 +891,16 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             remove_trailing_zeros(str1);
 
-            if((annot->duration[0]) && (mainwindow->annotations_show_duration))
-            {
-              strlcat(str1, " Duration: ", 600);
-
-              strlcat(str1, annot->duration, 600);
-
-              remove_trailing_zeros(str1);
-
-              strlcat(str1, " sec", 600);
-            }
-
             if(printing)
             {
               painter->drawText(marker_x + (5  * printsize_x_factor), h - (25  * printsize_y_factor), str1);
             }
             else
             {
-              painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height * 2), str1);
+              painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), str1);
             }
+
+            annot_text_stack_idx++;
 
             strlcpy(str1, annot->description, 80);
 
@@ -921,7 +912,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             }
             else
             {
-              painter->drawText(marker_x + 5, ((h - 5) - mono_font_pixel_height) - (annot_text_stack_idx * mono_font_pixel_height * 2), QString::fromUtf8(str1));
+              painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(str1));
             }
 
             annot_text_stack_idx++;
@@ -1363,8 +1354,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     painter->drawText(8, h - 4, mainwindow->viewtime_string);
     if((old_w == w) || (!mainwindow->display_pagetime_mmsec))
     {
-      painter->fillRect(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - mono_font_pixel_height,
-                        (strlen(mainwindow->pagetime_string) + 1) * mono_font_pixel_width, mono_font_pixel_height,
+      painter->fillRect(w - mono_font_pixel_width - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - mono_font_pixel_height,
+                        (strlen(mainwindow->pagetime_string) + 2) * mono_font_pixel_width, mono_font_pixel_height,
                         backgroundcolor);
       painter->drawText(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - 4, mainwindow->pagetime_string);
     }
@@ -1401,8 +1392,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
       }
 
-      painter->fillRect(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - mono_font_pixel_height - 1,
-                        (strlen(mainwindow->pagetime_string) + 1) * mono_font_pixel_width, (4 + mono_font_pixel_height),
+      painter->fillRect(w - mono_font_pixel_width - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - mono_font_pixel_height - 1,
+                        (strlen(mainwindow->pagetime_string) + 2) * mono_font_pixel_width, (4 + mono_font_pixel_height),
                         backgroundcolor);
       painter->drawText(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - 4, mainwindow->pagetime_string);
     }
