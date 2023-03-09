@@ -148,6 +148,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   annot_editor_user_button_stay_on_epoch_boundary = 0;
 
+  file_position_changed_signal_block_for_annotdock = 0;
+
   annot_editor_user_button_epoch_len = 30LL * TIME_FIXP_SCALING;
 
   annot_editor_user_button_page_len = 30LL * TIME_FIXP_SCALING;

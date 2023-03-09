@@ -293,7 +293,8 @@ public:
       display_pagetime_mmsec,
       mc_v_scrollarea_ratio,
       mc_v_scrollarea_auto,
-      mc_v_scrollarea_max_signals;
+      mc_v_scrollarea_max_signals,
+      file_position_changed_signal_block_for_annotdock;
 
 volatile int rc_cmd_in_progress;
 

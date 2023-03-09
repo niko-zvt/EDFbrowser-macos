@@ -86,8 +86,8 @@ private:
 
   QDialog *dialog1;
 
-  QCheckBox *checkbox1,
-            *checkbox2;
+  QCheckBox *relative_checkbox,
+            *invert_checkbox;
 
   QLabel *label1;
 
@@ -122,8 +122,8 @@ private slots:
   void annotation_selected(QListWidgetItem *, int centered=1);
   void annotation_pressed(QListWidgetItem *);
   void hide_editdock(bool);
-  void checkbox1_clicked(int);
-  void checkbox2_clicked(int);
+  void relative_checkbox_clicked(int);
+  void invert_checkbox_clicked(int);
   void more_button_clicked(bool);
   void show_between(bool);
   void average_annot(bool);

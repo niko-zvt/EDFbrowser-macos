@@ -68,9 +68,9 @@ UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_paren
 
   dialog1 = new QDialog;
 
-  checkbox1 = new QCheckBox("Relative ");
-  checkbox1->setTristate(false);
-  checkbox1->setCheckState(Qt::Checked);
+  relative_checkbox = new QCheckBox("Relative ");
+  relative_checkbox->setTristate(false);
+  relative_checkbox->setCheckState(Qt::Checked);
 
   label1 = new QLabel;
   label1->setText(" Filter:");
@@ -78,9 +78,9 @@ UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_paren
   search_line_edit = new QLineEdit;
   search_line_edit->setMaxLength(16);
 
-  checkbox2 = new QCheckBox("Inv.");
-  checkbox2->setTristate(false);
-  checkbox2->setCheckState(Qt::Unchecked);
+  invert_checkbox = new QCheckBox("Inv.");
+  invert_checkbox->setTristate(false);
+  invert_checkbox->setCheckState(Qt::Unchecked);
 
   more_button = new QPushButton("More");
 
@@ -132,10 +132,10 @@ UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_paren
   list->insertAction(NULL, delete_all_annots_act);
 
   QHBoxLayout *h_layout = new QHBoxLayout;
-  h_layout->addWidget(checkbox1);
+  h_layout->addWidget(relative_checkbox);
   h_layout->addWidget(label1);
   h_layout->addWidget(search_line_edit, 1000);
-  h_layout->addWidget(checkbox2);
+  h_layout->addWidget(invert_checkbox);
   h_layout->addWidget(more_button);
 
   QVBoxLayout *v_layout = new QVBoxLayout(dialog1);
@@ -152,8 +152,8 @@ UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_paren
   QObject::connect(list,                       SIGNAL(itemClicked(QListWidgetItem *)),   this, SLOT(annotation_selected(QListWidgetItem *)));
   QObject::connect(list,                       SIGNAL(itemPressed(QListWidgetItem *)),   this, SLOT(annotation_pressed(QListWidgetItem *)));
   QObject::connect(docklist,                   SIGNAL(visibilityChanged(bool)),          this, SLOT(hide_editdock(bool)));
-  QObject::connect(checkbox1,                  SIGNAL(stateChanged(int)),                this, SLOT(checkbox1_clicked(int)));
-  QObject::connect(checkbox2,                  SIGNAL(stateChanged(int)),                this, SLOT(checkbox2_clicked(int)));
+  QObject::connect(relative_checkbox,          SIGNAL(stateChanged(int)),                this, SLOT(relative_checkbox_clicked(int)));
+  QObject::connect(invert_checkbox,            SIGNAL(stateChanged(int)),                this, SLOT(invert_checkbox_clicked(int)));
   QObject::connect(more_button,                SIGNAL(clicked(bool)),                    this, SLOT(more_button_clicked(bool)));
   QObject::connect(hide_annot_act,             SIGNAL(triggered(bool)),                  this, SLOT(hide_annot(bool)));
   QObject::connect(unhide_annot_act,           SIGNAL(triggered(bool)),                  this, SLOT(unhide_annot(bool)));
@@ -189,6 +189,12 @@ UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_paren
 
 void UI_Annotationswindow::file_pos_changed(long long viewtime)
 {
+  if(mainwindow->file_position_changed_signal_block_for_annotdock)
+  {
+    mainwindow->file_position_changed_signal_block_for_annotdock = 0;
+    return;
+  }
+
   if(!mainwindow->annotlist_scrolltoitem_while_browsing)  return;
 
   int i;
@@ -732,7 +738,7 @@ void UI_Annotationswindow::delayed_list_filter_update()
       }
     }
 
-    updateList(0);
+    updateList(1);
 
     mainwindow->maincurve->update();
 
@@ -812,13 +818,13 @@ void UI_Annotationswindow::delayed_list_filter_update()
     }
   }
 
-  updateList(0);
+  updateList(1);
 
   mainwindow->maincurve->update();
 }
 
 
-void UI_Annotationswindow::checkbox2_clicked(int state)
+void UI_Annotationswindow::invert_checkbox_clicked(int state)
 {
   int changed=0, sz;
 
@@ -844,7 +850,8 @@ void UI_Annotationswindow::checkbox2_clicked(int state)
 
   if(changed == 0)  return;
 
-  filter_edited(search_line_edit->text());
+//  filter_edited(search_line_edit->text());
+  delayed_list_filter_update();
 }
 
 
@@ -1143,7 +1150,7 @@ void UI_Annotationswindow::average_annot(bool)
 }
 
 
-void UI_Annotationswindow::checkbox1_clicked(int state)
+void UI_Annotationswindow::relative_checkbox_clicked(int state)
 {
   if(state==Qt::Checked)
   {
@@ -1184,7 +1191,8 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
       modified=0,
       scroll_val=0,
       selected_in_dock_idx=-1,
-      len=0;
+      len=0,
+      visible_item_idx=0;
 
   char str[MAX_ANNOTATION_LEN + 32]="",
        str2[1024]="";
@@ -1238,7 +1246,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
 
     if(annot->selected_in_dock)
     {
-      selected_in_dock_idx = j;
+      selected_in_dock_idx = visible_item_idx;
     }
 
     if(relative)
@@ -1345,6 +1353,8 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
 
       annot->grabbed = 0;
     }
+
+    visible_item_idx++;
   }
 
   if(mainwindow->annot_editor_active)
@@ -1370,6 +1380,8 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
   if((scroll_to_item_requested) && (selected_in_dock_idx>=0))
   {
     list->setCurrentItem(list->item(selected_in_dock_idx));
+    list->scrollToBottom();
+    list->scrollToItem(list->item(selected_in_dock_idx));
   }
   else
   {
@@ -1474,6 +1486,8 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
       mainwindow->maincurve->setCrosshair_1_center();
     }
   }
+
+  mainwindow->file_position_changed_signal_block_for_annotdock = 1;
 
   if(centered)
   {
