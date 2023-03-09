@@ -54,8 +54,8 @@ typedef struct
   int modified;
   int x_pos;
   int grabbed;
-  int hided;
-  int hided_in_list;
+  int hidden;
+  int hidden_in_list;
   unsigned int ident;
   int selected_in_dock;
 } annotblck_t;

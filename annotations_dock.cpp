@@ -205,7 +205,7 @@ void UI_Annotationswindow::file_pos_changed(long long viewtime)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
 
-    if(annot->hided_in_list)
+    if(annot->hidden_in_list)
     {
       continue;
     }
@@ -593,9 +593,9 @@ void UI_Annotationswindow::hide_all_NK_triggers(bool)
 
     if(annot->ident & (1 << ANNOT_ID_NK_TRIGGER))
     {
-      annot->hided_in_list = 1;
+      annot->hidden_in_list = 1;
 
-      annot->hided = 1;
+      annot->hidden = 1;
     }
   }
 
@@ -623,9 +623,9 @@ void UI_Annotationswindow::hide_all_BS_triggers(bool)
 
     if(annot->ident & (1 << ANNOT_ID_BS_TRIGGER))
     {
-      annot->hided_in_list = 1;
+      annot->hidden_in_list = 1;
 
-      annot->hided = 1;
+      annot->hidden = 1;
     }
   }
 
@@ -653,9 +653,9 @@ void UI_Annotationswindow::unhide_all_NK_triggers(bool)
 
     if(annot->ident & (1 << ANNOT_ID_NK_TRIGGER))
     {
-      annot->hided_in_list = 0;
+      annot->hidden_in_list = 0;
 
-      annot->hided = 0;
+      annot->hidden = 0;
     }
   }
 
@@ -683,9 +683,9 @@ void UI_Annotationswindow::unhide_all_BS_triggers(bool)
 
     if(annot->ident & (1 << ANNOT_ID_BS_TRIGGER))
     {
-      annot->hided_in_list = 0;
+      annot->hidden_in_list = 0;
 
-      annot->hided = 0;
+      annot->hidden = 0;
     }
   }
 
@@ -726,9 +726,9 @@ void UI_Annotationswindow::delayed_list_filter_update()
       if(!(((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) && hide_nk_triggers) ||
            ((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) && hide_bs_triggers)))
       {
-        annot->hided_in_list = 0;
+        annot->hidden_in_list = 0;
 
-        annot->hided = 0;
+        annot->hidden = 0;
       }
     }
 
@@ -752,15 +752,15 @@ void UI_Annotationswindow::delayed_list_filter_update()
       if(!(((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) && hide_nk_triggers) ||
            ((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) && hide_bs_triggers)))
       {
-        annot->hided_in_list = 1;
+        annot->hidden_in_list = 1;
 
         if(mainwindow->annot_filter->hide_in_list_only)
         {
-          annot->hided = 0;
+          annot->hidden = 0;
         }
         else
         {
-          annot->hided = 1;
+          annot->hidden = 1;
         }
 
         n = strlen(annot->description) - len + 1;
@@ -769,9 +769,9 @@ void UI_Annotationswindow::delayed_list_filter_update()
         {
           if(!(strncmp(filter_str, annot->description + j, len)))
           {
-            annot->hided_in_list = 0;
+            annot->hidden_in_list = 0;
 
-            annot->hided = 0;
+            annot->hidden = 0;
 
             break;
           }
@@ -788,9 +788,9 @@ void UI_Annotationswindow::delayed_list_filter_update()
       if(!(((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) && hide_nk_triggers) ||
            ((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) && hide_bs_triggers)))
       {
-        annot->hided_in_list = 0;
+        annot->hidden_in_list = 0;
 
-        annot->hided = 0;
+        annot->hidden = 0;
 
         n = strlen(annot->description) - len + 1;
 
@@ -798,11 +798,11 @@ void UI_Annotationswindow::delayed_list_filter_update()
         {
           if(!(strncmp(filter_str, annot->description + j, len)))
           {
-            annot->hided_in_list = 1;
+            annot->hidden_in_list = 1;
 
             if(!mainwindow->annot_filter->hide_in_list_only)
             {
-              annot->hided = 1;
+              annot->hidden = 1;
             }
 
             break;
@@ -919,9 +919,9 @@ void UI_Annotationswindow::hide_annot(bool)
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, n);
 
-  annot->hided_in_list = 1;
+  annot->hidden_in_list = 1;
 
-  annot->hided = 1;
+  annot->hidden = 1;
 
   updateList(0);
 
@@ -950,9 +950,9 @@ void UI_Annotationswindow::unhide_annot(bool)
 
   annot = edfplus_annotation_get_item(annot_list, n);
 
-  annot->hided_in_list = 0;
+  annot->hidden_in_list = 0;
 
-  annot->hided = 0;
+  annot->hidden = 0;
 
   updateList(0);
 
@@ -999,15 +999,15 @@ void UI_Annotationswindow::hide_same_annots(bool)
 
     if(!strcmp(str1, str2))
     {
-      annot->hided_in_list = 1;
+      annot->hidden_in_list = 1;
 
       if(mainwindow->annot_filter->hide_in_list_only)
       {
-        annot->hided = 0;
+        annot->hidden = 0;
       }
       else
       {
-        annot->hided = 1;
+        annot->hidden = 1;
       }
     }
   }
@@ -1053,9 +1053,9 @@ void UI_Annotationswindow::unhide_same_annots(bool)
 
     if(!strcmp(str1, str2))
     {
-      annot->hided_in_list = 0;
+      annot->hidden_in_list = 0;
 
-      annot->hided = 0;
+      annot->hidden = 0;
     }
   }
 
@@ -1079,9 +1079,9 @@ void UI_Annotationswindow::unhide_all_annots(bool)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
 
-    annot->hided = 0;
+    annot->hidden = 0;
 
-    annot->hided_in_list = 0;
+    annot->hidden_in_list = 0;
   }
 
   updateList(0);
@@ -1231,7 +1231,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
 
     annot = edfplus_annotation_get_item(annot_list, j);
 
-    if(annot->hided_in_list)
+    if(annot->hidden_in_list)
     {
       continue;
     }
