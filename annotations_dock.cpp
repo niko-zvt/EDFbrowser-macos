@@ -71,6 +71,7 @@ UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_paren
   relative_checkbox = new QCheckBox("Relative ");
   relative_checkbox->setTristate(false);
   relative_checkbox->setCheckState(Qt::Checked);
+  relative_checkbox->setToolTip("If enabled, onset time of annotations will be relative to start of recording, otherwise clocktime");
 
   label1 = new QLabel;
   label1->setText(" Filter:");
@@ -81,6 +82,7 @@ UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_paren
   invert_checkbox = new QCheckBox("Inv.");
   invert_checkbox->setTristate(false);
   invert_checkbox->setCheckState(Qt::Unchecked);
+  invert_checkbox->setToolTip("Invert filter result if enabled");
 
   more_button = new QPushButton("More");
 
@@ -603,7 +605,7 @@ void UI_Annotationswindow::hide_all_NK_triggers(bool)
     }
   }
 
-  updateList(0);
+  updateList(1);
 
   mainwindow->maincurve->update();
 }
@@ -631,7 +633,7 @@ void UI_Annotationswindow::hide_all_BS_triggers(bool)
     }
   }
 
-  updateList(0);
+  updateList(1);
 
   mainwindow->maincurve->update();
 }
@@ -659,7 +661,7 @@ void UI_Annotationswindow::unhide_all_NK_triggers(bool)
     }
   }
 
-  updateList(0);
+  updateList(1);
 
   mainwindow->maincurve->update();
 }
@@ -687,7 +689,7 @@ void UI_Annotationswindow::unhide_all_BS_triggers(bool)
     }
   }
 
-  updateList(0);
+  updateList(1);
 
   mainwindow->maincurve->update();
 }
@@ -886,7 +888,7 @@ void UI_Annotationswindow::hide_annot(bool)
 
   annot->hidden = 1;
 
-  updateList(0);
+  updateList(1);
 
   mainwindow->maincurve->update();
 }
@@ -915,7 +917,7 @@ void UI_Annotationswindow::unhide_annot(bool)
 
   annot->hidden = 0;
 
-  updateList(0);
+  updateList(1);
 
   mainwindow->maincurve->update();
 }
@@ -964,7 +966,7 @@ void UI_Annotationswindow::hide_same_annots(bool)
     }
   }
 
-  updateList(0);
+  updateList(1);
 
   mainwindow->maincurve->update();
 }
@@ -1009,7 +1011,7 @@ void UI_Annotationswindow::unhide_same_annots(bool)
     }
   }
 
-  updateList(0);
+  updateList(1);
 
   mainwindow->maincurve->update();
 }
@@ -1032,7 +1034,7 @@ void UI_Annotationswindow::unhide_all_annots(bool)
     annot->hidden = 0;
   }
 
-  updateList(0);
+  updateList(1);
 
   mainwindow->maincurve->update();
 }
@@ -1107,7 +1109,7 @@ void UI_Annotationswindow::relative_checkbox_clicked(int state)
     mainwindow->annotations_onset_relative = 0;
   }
 
-  updateList(0);
+  updateList(1);
 
   mainwindow->maincurve->update();
 }

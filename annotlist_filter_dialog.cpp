@@ -97,7 +97,7 @@ UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, annotblck_t *annot
 
   hide_in_list_checkbox = new QCheckBox;
   hide_in_list_checkbox->setTristate(false);
-  hide_in_list_checkbox->setToolTip("Filter affects the annotationlist only, not the annotation markers in the signal window");
+  hide_in_list_checkbox->setToolTip("If enabled, filter affects the annotationlist only, not the annotation markers in the signal window");
   if(filter_params->hide_in_list_only)
   {
     hide_in_list_checkbox->setCheckState(Qt::Checked);
@@ -129,6 +129,7 @@ UI_AnnotFilterWindow::UI_AnnotFilterWindow(QWidget *w_parent, annotblck_t *annot
   flayout->addRow("Invert", invert_checkbox);
   flayout->addRow("Hide other annotations", hide_other_checkbox);
   flayout->addRow("Filter list only", hide_in_list_checkbox);
+  flayout->labelForField(hide_in_list_checkbox)->setToolTip("If enabled, filter affects the annotationlist only, not the annotation markers in the signal window");
 
   QHBoxLayout *hlayout1 = new QHBoxLayout;
   hlayout1->addWidget(ApplyButton);

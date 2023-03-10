@@ -289,7 +289,7 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
   file_num = mainwindow->get_filenum((edfhdrblck_t *)(annot->edfhdr));
   if(file_num >= 0)
   {
-    mainwindow->annotations_dock[file_num]->updateList(0);
+    mainwindow->annotations_dock[file_num]->updateList(1);
   }
 
   update_description_completer();
