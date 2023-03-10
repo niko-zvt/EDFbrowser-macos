@@ -143,7 +143,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         {
           l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_subsec;
 
-          if(((l_tmp + annot->long_duration) > (mainwindow->edfheaderlist[i]->viewtime - TIME_FIXP_SCALING)) && (!annot->hidden))
+          if(((l_tmp + annot->long_duration) > (mainwindow->edfheaderlist[i]->viewtime - TIME_FIXP_SCALING)) && (!annot->hidden || mainwindow->annot_filter->hide_in_list_only))
           {
             if(l_tmp > (long long)(mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
             {
@@ -760,7 +760,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           break;
         }
 
-        if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_FIXP_SCALING)) && (!annot->hidden))
+        if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_FIXP_SCALING)) && (!annot->hidden || mainwindow->annot_filter->hide_in_list_only))
         {
           if(mainwindow->show_annot_markers)
           {

@@ -115,7 +115,7 @@ int edfplus_annotation_cnt(annotlist_t *list, annotblck_t *annot)
 
     if(!strcmp(tmp_annot->description, annot->description))
     {
-      if(!tmp_annot->hidden_in_list)  n++;
+      if(!tmp_annot->hidden)  n++;
     }
   }
 
@@ -175,7 +175,7 @@ annotblck_t * edfplus_annotation_get_item_visible_only(annotlist_t *list, int n)
 
   for(i=0; i<list->sz; i++)
   {
-    if(list->items[list->idx[i]].hidden_in_list)
+    if(list->items[list->idx[i]].hidden)
     {
       continue;
     }
@@ -198,7 +198,7 @@ annotblck_t * edfplus_annotation_get_item_visible_only_cached(annotlist_t *list,
 
   for(; *i<list->sz; (*i)++)
   {
-    if(list->items[list->idx[*i]].hidden_in_list)
+    if(list->items[list->idx[*i]].hidden)
     {
       continue;
     }

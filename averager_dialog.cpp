@@ -374,7 +374,7 @@ void UI_AveragerWindow::startButtonClicked()
     {
       annot_ptr = edfplus_annotation_get_item(&(edf_hdr->annot_list), i);
 
-      if(annot_ptr->hidden_in_list)
+      if(annot_ptr->hidden)
       {
         continue;
       }

@@ -772,7 +772,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
         {
           for(i=0; i<active_markers->count; i++)
           {
-            if(!active_markers->list[i]->hidden_in_list)
+            if(!active_markers->list[i]->hidden)
             {
               if(m_x>(active_markers->list[i]->x_pos-(5*w_scaling))&&(m_x<(active_markers->list[i]->x_pos+(5*w_scaling))))
               {

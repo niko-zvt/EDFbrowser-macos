@@ -583,7 +583,7 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
 
       pos_x2 = (((double)(annot->onset) * pixel_per_sec) / ((double)TIME_FIXP_SCALING)) + 0.5;
 
-      if(skip_first || annot->hidden_in_list)
+      if(skip_first || annot->hidden)
       {
         skip_first = 0;
       }

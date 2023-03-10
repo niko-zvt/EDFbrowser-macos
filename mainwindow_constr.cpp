@@ -104,7 +104,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   annot_onset_at_start_of_page_on_jump = 0;
 
-  annotlist_scrolltoitem_while_browsing = 0;
+  annotlist_scrolltoitem_while_browsing = 1;
 
   auto_reload_mtg = 1;
 
@@ -453,7 +453,7 @@ UI_Mainwindow::UI_Mainwindow()
   annot_filter->tmax = 2000;
   annot_filter->invert = 0;
   annot_filter->hide_other = 1;
-  annot_filter->hide_in_list_only = 1;
+  annot_filter->hide_in_list_only = 0;
 
   annot_list_edited_txt_color.setRed(0);
   annot_list_edited_txt_color.setGreen(255);

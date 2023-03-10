@@ -165,8 +165,6 @@ void UI_AnnotFilterWindow::undo_filter()
   {
     annot = edfplus_annotation_get_item(annot_list, i);
 
-    annot->hidden_in_list = 0;
-
     annot->hidden = 0;
   }
 
@@ -253,21 +251,10 @@ void UI_AnnotFilterWindow::apply_filter()
     {
       if(filter_params->hide_other)
       {
-        annot->hidden_in_list = 1;
-
-        if(filter_params->hide_in_list_only)
-        {
-          annot->hidden = 0;
-        }
-        else
-        {
-          annot->hidden = 1;
-        }
+        annot->hidden = 1;
       }
       else
       {
-        annot->hidden_in_list = 0;
-
         annot->hidden = 0;
       }
 
@@ -280,16 +267,7 @@ void UI_AnnotFilterWindow::apply_filter()
 
       t1 = annot->onset;
 
-      annot->hidden_in_list = 1;
-
-      if(filter_params->hide_in_list_only)
-      {
-        annot->hidden = 0;
-      }
-      else
-      {
-        annot->hidden = 1;
-      }
+      annot->hidden = 1;
 
       annot_before = annot;
 
@@ -304,24 +282,11 @@ void UI_AnnotFilterWindow::apply_filter()
     {
       if((t_diff < t_min) || (t_diff > t_max))
       {
-        annot->hidden_in_list = 1;
-
-        if(filter_params->hide_in_list_only)
-        {
-          annot->hidden = 0;
-        }
-        else
-        {
-          annot->hidden = 1;
-        }
+        annot->hidden = 1;
       }
       else
       {
-        annot->hidden_in_list = 0;
-
         annot->hidden = 0;
-
-        annot_before->hidden_in_list = 0;
 
         annot_before->hidden = 0;
       }
@@ -330,24 +295,11 @@ void UI_AnnotFilterWindow::apply_filter()
     {
       if((t_diff >= t_min) && (t_diff <= t_max))
       {
-        annot->hidden_in_list = 1;
-
-        if(filter_params->hide_in_list_only)
-        {
-          annot->hidden = 0;
-        }
-        else
-        {
-          annot->hidden = 1;
-        }
+        annot->hidden = 1;
       }
       else
       {
-        annot->hidden_in_list = 0;
-
         annot->hidden = 0;
-
-        annot_before->hidden_in_list = 0;
 
         annot_before->hidden = 0;
       }
