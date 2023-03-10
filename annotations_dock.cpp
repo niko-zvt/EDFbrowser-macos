@@ -1321,8 +1321,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
   if((scroll_to_item_requested) && (selected_in_dock_idx>=0))
   {
     list->setCurrentItem(list->item(selected_in_dock_idx));
-    list->scrollToBottom();
-    list->scrollToItem(list->item(selected_in_dock_idx));
+    list->scrollToItem(list->item(selected_in_dock_idx), QAbstractItemView::PositionAtCenter);
   }
   else
   {
