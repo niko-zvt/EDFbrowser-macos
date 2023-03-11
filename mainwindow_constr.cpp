@@ -608,7 +608,11 @@ UI_Mainwindow::UI_Mainwindow()
   filemenu->addSeparator();
   filemenu->addAction(video_act);
   filemenu->addSeparator();
+#if QT_VERSION < 0x060000
   filemenu->addAction("Playback file", this, SLOT(playback_file()), QKeySequence("Ctrl+Space"));
+#else
+  filemenu->addAction("Playback file", QKeySequence("Ctrl+Space"), this, SLOT(playback_file()));
+#endif
   filemenu->addSeparator();
   filemenu->addAction(save_act);
   filemenu->addMenu(recent_filesmenu);
