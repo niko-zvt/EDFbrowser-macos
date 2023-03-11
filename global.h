@@ -85,7 +85,7 @@
 #define VIEWTIME_USER_DEF_SYNCED             (3)
 #define MAX_PATH_LENGTH                   (1024)
 #define MAX_RECENTFILES                     (32)
-#define MAX_ACTIVE_ANNOT_MARKERS            (64)
+#define MAX_ACTIVE_ANNOT_MARKERS           (128)
 #define MAXSPECTRUMDIALOGS                  (32)
 #define MAXSPECTRUMDOCKS                     (8)
 #define MAXCDSADOCKS                        (64)

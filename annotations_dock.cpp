@@ -66,6 +66,8 @@ UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_paren
 
   last_pressed_annotation = -1;
 
+  file_position_changed_signal_block = 0;
+
   dialog1 = new QDialog;
 
   relative_checkbox = new QCheckBox("Relative ");
@@ -191,15 +193,24 @@ UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_paren
 
 void UI_Annotationswindow::file_pos_changed(long long viewtime)
 {
-  if(mainwindow->file_position_changed_signal_block_for_annotdock)
+  if(file_position_changed_signal_block)
   {
-    mainwindow->file_position_changed_signal_block_for_annotdock = 0;
+    file_position_changed_signal_block = 0;
     return;
   }
 
   if(!mainwindow->annotlist_scrolltoitem_while_browsing)  return;
 
-  int i;
+  if(mainwindow->video_player->status != VIDEO_STATUS_STOPPED)  return;
+
+  if(mainwindow->live_stream_active       ||
+     mainwindow->playback_realtime_active ||
+     mainwindow->signal_averaging_active)
+  {
+    return;
+  }
+
+  int i, first=0;
 
   long long pagetime = mainwindow->pagetime;
 
@@ -218,6 +229,17 @@ void UI_Annotationswindow::file_pos_changed(long long viewtime)
       continue;
     }
 
+    if(!first)
+    {
+      if(annot->onset >= (viewtime + pagetime))
+      {
+        list->scrollToTop();
+        break;
+      }
+
+      first = 1;
+    }
+
     if((annot->onset >= viewtime) && (annot->onset < (viewtime + pagetime)))
     {
       list->scrollToBottom();
@@ -225,6 +247,11 @@ void UI_Annotationswindow::file_pos_changed(long long viewtime)
 
       break;
     }
+  }
+  if((i == sz) && (i > 0))
+  {
+    if(annot->onset < viewtime)
+    list->scrollToBottom();
   }
 }
 
@@ -1352,7 +1379,7 @@ int UI_Annotationswindow::get_last_pressed_row(void)
 
 void UI_Annotationswindow::annotation_pressed(QListWidgetItem *item)
 {
-  int n, sz;
+  int j, n, sz;
 
   annotblck_t *annot;
 
@@ -1366,7 +1393,13 @@ void UI_Annotationswindow::annotation_pressed(QListWidgetItem *item)
 
   last_pressed_annotation = n;
 
-  edfplus_annotation_cancel_all_selected_in_dock(annot_list);
+  for(j=0; j<mainwindow->files_open; j++)
+  {
+    if(mainwindow->annotations_dock[j] != NULL)
+    {
+      edfplus_annotation_cancel_all_selected_in_dock(&mainwindow->edfheaderlist[j]->annot_list);
+    }
+  }
 
   annot = edfplus_annotation_get_item(annot_list, n);
 
@@ -1376,7 +1409,7 @@ void UI_Annotationswindow::annotation_pressed(QListWidgetItem *item)
 
 void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int centered)
 {
-  int n, sz;
+  int j, n, sz;
 
   annotblck_t *annot;
 
@@ -1395,7 +1428,13 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
 
   last_pressed_annotation = n;
 
-  edfplus_annotation_cancel_all_selected_in_dock(annot_list);
+  for(j=0; j<mainwindow->files_open; j++)
+  {
+    if(mainwindow->annotations_dock[j] != NULL)
+    {
+      edfplus_annotation_cancel_all_selected_in_dock(&mainwindow->edfheaderlist[j]->annot_list);
+    }
+  }
 
   annot = edfplus_annotation_get_item(annot_list, n);
 
@@ -1429,7 +1468,7 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
     }
   }
 
-  mainwindow->file_position_changed_signal_block_for_annotdock = 1;
+  file_position_changed_signal_block = 1;
 
   if(centered)
   {

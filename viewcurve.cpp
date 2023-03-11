@@ -529,7 +529,7 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
 
 void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 {
-  int i,
+  int i, j,
       baseline,
       signalcomps,
       m_x,
@@ -650,13 +650,25 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
               if(QApplication::keyboardModifiers() == Qt::ShiftModifier)
               {
-                edfplus_annotation_cancel_all_selected_in_dock(&((edfhdrblck_t *)(active_markers->list[i]->edfhdr))->annot_list);
+                for(j=0; j<mainwindow->files_open; j++)
+                {
+                  if(mainwindow->annotations_dock[j] != NULL)
+                  {
+                    edfplus_annotation_cancel_all_selected_in_dock(&mainwindow->edfheaderlist[j]->annot_list);
+                  }
+                }
 
                 active_markers->list[i]->selected_in_dock = 1;
 
                 mainwindow->annotationEditDock->set_selected_annotation(active_markers->list[i]);
 
-                mainwindow->annotations_dock[mainwindow->get_filenum(active_markers->edf_hdr)]->updateList(1);
+                for(j=0; j<mainwindow->files_open; j++)
+                {
+                  if(mainwindow->annotations_dock[j] != NULL)
+                  {
+                    mainwindow->annotations_dock[j]->updateList(1);
+                  }
+                }
               }
               else
               {
@@ -816,7 +828,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
 void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 {
-  int i, dist1, dist2, n,
+  int i, j, dist1, dist2, n,
       baseline,
       signalcomps,
       m_x,
@@ -876,7 +888,13 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
       active_markers->list[active_markers->selected]->grabbed = 1;
 
-      edfplus_annotation_cancel_all_selected_in_dock(&((edfhdrblck_t *)(active_markers->list[active_markers->selected]->edfhdr))->annot_list);
+      for(j=0; j<mainwindow->files_open; j++)
+      {
+        if(mainwindow->annotations_dock[j] != NULL)
+        {
+          edfplus_annotation_cancel_all_selected_in_dock(&mainwindow->edfheaderlist[j]->annot_list);
+        }
+      }
 
       active_markers->list[active_markers->selected]->selected_in_dock = 1;
 
@@ -885,7 +903,13 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
         mainwindow->annotationEditDock->set_selected_annotation(active_markers->list[active_markers->selected]);
       }
 
-      mainwindow->annotations_dock[mainwindow->get_filenum(active_markers->edf_hdr)]->updateList(1);
+      for(j=0; j<mainwindow->files_open; j++)
+      {
+        if(mainwindow->annotations_dock[j] != NULL)
+        {
+          mainwindow->annotations_dock[j]->updateList(1);
+        }
+      }
 
       mainwindow->annotations_edited = 1;
 
@@ -2716,7 +2740,13 @@ void ViewCurve::select_annot(bool)
     return;
   }
 
-  edfplus_annotation_cancel_all_selected_in_dock(&((edfhdrblck_t *)(active_markers->list[idx]->edfhdr))->annot_list);
+  for(i=0; i<mainwindow->files_open; i++)
+  {
+    if(mainwindow->annotations_dock[i] != NULL)
+    {
+      edfplus_annotation_cancel_all_selected_in_dock(&mainwindow->edfheaderlist[i]->annot_list);
+    }
+  }
 
   for(i=0; i<active_markers->count; i++)
   {
@@ -2730,7 +2760,13 @@ void ViewCurve::select_annot(bool)
     }
   }
 
-  mainwindow->annotations_dock[mainwindow->get_filenum((edfhdrblck_t *)(active_markers->list[idx]->edfhdr))]->updateList(1);
+  for(i=0; i<mainwindow->files_open; i++)
+  {
+    if(mainwindow->annotations_dock[i] != NULL)
+    {
+      mainwindow->annotations_dock[i]->updateList(1);
+    }
+  }
 }
 
 

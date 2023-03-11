@@ -80,7 +80,8 @@ private:
       invert_filter,
       hide_nk_triggers,
       hide_bs_triggers,
-      last_pressed_annotation;
+      last_pressed_annotation,
+      file_position_changed_signal_block;
 
   edfhdrblck_t *edf_hdr;
 

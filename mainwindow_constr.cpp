@@ -104,7 +104,7 @@ UI_Mainwindow::UI_Mainwindow()
 
   annot_onset_at_start_of_page_on_jump = 0;
 
-  annotlist_scrolltoitem_while_browsing = 1;
+  annotlist_scrolltoitem_while_browsing = 0;
 
   auto_reload_mtg = 1;
 
@@ -147,8 +147,6 @@ UI_Mainwindow::UI_Mainwindow()
   annot_editor_user_button_jump_to_next_page = 0;
 
   annot_editor_user_button_stay_on_epoch_boundary = 0;
-
-  file_position_changed_signal_block_for_annotdock = 0;
 
   annot_editor_user_button_epoch_len = 30LL * TIME_FIXP_SCALING;
 
@@ -597,7 +595,7 @@ UI_Mainwindow::UI_Mainwindow()
   filemenu = new QMenu(this);
   filemenu->setTitle("&File");
 #if QT_VERSION < 0x060000
-  filemenu->addAction("Open",         this, SLOT(open_new_file()), QKeySequence::Open);
+  filemenu->addAction("Open", this, SLOT(open_new_file()), QKeySequence::Open);
 #else
   filemenu->addAction("Open", QKeySequence::Open, this, SLOT(open_new_file()));
 #endif
@@ -610,11 +608,7 @@ UI_Mainwindow::UI_Mainwindow()
   filemenu->addSeparator();
   filemenu->addAction(video_act);
   filemenu->addSeparator();
-#if QT_VERSION < 0x060000
-  filemenu->addAction("Playback file", this, SLOT(playback_file()), QKeySequence("Ctrl + Space"));
-#else
-  filemenu->addAction("Playback file", QKeySequence("Ctrl | Space"), this, SLOT(playback_file()));
-#endif
+  filemenu->addAction("Playback file", this, SLOT(playback_file()), QKeySequence("Ctrl+Space"));
   filemenu->addSeparator();
   filemenu->addAction(save_act);
   filemenu->addMenu(recent_filesmenu);
