@@ -305,7 +305,8 @@ long long annot_editor_user_button_epoch_len,
 
   QColor hrvdock_trace_color,
          annot_list_edited_txt_color,
-         hypnogram_annot_ov_color[6];
+         hypnogram_annot_ov_color[6],
+         mc_annot_ov_color_predefined[MAX_MC_ANNOT_OV_COLORS];
 
   unsigned long long pagetime,
                      maxfilesize_to_readin_annotations,
@@ -331,7 +332,8 @@ long long annot_editor_user_button_epoch_len,
        hypnogram_annot_ov_name[6][32],
        ecg_qrs_rpeak_descr[32],
        annot_edit_user_button_name[8][64],
-       annot_by_rect_draw_description[MAX_ANNOTEDIT_SIDE_MENU_ANNOTS][32];
+       annot_by_rect_draw_description[MAX_ANNOTEDIT_SIDE_MENU_ANNOTS][32],
+       mc_annot_ov_name_predefined[MAX_MC_ANNOT_OV_COLORS][32];
 
   double y_pixelsizefactor,
          x_pixelsizefactor,

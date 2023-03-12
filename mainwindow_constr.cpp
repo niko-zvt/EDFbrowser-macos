@@ -370,6 +370,20 @@ UI_Mainwindow::UI_Mainwindow()
 
   video_pause_requested = 0;
 
+  mc_annot_ov_color_predefined[0] = QColor(255, 0, 0, 32);
+  mc_annot_ov_color_predefined[1] = QColor(0, 0, 128, 32);
+  mc_annot_ov_color_predefined[2] = QColor(128, 128, 0, 32);
+  mc_annot_ov_color_predefined[3] = QColor(255, 85, 255, 32);
+  mc_annot_ov_color_predefined[4] = QColor(255, 192, 0, 32);
+  mc_annot_ov_color_predefined[5] = QColor(128, 192, 64, 32);
+  mc_annot_ov_color_predefined[6] = QColor(64, 0, 192, 32);
+  mc_annot_ov_color_predefined[7] = QColor(0, 255, 255, 32);
+
+  for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
+  {
+    mc_annot_ov_name_predefined[i][0] = 0;
+  }
+
   cdsa_segmentlen = 30;
   cdsa_blocklen = 2;
   cdsa_overlap = 5;

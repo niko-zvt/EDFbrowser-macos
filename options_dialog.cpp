@@ -297,6 +297,24 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   flayout1_2->addRow("Annotation's duration overlay color", hlayout_tmp);
   flayout1_2->labelForField(hlayout_tmp)->setToolTip("The first color is the default, the second color is used to indicate if it's selected");
 
+  for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
+  {
+    AnnotDurationPredefinedButton[i] = new SpecialButton;
+    AnnotDurationPredefinedButton[i]->setColor(mainwindow->mc_annot_ov_color_predefined[i]);
+    AnnotDurationPredefinedButton[i]->setToolTip("This overlay color is used when the description of the annotation matches the description here");
+    AnnotDurationPredefinedLineEdit[i] = new QLineEdit;
+    AnnotDurationPredefinedLineEdit[i]->setMaxLength(32);
+    AnnotDurationPredefinedLineEdit[i]->setText(QString::fromUtf8(mainwindow->mc_annot_ov_name_predefined[i]));
+    AnnotDurationPredefinedLineEdit[i]->setToolTip("This overlay color is used when the description of the annotation matches the description here");
+    hlayout_tmp = new QHBoxLayout;
+    hlayout_tmp->setAlignment(Qt::AlignCenter);
+    hlayout_tmp->addWidget(AnnotDurationPredefinedLineEdit[i]);
+    hlayout_tmp->addWidget(AnnotDurationPredefinedButton[i]);
+    hlayout_tmp->addStretch(1000);
+    flayout1_2->addRow("Predefined duration overlay color", hlayout_tmp);
+    flayout1_2->labelForField(hlayout_tmp)->setToolTip("This overlay color is used when the description of the annotation matches the description here");
+  }
+
   colorSchema_Dark_Button = new QPushButton;
   colorSchema_Dark_Button->setText("\"Dark\"");
 
@@ -364,6 +382,14 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QObject::connect(AnnotMkrSelButton,       SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotMkrSelButtonClicked(SpecialButton *)));
   QObject::connect(AnnotDurationButton,     SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationButtonClicked(SpecialButton *)));
   QObject::connect(AnnotDurationSelectedButton,     SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationSelectedButtonClicked(SpecialButton *)));
+  QObject::connect(AnnotDurationPredefinedButton[0], SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationPredefinedButtonClicked_1(SpecialButton *)));
+  QObject::connect(AnnotDurationPredefinedButton[1], SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationPredefinedButtonClicked_2(SpecialButton *)));
+  QObject::connect(AnnotDurationPredefinedButton[2], SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationPredefinedButtonClicked_3(SpecialButton *)));
+  QObject::connect(AnnotDurationPredefinedButton[3], SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationPredefinedButtonClicked_4(SpecialButton *)));
+  QObject::connect(AnnotDurationPredefinedButton[4], SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationPredefinedButtonClicked_5(SpecialButton *)));
+  QObject::connect(AnnotDurationPredefinedButton[5], SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationPredefinedButtonClicked_6(SpecialButton *)));
+  QObject::connect(AnnotDurationPredefinedButton[6], SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationPredefinedButtonClicked_7(SpecialButton *)));
+  QObject::connect(AnnotDurationPredefinedButton[7], SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotDurationPredefinedButtonClicked_8(SpecialButton *)));
   QObject::connect(checkbox1,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox1Clicked(int)));
   QObject::connect(checkbox2,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox2Clicked(int)));
   QObject::connect(checkbox2_1,             SIGNAL(stateChanged(int)),        this, SLOT(checkbox2_1Clicked(int)));
@@ -378,6 +404,10 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QObject::connect(colorSchema_Blue_on_Gray_Button, SIGNAL(clicked()),        this, SLOT(loadColorSchema_blue_gray()));
   QObject::connect(colorSchema_NK_Button,   SIGNAL(clicked()),                this, SLOT(loadColorSchema_NK()));
   QObject::connect(colorSchema_Dark_Button, SIGNAL(clicked()),                this, SLOT(loadColorSchema_Dark()));
+  for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
+  {
+    QObject::connect(AnnotDurationPredefinedLineEdit[i], SIGNAL(textChanged(QString)), this, SLOT(AnnotDurationPredefinedLineEdit_changed()));
+  }
 
   tabholder->addTab(tab1, "Colors");
 
@@ -3785,8 +3815,123 @@ void UI_OptionsDialog::spinbox4_6ValueChanged(int val)
 }
 
 
+void UI_OptionsDialog::AnnotDurationPredefinedButtonClicked_1(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->mc_annot_ov_color_predefined[0], tab1, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    b->setColor(temp);
+    mainwindow->mc_annot_ov_color_predefined[0] = temp;
+    mainwindow->maincurve->update();
+  }
+}
 
 
+void UI_OptionsDialog::AnnotDurationPredefinedButtonClicked_2(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->mc_annot_ov_color_predefined[1], tab1, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    b->setColor(temp);
+    mainwindow->mc_annot_ov_color_predefined[1] = temp;
+    mainwindow->maincurve->update();
+  }
+}
+
+
+void UI_OptionsDialog::AnnotDurationPredefinedButtonClicked_3(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->mc_annot_ov_color_predefined[2], tab1, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    b->setColor(temp);
+    mainwindow->mc_annot_ov_color_predefined[2] = temp;
+    mainwindow->maincurve->update();
+  }
+}
+
+
+void UI_OptionsDialog::AnnotDurationPredefinedButtonClicked_4(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->mc_annot_ov_color_predefined[3], tab1, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    b->setColor(temp);
+    mainwindow->mc_annot_ov_color_predefined[3] = temp;
+    mainwindow->maincurve->update();
+  }
+}
+
+
+void UI_OptionsDialog::AnnotDurationPredefinedButtonClicked_5(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->mc_annot_ov_color_predefined[4], tab1, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    b->setColor(temp);
+    mainwindow->mc_annot_ov_color_predefined[4] = temp;
+    mainwindow->maincurve->update();
+  }
+}
+
+
+void UI_OptionsDialog::AnnotDurationPredefinedButtonClicked_6(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->mc_annot_ov_color_predefined[5], tab1, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    b->setColor(temp);
+    mainwindow->mc_annot_ov_color_predefined[5] = temp;
+    mainwindow->maincurve->update();
+  }
+}
+
+
+void UI_OptionsDialog::AnnotDurationPredefinedButtonClicked_7(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->mc_annot_ov_color_predefined[6], tab1, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    b->setColor(temp);
+    mainwindow->mc_annot_ov_color_predefined[6] = temp;
+    mainwindow->maincurve->update();
+  }
+}
+
+
+void UI_OptionsDialog::AnnotDurationPredefinedButtonClicked_8(SpecialButton *b)
+{
+  QColor temp = QColorDialog::getColor(mainwindow->mc_annot_ov_color_predefined[7], tab1, "Select Color", QColorDialog::ShowAlphaChannel);
+
+  if(temp.isValid())
+  {
+    b->setColor(temp);
+    mainwindow->mc_annot_ov_color_predefined[7] = temp;
+    mainwindow->maincurve->update();
+  }
+}
+
+
+void UI_OptionsDialog::AnnotDurationPredefinedLineEdit_changed(void)
+{
+  int i;
+
+  for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
+  {
+    strlcpy(mainwindow->mc_annot_ov_name_predefined[i], AnnotDurationPredefinedLineEdit[i]->text().toUtf8().data(), 32);
+
+    str_replace_ctrl_chars(mainwindow->mc_annot_ov_name_predefined[i], '!');
+
+    trim_spaces(mainwindow->mc_annot_ov_name_predefined[i]);
+  }
+}
 
 
 

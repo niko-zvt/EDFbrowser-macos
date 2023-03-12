@@ -87,6 +87,7 @@ SpecialButton  *BgColorButton,
                *AnnotMkrSelButton,
                *AnnotDurationButton,
                *AnnotDurationSelectedButton,
+               *AnnotDurationPredefinedButton[MAX_MC_ANNOT_OV_COLORS],
                *slabel2_1,
                *slabel2_3,
                *annotlistdock_edited_txt_color_button;
@@ -156,7 +157,8 @@ QRadioButton   *radiobutton1,
 
 QLineEdit      *lineEdit3_1,
                *lineedit4_1,
-               *lineedit7_1[8];
+               *lineedit7_1[8],
+               *AnnotDurationPredefinedLineEdit[MAX_MC_ANNOT_OV_COLORS];
 
 QGroupBox      *groupbox1;
 
@@ -263,6 +265,15 @@ void spinBox7_1ValueChanged(int);
 void spinBox7_2ValueChanged(int);
 void tab7_settings_changed();
 void tabholder_idx_changed(int);
+void AnnotDurationPredefinedButtonClicked_1(SpecialButton *);
+void AnnotDurationPredefinedButtonClicked_2(SpecialButton *);
+void AnnotDurationPredefinedButtonClicked_3(SpecialButton *);
+void AnnotDurationPredefinedButtonClicked_4(SpecialButton *);
+void AnnotDurationPredefinedButtonClicked_5(SpecialButton *);
+void AnnotDurationPredefinedButtonClicked_6(SpecialButton *);
+void AnnotDurationPredefinedButtonClicked_7(SpecialButton *);
+void AnnotDurationPredefinedButtonClicked_8(SpecialButton *);
+void AnnotDurationPredefinedLineEdit_changed(void);
 
 };
 

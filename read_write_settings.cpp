@@ -103,6 +103,8 @@ void UI_Mainwindow::get_rgbcolor_settings(xml_hdl_t *xml_hdl, const char *id, in
 
 void UI_Mainwindow::read_color_settings()
 {
+  int i;
+
   char cfg_path[MAX_PATH_LENGTH],
        result[XML_STRBUFLEN];
 
@@ -165,6 +167,16 @@ void UI_Mainwindow::read_color_settings()
   get_rgbcolor_settings(xml_hdl, "annot_duration_color", 0, &maincurve->annot_duration_color);
 
   get_rgbcolor_settings(xml_hdl, "annot_duration_color_selected", 0, &maincurve->annot_duration_color_selected);
+
+  if(!xml_goto_nth_element_inside(xml_hdl, "annot_ov_predefined_block", 0))
+  {
+    for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
+    {
+      get_rgbcolor_settings(xml_hdl, "mc_annot_ov_color_predefined", i, &mc_annot_ov_color_predefined[i]);
+    }
+
+    xml_go_up(xml_hdl);
+  }
 
   if(xml_goto_nth_element_inside(xml_hdl, "signal_color", 0))
   {
@@ -382,8 +394,9 @@ void UI_Mainwindow::read_color_settings()
   xml_go_up(xml_hdl);
 
   xml_close(xml_hdl);
-}
 
+//  printf("Read all color settings.\n");
+}
 
 
 void UI_Mainwindow::read_recent_file_settings()
@@ -639,6 +652,8 @@ void UI_Mainwindow::read_recent_file_settings()
   }
 
   xml_close(xml_hdl);
+
+//  printf("Read all recent file settings.\n");
 }
 
 
@@ -1174,6 +1189,32 @@ void UI_Mainwindow::read_general_settings()
         }
 
         strlcpy(spectrum_colorbar->label[i], result, 17);
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
+  if(!xml_goto_nth_element_inside(xml_hdl, "colors", 0))
+  {
+    if(!xml_goto_nth_element_inside(xml_hdl, "annot_ov_predefined_block", 0))
+    {
+      for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
+      {
+        if(!xml_goto_nth_element_inside(xml_hdl, "mc_annot_ov_name_predefined", i))
+        {
+          if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+          {
+            xml_close(xml_hdl);
+            return;
+          }
+
+          strlcpy(mc_annot_ov_name_predefined[i], result, 32);
+
+          xml_go_up(xml_hdl);
+        }
       }
 
       xml_go_up(xml_hdl);
@@ -3256,6 +3297,31 @@ void UI_Mainwindow::write_settings()
                     maincurve->annot_duration_color_selected.green(),
                     maincurve->annot_duration_color_selected.blue(),
                     maincurve->annot_duration_color_selected.alpha());
+
+    fprintf(cfgfile, "      <annot_ov_predefined_block>\n");
+
+    for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
+    {
+      fprintf(cfgfile, "        <mc_annot_ov_color_predefined>\n"
+                       "          <red>%i</red>\n"
+                       "          <green>%i</green>\n"
+                       "          <blue>%i</blue>\n"
+                       "          <alpha>%i</alpha>\n"
+                       "        </mc_annot_ov_color_predefined>\n",
+                       mc_annot_ov_color_predefined[i].red(),
+                       mc_annot_ov_color_predefined[i].green(),
+                       mc_annot_ov_color_predefined[i].blue(),
+                       mc_annot_ov_color_predefined[i].alpha());
+    }
+
+    for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
+    {
+      xml_strlcpy_encode_entity(str, mc_annot_ov_name_predefined[i], 1024);
+
+      fprintf(cfgfile, "        <mc_annot_ov_name_predefined>%s</mc_annot_ov_name_predefined>\n", str);
+    }
+
+    fprintf(cfgfile, "      </annot_ov_predefined_block>\n");
 
     fprintf(cfgfile, "      <signal_color>%i</signal_color>\n",
                     maincurve->signal_color);

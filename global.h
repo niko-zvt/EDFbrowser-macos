@@ -97,6 +97,7 @@
 #define MAXZSCOREDIALOGS                    (32)
 #define MAXZOOMHISTORY                      (16)
 #define MAX_ANNOTEDIT_SIDE_MENU_ANNOTS       (8)
+#define MAX_MC_ANNOT_OV_COLORS               (8)
 /* 200 bpm x 60 min. x 24 hours x 2 days */
 #define STATISTICS_IVAL_LIST_SZ         (576000)
 
