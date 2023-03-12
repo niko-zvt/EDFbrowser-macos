@@ -2916,6 +2916,18 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
   fprintf(colorfile, " <crosshair_2_color>%i</crosshair_2_color>\n",
                   mainwindow->maincurve->crosshair_2.color);
 
+  fprintf(colorfile, " <crosshair_1_has_hor_line>%i</crosshair_1_has_hor_line>\n",
+                  mainwindow->maincurve->crosshair_1.has_hor_line);
+
+  fprintf(colorfile, " <crosshair_2_has_hor_line>%i</crosshair_2_has_hor_line>\n",
+                  mainwindow->maincurve->crosshair_2.has_hor_line);
+
+  fprintf(colorfile, " <crosshair_1_dot_sz>%i</crosshair_1_dot_sz>\n",
+                  mainwindow->maincurve->crosshair_1.dot_sz);
+
+  fprintf(colorfile, " <crosshair_2_dot_sz>%i</crosshair_2_dot_sz>\n",
+                  mainwindow->maincurve->crosshair_2.dot_sz);
+
   fprintf(colorfile, " <floating_ruler_color>%i</floating_ruler_color>\n",
                   mainwindow->maincurve->floating_ruler_color);
 
@@ -3102,6 +3114,72 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
   }
   mainwindow->maincurve->crosshair_2.color = atoi(result);
 
+  xml_go_up(xml_hdl);
+
+  if(!xml_goto_nth_element_inside(xml_hdl, "crosshair_1_has_hor_line", 0))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+    mainwindow->maincurve->crosshair_1.has_hor_line = atoi(result);
+  }
+
+  xml_go_up(xml_hdl);
+
+  if(!xml_goto_nth_element_inside(xml_hdl, "crosshair_2_has_hor_line", 0))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+    mainwindow->maincurve->crosshair_2.has_hor_line = atoi(result);
+  }
+
+  xml_go_up(xml_hdl);
+
+  if(!xml_goto_nth_element_inside(xml_hdl, "crosshair_1_dot_sz", 0))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+    mainwindow->maincurve->crosshair_1.dot_sz = atoi(result);
+    if(mainwindow->maincurve->crosshair_1.dot_sz < 0)
+    {
+      mainwindow->maincurve->crosshair_1.dot_sz = 0;
+    }
+    if(mainwindow->maincurve->crosshair_1.dot_sz > 32)
+    {
+      mainwindow->maincurve->crosshair_1.dot_sz = 32;
+    }
+  }
+
+  xml_go_up(xml_hdl);
+
+  if(!xml_goto_nth_element_inside(xml_hdl, "crosshair_2_dot_sz", 0))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+    mainwindow->maincurve->crosshair_2.dot_sz = atoi(result);
+    if(mainwindow->maincurve->crosshair_2.dot_sz < 0)
+    {
+      mainwindow->maincurve->crosshair_2.dot_sz = 0;
+    }
+    if(mainwindow->maincurve->crosshair_2.dot_sz > 32)
+    {
+      mainwindow->maincurve->crosshair_2.dot_sz = 32;
+    }
+  }
+
+  xml_go_up(xml_hdl);
+
   xml_close(xml_hdl);
 
   update_interface();
@@ -3149,6 +3227,17 @@ void UI_OptionsDialog::update_interface(void)
   Crh1ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->crosshair_1.color);
 
   Crh2ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->crosshair_2.color);
+
+  if(mainwindow->maincurve->crosshair_1.has_hor_line)
+  {
+    checkbox6->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox6->setCheckState(Qt::Unchecked);
+  }
+
+  spinbox1_1->setValue(mainwindow->maincurve->crosshair_1.dot_sz);
 
   FrColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->floating_ruler_color);
 
@@ -3310,6 +3399,10 @@ void UI_OptionsDialog::loadColorSchema_NK()
   mainwindow->maincurve->crosshair_1.has_hor_line = 0;
   mainwindow->maincurve->crosshair_2.has_hor_line = 0;
 
+  mainwindow->maincurve->crosshair_1.has_hor_line = 0;
+
+  mainwindow->maincurve->crosshair_1.dot_sz = 4;
+
   update_interface();
 }
 
@@ -3382,6 +3475,10 @@ void UI_OptionsDialog::loadColorSchema_Dark()
   mainwindow->maincurve->crosshair_1.has_hor_line = 0;
   mainwindow->maincurve->crosshair_2.has_hor_line = 0;
 
+  mainwindow->maincurve->crosshair_1.has_hor_line = 0;
+
+  mainwindow->maincurve->crosshair_1.dot_sz = 4;
+
   update_interface();
 }
 
@@ -3437,6 +3534,10 @@ void UI_OptionsDialog::loadColorSchema_blue_gray()
 
   mainwindow->maincurve->crosshair_1.has_hor_line = 0;
   mainwindow->maincurve->crosshair_2.has_hor_line = 0;
+
+  mainwindow->maincurve->crosshair_1.has_hor_line = 0;
+
+  mainwindow->maincurve->crosshair_1.dot_sz = 4;
 
   update_interface();
 }
