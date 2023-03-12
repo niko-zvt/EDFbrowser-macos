@@ -156,19 +156,52 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp->addStretch(1000);
   flayout1_1->addRow("Baseline color", hlayout_tmp);
 
-  QFormLayout *flayout1_2 = new QFormLayout;
-  flayout1_2->setSpacing(20);
-
   FrColorButton = new SpecialButton;
   FrColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->floating_ruler_color);
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->setAlignment(Qt::AlignCenter);
   hlayout_tmp->addWidget(FrColorButton);
   hlayout_tmp->addStretch(1000);
-  flayout1_2->addRow("Floating ruler color", hlayout_tmp);
+  flayout1_1->addRow("Floating ruler color", hlayout_tmp);
+
+  checkbox1 = new QCheckBox;
+  checkbox1->setTristate(false);
+  if(mainwindow->maincurve->blackwhite_printing)
+  {
+    checkbox1->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox1->setCheckState(Qt::Unchecked);
+  }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(checkbox1);
+  hlayout_tmp->addStretch(1000);
+  flayout1_1->addRow("Print in grayscale", hlayout_tmp);
+
+  checkbox4 = new QCheckBox;
+  checkbox4->setTristate(false);
+  if(mainwindow->clip_to_pane)
+  {
+    checkbox4->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox4->setCheckState(Qt::Unchecked);
+  }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(checkbox4);
+  hlayout_tmp->addStretch(1000);
+  flayout1_1->addRow("Clip signals to pane", hlayout_tmp);
+
+  QFormLayout *flayout1_2 = new QFormLayout;
+  flayout1_2->setSpacing(20);
 
   checkbox2 = new QCheckBox;
   checkbox2->setTristate(false);
+  checkbox2->setToolTip("If disabled, the annotation markers will not be drawn in the waveform window");
   if(mainwindow->show_annot_markers)
   {
     checkbox2->setCheckState(Qt::Checked);
@@ -190,6 +223,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp->addWidget(AnnotMkrSelButton);
   hlayout_tmp->addStretch(1000);
   flayout1_2->addRow("Annotation marker", hlayout_tmp);
+  flayout1_2->labelForField(hlayout_tmp)->setToolTip("The second color is used to indicate if it's selected");
 
   checkbox2_3 = new QCheckBox;
   checkbox2_3->setTristate(false);
@@ -223,19 +257,6 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp->addStretch(1000);
   flayout1_2->addRow("Show duration at marker", hlayout_tmp);
 
-  AnnotDurationButton = new SpecialButton;
-  AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
-  AnnotDurationButton->setToolTip("The second color is used to indicate if it's selected");
-  AnnotDurationSelectedButton = new SpecialButton;
-  AnnotDurationSelectedButton->setColor(mainwindow->maincurve->annot_duration_color_selected);
-  AnnotDurationSelectedButton->setToolTip("The second color is used to indicate if it's selected");
-  hlayout_tmp = new QHBoxLayout;
-  hlayout_tmp->setAlignment(Qt::AlignCenter);
-  hlayout_tmp->addWidget(AnnotDurationButton);
-  hlayout_tmp->addWidget(AnnotDurationSelectedButton);
-  hlayout_tmp->addStretch(1000);
-  flayout1_2->addRow("Annotation's duration overlay color", hlayout_tmp);
-
   checkbox2_2 = new QCheckBox;
   checkbox2_2->setTristate(false);
   if(mainwindow->annotations_duration_background_type)
@@ -254,38 +275,6 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   flayout1_2->addRow("Show only at screen bottom", hlayout_tmp);
   flayout1_2->labelForField(hlayout_tmp)->setToolTip("Show the overlay color of the annotation's duration only at the bottom of the screen");
 
-  checkbox1 = new QCheckBox;
-  checkbox1->setTristate(false);
-  if(mainwindow->maincurve->blackwhite_printing)
-  {
-    checkbox1->setCheckState(Qt::Checked);
-  }
-  else
-  {
-    checkbox1->setCheckState(Qt::Unchecked);
-  }
-  hlayout_tmp = new QHBoxLayout;
-  hlayout_tmp->setAlignment(Qt::AlignCenter);
-  hlayout_tmp->addWidget(checkbox1);
-  hlayout_tmp->addStretch(1000);
-  flayout1_2->addRow("Print in grayscale", hlayout_tmp);
-
-  checkbox4 = new QCheckBox;
-  checkbox4->setTristate(false);
-  if(mainwindow->clip_to_pane)
-  {
-    checkbox4->setCheckState(Qt::Checked);
-  }
-  else
-  {
-    checkbox4->setCheckState(Qt::Unchecked);
-  }
-  hlayout_tmp = new QHBoxLayout;
-  hlayout_tmp->setAlignment(Qt::AlignCenter);
-  hlayout_tmp->addWidget(checkbox4);
-  hlayout_tmp->addStretch(1000);
-  flayout1_2->addRow("Clip signals to pane", hlayout_tmp);
-
   annotlistdock_edited_txt_color_button = new SpecialButton;
   annotlistdock_edited_txt_color_button->setColor(mainwindow->annot_list_edited_txt_color);
   hlayout_tmp = new QHBoxLayout;
@@ -293,6 +282,20 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp->addWidget(annotlistdock_edited_txt_color_button);
   hlayout_tmp->addStretch(1000);
   flayout1_2->addRow("Annotations list edited text color", hlayout_tmp);
+
+  AnnotDurationButton = new SpecialButton;
+  AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
+  AnnotDurationButton->setToolTip("The first color is the default");
+  AnnotDurationSelectedButton = new SpecialButton;
+  AnnotDurationSelectedButton->setColor(mainwindow->maincurve->annot_duration_color_selected);
+  AnnotDurationSelectedButton->setToolTip("The second color is used to indicate if it's selected");
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(AnnotDurationButton);
+  hlayout_tmp->addWidget(AnnotDurationSelectedButton);
+  hlayout_tmp->addStretch(1000);
+  flayout1_2->addRow("Annotation's duration overlay color", hlayout_tmp);
+  flayout1_2->labelForField(hlayout_tmp)->setToolTip("The first color is the default, the second color is used to indicate if it's selected");
 
   colorSchema_Dark_Button = new QPushButton;
   colorSchema_Dark_Button->setText("\"Dark\"");
