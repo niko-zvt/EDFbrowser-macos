@@ -2193,6 +2193,11 @@ void UI_OptionsDialog::checkbox4_2Clicked(int state)
   {
     mainwindow->read_biosemi_status_signal = 0;
   }
+
+  if(mainwindow->files_open)
+  {
+    QMessageBox::information(optionsdialog, "Information", "You need to close and re-open the file for the changes to take effect.");
+  }
 }
 
 
@@ -2205,6 +2210,11 @@ void UI_OptionsDialog::checkbox4_3Clicked(int state)
   else
   {
     mainwindow->read_nk_trigger_signal = 0;
+  }
+
+  if(mainwindow->files_open)
+  {
+    QMessageBox::information(optionsdialog, "Information", "You need to close and re-open the file for the changes to take effect.");
   }
 }
 
@@ -3436,6 +3446,15 @@ void UI_OptionsDialog::loadColorSchema_NK()
 
   mainwindow->maincurve->crosshair_1.dot_sz = 4;
 
+  mainwindow->mc_annot_ov_color_predefined[0] = QColor(255, 0, 0, 32);
+  mainwindow->mc_annot_ov_color_predefined[1] = QColor(0, 0, 128, 32);
+  mainwindow->mc_annot_ov_color_predefined[2] = QColor(128, 128, 0, 32);
+  mainwindow->mc_annot_ov_color_predefined[3] = QColor(255, 85, 255, 32);
+  mainwindow->mc_annot_ov_color_predefined[4] = QColor(255, 192, 0, 32);
+  mainwindow->mc_annot_ov_color_predefined[5] = QColor(128, 192, 64, 32);
+  mainwindow->mc_annot_ov_color_predefined[6] = QColor(64, 0, 192, 32);
+  mainwindow->mc_annot_ov_color_predefined[7] = QColor(0, 255, 255, 32);
+
   update_interface();
 }
 
@@ -3512,6 +3531,15 @@ void UI_OptionsDialog::loadColorSchema_Dark()
 
   mainwindow->maincurve->crosshair_1.dot_sz = 4;
 
+  mainwindow->mc_annot_ov_color_predefined[0] = QColor(255, 0, 0, 32);
+  mainwindow->mc_annot_ov_color_predefined[1] = QColor(0, 0, 128, 32);
+  mainwindow->mc_annot_ov_color_predefined[2] = QColor(128, 128, 0, 32);
+  mainwindow->mc_annot_ov_color_predefined[3] = QColor(255, 85, 255, 32);
+  mainwindow->mc_annot_ov_color_predefined[4] = QColor(255, 192, 0, 32);
+  mainwindow->mc_annot_ov_color_predefined[5] = QColor(128, 192, 64, 32);
+  mainwindow->mc_annot_ov_color_predefined[6] = QColor(64, 0, 192, 32);
+  mainwindow->mc_annot_ov_color_predefined[7] = QColor(0, 255, 255, 32);
+
   update_interface();
 }
 
@@ -3571,6 +3599,15 @@ void UI_OptionsDialog::loadColorSchema_blue_gray()
   mainwindow->maincurve->crosshair_1.has_hor_line = 0;
 
   mainwindow->maincurve->crosshair_1.dot_sz = 4;
+
+  mainwindow->mc_annot_ov_color_predefined[0] = QColor(255, 0, 0, 32);
+  mainwindow->mc_annot_ov_color_predefined[1] = QColor(0, 0, 128, 32);
+  mainwindow->mc_annot_ov_color_predefined[2] = QColor(128, 128, 0, 32);
+  mainwindow->mc_annot_ov_color_predefined[3] = QColor(255, 85, 255, 32);
+  mainwindow->mc_annot_ov_color_predefined[4] = QColor(255, 192, 0, 32);
+  mainwindow->mc_annot_ov_color_predefined[5] = QColor(128, 192, 64, 32);
+  mainwindow->mc_annot_ov_color_predefined[6] = QColor(64, 0, 192, 32);
+  mainwindow->mc_annot_ov_color_predefined[7] = QColor(0, 255, 255, 32);
 
   update_interface();
 }
