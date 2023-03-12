@@ -14,6 +14,9 @@
 
  - Fixed some compiler warnings.
 
+ - Waveform window: annotation duration's colored overlay: added the possibilty to
+   assign max. 8 annotation descriptions to specific colors
+
 
  version 2.00      January 29, 2023
  --------------
