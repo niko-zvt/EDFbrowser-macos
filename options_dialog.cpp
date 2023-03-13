@@ -851,7 +851,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     annot_sidemenu_table->setCellWidget(i, 0, new QLineEdit);
     ((QLineEdit *)annot_sidemenu_table->cellWidget(i, 0))->setMaxLength(16);
-    ((QLineEdit *)annot_sidemenu_table->cellWidget(i, 0))->setText(mainwindow->annot_by_rect_draw_description[i]);
+    ((QLineEdit *)annot_sidemenu_table->cellWidget(i, 0))->setText(QString::fromUtf8(mainwindow->annot_by_rect_draw_description[i]));
   }
   QStringList horizontal_labels;
   horizontal_labels += "Annotation / Event";
@@ -1454,7 +1454,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   lineedit4_1 = new QLineEdit;
   lineedit4_1->setMaxLength(31);
-  lineedit4_1->setText(mainwindow->ecg_qrs_rpeak_descr);
+  lineedit4_1->setText(QString::fromUtf8(mainwindow->ecg_qrs_rpeak_descr));
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->setAlignment(Qt::AlignCenter);
   hlayout_tmp->addWidget(lineedit4_1);
