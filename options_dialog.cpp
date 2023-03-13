@@ -212,10 +212,10 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
   AnnotMkrButton = new SpecialButton;
   AnnotMkrButton->setColor(mainwindow->maincurve->annot_marker_color);
-  AnnotMkrButton->setToolTip("The second color is used to indicate if it's selected");
+  AnnotMkrButton->setToolTip("The first color is the default, the second color is used to indicate if it's selected");
   AnnotMkrSelButton = new SpecialButton;
   AnnotMkrSelButton->setColor(mainwindow->maincurve->annot_marker_selected_color);
-  AnnotMkrSelButton->setToolTip("The second color is used to indicate if it's selected");
+  AnnotMkrSelButton->setToolTip("The first color is the default, the second color is used to indicate if it's selected");
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->setAlignment(Qt::AlignCenter);
   hlayout_tmp->addWidget(checkbox2);
@@ -223,7 +223,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp->addWidget(AnnotMkrSelButton);
   hlayout_tmp->addStretch(1000);
   flayout1_2->addRow("Annotation marker", hlayout_tmp);
-  flayout1_2->labelForField(hlayout_tmp)->setToolTip("The second color is used to indicate if it's selected");
+  flayout1_2->labelForField(hlayout_tmp)->setToolTip("The vertical dashed line that indicates the annotation's onset");
 
   checkbox2_3 = new QCheckBox;
   checkbox2_3->setTristate(false);
@@ -303,7 +303,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
     AnnotDurationPredefinedButton[i]->setColor(mainwindow->mc_annot_ov_color_predefined[i]);
     AnnotDurationPredefinedButton[i]->setToolTip("This overlay color is used when the description of the annotation matches the description here");
     AnnotDurationPredefinedLineEdit[i] = new QLineEdit;
-    AnnotDurationPredefinedLineEdit[i]->setMaxLength(32);
+    AnnotDurationPredefinedLineEdit[i]->setMaxLength(31);
     AnnotDurationPredefinedLineEdit[i]->setText(QString::fromUtf8(mainwindow->mc_annot_ov_name_predefined[i]));
     AnnotDurationPredefinedLineEdit[i]->setToolTip("This overlay color is used when the description of the annotation matches the description here");
     hlayout_tmp = new QHBoxLayout;
@@ -311,7 +311,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
     hlayout_tmp->addWidget(AnnotDurationPredefinedLineEdit[i]);
     hlayout_tmp->addWidget(AnnotDurationPredefinedButton[i]);
     hlayout_tmp->addStretch(1000);
-    flayout1_2->addRow("Predefined duration overlay color", hlayout_tmp);
+    flayout1_2->addRow("Overlay color for annotation", hlayout_tmp);
     flayout1_2->labelForField(hlayout_tmp)->setToolTip("This overlay color is used when the description of the annotation matches the description here");
   }
 
@@ -3615,32 +3615,12 @@ void UI_OptionsDialog::loadColorSchema_blue_gray()
 
 void UI_OptionsDialog::lineedit4_1_changed(const QString qstr)
 {
-  int i, j, len, cp;
-
   char str[32];
 
-  strlcpy(str, qstr.toLatin1().data(), 32);
+  strlcpy(str, qstr.toUtf8().data(), 32);
+  str_replace_ctrl_chars(str, '!');
+  utf8_set_byte_len(str ,31);
   trim_spaces(str);
-  len = strlen(str);
-
-  cp = lineedit4_1->cursorPosition();
-
-  for(i=0; i<len; i++)
-  {
-    if((str[i] < 32) || (str[i] > 126))
-    {
-      for(j=i; j<len; j++)
-      {
-        str[j] = str[j+1];
-      }
-
-      i--;
-    }
-  }
-
-  lineedit4_1->setText(str);
-
-  lineedit4_1->setCursorPosition(cp);
 
   if(strlen(mainwindow->ecg_qrs_rpeak_descr))
   {
@@ -3648,7 +3628,7 @@ void UI_OptionsDialog::lineedit4_1_changed(const QString qstr)
   }
   else
   {
-    strlcpy(mainwindow->ecg_qrs_rpeak_descr, "R-wave", 32);
+    strlcpy(mainwindow->ecg_qrs_rpeak_descr, "R-peak", 32);
   }
 }
 
@@ -3734,9 +3714,11 @@ void UI_OptionsDialog::tab7_settings_changed()
       mainwindow->annot_editor_user_button_onset_on_page_middle[i] = 0;
     }
 
-    strlcpy(mainwindow->annot_edit_user_button_name[i], lineedit7_1[i]->text().toUtf8().data(), 64);
+    strlcpy(mainwindow->annot_edit_user_button_name[i], lineedit7_1[i]->text().toUtf8().data(), 32);
 
     str_replace_ctrl_chars(mainwindow->annot_edit_user_button_name[i], '!');
+
+    utf8_set_byte_len(mainwindow->annot_edit_user_button_name[i] ,31);
 
     trim_spaces(mainwindow->annot_edit_user_button_name[i]);
   }
@@ -3746,6 +3728,8 @@ void UI_OptionsDialog::tab7_settings_changed()
     strlcpy(mainwindow->annot_by_rect_draw_description[i], ((QLineEdit *)annot_sidemenu_table->cellWidget(i, 0))->text().toUtf8().data(), 32);
 
     str_replace_ctrl_chars(mainwindow->annot_by_rect_draw_description[i], '!');
+
+    utf8_set_byte_len(mainwindow->annot_by_rect_draw_description[i] ,31);
 
     trim_spaces(mainwindow->annot_by_rect_draw_description[i]);
   }
@@ -3963,6 +3947,8 @@ void UI_OptionsDialog::AnnotDurationPredefinedLineEdit_changed(void)
   for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
   {
     strlcpy(mainwindow->mc_annot_ov_name_predefined[i], AnnotDurationPredefinedLineEdit[i]->text().toUtf8().data(), 32);
+
+    utf8_set_byte_len(mainwindow->mc_annot_ov_name_predefined[i], 31);
 
     str_replace_ctrl_chars(mainwindow->mc_annot_ov_name_predefined[i], '!');
 
