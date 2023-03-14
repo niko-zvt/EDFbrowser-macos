@@ -223,6 +223,8 @@ void UI_Annotationswindow::file_pos_changed(long long viewtime)
 
   if(sz < 4)  return;
 
+  viewtime -= (mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime - edf_hdr->viewtime);
+
   for(i=0, sz_visible=0; i<sz; i++)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
