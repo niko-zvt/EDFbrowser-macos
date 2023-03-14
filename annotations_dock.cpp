@@ -210,9 +210,10 @@ void UI_Annotationswindow::file_pos_changed(long long viewtime)
     return;
   }
 
-  int i, first=0;
+  int i, sz_visible;
 
-  long long pagetime = mainwindow->pagetime;
+  long long onset,
+            pagetime = mainwindow->pagetime;
 
   annotblck_t *annot;
 
@@ -220,7 +221,9 @@ void UI_Annotationswindow::file_pos_changed(long long viewtime)
 
   int sz = edfplus_annotation_size(annot_list);
 
-  for(i=0; i<sz; i++)
+  if(sz < 4)  return;
+
+  for(i=0, sz_visible=0; i<sz; i++)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
 
@@ -229,21 +232,30 @@ void UI_Annotationswindow::file_pos_changed(long long viewtime)
       continue;
     }
 
-    if(!first)
+    sz_visible++;
+
+    onset = annot->onset - edf_hdr->starttime_subsec;
+
+    if(sz_visible == 1)
     {
-      if(annot->onset >= (viewtime + pagetime))
+      if(onset >= (viewtime + pagetime))
       {
         list->scrollToTop();
         break;
       }
-
-      first = 1;
     }
 
-    if((annot->onset >= viewtime) && (annot->onset < (viewtime + pagetime)))
+    if((onset >= viewtime) && (onset < (viewtime + pagetime)))
     {
-      list->scrollToBottom();
-      list->scrollToItem(list->item(i));
+      if(sz_visible < 4)
+      {
+        list->scrollToTop();
+      }
+      else
+      {
+        list->scrollToBottom();
+        list->scrollToItem(list->item(sz_visible - 4));
+      }
 
       break;
     }
@@ -251,7 +263,9 @@ void UI_Annotationswindow::file_pos_changed(long long viewtime)
   if((i == sz) && (i > 0))
   {
     if(annot->onset < viewtime)
-    list->scrollToBottom();
+    {
+      list->scrollToBottom();
+    }
   }
 }
 
@@ -954,8 +968,8 @@ void UI_Annotationswindow::hide_same_annots(bool)
 {
   int i, n, sz;
 
-  char str1[MAX_ANNOTATION_LEN],
-       str2[MAX_ANNOTATION_LEN];
+  char str1[MAX_ANNOTATION_LEN]={""},
+       str2[MAX_ANNOTATION_LEN]={""};
 
 
   if(list->count() < 1)
@@ -974,6 +988,7 @@ void UI_Annotationswindow::hide_same_annots(bool)
   if(n >= sz)  return;
 
   annot = edfplus_annotation_get_item_visible_only(annot_list, n);
+  if(annot == NULL)  return;
 
   strlcpy(str1, annot->description, MAX_ANNOTATION_LEN);
 

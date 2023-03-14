@@ -260,6 +260,7 @@ private:
   QMenu       *context_menu;
 
   QAction     *select_annot_act,
+              *hide_annot_act,
               *average_annot_act,
               *annot_sidemenu_act;
 
@@ -302,8 +303,9 @@ protected slots:
   void aeeg_button();
   void QRSdetectButton();
 
-  void select_annot(bool);
-  void average_annot(bool);
+  void select_annot_clicked(bool);
+  void hide_annot_clicked(bool);
+  void average_annot_clicked(bool);
   void annot_sidemenu_act_by_crosshair(bool);
 
 protected:

@@ -50,6 +50,8 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   context_menu = new QMenu(w_parent);
   select_annot_act = new QAction("Select", this);
   context_menu->addAction(select_annot_act);
+  hide_annot_act = new QAction("Hide", this);
+  context_menu->addAction(hide_annot_act);
   average_annot_act = new QAction("Average", this);
   context_menu->addAction(average_annot_act);
 
@@ -187,9 +189,10 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
 
   arrowkeys_shortcuts_global_set_enabled(true);
 
-  QObject::connect(select_annot_act,   SIGNAL(triggered(bool)), this, SLOT(select_annot(bool)));
-  QObject::connect(average_annot_act,  SIGNAL(triggered(bool)), this, SLOT(average_annot(bool)));
-  QObject::connect(annot_sidemenu_act, SIGNAL(triggered(bool)), this, SLOT(annot_sidemenu_act_by_crosshair(bool)));
+  QObject::connect(select_annot_act,       SIGNAL(triggered(bool)), this, SLOT(select_annot_clicked(bool)));
+  QObject::connect(hide_annot_act,         SIGNAL(triggered(bool)), this, SLOT(hide_annot_clicked(bool)));
+  QObject::connect(average_annot_act,      SIGNAL(triggered(bool)), this, SLOT(average_annot_clicked(bool)));
+  QObject::connect(annot_sidemenu_act,     SIGNAL(triggered(bool)), this, SLOT(annot_sidemenu_act_by_crosshair(bool)));
 }
 
 
@@ -644,7 +647,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
           {
             if(m_x>(active_markers->list[i]->x_pos-(5*w_scaling))&&(m_x<(active_markers->list[i]->x_pos+(5*w_scaling))))
             {
-              active_markers->selected = i;
+              active_markers->selected_idx = i;
 
               active_markers->list[i]->grabbed = 1;
 
@@ -878,15 +881,15 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
     if((annot_marker_moving) && (active_markers->edf_hdr != NULL))
     {
-      active_markers->list[active_markers->selected]->x_pos = m_x;
+      active_markers->list[active_markers->selected_idx]->x_pos = m_x;
 
-      active_markers->list[active_markers->selected]->onset = ((long long)((((double)m_x) / w) * mainwindow->pagetime))
+      active_markers->list[active_markers->selected_idx]->onset = ((long long)((((double)m_x) / w) * mainwindow->pagetime))
                                                                + active_markers->edf_hdr->viewtime
                                                                + active_markers->edf_hdr->starttime_subsec;
 
-      active_markers->list[active_markers->selected]->modified = 1;
+      active_markers->list[active_markers->selected_idx]->modified = 1;
 
-      active_markers->list[active_markers->selected]->grabbed = 1;
+      active_markers->list[active_markers->selected_idx]->grabbed = 1;
 
       for(j=0; j<mainwindow->files_open; j++)
       {
@@ -896,11 +899,11 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
         }
       }
 
-      active_markers->list[active_markers->selected]->selected_in_dock = 1;
+      active_markers->list[active_markers->selected_idx]->selected_in_dock = 1;
 
       if(mainwindow->annotationEditDock != NULL)
       {
-        mainwindow->annotationEditDock->set_selected_annotation(active_markers->list[active_markers->selected]);
+        mainwindow->annotationEditDock->set_selected_annotation(active_markers->list[active_markers->selected_idx]);
       }
 
       for(j=0; j<mainwindow->files_open; j++)
@@ -1213,9 +1216,9 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
 
     if((annot_marker_moving) && (active_markers->edf_hdr != NULL))
     {
-      active_markers->list[active_markers->selected]->x_pos = mouse_x;
+      active_markers->list[active_markers->selected_idx]->x_pos = mouse_x;
 
-      active_markers->list[active_markers->selected]->onset = ((long long)((((double)mouse_x) / w) * mainwindow->pagetime))
+      active_markers->list[active_markers->selected_idx]->onset = ((long long)((((double)mouse_x) / w) * mainwindow->pagetime))
                                                                + active_markers->edf_hdr->viewtime
                                                                + active_markers->edf_hdr->starttime_subsec;
     }
@@ -2725,7 +2728,7 @@ void ViewCurve::dropEvent(QDropEvent *e)
 }
 
 
-void ViewCurve::select_annot(bool)
+void ViewCurve::select_annot_clicked(bool)
 {
   int i, idx;
 
@@ -2770,7 +2773,53 @@ void ViewCurve::select_annot(bool)
 }
 
 
-void ViewCurve::average_annot(bool)
+void ViewCurve::hide_annot_clicked(bool)
+{
+  int i, idx;
+
+  if(mainwindow->files_open < 1)
+  {
+    return;
+  }
+
+  idx = active_marker_context_menu_request_idx;
+  if((idx < 0) || (idx >= active_markers->count))
+  {
+    return;
+  }
+
+  for(i=0; i<mainwindow->files_open; i++)
+  {
+    if(mainwindow->annotations_dock[i] != NULL)
+    {
+      edfplus_annotation_cancel_all_selected_in_dock(&mainwindow->edfheaderlist[i]->annot_list);
+    }
+  }
+
+  for(i=0; i<active_markers->count; i++)
+  {
+    if(i == idx)
+    {
+      active_markers->list[i]->hidden = 1;
+
+      break;
+    }
+
+    active_markers->list[i]->selected_in_dock = 0;
+    active_markers->selected_idx = 0;
+  }
+
+  for(i=0; i<mainwindow->files_open; i++)
+  {
+    if(mainwindow->annotations_dock[i] != NULL)
+    {
+      mainwindow->annotations_dock[i]->updateList(1);
+    }
+  }
+}
+
+
+void ViewCurve::average_annot_clicked(bool)
 {
   int idx;
 
