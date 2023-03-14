@@ -1426,6 +1426,8 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
 {
   int j, n, sz;
 
+  long long l_tmp;
+
   annotblck_t *annot;
 
   annotlist_t *annot_list = &(edf_hdr->annot_list);
@@ -1485,13 +1487,15 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
 
   file_position_changed_signal_block = 1;
 
+  l_tmp = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime - edf_hdr->viewtime;
+
   if(centered)
   {
-    mainwindow->set_viewtime((annot->onset - edf_hdr->starttime_subsec) - (mainwindow->pagetime / 2));
+    mainwindow->set_viewtime((annot->onset - edf_hdr->starttime_subsec) - (mainwindow->pagetime / 2) + l_tmp);
   }
   else
   {
-    mainwindow->set_viewtime(annot->onset - edf_hdr->starttime_subsec);
+    mainwindow->set_viewtime(annot->onset - edf_hdr->starttime_subsec + l_tmp);
   }
 }
 

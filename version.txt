@@ -17,6 +17,9 @@
  - Waveform window: annotation duration's colored overlay: added the possibilty to
    assign max. 8 annotation descriptions to specific colors
 
+ - Fixed a regression bug that caused to set a wrong fileposition when multiple EDF+ files were opened
+   and when clicked on an annotation in an annotationlist of a file that was not the reference file.
+
 
  version 2.00      January 29, 2023
  --------------
