@@ -578,6 +578,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
   {
     edfhdr->data_record_duration = 0;
     edfhdr->long_data_record_duration = 0LL;
+    edfhdr->recording_duration_hr = 0LL;
   }
   else
   {
@@ -591,6 +592,10 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
     }
 
     edfhdr->long_data_record_duration = get_long_duration(scratchpad);
+
+    edfhdr->recording_duration_hr = edfhdr->long_data_record_duration * edfhdr->datarecords;
+
+    edfhdr->utc_endtime_hr = edfhdr->utc_starttime_hr + edfhdr->recording_duration_hr;
   }
 
   free(edf_hdr);

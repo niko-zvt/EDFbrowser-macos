@@ -2051,6 +2051,8 @@ void UI_Mainwindow::open_new_file()
 
     edfhdr->utc_starttime_hr = (edfhdr->utc_starttime * TIME_FIXP_SCALING) + edfhdr->starttime_subsec;
 
+    edfhdr->utc_endtime_hr = edfhdr->utc_starttime_hr + (edfhdr->long_data_record_duration * edfhdr->datarecords);
+
     if((edfhdr->bdf && (!edfhdr->bdfplus) && read_biosemi_status_signal) && (!live_stream_active))
     {
       if((edfhdr->datarecords * (unsigned long long)edfhdr->recordsize) <= maxfilesize_to_readin_annotations)

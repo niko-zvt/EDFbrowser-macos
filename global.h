@@ -231,10 +231,6 @@ typedef struct
   int       plus_technician_offset;
   int       plus_equipment_offset;
   int       plus_recording_additional_offset;
-  long long l_starttime;       /* high resolution clocktime (24 hours, no date), multiplied by TIME_FIXP_SCALING */
-  long long utc_starttime;     /* seconds since the epoch january 1, 1970 */
-  long long utc_starttime_hr;  /* high resolution, multiplied by TIME_FIXP_SCALING (includes the subsecond starttime) */
-  long long starttime_subsec;  /* subsecond starttime (used by EDF+), multiplied by TIME_FIXP_SCALING */
   char      reserved[45];
   int       hdrsize;
   int       edfsignals;
@@ -252,8 +248,14 @@ typedef struct
   int       genuine_biosemi;
   double    data_record_duration;
   unsigned long long long_data_record_duration;
-  long long viewtime;         /* file position expressed in units of 1/TIME_FIXP_SCALING seconds, relative to the first sample in the recprding */
+  long long viewtime;         /* file position expressed in units of 1/TIME_FIXP_SCALING seconds, relative to the first sample in the recording */
   long long prefiltertime;
+  long long l_starttime;       /* high resolution clocktime (24 hours, no date), multiplied by TIME_FIXP_SCALING */
+  long long utc_starttime;     /* seconds since the epoch january 1, 1970 */
+  long long utc_starttime_hr;  /* high resolution, multiplied by TIME_FIXP_SCALING (includes the subsecond starttime) */
+  long long starttime_subsec;  /* subsecond starttime (used by EDF+), multiplied by TIME_FIXP_SCALING */
+  long long utc_endtime_hr;    /* high resolution, multiplied by TIME_FIXP_SCALING (includes the subsecond starttime) */
+  long long recording_duration_hr;  /* duration of the recording, high resolution, multiplied by TIME_FIXP_SCALING */
   int       annots_not_read;
   int       recording_len_sec;
   edfpar_t   *edfparam;

@@ -972,7 +972,7 @@ void UI_Mainwindow::setup_viewbuf()
       {
         positionslider->blockSignals(true);
 
-        long long record_duration = edfheaderlist[sel_viewtime]->long_data_record_duration * edfheaderlist[sel_viewtime]->datarecords;
+        long long record_duration = edfheaderlist[sel_viewtime]->recording_duration_hr;
 
         record_duration -= pagetime;
 
