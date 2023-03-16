@@ -110,8 +110,7 @@ UI_JumpMenuDialog::UI_JumpMenuDialog(QWidget *w_parent)
     timeEdit1->setEnabled(true);
     timeEdit2->setEnabled(true);
 
-    starttime = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->l_starttime
-                + mainwindow->edfheaderlist[mainwindow->sel_viewtime]->starttime_subsec;
+    starttime = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->starttime_hr;
 
     starttime /= 10000;
 

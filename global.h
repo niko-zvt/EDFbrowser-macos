@@ -251,6 +251,7 @@ typedef struct
   long long viewtime;         /* file position expressed in units of 1/TIME_FIXP_SCALING seconds, relative to the first sample in the recording */
   long long prefiltertime;
   long long l_starttime;       /* high resolution clocktime (24 hours, no date), multiplied by TIME_FIXP_SCALING */
+  long long starttime_hr;      /* high resolution clocktime (24 hours, no date), multiplied by TIME_FIXP_SCALING (includes the subsecond starttime) */
   long long utc_starttime;     /* seconds since the epoch january 1, 1970 */
   long long utc_starttime_hr;  /* high resolution, multiplied by TIME_FIXP_SCALING (includes the subsecond starttime) */
   long long starttime_subsec;  /* subsecond starttime (used by EDF+), multiplied by TIME_FIXP_SCALING */
