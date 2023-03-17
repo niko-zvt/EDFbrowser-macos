@@ -2821,9 +2821,12 @@ void UI_OptionsDialog::dspinbox4_4ValueChanged(double val)
 
 void UI_OptionsDialog::saveColorSchemaButtonClicked()
 {
-  char path[MAX_PATH_LENGTH];
+  int i;
 
-  FILE *colorfile;
+  char path[MAX_PATH_LENGTH]={""};
+//       str[1024]={""};
+
+  FILE *colorfile=NULL;
 
   strlcpy(path, mainwindow->recent_colordir, MAX_PATH_LENGTH);
   strlcat(path, "/my_colorschema.color", MAX_PATH_LENGTH);
@@ -2950,6 +2953,31 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
                   mainwindow->maincurve->annot_duration_color_selected.blue(),
                   mainwindow->maincurve->annot_duration_color_selected.alpha());
 
+  fprintf(colorfile, " <annot_ov_predefined_block>\n");
+
+  for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
+  {
+    fprintf(colorfile, "  <mc_annot_ov_color_predefined>\n"
+                     "   <red>%i</red>\n"
+                     "   <green>%i</green>\n"
+                     "   <blue>%i</blue>\n"
+                     "   <alpha>%i</alpha>\n"
+                     "  </mc_annot_ov_color_predefined>\n",
+                     mainwindow->mc_annot_ov_color_predefined[i].red(),
+                     mainwindow->mc_annot_ov_color_predefined[i].green(),
+                     mainwindow->mc_annot_ov_color_predefined[i].blue(),
+                     mainwindow->mc_annot_ov_color_predefined[i].alpha());
+  }
+
+//   for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
+//   {
+//     xml_strlcpy_encode_entity(str, mainwindow->mc_annot_ov_name_predefined[i], 1024);
+//
+//     fprintf(colorfile, "  <mc_annot_ov_name_predefined>%s</mc_annot_ov_name_predefined>\n", str);
+//   }
+
+  fprintf(colorfile, " </annot_ov_predefined_block>\n");
+
   fprintf(colorfile, " <signal_color>%i</signal_color>\n",
                   mainwindow->maincurve->signal_color);
 
@@ -2994,11 +3022,13 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
 
 void UI_OptionsDialog::loadColorSchemaButtonClicked()
 {
-  char path[MAX_PATH_LENGTH],
-       scratchpad[2048],
-       result[XML_STRBUFLEN];
+  int i;
 
-  xml_hdl_t *xml_hdl;
+  char path[MAX_PATH_LENGTH]={""},
+       scratchpad[2048]={""},
+       result[XML_STRBUFLEN]={""};
+
+  xml_hdl_t *xml_hdl=NULL;
 
 
   strlcpy(path, QFileDialog::getOpenFileName(0, "Load colorschema", QString::fromLocal8Bit(mainwindow->recent_colordir), "Montage files (*.color *.COLOR)").toLocal8Bit().data(), MAX_PATH_LENGTH);
@@ -3046,6 +3076,16 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
   mainwindow->get_rgbcolor_settings(xml_hdl, "annot_duration_color", 0, &mainwindow->maincurve->annot_duration_color);
 
   mainwindow->get_rgbcolor_settings(xml_hdl, "annot_duration_color_selected", 0, &mainwindow->maincurve->annot_duration_color_selected);
+
+  if(!xml_goto_nth_element_inside(xml_hdl, "annot_ov_predefined_block", 0))
+  {
+    for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
+    {
+      mainwindow->get_rgbcolor_settings(xml_hdl, "mc_annot_ov_color_predefined", i, &mainwindow->mc_annot_ov_color_predefined[i]);
+    }
+
+    xml_go_up(xml_hdl);
+  }
 
   if(xml_goto_nth_element_inside(xml_hdl, "signal_color", 0))
   {
@@ -3300,6 +3340,11 @@ void UI_OptionsDialog::update_interface(void)
   AnnotDurationButton->setColor(mainwindow->maincurve->annot_duration_color);
 
   AnnotDurationSelectedButton->setColor(mainwindow->maincurve->annot_duration_color_selected);
+
+  for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
+  {
+    AnnotDurationPredefinedButton[i]->setColor(mainwindow->mc_annot_ov_color_predefined[i]);
+  }
 
   if(mainwindow->maincurve->blackwhite_printing)
   {
