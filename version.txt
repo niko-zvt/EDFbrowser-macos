@@ -1,5 +1,5 @@
 
- version 2.01      to be defined
+ version 2.01      March 18, 2023
  --------------
 
  - Annotationlist: added option "Auto scroll" when browsing.

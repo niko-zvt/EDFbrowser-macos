@@ -1,23 +1,24 @@
 
 Requirements
 ============
+
+EDFbrowser is a GNU/Linux & GCC & GNU Make project. Other platforms, tools or compilers are not supported.
+This is not going to change. I mean it.
+
+EDFbrowser requires a little-endian system. EDFbrowser does not work with a CPU with a big-endian architecture.
+This is also not going to change.
+
 Qt  http://www.qt.io/
 
 Qt4 minimum version 4.7.1 or later, preferable 4.8.7
 
 or
 
-Qt5 minimum version 5.9.1 or later, preferable 5.15.2 <- this is the recommended and supported version
+Qt5 minimum version 5.9.1 or later
 
 or
 
-Qt6 minimum version 6.4.1 or later
-
-
-EDFbrowser is a GNU/Linux & GCC & GNU Make project. Other platforms, tools or compilers are not supported.
-This is not going to change. I mean it.
-
-EDFbrowser requires a little-endian system. EDFbrowser does not work with a CPU with a big-endian architecture.
+Qt6 minimum version 6.4.2 or later
 
 
 Introduction
@@ -27,9 +28,8 @@ EDFbrowser is a Qt application and uses qmake as part of the build process.
 Qmake is part of your Qt installation.
 
 
-
-Compiling and installing on Ubuntu Linux and derivatives
-========================================================
+Compiling and installing on Debian Linux and derivatives (Ubuntu, Mint, Raspberry Pi OS, etc.)
+===============================================================================================
 
 sudo apt update
 sudo apt install build-essential g++ make git qtbase5-dev-tools qtbase5-dev
@@ -41,6 +41,31 @@ sudo make install
 edfbrowser
 
 
+Compiling and installing on Fedora
+====================================
+
+sudo dnf update
+sudo dnf groupinstall "Development Tools" "Development Libraries"
+sudo dnf install g++ qt5-qtbase qt5-qtbase-devel
+git clone https://gitlab.com/Teuniz/EDFbrowser.git
+cd EDFbrowser
+qmake
+make -j8
+sudo make install
+edfbrowser
+
+
+Compiling and installing on openSUSE
+======================================
+
+sudo zypper refresh
+sudo zypper install -t pattern devel_basis devel_C_C++ devel_qt5
+git clone https://gitlab.com/Teuniz/EDFbrowser.git
+cd EDFbrowser
+qmake-qt5
+make -j8
+sudo make install
+edfbrowser
 
 
 Advanced users (keep in mind, EDFbrowser is NOT a community project, pull/merge requests will be ignored)
@@ -114,8 +139,8 @@ upx edfbrowser (if upx is not recognized as a command, install it using your pac
 
 
 
-Requirements on macOS (warning, I don't have a Mac and I cannot support it!)
-=====================
+Requirements on macOS (warning, I don't have a Mac and I cannot support it)
+============================================================================
 
 Development tools from Apple: to get them, run
 
