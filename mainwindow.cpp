@@ -1984,15 +1984,15 @@ void UI_Mainwindow::open_new_file()
       {
         if(edfhdr->edf)
         {
-          QMessageBox::critical(this, "Error", "EDFbrowser cannot show EDF+D (discontiguous) files.\n"
-                                               "Convert this file to EDF+C first. You can find this converter\n"
+          QMessageBox::critical(this, "Error", "EDFbrowser cannot show EDF+D (discontiguous) files. "
+                                               "Convert this file to EDF+C first. You can find this converter "
                                                "in the Tools menu (EDF+D to EDF+C converter).");
         }
 
         if(edfhdr->bdf)
         {
-          QMessageBox::critical(this, "Error", "EDFbrowser cannot show BDF+D (discontiguous) files.\n"
-                                               "Convert this file to BDF+C first. You can find this converter\n"
+          QMessageBox::critical(this, "Error", "EDFbrowser cannot show BDF+D (discontiguous) files."
+                                               "Convert this file to BDF+C first. You can find this converter "
                                                "in the Tools menu (EDF+D to EDF+C converter).");
         }
       }
