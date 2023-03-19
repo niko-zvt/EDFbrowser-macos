@@ -746,7 +746,7 @@ void UI_Annotationswindow::filter_edited(const QString)
 
 void UI_Annotationswindow::delayed_list_filter_update()
 {
-  int i, j, n, len, sz;
+  int i, sz;
 
   char filter_str[32];
 
@@ -782,8 +782,6 @@ void UI_Annotationswindow::delayed_list_filter_update()
 
   strlcpy(filter_str, search_line_edit->text().toUtf8().data(), 32);
 
-  len = strlen(filter_str);
-
   for(i=0; i<sz; i++)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
@@ -800,22 +798,15 @@ void UI_Annotationswindow::delayed_list_filter_update()
         annot->hidden = 1;
       }
 
-      n = strlen(annot->description) - len + 1;
-
-      for(j=0; j<n; j++)
+      if(strstr(annot->description, filter_str))
       {
-        if(!(strncmp(filter_str, annot->description + j, len)))
+        if(invert_filter)
         {
-          if(invert_filter)
-          {
-            annot->hidden = 1;
-          }
-          else
-          {
-            annot->hidden = 0;
-          }
-
-          break;
+          annot->hidden = 1;
+        }
+        else
+        {
+          annot->hidden = 0;
         }
       }
     }
