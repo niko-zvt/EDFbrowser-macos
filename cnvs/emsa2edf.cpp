@@ -100,7 +100,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
       seconds,
       deci_seconds,
       datrecduris1,
-      gender,
+      sex,
       tallen=0,
       annot_cnt=0,
       patientcode=0,
@@ -425,10 +425,10 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   }
 
   fseeko(inputfile, 203LL, SEEK_SET);
-  gender = fgetc(inputfile);
-  if((gender!='M')&&(gender!='F'))
+  sex = fgetc(inputfile);
+  if((sex!='M')&&(sex!='F'))
   {
-    gender = 'X';
+    sex = 'X';
   }
 
   len = fgetc(inputfile);
@@ -720,7 +720,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
 
   i = fprintf(outputfile, "%05i %c %s %s%s%s",
                           patientcode,
-                          gender,
+                          sex,
                           birthdate,
                           patientname,
                           handedness,

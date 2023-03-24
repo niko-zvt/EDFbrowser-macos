@@ -212,7 +212,7 @@ typedef struct
   char      patient[81];
   char      recording[81];
   char      plus_patientcode[81];
-  char      plus_gender[16];
+  char      plus_sex[16];
   char      plus_birthdate[16];
   char      plus_patient_name[81];
   char      plus_patient_additional[81];
@@ -222,7 +222,7 @@ typedef struct
   char      plus_equipment[81];
   char      plus_recording_additional[81];
   int       plus_patientcode_offset;
-  int       plus_gender_offset;
+  int       plus_sex_offset;
   int       plus_birthdate_offset;
   int       plus_patient_name_offset;
   int       plus_patient_additional_offset;

@@ -718,13 +718,13 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
     {
       edf_set_patientname(hdl, hdr->plus_patient_name);
       edf_set_patientcode(hdl, hdr->plus_patientcode);
-      if(!(strcmp(hdr->plus_gender, "Male")))
+      if(!(strcmp(hdr->plus_sex, "Male")))
       {
-        edf_set_gender(hdl, 1);
+        edf_set_sex(hdl, 1);
       }
-      if(!(strcmp(hdr->plus_gender, "Female")))
+      if(!(strcmp(hdr->plus_sex, "Female")))
       {
-        edf_set_gender(hdl, 0);
+        edf_set_sex(hdl, 0);
       }
       if(hdr->plus_birthdate[0] != 0)
       {

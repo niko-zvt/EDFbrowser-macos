@@ -407,13 +407,13 @@ void UI_AverageCurveWindow::export_edf(void)
     snprintf(str, 4096, "%i triggers \"%s\" averaged. %s", avg_cnt, avg_annotation, signalcomp->edfhdr->plus_recording_additional);
     edf_set_recording_additional(edf_hdl, str);
     edf_set_patientcode(edf_hdl, signalcomp->edfhdr->plus_patientcode);
-    if(signalcomp->edfhdr->plus_gender[0] == 'M')
+    if(signalcomp->edfhdr->plus_sex[0] == 'M')
     {
-      edf_set_gender(edf_hdl, 1);
+      edf_set_sex(edf_hdl, 1);
     }
-    if(signalcomp->edfhdr->plus_gender[0] == 'F')
+    if(signalcomp->edfhdr->plus_sex[0] == 'F')
     {
-      edf_set_gender(edf_hdl, 0);
+      edf_set_sex(edf_hdl, 0);
     }
     edf_set_patient_additional(edf_hdl, signalcomp->edfhdr->plus_patient_additional);
     edf_set_admincode(edf_hdl, signalcomp->edfhdr->plus_admincode);

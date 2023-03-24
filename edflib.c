@@ -33,9 +33,11 @@
 
 /* compile with options "-D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE" */
 
+#define EDFLIB_BUILD
+
 #include "edflib.h"
 
-#define EDFLIB_VERSION  (123)
+#define EDFLIB_VERSION  (124)
 #define EDFLIB_MAXFILES  (64)
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__HAIKU__) || defined(__ANDROID__)
@@ -104,7 +106,7 @@ struct edfhdrblock{
         char      patient[81];
         char      recording[81];
         char      plus_patientcode[81];
-        char      plus_gender[16];
+        char      plus_sex[16];
         char      plus_birthdate[16];
         int       plus_birthdate_day;
         int       plus_birthdate_month;
@@ -192,7 +194,7 @@ static int edflib_strlcpy(char *, const char *, int);
 static int edflib_strlcat(char *, const char *, int);
 
 
-int edflib_is_file_used(const char *path)
+EDFLIB_API int edflib_is_file_used(const char *path)
 {
   int i;
 
@@ -208,13 +210,13 @@ int edflib_is_file_used(const char *path)
 }
 
 
-int edflib_get_number_of_open_files()
+EDFLIB_API int edflib_get_number_of_open_files()
 {
   return edf_files_open;
 }
 
 
-int edflib_get_handle(int file_number)
+EDFLIB_API int edflib_get_handle(int file_number)
 {
   int i, file_count=0;
 
@@ -230,7 +232,7 @@ int edflib_get_handle(int file_number)
 }
 
 
-int edfopen_file_readonly(const char *path, struct edf_hdr_struct *edfhdr, int read_annotations_mode)
+EDFLIB_API int edfopen_file_readonly(const char *path, struct edf_hdr_struct *edfhdr, int read_annotations_mode)
 {
   int i, j,
       channel,
@@ -390,7 +392,8 @@ int edfopen_file_readonly(const char *path, struct edf_hdr_struct *edfhdr, int r
   else
   {
     edflib_strlcpy(edfhdr->patientcode, hdr->plus_patientcode, 81);
-    edflib_strlcpy(edfhdr->gender, hdr->plus_gender, 16);
+    edflib_strlcpy(edfhdr->sex, hdr->plus_sex, 16);
+    edflib_strlcpy(edfhdr->gender, hdr->plus_sex, 16);
     edflib_strlcpy(edfhdr->birthdate, hdr->plus_birthdate, 16);
     edfhdr->birthdate_day = hdr->plus_birthdate_day;
     edfhdr->birthdate_month = hdr->plus_birthdate_month;
@@ -458,7 +461,7 @@ int edfopen_file_readonly(const char *path, struct edf_hdr_struct *edfhdr, int r
 }
 
 
-int edfclose_file(int handle)
+EDFLIB_API int edfclose_file(int handle)
 {
   struct edf_write_annotationblock *annot2;
 
@@ -676,7 +679,7 @@ int edfclose_file(int handle)
 }
 
 
-long long edfseek(int handle, int edfsignal, long long offset, int whence)
+EDFLIB_API long long edfseek(int handle, int edfsignal, long long offset, int whence)
 {
   long long smp_in_file;
 
@@ -726,7 +729,7 @@ long long edfseek(int handle, int edfsignal, long long offset, int whence)
 }
 
 
-long long edftell(int handle, int edfsignal)
+EDFLIB_API long long edftell(int handle, int edfsignal)
 {
   int channel;
 
@@ -746,7 +749,7 @@ long long edftell(int handle, int edfsignal)
 }
 
 
-void edfrewind(int handle, int edfsignal)
+EDFLIB_API void edfrewind(int handle, int edfsignal)
 {
   int channel;
 
@@ -766,7 +769,7 @@ void edfrewind(int handle, int edfsignal)
 }
 
 
-int edfread_physical_samples(int handle, int edfsignal, int n, double *buf)
+EDFLIB_API int edfread_physical_samples(int handle, int edfsignal, int n, double *buf)
 {
   int bytes_per_smpl=2,
       tmp,
@@ -935,7 +938,7 @@ int edfread_physical_samples(int handle, int edfsignal, int n, double *buf)
 }
 
 
-int edfread_digital_samples(int handle, int edfsignal, int n, int *buf)
+EDFLIB_API int edfread_digital_samples(int handle, int edfsignal, int n, int *buf)
 {
   int bytes_per_smpl=2,
       tmp,
@@ -1100,7 +1103,7 @@ int edfread_digital_samples(int handle, int edfsignal, int n, int *buf)
 }
 
 
-int edf_get_annotation(int handle, int n, struct edf_annotation_struct *annot)
+EDFLIB_API int edf_get_annotation(int handle, int n, struct edf_annotation_struct *annot)
 {
   memset(annot, 0, sizeof(struct edf_annotation_struct));
 
@@ -2212,15 +2215,15 @@ static struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_erro
 
     if(edfhdr->patient[p]=='M')
     {
-      edflib_strlcpy(edfhdr->plus_gender, "Male", 16);
+      edflib_strlcpy(edfhdr->plus_sex, "Male", 16);
     }
     if(edfhdr->patient[p]=='F')
     {
-      edflib_strlcpy(edfhdr->plus_gender, "Female", 16);
+      edflib_strlcpy(edfhdr->plus_sex, "Female", 16);
     }
     if(edfhdr->patient[p]=='X')
     {
-      edfhdr->plus_gender[0] = 0;
+      edfhdr->plus_sex[0] = 0;
     }
     for(i=0; i<(80-p);i++)
     {
@@ -2784,7 +2787,7 @@ static long long edflib_get_long_duration(char *str)
 }
 
 
-int edflib_version(void)
+EDFLIB_API int edflib_version(void)
 {
   return EDFLIB_VERSION;
 }
@@ -3388,7 +3391,7 @@ static void edflib_latin12utf8(char *latin1_str, int len)
 }
 
 
-int edfopen_file_writeonly_with_params(const char *path, int filetype, int number_of_signals, int samplefrequency, double phys_max_min, const char *phys_dim)
+EDFLIB_API int edfopen_file_writeonly_with_params(const char *path, int filetype, int number_of_signals, int samplefrequency, double phys_max_min, const char *phys_dim)
 {
   int i, handle;
 
@@ -3468,7 +3471,7 @@ int edfopen_file_writeonly_with_params(const char *path, int filetype, int numbe
 }
 
 
-int edfopen_file_writeonly(const char *path, int filetype, int number_of_signals)
+EDFLIB_API int edfopen_file_writeonly(const char *path, int filetype, int number_of_signals)
 {
   int i, handle;
 
@@ -3621,7 +3624,7 @@ int edfopen_file_writeonly(const char *path, int filetype, int number_of_signals
 }
 
 
-int edf_set_samplefrequency(int handle, int edfsignal, int samplefrequency)
+EDFLIB_API int edf_set_samplefrequency(int handle, int edfsignal, int samplefrequency)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -3643,7 +3646,7 @@ int edf_set_samplefrequency(int handle, int edfsignal, int samplefrequency)
 }
 
 
-int edf_set_number_of_annotation_signals(int handle, int annot_signals)
+EDFLIB_API int edf_set_number_of_annotation_signals(int handle, int annot_signals)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -3661,7 +3664,7 @@ int edf_set_number_of_annotation_signals(int handle, int annot_signals)
 }
 
 
-int edf_set_datarecord_duration(int handle, int duration)
+EDFLIB_API int edf_set_datarecord_duration(int handle, int duration)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -3694,7 +3697,7 @@ int edf_set_datarecord_duration(int handle, int duration)
 }
 
 
-int edf_set_micro_datarecord_duration(int handle, int duration)
+EDFLIB_API int edf_set_micro_datarecord_duration(int handle, int duration)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -3714,7 +3717,7 @@ int edf_set_micro_datarecord_duration(int handle, int duration)
 }
 
 
-int edf_set_subsecond_starttime(int handle, int subsecond)
+EDFLIB_API int edf_set_subsecond_starttime(int handle, int subsecond)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -3732,7 +3735,7 @@ int edf_set_subsecond_starttime(int handle, int subsecond)
 }
 
 
-int edfwrite_digital_short_samples(int handle, short *buf)
+EDFLIB_API int edfwrite_digital_short_samples(int handle, short *buf)
 {
   int  i,
        error,
@@ -3842,7 +3845,7 @@ int edfwrite_digital_short_samples(int handle, short *buf)
 }
 
 
-int edfwrite_digital_samples(int handle, int *buf)
+EDFLIB_API int edfwrite_digital_samples(int handle, int *buf)
 {
   int  i,
        error,
@@ -3966,7 +3969,7 @@ int edfwrite_digital_samples(int handle, int *buf)
 }
 
 
-int edf_blockwrite_digital_samples(int handle, int *buf)
+EDFLIB_API int edf_blockwrite_digital_samples(int handle, int *buf)
 {
   int  i, j,
        error,
@@ -4090,7 +4093,7 @@ int edf_blockwrite_digital_samples(int handle, int *buf)
 }
 
 
-int edf_blockwrite_digital_short_samples(int handle, short *buf)
+EDFLIB_API int edf_blockwrite_digital_short_samples(int handle, short *buf)
 {
   int  i, j,
        error,
@@ -4209,7 +4212,7 @@ int edf_blockwrite_digital_short_samples(int handle, short *buf)
 }
 
 
-int edf_blockwrite_digital_3byte_samples(int handle, void *buf)
+EDFLIB_API int edf_blockwrite_digital_3byte_samples(int handle, void *buf)
 {
   int  j,
        error,
@@ -4262,7 +4265,7 @@ int edf_blockwrite_digital_3byte_samples(int handle, void *buf)
 }
 
 
-int edfwrite_physical_samples(int handle, double *buf)
+EDFLIB_API int edfwrite_physical_samples(int handle, double *buf)
 {
   int  i,
        error,
@@ -4393,7 +4396,7 @@ int edfwrite_physical_samples(int handle, double *buf)
 }
 
 
-int edf_blockwrite_physical_samples(int handle, double *buf)
+EDFLIB_API int edf_blockwrite_physical_samples(int handle, double *buf)
 {
   int  i, j,
        error,
@@ -4657,13 +4660,13 @@ static int edflib_write_edf_header(struct edfhdrblock *hdr)
     p += fprintf(file, "X ");
   }
 
-  if(hdr->plus_gender[0]=='M')
+  if(hdr->plus_sex[0]=='M')
   {
     fputc('M', file);
   }
   else
   {
-    if(hdr->plus_gender[0]=='F')
+    if(hdr->plus_sex[0]=='F')
     {
       fputc('F', file);
     }
@@ -5167,7 +5170,7 @@ static int edflib_write_edf_header(struct edfhdrblock *hdr)
 }
 
 
-int edf_set_label(int handle, int edfsignal, const char *label)
+EDFLIB_API int edf_set_label(int handle, int edfsignal, const char *label)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5189,7 +5192,7 @@ int edf_set_label(int handle, int edfsignal, const char *label)
 }
 
 
-int edf_set_physical_dimension(int handle, int edfsignal, const char *phys_dim)
+EDFLIB_API int edf_set_physical_dimension(int handle, int edfsignal, const char *phys_dim)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5211,7 +5214,7 @@ int edf_set_physical_dimension(int handle, int edfsignal, const char *phys_dim)
 }
 
 
-int edf_set_physical_maximum(int handle, int edfsignal, double phys_max)
+EDFLIB_API int edf_set_physical_maximum(int handle, int edfsignal, double phys_max)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5229,7 +5232,7 @@ int edf_set_physical_maximum(int handle, int edfsignal, double phys_max)
 }
 
 
-int edf_set_physical_minimum(int handle, int edfsignal, double phys_min)
+EDFLIB_API int edf_set_physical_minimum(int handle, int edfsignal, double phys_min)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5247,7 +5250,7 @@ int edf_set_physical_minimum(int handle, int edfsignal, double phys_min)
 }
 
 
-int edf_set_digital_maximum(int handle, int edfsignal, int dig_max)
+EDFLIB_API int edf_set_digital_maximum(int handle, int edfsignal, int dig_max)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5274,7 +5277,7 @@ int edf_set_digital_maximum(int handle, int edfsignal, int dig_max)
 }
 
 
-int edf_set_digital_minimum(int handle, int edfsignal, int dig_min)
+EDFLIB_API int edf_set_digital_minimum(int handle, int edfsignal, int dig_min)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5301,7 +5304,7 @@ int edf_set_digital_minimum(int handle, int edfsignal, int dig_min)
 }
 
 
-int edf_set_patientname(int handle, const char *patientname)
+EDFLIB_API int edf_set_patientname(int handle, const char *patientname)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5321,7 +5324,7 @@ int edf_set_patientname(int handle, const char *patientname)
 }
 
 
-int edf_set_patientcode(int handle, const char *patientcode)
+EDFLIB_API int edf_set_patientcode(int handle, const char *patientcode)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5341,7 +5344,7 @@ int edf_set_patientcode(int handle, const char *patientcode)
 }
 
 
-int edf_set_gender(int handle, int gender)
+EDFLIB_API int edf_set_sex(int handle, int sex)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5351,24 +5354,30 @@ int edf_set_gender(int handle, int gender)
 
   if(hdrlist[handle]->datarecords)  return -1;
 
-  if((gender<0)||(gender>1))  return -1;
+  if((sex<0)||(sex>1))  return -1;
 
-  if(gender)
+  if(sex)
   {
-    hdrlist[handle]->plus_gender[0] = 'M';
+    hdrlist[handle]->plus_sex[0] = 'M';
   }
   else
   {
-    hdrlist[handle]->plus_gender[0] = 'F';
+    hdrlist[handle]->plus_sex[0] = 'F';
   }
 
-  hdrlist[handle]->plus_gender[1] = 0;
+  hdrlist[handle]->plus_sex[1] = 0;
 
   return 0;
 }
 
 
-int edf_set_birthdate(int handle, int birthdate_year, int birthdate_month, int birthdate_day)
+EDFLIB_API int edf_set_gender(int handle, int sex)
+{
+  return edf_set_sex(handle, sex);
+}
+
+
+EDFLIB_API int edf_set_birthdate(int handle, int birthdate_year, int birthdate_month, int birthdate_day)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5393,7 +5402,7 @@ int edf_set_birthdate(int handle, int birthdate_year, int birthdate_month, int b
 }
 
 
-int edf_set_patient_additional(int handle, const char *patient_additional)
+EDFLIB_API int edf_set_patient_additional(int handle, const char *patient_additional)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5413,7 +5422,7 @@ int edf_set_patient_additional(int handle, const char *patient_additional)
 }
 
 
-int edf_set_admincode(int handle, const char *admincode)
+EDFLIB_API int edf_set_admincode(int handle, const char *admincode)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5433,7 +5442,7 @@ int edf_set_admincode(int handle, const char *admincode)
 }
 
 
-int edf_set_technician(int handle, const char *technician)
+EDFLIB_API int edf_set_technician(int handle, const char *technician)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5453,7 +5462,7 @@ int edf_set_technician(int handle, const char *technician)
 }
 
 
-int edf_set_equipment(int handle, const char *equipment)
+EDFLIB_API int edf_set_equipment(int handle, const char *equipment)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5473,7 +5482,7 @@ int edf_set_equipment(int handle, const char *equipment)
 }
 
 
-int edf_set_recording_additional(int handle, const char *recording_additional)
+EDFLIB_API int edf_set_recording_additional(int handle, const char *recording_additional)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5493,8 +5502,8 @@ int edf_set_recording_additional(int handle, const char *recording_additional)
 }
 
 
-int edf_set_startdatetime(int handle, int startdate_year, int startdate_month, int startdate_day,
-                                      int starttime_hour, int starttime_minute, int starttime_second)
+EDFLIB_API int edf_set_startdatetime(int handle, int startdate_year, int startdate_month, int startdate_day,
+                                     int starttime_hour, int starttime_minute, int starttime_second)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5525,7 +5534,7 @@ int edf_set_startdatetime(int handle, int startdate_year, int startdate_month, i
 }
 
 
-int edfwrite_annotation_utf8(int handle, long long onset, long long duration, const char *description)
+EDFLIB_API int edfwrite_annotation_utf8(int handle, long long onset, long long duration, const char *description)
 {
   int i;
 
@@ -5579,7 +5588,7 @@ int edfwrite_annotation_utf8(int handle, long long onset, long long duration, co
 }
 
 
-int edfwrite_annotation_latin1(int handle, long long onset, long long duration, const char *description)
+EDFLIB_API int edfwrite_annotation_latin1(int handle, long long onset, long long duration, const char *description)
 {
   struct edf_write_annotationblock *list_annot, *malloc_list;
 
@@ -5654,7 +5663,7 @@ static void edflib_remove_padding_trailing_spaces(char *str)
 }
 
 
-int edf_set_prefilter(int handle, int edfsignal, const char *prefilter)
+EDFLIB_API int edf_set_prefilter(int handle, int edfsignal, const char *prefilter)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5678,7 +5687,7 @@ int edf_set_prefilter(int handle, int edfsignal, const char *prefilter)
 }
 
 
-int edf_set_transducer(int handle, int edfsignal, const char *transducer)
+EDFLIB_API int edf_set_transducer(int handle, int edfsignal, const char *transducer)
 {
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 

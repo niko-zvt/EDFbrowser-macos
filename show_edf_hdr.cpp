@@ -205,10 +205,10 @@ void UI_EDFhdrwindow::show_params(int row)
 
     line_edit1->setText(mainwindow->edfheaderlist[row]->plus_patientcode);
     if(mainwindow->edf_debug)  line_edit1->setToolTip("0x08");
-    line_edit2->setText(mainwindow->edfheaderlist[row]->plus_gender);
+    line_edit2->setText(mainwindow->edfheaderlist[row]->plus_sex);
     if(mainwindow->edf_debug)
     {
-      snprintf(str, 512, "0x%02x", 0x08 + mainwindow->edfheaderlist[row]->plus_gender_offset);
+      snprintf(str, 512, "0x%02x", 0x08 + mainwindow->edfheaderlist[row]->plus_sex_offset);
       line_edit2->setToolTip(str);
     }
     line_edit6->setText(mainwindow->edfheaderlist[row]->plus_birthdate);

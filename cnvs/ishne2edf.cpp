@@ -477,17 +477,17 @@ struct
 
   if(sex == 1)
   {
-    if(edf_set_gender(edf_hdl, 1))
+    if(edf_set_sex(edf_hdl, 1))
     {
-      textEdit1->append("Error, edf_set_gender()\n");
+      textEdit1->append("Error, edf_set_sex()\n");
       goto OUT_EXIT;
     }
   }
   else if(sex == 2)
     {
-      if(edf_set_gender(edf_hdl, 0))
+      if(edf_set_sex(edf_hdl, 0))
       {
-        textEdit1->append("Error, edf_set_gender()\n");
+        textEdit1->append("Error, edf_set_sex()\n");
         goto OUT_EXIT;
       }
     }

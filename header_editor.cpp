@@ -98,7 +98,7 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
   lineEdit4->setVisible(false);
 
   label11 = new QLabel;
-  label11->setText("Gender");
+  label11->setText("Sex");
   label11->setVisible(false);
 
   comboBox1 = new QComboBox;
@@ -1100,7 +1100,7 @@ void UI_headerEditorWindow::save_hdr()
       strlcat(str, "X ", 256);
     }
 
-    if(comboBox1->currentIndex() == 0)  // gender
+    if(comboBox1->currentIndex() == 0)  // sex
     {
       strlcat(str, "X ", 256);
     }

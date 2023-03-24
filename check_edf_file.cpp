@@ -1383,19 +1383,19 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
       p += i + 1;
     }
 
-    edfhdr->plus_gender_offset = p;
+    edfhdr->plus_sex_offset = p;
 
     if(edfhdr->patient[p]=='M')
     {
-      strlcpy(edfhdr->plus_gender, "Male", 16);
+      strlcpy(edfhdr->plus_sex, "Male", 16);
     }
     if(edfhdr->patient[p]=='F')
     {
-      strlcpy(edfhdr->plus_gender, "Female", 16);
+      strlcpy(edfhdr->plus_sex, "Female", 16);
     }
     if(edfhdr->patient[p]=='X')
     {
-      edfhdr->plus_gender[0] = 0;
+      edfhdr->plus_sex[0] = 0;
     }
     for(i=0; i<(80-p);i++)
     {

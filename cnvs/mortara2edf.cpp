@@ -493,15 +493,15 @@ void UI_MortaraEDFwindow::SelectFileButton()
       }
       if(scratchpad[0] == 'M')
       {
-        subject_gender = 1;
+        subject_sex = 1;
       }
       else if(scratchpad[0] == 'F')
         {
-          subject_gender = 0;
+          subject_sex = 0;
         }
         else
         {
-          subject_gender = -1;
+          subject_sex = -1;
         }
 
       xml_go_up(xml_hdl);
@@ -640,11 +640,11 @@ void UI_MortaraEDFwindow::SelectFileButton()
     }
   }
 
-  if(subject_gender >= 0)
+  if(subject_sex >= 0)
   {
-    if(edf_set_gender(edf_hdl, subject_gender))
+    if(edf_set_sex(edf_hdl, subject_sex))
     {
-      textEdit1->append("Error, edf_set_gender()\n");
+      textEdit1->append("Error, edf_set_sex()\n");
       goto OUT_EXIT;
     }
   }

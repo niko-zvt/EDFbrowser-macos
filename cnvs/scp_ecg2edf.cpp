@@ -1088,12 +1088,12 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
   if(pat_dat.sex == 1)
   {
-    edf_set_gender(hdl, 1);
+    edf_set_sex(hdl, 1);
   }
 
   if(pat_dat.sex == 2)
   {
-    edf_set_gender(hdl, 0);
+    edf_set_sex(hdl, 0);
   }
 
   edf_set_patientcode(hdl, pat_dat.pat_id);

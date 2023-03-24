@@ -80,7 +80,7 @@ int chan_cnt,
     chan_sf_div,
     chan_sf,
     chan_sf_block,
-    subject_gender;
+    subject_sex;
 
 char chan_format[MORTARA_MAX_CHNS][17],
      chan_name[MORTARA_MAX_CHNS][17],
