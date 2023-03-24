@@ -35,7 +35,7 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
 
   strlcpy(str, " QT version at runtime is ", 512);
   strlcat(str, qVersion(), 512);
-  strlcat(str, "\n QT version at compiletime is ", 512);
+  strlcat(str, "\n QT version at compile time is ", 512);
   strlcat(str, QT_VERSION_STR, 512);
   strlcat(str, "\n Compiled on " __DATE__ " " __TIME__, 512);
   snprintf(str + strlen(str), 512, "\n CPU-cores detected on this system: %i", mainwindow->maincurve->cpu_cnt);

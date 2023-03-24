@@ -626,7 +626,7 @@ void aeeg_curve_widget::paintEvent(QPaintEvent *)
       }
   }
 
-  /* set horziontal scale to 6 cm per hour -> approx. 1 pixel per segment */
+  /* set horizontal scale to 6 cm per hour -> approx. 1 pixel per segment */
   h_step_segment = (6.0 / mainwindow->x_pixelsizefactor) / (3600.0 / param.segment_len);
 
   v_sense = (h / aeeg_max) / 1.05;

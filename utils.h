@@ -56,7 +56,7 @@ void remove_trailing_chars(char *, int);
 /* if substr is too short). */
 void str_insert_substr(char *str, int pos, int len, const char *substr, int subpos, int sublen);
 
-/* Replaces the nth occurence of dest_substr in str with src_substr. */
+/* Replaces the nth occurrence of dest_substr in str with src_substr. */
 /* If n = -1, all occurrences will be replaced. */
 /* len is the buffer length, not the string length! */
 /* Returns the number of substrings replaced. */
