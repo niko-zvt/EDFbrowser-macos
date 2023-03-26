@@ -882,11 +882,14 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
     if((annot_marker_moving) && (active_markers->edf_hdr != NULL))
     {
       active_markers->list[active_markers->selected_idx]->x_pos = m_x;
-
+#ifdef EDFBROWSER_REFACTORING
+      active_markers->list[active_markers->selected_idx]->onset = ((long long)((((double)m_x) / w) * mainwindow->pagetime))
+                                                               + active_markers->edf_hdr->viewtime;
+#else
       active_markers->list[active_markers->selected_idx]->onset = ((long long)((((double)m_x) / w) * mainwindow->pagetime))
                                                                + active_markers->edf_hdr->viewtime
                                                                + active_markers->edf_hdr->starttime_subsec;
-
+#endif
       active_markers->list[active_markers->selected_idx]->modified = 1;
 
       active_markers->list[active_markers->selected_idx]->grabbed = 1;
@@ -1217,10 +1220,14 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
     if((annot_marker_moving) && (active_markers->edf_hdr != NULL))
     {
       active_markers->list[active_markers->selected_idx]->x_pos = mouse_x;
-
+#ifdef EDFBROWSER_REFACTORING
+      active_markers->list[active_markers->selected_idx]->onset = ((long long)((((double)mouse_x) / w) * mainwindow->pagetime))
+                                                               + active_markers->edf_hdr->viewtime;
+#else
       active_markers->list[active_markers->selected_idx]->onset = ((long long)((((double)mouse_x) / w) * mainwindow->pagetime))
                                                                + active_markers->edf_hdr->viewtime
                                                                + active_markers->edf_hdr->starttime_subsec;
+#endif
     }
 
     delta_y = mouse_y - mouse_press_coordinate_y;
@@ -2210,7 +2217,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
             {
               crosshair_1.y_value = value;
               crosshair_1.value = dig_value * signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue;
-              crosshair_1.time_clock = signalcomp[i]->edfhdr->l_starttime + signalcomp[i]->edfhdr->viewtime + signalcomp[i]->edfhdr->starttime_subsec + (long long)(((double)mainwindow->pagetime / ((double)w / printsize_x_factor)) * (double)crosshair_1.x_position);
+              crosshair_1.time_clock = signalcomp[i]->edfhdr->starttime_hr + signalcomp[i]->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / ((double)w / printsize_x_factor)) * (double)crosshair_1.x_position);
               crosshair_1.time_relative = signalcomp[i]->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / ((double)w / printsize_x_factor)) * (double)crosshair_1.x_position);
             }
           }
@@ -2220,7 +2227,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
             {
               crosshair_1.y_value = value;
               crosshair_1.value = dig_value * signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue;
-              crosshair_1.time_clock = signalcomp[i]->edfhdr->l_starttime + signalcomp[i]->edfhdr->viewtime + signalcomp[i]->edfhdr->starttime_subsec + (long long)(((double)mainwindow->pagetime / (double)w) * (double)crosshair_1.x_position);
+              crosshair_1.time_clock = signalcomp[i]->edfhdr->starttime_hr + signalcomp[i]->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / (double)w) * (double)crosshair_1.x_position);
               crosshair_1.time_relative = signalcomp[i]->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / (double)w) * (double)crosshair_1.x_position);
             }
           }
@@ -2234,7 +2241,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
             {
               crosshair_2.y_value = value;
               crosshair_2.value = dig_value * signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue;
-              crosshair_2.time_clock = signalcomp[i]->edfhdr->l_starttime + signalcomp[i]->edfhdr->viewtime + signalcomp[i]->edfhdr->starttime_subsec + (long long)(((double)mainwindow->pagetime / ((double)w / printsize_x_factor)) * (double)crosshair_2.x_position);
+              crosshair_2.time_clock = signalcomp[i]->edfhdr->starttime_hr + signalcomp[i]->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / ((double)w / printsize_x_factor)) * (double)crosshair_2.x_position);
               crosshair_2.time_relative = signalcomp[i]->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / ((double)w / printsize_x_factor)) * (double)crosshair_2.x_position);
             }
           }
@@ -2244,7 +2251,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
             {
               crosshair_2.y_value = value;
               crosshair_2.value = dig_value * signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue;
-              crosshair_2.time_clock = signalcomp[i]->edfhdr->l_starttime + signalcomp[i]->edfhdr->viewtime + signalcomp[i]->edfhdr->starttime_subsec + (long long)(((double)mainwindow->pagetime / (double)w) * (double)crosshair_2.x_position);
+              crosshair_2.time_clock = signalcomp[i]->edfhdr->starttime_hr + signalcomp[i]->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / (double)w) * (double)crosshair_2.x_position);
               crosshair_2.time_relative = signalcomp[i]->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / (double)w) * (double)crosshair_2.x_position);
             }
           }
@@ -2593,7 +2600,7 @@ void drawCurve_stage_1_thread::run()
           {
             crosshair_1->y_value = value;
             crosshair_1->value = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
-            crosshair_1->time_clock = signalcomp->edfhdr->l_starttime + signalcomp->edfhdr->viewtime + signalcomp->edfhdr->starttime_subsec + (long long)(((double)mainwindow->pagetime / ((double)w / printsize_x_factor)) * (double)crosshair_1->x_position);
+            crosshair_1->time_clock = signalcomp->edfhdr->starttime_hr + signalcomp->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / ((double)w / printsize_x_factor)) * (double)crosshair_1->x_position);
             crosshair_1->time_relative = signalcomp->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / ((double)w / printsize_x_factor)) * (double)crosshair_1->x_position);
           }
         }
@@ -2603,7 +2610,7 @@ void drawCurve_stage_1_thread::run()
           {
             crosshair_1->y_value = value;
             crosshair_1->value = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
-            crosshair_1->time_clock = signalcomp->edfhdr->l_starttime + signalcomp->edfhdr->viewtime + signalcomp->edfhdr->starttime_subsec + (long long)(((double)mainwindow->pagetime / (double)w) * (double)crosshair_1->x_position);
+            crosshair_1->time_clock = signalcomp->edfhdr->starttime_hr + signalcomp->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / (double)w) * (double)crosshair_1->x_position);
             crosshair_1->time_relative = signalcomp->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / (double)w) * (double)crosshair_1->x_position);
           }
         }
@@ -2617,7 +2624,7 @@ void drawCurve_stage_1_thread::run()
           {
             crosshair_2->y_value = value;
             crosshair_2->value = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
-            crosshair_2->time_clock = signalcomp->edfhdr->l_starttime + signalcomp->edfhdr->viewtime + signalcomp->edfhdr->starttime_subsec + (long long)(((double)mainwindow->pagetime / ((double)w / printsize_x_factor)) * (double)crosshair_2->x_position);
+            crosshair_2->time_clock = signalcomp->edfhdr->starttime_hr + signalcomp->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / ((double)w / printsize_x_factor)) * (double)crosshair_2->x_position);
             crosshair_2->time_relative = signalcomp->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / ((double)w / printsize_x_factor)) * (double)crosshair_2->x_position);
           }
         }
@@ -2627,7 +2634,7 @@ void drawCurve_stage_1_thread::run()
           {
             crosshair_2->y_value = value;
             crosshair_2->value = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
-            crosshair_2->time_clock = signalcomp->edfhdr->l_starttime + signalcomp->edfhdr->viewtime + signalcomp->edfhdr->starttime_subsec + (long long)(((double)mainwindow->pagetime / (double)w) * (double)crosshair_2->x_position);
+            crosshair_2->time_clock = signalcomp->edfhdr->starttime_hr + signalcomp->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / (double)w) * (double)crosshair_2->x_position);
             crosshair_2->time_relative = signalcomp->edfhdr->viewtime + (long long)(((double)mainwindow->pagetime / (double)w) * (double)crosshair_2->x_position);
           }
         }

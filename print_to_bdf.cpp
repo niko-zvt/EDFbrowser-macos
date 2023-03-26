@@ -55,7 +55,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   long long taltime=0LL,
             l_temp,
-            referencetime,
+            referencetime=0LL,
             annot_difftime=0LL,
             s2;
 
@@ -1397,6 +1397,8 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
           annot_list_sz = edfplus_annotation_size(annot_list);
 
           annot_cnt = 0;
+
+          annot_difftime = 0LL;
 
           if(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)
           {

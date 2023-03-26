@@ -46,13 +46,13 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
       progress_steps,
       annot_cnt;
 
-  char *readbuf,
-       scratchpad[256],
-       *annot_buf;
+  char *readbuf=NULL,
+       scratchpad[256]={""},
+       *annot_buf=NULL;
 
-  long long time;
+  long long time=0LL;
 
-  FILE *inputfile;
+  FILE *inputfile=NULL;
 
   inputfile = hdr->file_hdl;
 

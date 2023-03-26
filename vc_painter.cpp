@@ -141,8 +141,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
         if(annot->long_duration)
         {
+#ifdef EDFBROWSER_REFACTORING
+          l_tmp = annot->onset;
+#else
           l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_subsec;
-
+#endif
           if(l_tmp > (long long)(mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
           {
             break;
@@ -770,9 +773,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       for(j=0; j<annot_list_sz; j++)
       {
         annot = edfplus_annotation_get_item(annot_list, j);
-
+#ifdef EDFBROWSER_REFACTORING
+        l_tmp = annot->onset;
+#else
         l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_subsec;
-
+#endif
         if(l_tmp > (long long)(mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
         {
           break;
@@ -882,9 +887,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
               annot_text_stack_idx++;
             }
-
+#ifdef EDFBROWSER_REFACTORING
+            l_tmp = annot->onset;
+#else
             l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_subsec;
-
+#endif
             if(mainwindow->annotations_onset_relative)
             {
               if(l_tmp < 0LL)

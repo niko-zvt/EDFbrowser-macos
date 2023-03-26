@@ -66,6 +66,9 @@
 
 #endif
 
+/* don't change (keep it undefined), used only for refactoring/debugging/testing purposes */
+#define EDFBROWSER_REFACTORING
+
 #define PROGRAM_NAME                "EDFbrowser"
 #define PROGRAM_VERSION                   "2.01"
 #define PROGRAM_BETA_SUFFIX                   ""
@@ -273,7 +276,7 @@ typedef struct
   int num_of_signals;
   int edfsignal[MAXSIGNALS];
   double factor[MAXSIGNALS];
-  edfpar_t *edfparam_0;
+  edfpar_t *edfparam_0;  /* shortcut to edfparam[0] */
 
   int polarity;
   char signallabel[512];

@@ -488,11 +488,19 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       {
         if(include_duration)
         {
+#ifdef EDFBROWSER_REFACTORING
+          fprintf(annotationfile, "%+.7f%c%s%c%s\n", ((double)annot->onset) / TIME_FIXP_SCALING, separator, annot->duration, separator, str);
+#else
           fprintf(annotationfile, "%+.7f%c%s%c%s\n", (double)(annot->onset - hdr->starttime_subsec) / TIME_FIXP_SCALING, separator, annot->duration, separator, str);
+#endif
         }
         else
         {
+#ifdef EDFBROWSER_REFACTORING
+          fprintf(annotationfile, "%+.7f%c%s\n", ((double)annot->onset) / TIME_FIXP_SCALING, separator, str);
+#else
           fprintf(annotationfile, "%+.7f%c%s\n", (double)(annot->onset - hdr->starttime_subsec) / TIME_FIXP_SCALING, separator, str);
+#endif
         }
       }
 
