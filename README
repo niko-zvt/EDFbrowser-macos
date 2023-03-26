@@ -10,15 +10,15 @@ This is also not going to change.
 
 Qt  http://www.qt.io/
 
-Qt4 minimum version 4.7.1 or later, preferable 4.8.7
+Qt4 version 4.8.7
 
 or
 
-Qt5 minimum version 5.9.1 or later
+Qt5 version 5.12.6 or later
 
 or
 
-Qt6 minimum version 6.4.2 or later
+Qt6 version 6.4.2 or later
 
 
 Introduction

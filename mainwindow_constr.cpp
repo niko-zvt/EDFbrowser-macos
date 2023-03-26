@@ -1536,8 +1536,8 @@ UI_Mainwindow::UI_Mainwindow()
   {
     cmdlineargument = 0;
 
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "EDFbrowser has been compiled with a version of Qt\n"
-                                                              "which is too old and will likely cause problems!");
+    QMessageBox messagewindow(QMessageBox::Warning, "Error", "EDFbrowser has been compiled with a version of Qt\n"
+                                                             "which is too old and can cause problems.");
     messagewindow.exec();
   }
 
