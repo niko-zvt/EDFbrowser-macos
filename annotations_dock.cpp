@@ -1229,9 +1229,9 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
       selected_in_dock_idx = visible_item_idx;
     }
 
+#ifdef EDFBROWSER_REFACTORING
     if(relative)
     {
-#ifdef EDFBROWSER_REFACTORING
       if(annot->onset < 0LL)
       {
         snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "  -%2i:%02i:%02i.%04i",
@@ -1252,12 +1252,14 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
     else
     {
       snprintf(str, MAX_ANNOTATION_LEN + 32, "  %3i:%02i:%02i.%04i",
-              (int)((((annot->onset + edf_hdr->l_starttime) / TIME_FIXP_SCALING)/ 3600) % 24),
-              (int)((((annot->onset + edf_hdr->l_starttime) / TIME_FIXP_SCALING) % 3600) / 60),
-              (int)(((annot->onset + edf_hdr->l_starttime) / TIME_FIXP_SCALING) % 60),
-              (int)(((annot->onset + edf_hdr->l_starttime) % TIME_FIXP_SCALING) / 1000LL));
+              (int)((((annot->onset + edf_hdr->starttime_hr) / TIME_FIXP_SCALING)/ 3600) % 24),
+              (int)((((annot->onset + edf_hdr->starttime_hr) / TIME_FIXP_SCALING) % 3600) / 60),
+              (int)(((annot->onset + edf_hdr->starttime_hr) / TIME_FIXP_SCALING) % 60),
+              (int)(((annot->onset + edf_hdr->starttime_hr) % TIME_FIXP_SCALING) / 1000LL));
     }
 #else
+    if(relative)
+    {
       if((annot->onset - edf_hdr->starttime_subsec) < 0LL)
       {
         snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "  -%2i:%02i:%02i.%04i",
