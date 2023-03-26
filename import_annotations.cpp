@@ -2191,7 +2191,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
 {
   int digits;
 
-  long long l_temp, onset = 0LL, utc_time=0LL;
+  long long l_temp, onset=0LL, utc_time=0LL;
 
   char scratchpad[64];
 
@@ -2224,7 +2224,11 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         onset += (atoi(scratchpad + 3) * 60LL);
         onset += (long long)(atoi(scratchpad + 6));
         onset *= TIME_FIXP_SCALING;
+#ifdef EDFBROWSER_REFACTORING
+        onset -= mainwindow->edfheaderlist[0]->starttime_hr;
+#else
         onset -= mainwindow->edfheaderlist[0]->l_starttime;
+#endif
         if(onset < *last_onset)
         {
           onset += (86400LL * TIME_FIXP_SCALING);
@@ -2245,7 +2249,11 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         onset += (atoi(scratchpad + 2) * 60LL);
         onset += (long long)(atoi(scratchpad + 5));
         onset *= TIME_FIXP_SCALING;
+#ifdef EDFBROWSER_REFACTORING
+        onset -= mainwindow->edfheaderlist[0]->starttime_hr;
+#else
         onset -= mainwindow->edfheaderlist[0]->l_starttime;
+#endif
         if(onset < *last_onset)
         {
           onset += (86400LL * TIME_FIXP_SCALING);
@@ -2286,7 +2294,11 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
           }
           onset += l_temp;
         }
+#ifdef EDFBROWSER_REFACTORING
+        onset -= mainwindow->edfheaderlist[0]->starttime_hr;
+#else
         onset -= mainwindow->edfheaderlist[0]->l_starttime;
+#endif
         if(onset < *last_onset)
         {
           onset += (86400LL * TIME_FIXP_SCALING);
@@ -2323,7 +2335,11 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
           }
           onset += l_temp;
         }
+#ifdef EDFBROWSER_REFACTORING
+        onset -= mainwindow->edfheaderlist[0]->starttime_hr;
+#else
         onset -= mainwindow->edfheaderlist[0]->l_starttime;
+#endif
         if(onset < *last_onset)
         {
           onset += (86400LL * TIME_FIXP_SCALING);
