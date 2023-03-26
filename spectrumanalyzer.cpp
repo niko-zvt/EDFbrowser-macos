@@ -87,7 +87,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(sigcompblck_t *signal_comp, char *v
        if((signalcomp->edfhdr->filename[i-1]=='/')||(signalcomp->edfhdr->filename[i-1]=='\\'))  break;
   }
 
-  if((signalcomp->edfhdr->viewtime + signalcomp->edfhdr->starttime_subsec)>=0LL)
+  if(signalcomp->edfhdr->viewtime>=0LL)
   {
     if(signalcomp->alias[0] != 0)
     {
@@ -110,12 +110,6 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(sigcompblck_t *signal_comp, char *v
   }
   else
   {
-    l_temp = signalcomp->edfhdr->l_starttime + ((signalcomp->edfhdr->viewtime + signalcomp->edfhdr->starttime_subsec) % (86400LL * TIME_FIXP_SCALING));
-    if(l_temp<=0)
-    {
-      l_temp = (86400LL * TIME_FIXP_SCALING) + l_temp;
-    }
-
     l_temp = -signalcomp->edfhdr->viewtime;
 
     if(signalcomp->alias[0] != 0)

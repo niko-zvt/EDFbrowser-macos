@@ -828,7 +828,7 @@ void UI_Mainwindow::setup_viewbuf()
       snprintf(viewtime_string, 128, "%2i-%s ", date_time_str.day, date_time_str.month_str);
     }
 
-    if((edfheaderlist[sel_viewtime]->viewtime)>=0LL)
+    if(edfheaderlist[sel_viewtime]->viewtime>=0LL)
     {
       if(viewtime_indicator_type != VIEWTIME_INDICATOR_TYPE_RELATIVE)
       {
@@ -852,7 +852,7 @@ void UI_Mainwindow::setup_viewbuf()
     }
     else
     {
-      l_temp = edfheaderlist[sel_viewtime]->l_starttime + ((edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_subsec) % (86400LL * TIME_FIXP_SCALING));
+      l_temp = (edfheaderlist[sel_viewtime]->starttime_hr + edfheaderlist[sel_viewtime]->viewtime) % (86400LL * TIME_FIXP_SCALING);
       if(l_temp<=0)
       {
         l_temp += (86400LL * TIME_FIXP_SCALING);
