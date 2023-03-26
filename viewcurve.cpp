@@ -609,12 +609,13 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
     {
       if(crosshair_1.active)
       {
-        if((m_y<crosshair_1.y_position)&&(m_y>(crosshair_1.y_position - 51))&&(m_x>crosshair_1.x_position)&&(m_x<(crosshair_1.x_position + 171)))
+        if((m_y < (crosshair_1.y_position - 6)) && (m_y > (crosshair_1.y_position - 6 - (mainwindow->mono_font_pixel_height * 3))) &&
+           (m_x >= crosshair_1.x_position) && (m_x < (crosshair_1.x_position + (mainwindow->mono_font_pixel_width * 17))))
         {
           crosshair_1.moving = 1;
         }
 
-        if(m_x>(crosshair_1.x_position-10)&&(m_x<(crosshair_1.x_position + 10)))
+        if(m_x > (crosshair_1.x_position - mainwindow->mono_font_pixel_width) && (m_x < (crosshair_1.x_position + mainwindow->mono_font_pixel_width)))
         {
           crosshair_1.moving = 1;
         }
@@ -625,12 +626,13 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
     {
       if(crosshair_2.active)
       {
-        if((m_y<crosshair_2.y_position)&&(m_y>(crosshair_2.y_position - 80))&&(m_x>crosshair_2.x_position)&&(m_x<(crosshair_2.x_position + 171)))
+        if((m_y < (crosshair_2.y_position - 6)) && (m_y > (crosshair_2.y_position - 6 - (mainwindow->mono_font_pixel_height * 5))) &&
+           (m_x >= crosshair_2.x_position) && (m_x < (crosshair_2.x_position + (mainwindow->mono_font_pixel_width * 17))))
         {
           crosshair_2.moving = 1;
         }
 
-        if(m_x>(crosshair_2.x_position-10)&&(m_x<(crosshair_2.x_position + 10)))
+        if(m_x > (crosshair_2.x_position - mainwindow->mono_font_pixel_width) && (m_x < (crosshair_2.x_position + mainwindow->mono_font_pixel_width)))
         {
           crosshair_2.moving = 1;
         }
