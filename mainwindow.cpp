@@ -742,9 +742,11 @@ void UI_Mainwindow::sync_by_crosshairs()
 
   viewtime_sync = VIEWTIME_USER_DEF_SYNCED;
 
-  maincurve->crosshair_2.edf_hdr->viewtime
-  -= ((maincurve->crosshair_1.time_clock - maincurve->crosshair_1.edf_hdr->l_starttime - maincurve->crosshair_1.edf_hdr->viewtime - maincurve->crosshair_1.edf_hdr->starttime_subsec)
-  - (maincurve->crosshair_2.time_clock - maincurve->crosshair_2.edf_hdr->l_starttime - maincurve->crosshair_2.edf_hdr->viewtime - maincurve->crosshair_2.edf_hdr->starttime_subsec));
+  maincurve->crosshair_2.edf_hdr->viewtime -=
+//    ((maincurve->crosshair_1.time_clock - maincurve->crosshair_1.edf_hdr->l_starttime - maincurve->crosshair_1.edf_hdr->viewtime - maincurve->crosshair_1.edf_hdr->starttime_subsec) -
+//     (maincurve->crosshair_2.time_clock - maincurve->crosshair_2.edf_hdr->l_starttime - maincurve->crosshair_2.edf_hdr->viewtime - maincurve->crosshair_2.edf_hdr->starttime_subsec));
+   ((maincurve->crosshair_1.time_clock - maincurve->crosshair_1.edf_hdr->starttime_hr - maincurve->crosshair_1.edf_hdr->viewtime) -
+    (maincurve->crosshair_2.time_clock - maincurve->crosshair_2.edf_hdr->starttime_hr - maincurve->crosshair_2.edf_hdr->viewtime));
 
   maincurve->crosshair_2.x_position = maincurve->crosshair_1.x_position;
 

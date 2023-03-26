@@ -1565,7 +1565,7 @@ UI_Mainwindow::UI_Mainwindow()
     cmdlineargument = 0;
 
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Your version of Qt is too old\n"
-                                                              "and will likely cause problems!");
+                                                              "and can cause problems.");
     messagewindow.exec();
   }
 

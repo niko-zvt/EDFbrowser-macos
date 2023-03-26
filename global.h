@@ -70,7 +70,7 @@
 #define PROGRAM_VERSION                   "2.01"
 #define PROGRAM_BETA_SUFFIX                   ""
 #define MINIMUM_QT4_VERSION           (0x040807)
-#define MINIMUM_QT5_VERSION           (0x051206)
+#define MINIMUM_QT5_VERSION           (0x050C06)
 #define MINIMUM_QT6_VERSION           (0x060402)
 #define MAXFILES                            (32)
 #define MAXSIGNALS                         (640)
