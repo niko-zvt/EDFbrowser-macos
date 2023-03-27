@@ -709,7 +709,11 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       }
       else
       {
+#ifdef EDFBROWSER_REFACTORING
+        utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING, &tm);
+#else
         utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
+#endif
       }
 
       fprintf(annotationfile, " <annotation>\n"
