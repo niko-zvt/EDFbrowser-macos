@@ -429,9 +429,8 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
                 memset(&annotblock, 0, sizeof(annotblck_t));
                 annotblock.edfhdr = edf_hdr;
                 annotblock.onset = get_long_time(time_in_txt);
-#ifdef EDFBROWSER_REFACTORING
                 annotblock.onset -= edf_hdr->starttime_subsec;
-#endif
+
                 for(j=0; j<n; j++)
                 {
                   if(j==MAX_ANNOTATION_LEN)  break;
@@ -555,11 +554,6 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
               memset(&annotblock, 0, sizeof(annotblck_t));
               annotblock.edfhdr = edf_hdr;
               annotblock.onset = ((long long)i * data_record_duration) + ((long long)k * nk_trigger_sample_duration);
-#ifdef EDFBROWSER_REFACTORING
-// nothing
-#else
-              annotblock.onset += edf_hdr->starttime_subsec;
-#endif
               strlcpy(annotblock.description, nk_triggerlabel[j], MAX_ANNOTATION_LEN_II + 1);
               annotblock.ident = (1 << ANNOT_ID_NK_TRIGGER);
 

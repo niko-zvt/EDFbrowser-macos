@@ -363,11 +363,11 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
 
   edfhdr->utc_starttime_hr = edfhdr->utc_starttime * TIME_FIXP_SCALING;
 
-  edfhdr->l_starttime = 3600 * atoi(scratchpad);
-  edfhdr->l_starttime += 60 * atoi(scratchpad + 3);
-  edfhdr->l_starttime += atoi(scratchpad + 6);
+  edfhdr->starttime_hr = 3600 * atoi(scratchpad);
+  edfhdr->starttime_hr += 60 * atoi(scratchpad + 3);
+  edfhdr->starttime_hr += atoi(scratchpad + 6);
 
-  edfhdr->l_starttime *= TIME_FIXP_SCALING;
+  edfhdr->starttime_hr *= TIME_FIXP_SCALING;
 
 /***************** NUMBER OF SIGNALS IN HEADER *******************************/
 

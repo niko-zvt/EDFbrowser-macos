@@ -2089,11 +2089,6 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
                 {
                   memset(&annotation, 0, sizeof(annotblck_t));
                   annotation.onset = ((trigger_datrec * signalcomp->edfhdr->long_data_record_duration) + (trigger_sample * time_per_sample));
-#ifdef EDFBROWSER_REFACTORING
-// nothing here
-#else
-                  annotation.onset += signalcomp->edfhdr->starttime_subsec;
-#endif
                   annotation.edfhdr = signalcomp->edfhdr;
                   strncpy(annotation.description, scratchpad, MAX_ANNOTATION_LEN);
                   annotation.description[MAX_ANNOTATION_LEN] = 0;
@@ -2210,11 +2205,6 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
   if(onset_format == CVS_ONSET_TIME_FMT_RELATIVE)
   {
     onset = atoll_x(scratchpad, TIME_FIXP_SCALING);
-#ifdef EDFBROWSER_REFACTORING
-// nothing here
-#else
-    onset += mainwindow->edfheaderlist[0]->starttime_subsec;
-#endif
     *onset_time = onset;
 
     return 0;
@@ -2231,11 +2221,8 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         onset += (atoi(scratchpad + 3) * 60LL);
         onset += (long long)(atoi(scratchpad + 6));
         onset *= TIME_FIXP_SCALING;
-#ifdef EDFBROWSER_REFACTORING
         onset -= mainwindow->edfheaderlist[0]->starttime_hr;
-#else
-        onset -= mainwindow->edfheaderlist[0]->l_starttime;
-#endif
+
         if(onset < *last_onset)
         {
           onset += (86400LL * TIME_FIXP_SCALING);
@@ -2256,11 +2243,8 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         onset += (atoi(scratchpad + 2) * 60LL);
         onset += (long long)(atoi(scratchpad + 5));
         onset *= TIME_FIXP_SCALING;
-#ifdef EDFBROWSER_REFACTORING
         onset -= mainwindow->edfheaderlist[0]->starttime_hr;
-#else
-        onset -= mainwindow->edfheaderlist[0]->l_starttime;
-#endif
+
         if(onset < *last_onset)
         {
           onset += (86400LL * TIME_FIXP_SCALING);
@@ -2301,11 +2285,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
           }
           onset += l_temp;
         }
-#ifdef EDFBROWSER_REFACTORING
         onset -= mainwindow->edfheaderlist[0]->starttime_hr;
-#else
-        onset -= mainwindow->edfheaderlist[0]->l_starttime;
-#endif
         if(onset < *last_onset)
         {
           onset += (86400LL * TIME_FIXP_SCALING);
@@ -2342,11 +2322,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
           }
           onset += l_temp;
         }
-#ifdef EDFBROWSER_REFACTORING
         onset -= mainwindow->edfheaderlist[0]->starttime_hr;
-#else
-        onset -= mainwindow->edfheaderlist[0]->l_starttime;
-#endif
         if(onset < *last_onset)
         {
           onset += (86400LL * TIME_FIXP_SCALING);

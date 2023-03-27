@@ -141,11 +141,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
         if(annot->long_duration)
         {
-#ifdef EDFBROWSER_REFACTORING
           l_tmp = annot->onset;
-#else
-          l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_subsec;
-#endif
+
           if(l_tmp > (long long)(mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
           {
             break;
@@ -773,11 +770,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       for(j=0; j<annot_list_sz; j++)
       {
         annot = edfplus_annotation_get_item(annot_list, j);
-#ifdef EDFBROWSER_REFACTORING
+
         l_tmp = annot->onset;
-#else
-        l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_subsec;
-#endif
+
         if(l_tmp > (long long)(mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
         {
           break;
@@ -887,11 +882,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
               annot_text_stack_idx++;
             }
-#ifdef EDFBROWSER_REFACTORING
+
             l_tmp = annot->onset;
-#else
-            l_tmp = annot->onset - mainwindow->edfheaderlist[i]->starttime_subsec;
-#endif
+
             if(mainwindow->annotations_onset_relative)
             {
               if(l_tmp < 0LL)
@@ -913,19 +906,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             }
             else
             {
-#ifdef EDFBROWSER_REFACTORING
               snprintf(str1, MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%04i",
                       (int)((((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) / TIME_FIXP_SCALING)/ 3600) % 24),
                       (int)((((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) / TIME_FIXP_SCALING) % 3600) / 60),
                       (int)(((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) / TIME_FIXP_SCALING) % 60),
                       (int)(((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) % TIME_FIXP_SCALING) / 1000LL));
-#else
-              snprintf(str1, MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%04i",
-                      (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_FIXP_SCALING)/ 3600) % 24),
-                      (int)((((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_FIXP_SCALING) % 3600) / 60),
-                      (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) / TIME_FIXP_SCALING) % 60),
-                      (int)(((annot->onset + mainwindow->edfheaderlist[i]->l_starttime) % TIME_FIXP_SCALING) / 1000LL));
-#endif
             }
 
             remove_trailing_zeros(str1);

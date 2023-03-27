@@ -884,14 +884,10 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
     if((annot_marker_moving) && (active_markers->edf_hdr != NULL))
     {
       active_markers->list[active_markers->selected_idx]->x_pos = m_x;
-#ifdef EDFBROWSER_REFACTORING
+
       active_markers->list[active_markers->selected_idx]->onset = ((long long)((((double)m_x) / w) * mainwindow->pagetime))
                                                                + active_markers->edf_hdr->viewtime;
-#else
-      active_markers->list[active_markers->selected_idx]->onset = ((long long)((((double)m_x) / w) * mainwindow->pagetime))
-                                                               + active_markers->edf_hdr->viewtime
-                                                               + active_markers->edf_hdr->starttime_subsec;
-#endif
+
       active_markers->list[active_markers->selected_idx]->modified = 1;
 
       active_markers->list[active_markers->selected_idx]->grabbed = 1;
@@ -1222,14 +1218,9 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
     if((annot_marker_moving) && (active_markers->edf_hdr != NULL))
     {
       active_markers->list[active_markers->selected_idx]->x_pos = mouse_x;
-#ifdef EDFBROWSER_REFACTORING
+
       active_markers->list[active_markers->selected_idx]->onset = ((long long)((((double)mouse_x) / w) * mainwindow->pagetime))
                                                                + active_markers->edf_hdr->viewtime;
-#else
-      active_markers->list[active_markers->selected_idx]->onset = ((long long)((((double)mouse_x) / w) * mainwindow->pagetime))
-                                                               + active_markers->edf_hdr->viewtime
-                                                               + active_markers->edf_hdr->starttime_subsec;
-#endif
     }
 
     delta_y = mouse_y - mouse_press_coordinate_y;

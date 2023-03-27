@@ -2053,7 +2053,7 @@ void UI_Mainwindow::open_new_file()
 
     edfhdr->utc_endtime_hr = edfhdr->utc_starttime_hr + (edfhdr->long_data_record_duration * edfhdr->datarecords);
 
-    edfhdr->starttime_hr = edfhdr->l_starttime + edfhdr->starttime_subsec;
+    edfhdr->starttime_hr += edfhdr->starttime_subsec;
 
     if((edfhdr->bdf && (!edfhdr->bdfplus) && read_biosemi_status_signal) && (!live_stream_active))
     {

@@ -576,11 +576,6 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
             if((!rising_edge) && (j < 16))
             {
               annotation.onset = (datarecords * EDFLIB_TIME_DIMENSION) + ((long long)i * status_sample_duration);
-#ifdef EDFBROWSER_REFACTORING
-// nothing here
-#else
-              annotation.onset += hdr.starttime_subsecond;
-#endif
               strlcpy(annotation.description, triggerlabel[j], MAX_ANNOTATION_LEN_II + 1);
               annotation.edfhdr = &hdr;
               if(edfplus_annotation_add_item(&annot_list, annotation))
@@ -628,11 +623,6 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
             if(rising_edge || (j == 16))
             {
               annotation.onset = (datarecords * EDFLIB_TIME_DIMENSION) + ((long long)i * status_sample_duration);
-#ifdef EDFBROWSER_REFACTORING
-// nothing here
-#else
-              annotation.onset += hdr.starttime_subsecond;
-#endif
               strlcpy(annotation.description, triggerlabel[j], MAX_ANNOTATION_LEN_II + 1);
               annotation.edfhdr = &hdr;
               if(edfplus_annotation_add_item(&annot_list, annotation))

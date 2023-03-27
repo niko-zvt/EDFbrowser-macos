@@ -284,12 +284,9 @@ void UI_AveragerWindow::startButtonClicked()
   for(i=0; i<n; i++)
   {
     annot_ptr = edfplus_annotation_get_item(&(edf_hdr->annot_list), i);
-#ifdef EDFBROWSER_REFACTORING
+
     if((annot_ptr->onset >= l_time1) && (annot_ptr->onset <= l_time2))
-#else
-    if(((annot_ptr->onset - edf_hdr->starttime_subsec) >= l_time1)
-      && ((annot_ptr->onset - edf_hdr->starttime_subsec) <= l_time2))
-#endif
+
     {
       strlcpy(str, annot_ptr->description, MAX_ANNOTATION_LEN + 1);
 
@@ -381,12 +378,8 @@ void UI_AveragerWindow::startButtonClicked()
       {
         continue;
       }
-#ifdef EDFBROWSER_REFACTORING
+
       if((annot_ptr->onset >= l_time1) && (annot_ptr->onset <= l_time2))
-#else
-      if(((annot_ptr->onset - edf_hdr->starttime_subsec) >= l_time1)
-        && ((annot_ptr->onset - edf_hdr->starttime_subsec) <= l_time2))
-#endif
       {
         strlcpy(str, annot_ptr->description, MAX_ANNOTATION_LEN + 1);
 
@@ -417,11 +410,7 @@ void UI_AveragerWindow::startButtonClicked()
           }
 
           edf_hdr->viewtime = annot_ptr->onset;
-#ifdef EDFBROWSER_REFACTORING
-// nothing here
-#else
-          edf_hdr->viewtime -= edf_hdr->starttime_subsec;
-#endif
+
           edf_hdr->viewtime -= (mainwindow->pagetime / trigger_position_ratio);
 
           mainwindow->setup_viewbuf();

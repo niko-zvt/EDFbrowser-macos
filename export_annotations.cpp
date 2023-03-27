@@ -498,19 +498,11 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       {
         if(include_duration)
         {
-#ifdef EDFBROWSER_REFACTORING
           fprintf(annotationfile, "%+.7f%c%s%c%s\n", ((double)annot->onset) / TIME_FIXP_SCALING, separator, annot->duration, separator, str);
-#else
-          fprintf(annotationfile, "%+.7f%c%s%c%s\n", (double)(annot->onset - hdr->starttime_subsec) / TIME_FIXP_SCALING, separator, annot->duration, separator, str);
-#endif
         }
         else
         {
-#ifdef EDFBROWSER_REFACTORING
           fprintf(annotationfile, "%+.7f%c%s\n", ((double)annot->onset) / TIME_FIXP_SCALING, separator, str);
-#else
-          fprintf(annotationfile, "%+.7f%c%s\n", (double)(annot->onset - hdr->starttime_subsec) / TIME_FIXP_SCALING, separator, str);
-#endif
         }
       }
 
@@ -520,19 +512,11 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
         if(temp < 0)
         {
-#ifdef EDFBROWSER_REFACTORING
           utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING - 1, &tm);
-#else
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
-#endif
         }
         else
         {
-#ifdef EDFBROWSER_REFACTORING
           utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING, &tm);
-#else
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
-#endif
         }
 
         if(include_duration)
@@ -551,19 +535,11 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
         if(temp < 0)
         {
-#ifdef EDFBROWSER_REFACTORING
           utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING - 1, &tm);
-#else
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
-#endif
         }
         else
         {
-#ifdef EDFBROWSER_REFACTORING
           utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING, &tm);
-#else
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
-#endif
         }
 
         if(include_duration)
@@ -578,27 +554,17 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
       if(csv_format == ANNOT_EXPORT_FMT_CSV_ISO_TIME_SUBSEC)
       {
-#ifdef EDFBROWSER_REFACTORING
         temp = (hdr->utc_starttime_hr + annot->onset) % TIME_FIXP_SCALING;
-#else
-        temp = annot->onset % TIME_FIXP_SCALING;
-#endif
+
         if(temp < 0)
         {
-#ifdef EDFBROWSER_REFACTORING
           utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING - 1, &tm);
-#else
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
-#endif
+
           temp += TIME_FIXP_SCALING;
         }
         else
         {
-#ifdef EDFBROWSER_REFACTORING
           utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING, &tm);
-#else
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
-#endif
         }
 
         if(include_duration)
@@ -613,27 +579,17 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
       if(csv_format == ANNOT_EXPORT_FMT_CSV_ISO_DATE_TIME_SUBSEC)
       {
-#ifdef EDFBROWSER_REFACTORING
         temp = (hdr->utc_starttime_hr + annot->onset) % TIME_FIXP_SCALING;
-#else
-        temp = annot->onset % TIME_FIXP_SCALING;
-#endif
+
         if(temp < 0)
         {
-#ifdef EDFBROWSER_REFACTORING
           utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING - 1, &tm);
-#else
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
-#endif
+
           temp += TIME_FIXP_SCALING;
         }
         else
         {
-#ifdef EDFBROWSER_REFACTORING
           utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING, &tm);
-#else
-          utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
-#endif
         }
 
         if(include_duration)
@@ -693,27 +649,17 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       {
         break;
       }
-#ifdef EDFBROWSER_REFACTORING
       temp = (hdr->utc_starttime_hr + annot->onset) % TIME_FIXP_SCALING;
-#else
-      temp = annot->onset % TIME_FIXP_SCALING;
-#endif
+
       if(temp < 0)
       {
-#ifdef EDFBROWSER_REFACTORING
         utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING - 1, &tm);
-#else
-        utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
-#endif
+
         temp += TIME_FIXP_SCALING;
       }
       else
       {
-#ifdef EDFBROWSER_REFACTORING
         utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING, &tm);
-#else
-        utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
-#endif
       }
 
       fprintf(annotationfile, " <annotation>\n"

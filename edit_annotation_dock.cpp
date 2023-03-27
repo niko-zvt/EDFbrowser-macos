@@ -256,11 +256,7 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
   }
 
   annot->onset = annotEditGetOnset();
-#ifdef EDFBROWSER_REFACTORING
-// nothing here
-#else
-  annot->onset += edf_hdr->starttime_subsec;
-#endif
+
   if(dblcmp(duration_spinbox->value(), 0.0) > 0)
   {
     snprintf(annot->duration, 16, "%f", duration_spinbox->value());
@@ -355,11 +351,7 @@ void UI_AnnotationEditwindow::createButtonClicked()
   memset(&annotation, 0, sizeof(annotblck_t));
 
   annotation.onset = annotEditGetOnset();
-#ifdef EDFBROWSER_REFACTORING
-// nothing here
-#else
-  annotation.onset += edf_hdr->starttime_subsec;
-#endif
+
   annotation.edfhdr = edf_hdr;
 
   if(dblcmp(duration_spinbox->value(), 0.0) > 0)
@@ -499,11 +491,9 @@ void UI_AnnotationEditwindow::set_selected_annotation(int annot_nr)
   }
 
   annot_descript_lineEdit->setText(QString::fromUtf8(annot->description));
-#ifdef EDFBROWSER_REFACTORING
+
   l_tmp = annot->onset;
-#else
-  l_tmp = annot->onset - ((edfhdrblck_t *)(annot->edfhdr))->starttime_subsec;
-#endif
+
   if(l_tmp < 0LL)
   {
     onset_daySpinbox->setValue((-(l_tmp)) / TIME_FIXP_SCALING / 86400);
@@ -572,11 +562,9 @@ void UI_AnnotationEditwindow::set_selected_annotation(annotblck_t *annot)
   annot_num = n;
 
   annot_descript_lineEdit->setText(QString::fromUtf8(annot->description));
-#ifdef EDFBROWSER_REFACTORING
+
   l_tmp = annot->onset;
-#else
-  l_tmp = annot->onset - ((edfhdrblck_t *)(annot->edfhdr))->starttime_subsec;
-#endif
+
   if(l_tmp < 0LL)
   {
     onset_daySpinbox->setValue((-(l_tmp)) / TIME_FIXP_SCALING / 86400);
