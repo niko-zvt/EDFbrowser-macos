@@ -37,6 +37,13 @@
 
 #define TAB_CNT          (5)
 
+#define CVS_ONSET_TIME_FMT_RELATIVE             (0)
+#define CVS_ONSET_TIME_FMT_ABS_TIME             (1)
+#define CVS_ONSET_TIME_FMT_ABS_TIME_SUBSEC      (2)
+#define CVS_ONSET_TIME_FMT_ABS_DATETIME         (3)
+#define CVS_ONSET_TIME_FMT_ABS_DATETIME_SUBSEC  (4)
+
+
 #define NOTQRS     (0)  /* not-QRS (not a getann/putann code) */
 #define NORMAL     (1)  /* normal beat */
 #define LBBB       (2)  /* left bundle branch block beat */
@@ -1224,7 +1231,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
       descr_is_set,
       duration_is_set,
       max_descr_length=40,
-      onsettime_coding=0,
+      onsettime_format=0,
       ignore_consecutive=0,
       use_duration=0,
       use_stoptime=0,
@@ -1318,7 +1325,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   onset_column = OnsetColumnSpinBox->value() - 1;
 
-  onsettime_coding = RelativeTimeComboBox->currentIndex();
+  onsettime_format = RelativeTimeComboBox->currentIndex();
 
   if(DurationCheckBox->checkState() == Qt::Checked)
   {
@@ -1386,7 +1393,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
     return 1;
   }
 
-  mainwindow->import_annotations_var->onsettimeformat = onsettime_coding;
+  mainwindow->import_annotations_var->onsettimeformat = onsettime_format;
   mainwindow->import_annotations_var->onsetcolumn = onset_column + 1;
   mainwindow->import_annotations_var->descriptioncolumn = descr_column + 1;
   if(use_duration)
@@ -1576,7 +1583,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 #ifdef IMPORT_ANNOTS_DEBUG
           printf("  onset: ->%s<-", charpntr);
 #endif
-          if(get_onset_time_from_ascii(charpntr, &onset, &last_onset, onsettime_coding) == 0)
+          if(get_onset_time_from_ascii(charpntr, &onset, &last_onset, onsettime_format) == 0)
           {
             onset_is_set = 1;
           }
@@ -2187,7 +2194,7 @@ int UI_ImportAnnotationswindow::get_samplefreq_inf(void)
 }
 
 
-int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long long *onset_time, long long *last_onset, int encoding)
+int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long long *onset_time, long long *last_onset, int onset_format)
 {
   int digits;
 
@@ -2200,7 +2207,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
   strncpy(scratchpad, str, 30);
   scratchpad[30] = 0;
 
-  if(encoding == 0)
+  if(onset_format == CVS_ONSET_TIME_FMT_RELATIVE)
   {
     onset = atoll_x(scratchpad, TIME_FIXP_SCALING);
 #ifdef EDFBROWSER_REFACTORING
@@ -2213,7 +2220,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
     return 0;
   }
 
-  if(encoding == 1)
+  if(onset_format == CVS_ONSET_TIME_FMT_ABS_TIME)
   {
     if(strlen(scratchpad) > 6)
     {
@@ -2267,7 +2274,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
     }
   }
 
-  if(encoding == 2)
+  if(onset_format == CVS_ONSET_TIME_FMT_ABS_TIME_SUBSEC)
   {
     if(strlen(scratchpad) > 8)
     {
@@ -2353,7 +2360,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
     }
   }
 
-  if(encoding == 3)
+  if(onset_format == CVS_ONSET_TIME_FMT_ABS_DATETIME)
   {
     if(strlen(scratchpad) > 17)
     {
@@ -2377,7 +2384,7 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
     }
   }
 
-  if(encoding == 4)
+  if(onset_format == CVS_ONSET_TIME_FMT_ABS_DATETIME_SUBSEC)
   {
     if(strlen(scratchpad) > 19)
     {
