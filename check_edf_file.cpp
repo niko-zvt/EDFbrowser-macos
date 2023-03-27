@@ -579,6 +579,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
     edfhdr->data_record_duration = 0;
     edfhdr->long_data_record_duration = 0LL;
     edfhdr->recording_duration_hr = 0LL;
+    edfhdr->recording_len_sec = 0;
   }
   else
   {
@@ -594,6 +595,8 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
     edfhdr->long_data_record_duration = get_long_duration(scratchpad);
 
     edfhdr->recording_duration_hr = edfhdr->long_data_record_duration * edfhdr->datarecords;
+
+    edfhdr->recording_len_sec = (int)(edfhdr->recording_duration_hr / TIME_FIXP_SCALING);
 
     edfhdr->utc_endtime_hr = edfhdr->utc_starttime_hr + edfhdr->recording_duration_hr;
   }
@@ -1740,8 +1743,6 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
     edfhdr->edfparam[i].bitvalue = (edfhdr->edfparam[i].phys_max - edfhdr->edfparam[i].phys_min) / (edfhdr->edfparam[i].dig_max - edfhdr->edfparam[i].dig_min);
     edfhdr->edfparam[i].offset = edfhdr->edfparam[i].phys_max / edfhdr->edfparam[i].bitvalue - edfhdr->edfparam[i].dig_max;
   }
-
-  edfhdr->recording_len_sec = (int)((edfhdr->datarecords * edfhdr->long_data_record_duration) / TIME_FIXP_SCALING);
 
   txt_string[0] = 0;
 
