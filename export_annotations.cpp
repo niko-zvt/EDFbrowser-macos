@@ -29,6 +29,16 @@
 #include "export_annotations.h"
 
 
+#define ANNOT_EXPORT_FMT_EDF                       (0)
+#define ANNOT_EXPORT_FMT_CSV_SEC_REL               (1)
+#define ANNOT_EXPORT_FMT_CSV_ISO_TIME              (2)
+#define ANNOT_EXPORT_FMT_CSV_ISO_DATE_TIME         (3)
+#define ANNOT_EXPORT_FMT_CSV_ISO_TIME_SUBSEC       (4)
+#define ANNOT_EXPORT_FMT_CSV_ISO_DATE_TIME_SUBSEC  (5)
+#define ANNOT_EXPORT_FMT_XML                       (8)
+
+
+
 UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
 {
   int i;
@@ -440,7 +450,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
 ///////////////////////////// CSV (text) export //////////////////////////////////////
 
-  if((csv_format > 0) && (csv_format < 6))
+  if((csv_format > ANNOT_EXPORT_FMT_EDF) && (csv_format < ANNOT_EXPORT_FMT_XML))
   {
     annotationfile = fopeno(path, "wb");
     if(annotationfile==NULL)
@@ -484,7 +494,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
         }
       }
 
-      if(csv_format == 1)
+      if(csv_format == ANNOT_EXPORT_FMT_CSV_SEC_REL)
       {
         if(include_duration)
         {
@@ -504,17 +514,25 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
         }
       }
 
-      if(csv_format == 2)
+      if(csv_format == ANNOT_EXPORT_FMT_CSV_ISO_TIME)
       {
         temp = annot->onset % TIME_FIXP_SCALING;
 
         if(temp < 0)
         {
+#ifdef EDFBROWSER_REFACTORING
+          utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING - 1, &tm);
+#else
           utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
+#endif
         }
         else
         {
+#ifdef EDFBROWSER_REFACTORING
+          utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING, &tm);
+#else
           utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
+#endif
         }
 
         if(include_duration)
@@ -527,17 +545,25 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
         }
       }
 
-      if(csv_format == 3)
+      if(csv_format == ANNOT_EXPORT_FMT_CSV_ISO_DATE_TIME)
       {
         temp = annot->onset % TIME_FIXP_SCALING;
 
         if(temp < 0)
         {
+#ifdef EDFBROWSER_REFACTORING
+          utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING - 1, &tm);
+#else
           utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
+#endif
         }
         else
         {
+#ifdef EDFBROWSER_REFACTORING
+          utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING, &tm);
+#else
           utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
+#endif
         }
 
         if(include_duration)
@@ -550,19 +576,29 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
         }
       }
 
-      if(csv_format == 4)
+      if(csv_format == ANNOT_EXPORT_FMT_CSV_ISO_TIME_SUBSEC)
       {
+#ifdef EDFBROWSER_REFACTORING
+        temp = (hdr->utc_starttime_hr + annot->onset) % TIME_FIXP_SCALING;
+#else
         temp = annot->onset % TIME_FIXP_SCALING;
-
+#endif
         if(temp < 0)
         {
+#ifdef EDFBROWSER_REFACTORING
+          utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING - 1, &tm);
+#else
           utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
-
-          temp = TIME_FIXP_SCALING + temp;
+#endif
+          temp += TIME_FIXP_SCALING;
         }
         else
         {
+#ifdef EDFBROWSER_REFACTORING
+          utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING, &tm);
+#else
           utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
+#endif
         }
 
         if(include_duration)
@@ -575,19 +611,29 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
         }
       }
 
-      if(csv_format == 5)
+      if(csv_format == ANNOT_EXPORT_FMT_CSV_ISO_DATE_TIME_SUBSEC)
       {
+#ifdef EDFBROWSER_REFACTORING
+        temp = (hdr->utc_starttime_hr + annot->onset) % TIME_FIXP_SCALING;
+#else
         temp = annot->onset % TIME_FIXP_SCALING;
-
+#endif
         if(temp < 0)
         {
+#ifdef EDFBROWSER_REFACTORING
+          utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING - 1, &tm);
+#else
           utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
-
-          temp = TIME_FIXP_SCALING + temp;
+#endif
+          temp += TIME_FIXP_SCALING;
         }
         else
         {
+#ifdef EDFBROWSER_REFACTORING
+          utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING, &tm);
+#else
           utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING), &tm);
+#endif
         }
 
         if(include_duration)
@@ -617,7 +663,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
 ///////////////////////////// XML export //////////////////////////////////////
 
-  if(csv_format == 8)
+  if(csv_format == ANNOT_EXPORT_FMT_XML)
   {
     annotationfile = fopeno(path, "wb");
     if(annotationfile==NULL)
@@ -647,14 +693,19 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       {
         break;
       }
-
+#ifdef EDFBROWSER_REFACTORING
+      temp = (hdr->utc_starttime_hr + annot->onset) % TIME_FIXP_SCALING;
+#else
       temp = annot->onset % TIME_FIXP_SCALING;
-
+#endif
       if(temp < 0)
       {
+#ifdef EDFBROWSER_REFACTORING
+        utc_to_date_time((hdr->utc_starttime_hr + annot->onset) / TIME_FIXP_SCALING - 1, &tm);
+#else
         utc_to_date_time(hdr->utc_starttime + (annot->onset / TIME_FIXP_SCALING) - 1, &tm);
-
-        temp = TIME_FIXP_SCALING + temp;
+#endif
+        temp += TIME_FIXP_SCALING;
       }
       else
       {
@@ -691,7 +742,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
 ///////////////////////////// EDFplus export //////////////////////////////////////
 
-  if(csv_format == 0)
+  if(csv_format == ANNOT_EXPORT_FMT_EDF)
   {
     hdl = edfopen_file_writeonly(path, EDFLIB_FILETYPE_EDFPLUS, 0);
     if(hdl < 0)
