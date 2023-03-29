@@ -814,7 +814,7 @@ struct
           }
           else if(rbuf[0] == 'B')
             {
-              strlcpy(annot_descr, "Bundle branche block beat", 128);
+              strlcpy(annot_descr, "Bundle branch block beat", 128);
             }
             else if(rbuf[0] == 'P')
               {

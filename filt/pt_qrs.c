@@ -79,7 +79,7 @@
  */
 #define REFRACT_PERIOD    (40)
 
-/* When a QRS detection occurs folowing the end of the refractory period but
+/* When a QRS detection occurs following the end of the refractory period but
  * within 360 ms of the previous complex, we must determine if it is a valid
  * QRS complex or a T-wave.
  */
@@ -358,7 +358,7 @@ int run_pt_qrs(double new_val, ptqrsset_t *st)
 /* When an RR interval is less than 360 ms (it must be greater than the 200 ms latency),
  * a judgement is made to determine whether the current QRS complex has been correctly
  * identified or whether it is really a T wave. If the maximal slope that occurs during
- * this waveform is less than half that of the QRS waveform that proceded it, it is
+ * this waveform is less than half that of the QRS waveform that preceded it, it is
  * identified to be a T wave; otherwise it is called a QRS complex.
  */
     if((st->smpls_last_pk > T_WAVE_PERIOD) || (slope >= (st->slope_last / 2.0)))

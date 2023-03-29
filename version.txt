@@ -14,7 +14,7 @@
 
  - Fixed some compiler warnings.
 
- - Waveform window: annotation duration's colored overlay: added the possibilty to
+ - Waveform window: annotation duration's colored overlay: added the possibility to
    assign max. 8 annotation descriptions to specific colors
 
  - Fixed a regression bug that caused to set a wrong fileposition when multiple EDF+ files were opened
@@ -40,7 +40,7 @@
  version 1.98      December 17, 2022
  --------------
 
- - Amplitude -> Fit to pane: fixed calculation in case the verticall scrollbar is enabled
+ - Amplitude -> Fit to pane: fixed calculation in case the vertical scrollbar is enabled
 
  - Hypnogram: fixed a compiler warning
 
@@ -126,7 +126,7 @@
 
  - Added the option to save and load a session.
 
- - Z-EEG: fixed a bug that potentialy could cause a segfault (crash).
+ - Z-EEG: fixed a bug that potentially could cause a segfault (crash).
 
  - Filter dialog: when selecting a bandpass- or bandstopfilter, when editing a value for a frequency,
    do not change the value for the other frequency. (The old behaviour was done so in order to always keep
@@ -280,7 +280,7 @@
 
  - Annotations list: don't change file position when accessing the contextmenu by right-clicking on an annotation.
 
- - QRS detector: added the possibility to concatenate the signal's name to the annotation description. This behavour
+ - QRS detector: added the possibility to concatenate the signal's name to the annotation description. This behaviour
    can be enabled/disabled in the options/settings.
 
  - Heart Rate Variability plot: added a configuration dialog where you can adjust the vertical scale (BPM)
@@ -705,7 +705,7 @@
 
  - Fixed a bug in the EDF header editor.
 
- - Fixed a bug that resetted some settings of the program to the standard settings.
+ - Fixed a bug that reset some settings of the program to the standard settings.
 
 
 
@@ -762,7 +762,7 @@
  - Added a tool that converts an audiorecording containing an FM modulated ECG waveform to EDF.
 
  - Added an anti-aliasing filter to the samplerate divider/decimator
-   in the file reducer tool. The order of this filter can be choosen.
+   in the file reducer tool. The order of this filter can be chosen.
 
  - Make it possible to remove just one filter.
    (Before, you could only remove all filters.)
@@ -1112,7 +1112,7 @@
 
  - Now it is possible to start/open multiple averagingwindows applied on the same signal.
 
- - Added the possibility to invert te waveform of the averagingwindow.
+ - Added the possibility to invert the waveform of the averagingwindow.
 
  - Solved a bug that caused an errormessage when trying to open a large file (>2.1GB) on a Mac.
 
@@ -1156,7 +1156,7 @@
  - Added a WAV to EDF converter.
 
  - Modified the Nihon Kohden to EDF converter so that it will use the electrodenames defined
-   by the user in the aquisition software.
+   by the user in the acquisition software.
 
  - Fixed a bug that caused writing a wrong value in the datarecorddurationfield of the header
    when saving annotations and when the number in the datarecorddurationfield of the sourcefile
@@ -1274,7 +1274,7 @@ version 1.28      October 27, 2010
 
  - Solved a bug that caused writing invalid files and/or caused to reject
    opening a file because of an incompatibility while in reality the file was valid.
-   This was caused by a localizationproblem which occured only on systems where
+   This was caused by a localizationproblem which occurred only on systems where
    countrysettings are used that uses a comma as a decimal separator.
 
  - Changed the name of the "Display" menu to "Timescale".
@@ -1325,7 +1325,7 @@ version 1.28      October 27, 2010
  ------------
 
  - Added a docked powerspectrum which updates automatically when you navigate
-   throug a file (PgUp,PgDn, etc,).
+   through a file (PgUp,PgDn, etc,).
 
  - Added the possibility to use different backgroundcolors for different frequencyregions
    in the docked powerspectrum (colorbars).
