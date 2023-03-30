@@ -1232,16 +1232,18 @@
   You can also edit labels (signalnames), physical dimension, pre-filter and transducer names.<br>
   If the file you want to edit has been opened in EDFbrowser already, close it first before starting<br>
   this tool.<br>
-  This tool can also be used to repair a file that cannot be opened with EDFbrowser because of<br>
-  invalid characters in the header (the EDF format allows 7-bit ascii characters only) or other errors.<br>
+  This tool can also be used to repair a file that cannot be opened with EDFbrowser because of an incompatibility.<br>
 <br>
-  Other errors that can be repaired with this tool:<br>
-  - a wrong timestamp format in the header (a colon instead of a dot between the numbers)<br>
+  Errors that can be repaired with this tool:<br>
+  - invalid characters in the header (the EDF format allows (7-bit) ASCII characters only)<br>
+  - a wrong or missing timestamp (format) in the header (e.g. a colon instead of a dot between the numbers)<br>
+  - a wrong or missing datestamp (format) in the header (e.g. a dash instead of a dot between the numbers)<br>
   - a wrong number of datarecords written in the header<br>
-  - a wrong filesize (file is not ending on the boundary of a datarecord)<br>
+  - a wrong filesize (file is not ending at the boundary of a datarecord)<br>
   - a broken number i.e. a number with decimal(s) in the digital maximum/minimum field<br>
   - the value for digital maximum is lower than or equal to digital minimum<br>
   - the value for physical maximum equals physical minimum<br>
+  - illegal or extraneous data in the reserved field<br>
 <br>
   Do as follows: In EDFbrowser go to Tools -&gt; Header editor. Select the file. Now click on the<br>
   "save" button (you don't need to edit the content manually). Close the header editor.<br>
