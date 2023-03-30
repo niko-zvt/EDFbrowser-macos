@@ -272,8 +272,8 @@ Note: when type = 2 (notch), element "model" must be 0 (Butterworth).
 
 Note:
 
-Not all filter parameters are applicabel to all types of filters. Despite, the parameters must be present.
-If a parameter is not applicabel e.g. frequency2 when using a highpassfilter, fill in some value.
+Not all filter parameters are applicable to all types of filters. Despite, the parameters must be present.
+If a parameter is not applicable e.g. frequency2 when using a highpassfilter, fill in some value.
 The value will be ignored but must be present in the file.
 
 
@@ -345,7 +345,7 @@ All of them are derivatives of two signals: F4 - FP2, C4 - F4 and X1 - X2.
 
 The first signalcomposition has two filters: a 1th order highpass Butterworth filter at 0.1 Hz
 and a 1th order lowpass Butterworth filter at 35.0 Hz.
-("frequency2" and "ripple" are not applicabel to this type of filter)
+("frequency2" and "ripple" are not applicable to this type of filter)
 
 The second signalcomposition has one filter: a notch filter at 50.0 Hz with a Q-factor of 20.
 

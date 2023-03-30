@@ -34,7 +34,7 @@
 *
 * The carrier centerfrequency of the FM signal is 1900Hz.
 * Frequency deviation is 100Hz per milli-Volt.
-* This technic is used to upload an ECG recording via POTS (Plain Old Telephone Service).
+* This technique is used to upload an ECG recording via POTS (Plain Old Telephone Service).
 *
 ***************************************************************************
 */

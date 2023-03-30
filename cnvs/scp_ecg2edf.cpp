@@ -635,14 +635,14 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
         {
           if((qrs_data.qrs_prot_start[i] - 1) % scp_ecg.sf_ratio)
           {
-            printf("Warning, number of samples in the non-protected area is not a multple of SF ratio. (5-10)\n");
+            printf("Warning, number of samples in the non-protected area is not a multiple of SF ratio. (5-10)\n");
           }
         }
         else
         {
           if(((qrs_data.qrs_prot_start[i] - 1) - qrs_data.qrs_prot_end[i-1]) % scp_ecg.sf_ratio)
           {
-            printf("Warning, number of samples in the non-protected area is not a multple of SF ratio. (5-12)\n");
+            printf("Warning, number of samples in the non-protected area is not a multiple of SF ratio. (5-12)\n");
           }
         }
 #endif
