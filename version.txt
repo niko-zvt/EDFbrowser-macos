@@ -1,4 +1,10 @@
 
+ version 2.02      to be defined
+ --------------
+
+ - EDF compatibility check: EDF header: reserved field: check all 44 bytes.
+
+
  version 2.01      March 18, 2023
  --------------
 

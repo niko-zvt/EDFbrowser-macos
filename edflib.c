@@ -1500,26 +1500,34 @@ static struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_erro
 
   if(edfhdr->edf)
   {
-    if(!strncmp(scratchpad, "EDF+C", 5))
+    if(!strncmp(scratchpad, "EDF+C                                       ", 44))
     {
       edfhdr->edfplus = 1;
+      edfhdr->discontinuous = 0;
     }
-
-    if(!strncmp(scratchpad, "EDF+D", 5))
-    {
-      edfhdr->edfplus = 1;
-      edfhdr->discontinuous = 1;
-    }
+    else if(!strncmp(scratchpad, "EDF+D                                       ", 44))
+      {
+        edfhdr->edfplus = 1;
+        edfhdr->discontinuous = 1;
+      }
+      else if(strncmp(scratchpad, "                                            ", 44))
+      {
+        *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS;
+        free(edf_hdr);
+        free(edfhdr);
+        return NULL;
+      }
   }
 
   if(edfhdr->bdf)
   {
-    if(!strncmp(scratchpad, "BDF+C", 5))
+    if(!strncmp(scratchpad, "BDF+C                                       ", 44))
     {
       edfhdr->bdfplus = 1;
+      edfhdr->discontinuous = 0;
     }
 
-    if(!strncmp(scratchpad, "BDF+D", 5))
+    if(!strncmp(scratchpad, "BDF+D                                       ", 44))
     {
       edfhdr->bdfplus = 1;
       edfhdr->discontinuous = 1;

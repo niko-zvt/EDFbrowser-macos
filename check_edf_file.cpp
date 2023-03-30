@@ -483,9 +483,13 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
       }
       else if(strncmp(scratchpad, "                                            ", 44))
       {
-        snprintf(txt_string, txt_len, "Error, reserved field contains unrecognized data.\n"
+        snprintf(txt_string, txt_len, "Error, reserved field contains unrecognized data:\n"
+                                      " \n"
+                                      "\"%s\"\n"
+                                      " \n"
                                       "You can fix this by using the EDF header editor.\n"
-                                      "Have a look at the manual for details.");
+                                      "Have a look at the manual for details.",
+                                      scratchpad);
         free(edf_hdr);
         free(edfhdr);
         return NULL;
