@@ -1369,7 +1369,11 @@ void UI_headerEditorWindow::save_hdr()
   }
 
   fseeko(file, 244LL, SEEK_SET);
-  if(fread(scratchpad, 8, 1, file) != 1) {};  //FIXME
+  if(fread(scratchpad, 8, 1, file) != 1)
+  {
+    QMessageBox::critical(myobjectDialog, "Error", "Cannot read from file.", QMessageBox::Close);
+    return;
+  };
   scratchpad[8] = 0;
   if(!strcmp(scratchpad, "0       "))
   {
