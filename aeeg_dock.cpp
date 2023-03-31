@@ -497,54 +497,54 @@ void aeeg_curve_widget::make_logarithmic(void)
   int i;
 
   double dtmp,
-         log_treshold_1,
-         log_treshold_2;
+         log_threshold_1,
+         log_threshold_2;
 
   dtmp = aeeg_max / log10(aeeg_max);
 
-  log_treshold_1 = aeeg_max / 10;
+  log_threshold_1 = aeeg_max / 10;
 
-  log_treshold_2 = aeeg_max / 20;
+  log_threshold_2 = aeeg_max / 20;
 
   for(i=0; i<param.segments_in_recording; i++)
   {
-    if(param.max_seg_val[i] > log_treshold_1)  // linear/log threshold hack
+    if(param.max_seg_val[i] > log_threshold_1)  // linear/log threshold hack
     {
       param.max_seg_val[i] = log10(param.max_seg_val[i]) * dtmp;
     }
     else
     {
-      param.max_seg_val[i] *= log_treshold_2;
+      param.max_seg_val[i] *= log_threshold_2;
     }
 
-    if(param.min_seg_val[i] > log_treshold_1)  // linear/log threshold hack
+    if(param.min_seg_val[i] > log_threshold_1)  // linear/log threshold hack
     {
       param.min_seg_val[i] = log10(param.min_seg_val[i]) * dtmp;
     }
     else
     {
-      param.min_seg_val[i] *= log_treshold_2;
+      param.min_seg_val[i] *= log_threshold_2;
     }
   }
 
   for(i=0; i<param.medians_in_recording; i++)
   {
-    if(param.max_median_val[i] > log_treshold_1)  // linear/log threshold hack
+    if(param.max_median_val[i] > log_threshold_1)  // linear/log threshold hack
     {
       param.max_median_val[i] = log10(param.max_median_val[i]) * dtmp;
     }
     else
     {
-      param.max_median_val[i] *= log_treshold_2;
+      param.max_median_val[i] *= log_threshold_2;
     }
 
-    if(param.min_median_val[i] > log_treshold_1)  // linear/log threshold hack
+    if(param.min_median_val[i] > log_threshold_1)  // linear/log threshold hack
     {
       param.min_median_val[i] = log10(param.min_median_val[i]) * dtmp;
     }
     else
     {
-      param.min_median_val[i] *= log_treshold_2;
+      param.min_median_val[i] *= log_threshold_2;
     }
   }
 }
