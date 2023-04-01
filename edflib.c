@@ -33,8 +33,6 @@
 
 /* compile with options "-D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE" */
 
-#define EDFLIB_BUILD
-
 #include "edflib.h"
 
 #define EDFLIB_VERSION  (124)
