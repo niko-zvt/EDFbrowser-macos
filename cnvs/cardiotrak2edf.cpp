@@ -132,7 +132,7 @@ void UI_CardiotrakEDFwindow::select_file_button_pressed()
     {
       case EDFLIB_MALLOC_ERROR                : logger_append_txt("error: EDFlib: malloc error\n\n");
                                                 break;
-      case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY   : logger_append_txt("error: EDFlib: can not open file, no such file or directory\n\n");
+      case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY   : logger_append_txt("error: EDFlib: cannot open file, no such file or directory\n\n");
                                                 break;
       case EDFLIB_FILE_CONTAINS_FORMAT_ERRORS : logger_append_txt("error: EDFlib: the file is not EDF(+) or BDF(+) compliant\n"
                                                                 "(it contains format errors)\n\n");
@@ -265,7 +265,7 @@ void UI_CardiotrakEDFwindow::select_file_button_pressed()
   hdl_out = edfopen_file_writeonly(path_out, EDFLIB_FILETYPE_EDFPLUS, chns_out);
   if(hdl_out < 0)
   {
-    logger_append_txt("error: can not create output EDF file\n\n");
+    logger_append_txt("error: cannot create output EDF file\n\n");
     goto OUT_ERROR_1;
   }
 

@@ -156,7 +156,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
   xml_hdl = xml_get_handle(mtg_path);
   if(xml_hdl==NULL)
   {
-    QMessageBox::critical(ViewMontageDialog, "Error", "Can not open file for reading.");
+    QMessageBox::critical(ViewMontageDialog, "Error", "Cannot open file for reading.");
     return;
   }
 

@@ -517,7 +517,7 @@ void UI_ReduceSignalsWindow::SelectFileButton()
   inputfile = edfhdr->file_hdl;
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Can not open file %s for reading.", inputpath);
+    snprintf(txt_string, 2048, "Cannot open file %s for reading.", inputpath);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(txt_string));
     messagewindow.exec();
 
@@ -917,7 +917,7 @@ void UI_ReduceSignalsWindow::StartConversion()
   outputfile = fopeno(outputpath, "wb");
   if(outputfile==NULL)
   {
-    QMessageBox::critical(myobjectDialog, "Error", "Can not open outputfile for writing.");
+    QMessageBox::critical(myobjectDialog, "Error", "Cannot open outputfile for writing.");
     goto END_3;
   }
 

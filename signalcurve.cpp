@@ -637,7 +637,7 @@ void SignalCurve::print_to_ascii()
   outputfile = fopen(path, "wb");
   if(outputfile == NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open outputfile for writing.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open outputfile for writing.");
     messagewindow.exec();
     return;
   }

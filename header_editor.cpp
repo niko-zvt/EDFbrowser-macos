@@ -408,7 +408,7 @@ void UI_headerEditorWindow::open_file()
   file = fopeno(path, "r+b");
   if(file==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file.");
     messagewindow.exec();
     return;
   }
@@ -417,7 +417,7 @@ void UI_headerEditorWindow::open_file()
 
   if(fread(hdr, 256, 1, file) != 1)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not read from file.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot read from file.");
     messagewindow.exec();
     fclose(file);
     file = NULL;
@@ -459,7 +459,7 @@ void UI_headerEditorWindow::open_file()
   if(filesize < (((edfsignals + 1LL) * 256LL) + edfsignals))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Filesize is too small.\n"
-                                                              "Can not fix this file.");
+                                                              "Cannot fix this file.");
     messagewindow.exec();
     fclose(file);
     file = NULL;
@@ -510,7 +510,7 @@ void UI_headerEditorWindow::read_header()
 
   if(fread(hdr, 256 * (edfsignals + 1), 1, file) != 1)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not read from file.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot read from file.");
     messagewindow.exec();
     fclose(file);
     file = NULL;
@@ -987,7 +987,7 @@ void UI_headerEditorWindow::read_header()
     if(atoi(scratchpad) < 1)
     {
       snprintf(str, 256, "Samples per record of signal %i is less than 1.\n"
-                   "Can not fix this file.", i + 1);
+                   "Cannot fix this file.", i + 1);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
       messagewindow.exec();
       fclose(file);
@@ -1031,7 +1031,7 @@ void UI_headerEditorWindow::read_header()
   if(recordsize < 1)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Recordsize is less than 1.\n"
-                                                              "Can not fix this file.");
+                                                              "Cannot fix this file.");
     messagewindow.exec();
     fclose(file);
     file = NULL;
@@ -1718,14 +1718,14 @@ void UI_headerEditorWindow::save_hdr()
 
         if(QFile::resize(QString::fromLocal8Bit(path), l_tmp) == false)
         {
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not resize file.");
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot resize file.");
           messagewindow.exec();
         }
 
         file = fopeno(path, "r+b");
         if(file==NULL)
         {
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file.");
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file.");
           messagewindow.exec();
           return;
         }

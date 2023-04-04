@@ -127,7 +127,7 @@ void UI_BIOX2EDFwindow::SelectFileButton()
   inputfile = fopeno(data_filename, "rb");
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Can not open file %s for reading.\n", data_filename);
+    snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", data_filename);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
     pushButton1->setEnabled(true);
     return;
@@ -152,7 +152,7 @@ void UI_BIOX2EDFwindow::SelectFileButton()
 
   if(fread(str, 17, 1, inputfile) != 1)
   {
-    textEdit1->append("Can not read ID string from file\n");
+    textEdit1->append("Cannot read ID string from file\n");
     fclose(inputfile);
     pushButton1->setEnabled(true);
     return;
@@ -170,7 +170,7 @@ void UI_BIOX2EDFwindow::SelectFileButton()
 
   if(fread(str, 4, 1, inputfile) != 1)
   {
-    textEdit1->append("Can not read parameter (samplefrequency) from file\n");
+    textEdit1->append("Cannot read parameter (samplefrequency) from file\n");
     fclose(inputfile);
     pushButton1->setEnabled(true);
     return;

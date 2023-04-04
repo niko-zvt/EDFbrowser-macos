@@ -111,7 +111,7 @@ int UI_Mainwindow::read_session_file(const char *path_session)
     }
     else
     {
-      snprintf(scratchpad, 2048, "Can not open session file:\n%s", path_session);
+      snprintf(scratchpad, 2048, "Cannot open session file:\n%s", path_session);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(scratchpad));
       messagewindow.exec();
       return -1;

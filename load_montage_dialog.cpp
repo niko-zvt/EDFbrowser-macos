@@ -198,7 +198,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
     }
     else
     {
-      snprintf(scratchpad, 2048, "Can not open montage file:\n%s", mtg_path);
+      snprintf(scratchpad, 2048, "Cannot open montage file:\n%s", mtg_path);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(scratchpad));
       messagewindow.exec();
       mainwindow->remove_recent_file_mtg_path(mtg_path);

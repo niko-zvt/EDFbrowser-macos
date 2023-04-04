@@ -287,7 +287,7 @@ void UI_ZScoreWindow::addTraceButtonClicked()
 
   if(signalcomp->zratio_filter == NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not create a Z-ratio-filter, malloc() error?");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot create a Z-ratio-filter, malloc() error?");
     messagewindow.exec();
     free(signalcomp);
     return;

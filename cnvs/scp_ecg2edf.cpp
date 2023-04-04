@@ -136,7 +136,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   inputfile = fopeno(input_filename, "rb");
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Can not open file %s for reading.\n", input_filename);
+    snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", input_filename);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
     goto EXIT_1;
   }
@@ -1000,7 +1000,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
   if(hdl<0)
   {
-    snprintf(txt_string, 2048, "Can not open file %s for writing.\n", edf_filename);
+    snprintf(txt_string, 2048, "Cannot open file %s for writing.\n", edf_filename);
     textEdit1->append(txt_string);
     goto EXIT_4;
   }

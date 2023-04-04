@@ -162,14 +162,14 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
 
   if(mainwindow->files_open < 1)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not import annotations without opening an EDF/BDF-file first.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot import annotations without opening an EDF/BDF-file first.");
     messagewindow.exec();
     return;
   }
 
   if(mainwindow->files_open > 1)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not import annotations when multiple files are opened.\n"
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot import annotations when multiple files are opened.\n"
                                                               "Make sure only one EDF/BDF is opened.");
     messagewindow.exec();
     return;
@@ -829,7 +829,7 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for reading.");
     messagewindow.exec();
     return 1;
   }
@@ -1026,7 +1026,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
   xml_hdl = xml_get_handle(path);
   if(xml_hdl==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for reading.");
     messagewindow.exec();
     return 1;
   }
@@ -1041,7 +1041,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
 
   if(strcmp(xml_hdl->elementname[xml_hdl->level], "annotationlist"))
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find root element \"annotationlist\".");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find root element \"annotationlist\".");
     messagewindow.exec();
     xml_close(xml_hdl);
     return 1;
@@ -1063,7 +1063,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       if(i == 0)
       {
         QApplication::restoreOverrideCursor();
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find child element \"annotation\".");
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find child element \"annotation\".");
         messagewindow.exec();
         xml_close(xml_hdl);
         return 1;
@@ -1081,7 +1081,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       QApplication::restoreOverrideCursor();
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not get content of element \"annotation\".");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot get content of element \"annotation\".");
       messagewindow.exec();
       xml_close(xml_hdl);
       return 1;
@@ -1144,7 +1144,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
       {
         QApplication::restoreOverrideCursor();
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not get content of element \"duration\".");
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot get content of element \"duration\".");
         messagewindow.exec();
         xml_close(xml_hdl);
         return 1;
@@ -1173,7 +1173,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
     if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
     {
       QApplication::restoreOverrideCursor();
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not get content of element \"description\".");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot get content of element \"description\".");
       messagewindow.exec();
       xml_close(xml_hdl);
       return 1;
@@ -1502,7 +1502,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for reading.");
     messagewindow.exec();
     return 1;
   }
@@ -1727,7 +1727,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for reading.");
     messagewindow.exec();
     return 1;
   }

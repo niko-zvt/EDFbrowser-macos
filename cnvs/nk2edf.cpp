@@ -141,7 +141,7 @@ void UI_NK2EDFwindow::SelectFileButton()
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "can not open file %s for reading.\n", path);
+    snprintf(txt_string, 2048, "cannot open file %s for reading.\n", path);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
     pushButton1->setEnabled(true);
     return;
@@ -208,7 +208,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       logfile = fopeno(logfilepath, "rb");
       if(logfile==NULL)
       {
-        snprintf(txt_string, 2048, "Can not open file %s for reading,\n"
+        snprintf(txt_string, 2048, "Cannot open file %s for reading,\n"
                             "if there is no .log file you can try to create an EDF file instead of EDF+.\n",
                             logfilepath);
         textEdit1->append(QString::fromLocal8Bit(txt_string));
@@ -366,7 +366,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       pntfile = fopeno(pntfilepath, "rb");
       if(pntfile==NULL)
       {
-        snprintf(txt_string, 2048, "Can not open file %s for reading,\n"
+        snprintf(txt_string, 2048, "Cannot open file %s for reading,\n"
                             "if there is no .pnt file you can try to create an EDF file instead of EDF+.\n",
                             pntfilepath);
         textEdit1->append(QString::fromLocal8Bit(txt_string));
@@ -469,7 +469,7 @@ void UI_NK2EDFwindow::SelectFileButton()
 
   if(read_21e_file(path))
   {
-    textEdit1->append("Can not open *.21e file, converter will use default electrode names.");
+    textEdit1->append("Cannot open *.21e file, converter will use default electrode names.");
   }
 
 /***************** start conversion **************************************/
@@ -555,7 +555,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       outputfile = fopeno(outputpath, "wb");
       if(outputfile==NULL)
       {
-        snprintf(txt_string, 2048, "can not open file %s for writing.\n", outputpath);
+        snprintf(txt_string, 2048, "cannot open file %s for writing.\n", outputpath);
         textEdit1->append(QString::fromLocal8Bit(txt_string));
         pushButton1->setEnabled(true);
         fclose(inputfile);

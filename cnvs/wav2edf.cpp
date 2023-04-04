@@ -178,7 +178,7 @@ unsigned int fmt_chunk_offset,
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for reading.");
     messagewindow.exec();
     enable_widgets(true);
     return;
@@ -214,7 +214,7 @@ unsigned int fmt_chunk_offset,
 
     if(fread(scratchpad, 256, 1, inputfile)!=1)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find fmt chunk.");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find fmt chunk.");
       messagewindow.exec();
       fclose(inputfile);
       enable_widgets(true);
@@ -229,7 +229,7 @@ unsigned int fmt_chunk_offset,
     tmp = *((unsigned int *)(scratchpad + 4));
     if(tmp < 2)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find fmt chunk.");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find fmt chunk.");
       messagewindow.exec();
       fclose(inputfile);
       enable_widgets(true);
@@ -246,7 +246,7 @@ unsigned int fmt_chunk_offset,
 
   if(*((signed short *)(scratchpad + 8)) != 1)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "File contains compressed data.\nCan not convert compressed data.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "File contains compressed data.\nCannot convert compressed data.");
     messagewindow.exec();
     fclose(inputfile);
     enable_widgets(true);
@@ -344,7 +344,7 @@ unsigned int fmt_chunk_offset,
 
     if(fread(scratchpad, 256, 1, inputfile)!=1)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find data chunk.");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find data chunk.");
       messagewindow.exec();
       fclose(inputfile);
       enable_widgets(true);
@@ -359,7 +359,7 @@ unsigned int fmt_chunk_offset,
     tmp = *((unsigned int *)(scratchpad + 4));
     if(tmp < 2)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find data chunk.");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find data chunk.");
       messagewindow.exec();
       fclose(inputfile);
       enable_widgets(true);
@@ -484,7 +484,7 @@ unsigned int fmt_chunk_offset,
 
   if(edf_hdl < 0)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open output file for writing.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open output file for writing.");
     messagewindow.exec();
     fclose(inputfile);
     free(readbuf);

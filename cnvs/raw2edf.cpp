@@ -291,7 +291,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for reading.");
     messagewindow.exec();
     return;
   }
@@ -303,7 +303,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
   if(hdl<0)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for writing.\nedfopen_file_writeonly()");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for writing.\nedfopen_file_writeonly()");
     messagewindow.exec();
     fclose(inputfile);
     return;
@@ -858,7 +858,7 @@ void UI_RAW2EDFapp::savebuttonpressed()
   outputfile = fopeno(path, "wb");
   if(outputfile==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for writing.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for writing.");
     messagewindow.exec();
     return;
   }
@@ -913,7 +913,7 @@ void UI_RAW2EDFapp::loadbuttonpressed()
   xml_hdl = xml_get_handle(path);
   if(xml_hdl==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for reading.");
     messagewindow.exec();
     return;
   }

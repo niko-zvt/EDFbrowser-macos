@@ -148,7 +148,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
   header_inputfile = fopeno(header_filename, "rb");
   if(header_inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Can not open file %s for reading.\n", header_filename);
+    snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", header_filename);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
     pushButton1->setEnabled(true);
     return;
@@ -333,7 +333,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
     data_inputfile = fopeno(data_filename, "rb");
     if(data_inputfile==NULL)
     {
-      snprintf(txt_string, 2048, "Can not open file %s for reading.\n", data_filename);
+      snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", data_filename);
       textEdit1->append(QString::fromLocal8Bit(txt_string));
       fclose(header_inputfile);
       free(buf);
@@ -373,7 +373,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
     if(hdl<0)
     {
-      snprintf(txt_string, 2048, "Can not open file %s for writing.\n", edf_filename);
+      snprintf(txt_string, 2048, "Cannot open file %s for writing.\n", edf_filename);
       textEdit1->append(QString::fromLocal8Bit(txt_string));
       fclose(header_inputfile);
       fclose(data_inputfile);
