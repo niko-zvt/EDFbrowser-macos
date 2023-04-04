@@ -324,7 +324,7 @@ void UI_BDF2EDFwindow::SelectFileButton()
   inputfile = fopeno(inputpath, "rb");
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Can not open file %s for reading.", inputpath);
+    snprintf(txt_string, 2048, "Cannot open file %s for reading.", inputpath);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(txt_string));
     messagewindow.exec();
     return;
@@ -526,7 +526,7 @@ void UI_BDF2EDFwindow::StartConversion()
   outputfile = fopeno(outputpath, "wb");
   if(outputfile==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open outputfile for writing.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open outputfile for writing.");
     messagewindow.exec();
     goto END_2;
   }

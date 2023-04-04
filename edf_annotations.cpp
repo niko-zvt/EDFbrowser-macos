@@ -520,7 +520,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
       if(error)
       {
         progress.reset();
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not read annotations because there is an EDF or BDF incompatibility in this file.\n"
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot read annotations because there is an EDF or BDF incompatibility in this file.\n"
                                                                   "For more information, run the EDF/BDF compatibility checker in the Tools menu.");
         messagewindow.exec();
         free(cnv_buf);

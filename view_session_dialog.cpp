@@ -201,7 +201,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
   xml_hdl = xml_get_handle(session_path);
   if(xml_hdl==NULL)
   {
-    QMessageBox::critical(NULL, "Error", "Can not open file for reading.");
+    QMessageBox::critical(NULL, "Error", "Cannot open file for reading.");
     return;
   }
 

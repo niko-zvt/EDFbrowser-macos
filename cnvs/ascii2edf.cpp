@@ -400,7 +400,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for reading.");
     messagewindow.exec();
     ascii2edfDialog->setEnabled(true);
     return;
@@ -737,7 +737,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   outputfile = fopeno(outputfilename, "wb");
   if(outputfile==NULL)
   {
-    snprintf(txt_string, ASCII_MAX_LINE_LEN, "Can not open file %s for writing.", outputfilename);
+    snprintf(txt_string, ASCII_MAX_LINE_LEN, "Cannot open file %s for writing.", outputfilename);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
     messagewindow.exec();
     fclose(inputfile);
@@ -1285,7 +1285,7 @@ void UI_ASCII2EDFapp::savebuttonpressed()
   outputfile = fopeno(path, "wb");
   if(outputfile==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for writing.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for writing.");
     messagewindow.exec();
     ascii2edfDialog->setEnabled(true);
     return;
@@ -1380,7 +1380,7 @@ void UI_ASCII2EDFapp::loadbuttonpressed()
   xml_hdl = xml_get_handle(path);
   if(xml_hdl==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for reading.");
     messagewindow.exec();
     return;
   }

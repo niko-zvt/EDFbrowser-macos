@@ -2851,7 +2851,7 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
   colorfile = fopen(path, "wb");
   if(colorfile==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for writing.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for writing.");
     messagewindow.exec();
 
     return;
@@ -3043,7 +3043,7 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
   xml_hdl = xml_get_handle(path);
   if(xml_hdl==NULL)
   {
-    snprintf(scratchpad, 2048, "Can not open colorschema:\n%s", path);
+    snprintf(scratchpad, 2048, "Cannot open colorschema:\n%s", path);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(scratchpad));
     messagewindow.exec();
     return;

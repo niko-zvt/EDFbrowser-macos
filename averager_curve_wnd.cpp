@@ -280,7 +280,7 @@ void UI_AverageCurveWindow::export_edf(void)
 
   if(edf_hdl < 0)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open output file for writing.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open output file for writing.");
     messagewindow.exec();
     return;
   }

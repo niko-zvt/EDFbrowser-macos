@@ -280,7 +280,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
   outputfile = fopeno(path, "wb");
   if(outputfile==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not create a file for writing.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot create a file for writing.");
     messagewindow.exec();
     return;
   }

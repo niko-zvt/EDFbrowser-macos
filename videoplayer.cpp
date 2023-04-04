@@ -67,7 +67,7 @@ void UI_Mainwindow::start_stop_video()
 
   if(live_stream_active)
   {
-    msgbox.setText("Can not open a video during a live stream.");
+    msgbox.setText("Cannot open a video during a live stream.");
     msgbox.exec();
     video_pause_requested = 0;
     return;

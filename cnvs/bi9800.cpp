@@ -120,7 +120,7 @@ void UI_BI98002EDFwindow::SelectFileButton()
   dcmfile = fopeno(path, "rb");
   if(dcmfile==NULL)
   {
-    snprintf(str, 2048, "Can not open file %s for reading.", path);
+    snprintf(str, 2048, "Cannot open file %s for reading.", path);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str));
     messagewindow.exec();
     return;
@@ -136,7 +136,7 @@ void UI_BI98002EDFwindow::SelectFileButton()
     evtfile = fopeno(path, "rb");
     if(evtfile==NULL)
     {
-      snprintf(str, 2048, "Can not open file %s for reading.", path);
+      snprintf(str, 2048, "Cannot open file %s for reading.", path);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
       messagewindow.exec();
       fclose(dcmfile);
@@ -337,7 +337,7 @@ void UI_BI98002EDFwindow::SelectFileButton()
   hdl = edfopen_file_writeonly(path, EDFLIB_FILETYPE_EDFPLUS, chns);
   if(hdl<0)
   {
-    snprintf(str, 2048, "Can not open file %s for writing.", path);
+    snprintf(str, 2048, "Cannot open file %s for writing.", path);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
     messagewindow.exec();
     fclose(dcmfile);

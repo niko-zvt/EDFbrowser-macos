@@ -142,7 +142,7 @@ void UI_SaveMontagewindow::SaveButtonClicked()
   mtgfile = fopeno(mtg_path, "wb");
   if(mtgfile==NULL)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for writing.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot open file for writing.");
     messagewindow.exec();
 
     return;

@@ -249,7 +249,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
   header_inputfile = fopeno(header_filename, "rb");
   if(header_inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Can not open file %s for reading.\n", header_filename);
+    snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", header_filename);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
     pushButton1->setEnabled(true);
     return;
@@ -265,7 +265,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
   charpntr = fgets(scratchpad, 4095, header_inputfile);
   if(charpntr == NULL)
   {
-    textEdit1->append("Can not read header file. (error 1)\n");
+    textEdit1->append("Cannot read header file. (error 1)\n");
     fclose(header_inputfile);
     pushButton1->setEnabled(true);
     return;
@@ -274,7 +274,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
   len = strlen(charpntr);
   if(len < 6)
   {
-    textEdit1->append("Can not read header file. (error 2)\n");
+    textEdit1->append("Cannot read header file. (error 2)\n");
     fclose(header_inputfile);
     pushButton1->setEnabled(true);
     return;
@@ -283,7 +283,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
   charpntr = strtok(charpntr, " ");
   if(charpntr == NULL)
   {
-    textEdit1->append("Can not read header file. (error 3)\n");
+    textEdit1->append("Cannot read header file. (error 3)\n");
     fclose(header_inputfile);
     pushButton1->setEnabled(true);
     return;
@@ -291,7 +291,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
   if(strcmp(charpntr, filename_x))
   {
-    textEdit1->append("Can not read header file. (error 4)\n");
+    textEdit1->append("Cannot read header file. (error 4)\n");
     fclose(header_inputfile);
     pushButton1->setEnabled(true);
     return;
@@ -300,7 +300,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
   charpntr = strtok(NULL, " ");
   if(charpntr == NULL)
   {
-    textEdit1->append("Can not read header file. (error 5)\n");
+    textEdit1->append("Cannot read header file. (error 5)\n");
     fclose(header_inputfile);
     pushButton1->setEnabled(true);
     return;
@@ -327,7 +327,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
   charpntr = strtok(NULL, " ");
   if(charpntr == NULL)
   {
-    textEdit1->append("Can not read header file. (error 8)\n");
+    textEdit1->append("Cannot read header file. (error 8)\n");
     fclose(header_inputfile);
     pushButton1->setEnabled(true);
     return;
@@ -419,7 +419,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
     charpntr = fgets(scratchpad, 4095, header_inputfile);
     if(charpntr == NULL)
     {
-      textEdit1->append("Can not read header file. (error 11)\n");
+      textEdit1->append("Cannot read header file. (error 11)\n");
       fclose(header_inputfile);
       pushButton1->setEnabled(true);
       return;
@@ -428,7 +428,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
     len = strlen(charpntr);
     if(len < 6)
     {
-      textEdit1->append("Can not read header file. (error 12)\n");
+      textEdit1->append("Cannot read header file. (error 12)\n");
       fclose(header_inputfile);
       pushButton1->setEnabled(true);
       return;
@@ -437,7 +437,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
     charpntr = strtok(charpntr, " ");
     if(charpntr == NULL)
     {
-      textEdit1->append("Can not read header file. (error 13)\n");
+      textEdit1->append("Cannot read header file. (error 13)\n");
       fclose(header_inputfile);
       pushButton1->setEnabled(true);
       return;
@@ -454,7 +454,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
     charpntr = strtok(NULL, " ");
     if(charpntr == NULL)
     {
-      textEdit1->append("Can not read header file. (error 15)\n");
+      textEdit1->append("Cannot read header file. (error 15)\n");
       fclose(header_inputfile);
       pushButton1->setEnabled(true);
       return;
@@ -680,7 +680,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
   data_inputfile = fopeno(data_filename, "rb");
   if(data_inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Can not open file %s for reading.\n", data_filename);
+    snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", data_filename);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
     pushButton1->setEnabled(true);
     return;
@@ -732,7 +732,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
   hdl = edfopen_file_writeonly(edf_filename, EDFLIB_FILETYPE_EDFPLUS, mit_hdr.chns);
   if(hdl<0)
   {
-    snprintf(txt_string, 2048, "Can not open file %s for writing.\n", edf_filename);
+    snprintf(txt_string, 2048, "Cannot open file %s for writing.\n", edf_filename);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
     fclose(data_inputfile);
     pushButton1->setEnabled(true);
@@ -1243,7 +1243,7 @@ OUT1:
 
     if(annot_inputfile==NULL)
     {
-      snprintf(txt_string, 2048, "Can not open file %s for reading.\n"
+      snprintf(txt_string, 2048, "Cannot open file %s for reading.\n"
                                  "Annotations cannot be included.", filename_x);
       textEdit1->append(QString::fromLocal8Bit(txt_string));
     }

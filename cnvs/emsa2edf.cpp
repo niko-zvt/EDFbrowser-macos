@@ -151,7 +151,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Can not open file %s for reading.\n", path);
+    snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", path);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
     pushButton1->setEnabled(true);
     return;
@@ -659,7 +659,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   }
   else
   {
-    textEdit1->append("Can not open LBK file, will continue without events.");
+    textEdit1->append("Cannot open LBK file, will continue without events.");
   }
 
   tallen += 14;

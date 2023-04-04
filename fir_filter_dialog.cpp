@@ -738,7 +738,7 @@ void UI_FIRFilterDialog::filebuttonpressed()
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    snprintf(str, 2048, "Can not open file %s for reading.", path);
+    snprintf(str, 2048, "Cannot open file %s for reading.", path);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str));
     messagewindow.exec();
     return;

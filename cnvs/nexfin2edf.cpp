@@ -222,7 +222,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Can not open file %s for reading.", path);
+    snprintf(txt_string, 2048, "Cannot open file %s for reading.", path);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(txt_string));
     messagewindow.exec();
     enable_widgets(true);
@@ -237,7 +237,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
 
   if(fread(scratchpad, 32, 1, inputfile)!=1)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not read from file.");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot read from file.");
     messagewindow.exec();
     fclose(inputfile);
     enable_widgets(true);
@@ -487,7 +487,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
   outputfile = fopeno(path, "wb");
   if(outputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Can not open file %s for writing.", path);
+    snprintf(txt_string, 2048, "Cannot open file %s for writing.", path);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
     messagewindow.exec();
     enable_widgets(true);
