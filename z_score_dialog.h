@@ -43,9 +43,7 @@
 #include "signalcurve.h"
 #include "annotations_dock.h"
 
-#include "filt/filter.h"
-#include "filt/ravg_filter.h"
-#include "filt/spike_filter.h"
+#include "filt/z_ratio_filter.h"
 
 #include "third_party/kiss_fft/kiss_fftr.h"
 
