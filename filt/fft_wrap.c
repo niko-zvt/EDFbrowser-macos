@@ -28,7 +28,7 @@
 #include "fft_wrap.h"
 
 
-static void window_func(const double *, double *, double *, int, int, int);
+static void window_func(const double *, double *, double *, int, int);
 static void set_gain_unity(double *, int);
 static double bessi0(double);
 
@@ -126,7 +126,7 @@ void fft_wrap_run(fft_wrap_setting_t *st)
   {
     if(st->buf_wndw == NULL)  return;
 
-    window_func(st->buf_in, st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type, 0);
+    window_func(st->buf_in, st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type);
 
     kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
   }
@@ -148,7 +148,7 @@ void fft_wrap_run(fft_wrap_setting_t *st)
     {
       if(st->wndw_type)
       {
-        window_func(st->buf_in + (j * st->dft_sz) - ((st->dft_sz / st->overlap) * k), st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type, j);
+        window_func(st->buf_in + (j * st->dft_sz) - ((st->dft_sz / st->overlap) * k), st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type);
 
         kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
       }
@@ -167,7 +167,7 @@ void fft_wrap_run(fft_wrap_setting_t *st)
 
     if(st->wndw_type)
     {
-      window_func(st->buf_in + (j * st->dft_sz), st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type, j);
+      window_func(st->buf_in + (j * st->dft_sz), st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type);
 
       kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
     }
@@ -188,7 +188,7 @@ void fft_wrap_run(fft_wrap_setting_t *st)
   {
     if(st->wndw_type)
     {
-      window_func(st->buf_in + ((j-1) * st->dft_sz) + st->smpls_left, st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type, j);
+      window_func(st->buf_in + ((j-1) * st->dft_sz) + st->smpls_left, st->buf_wndw, st->buf_wndw_coef, st->dft_sz, st->wndw_type);
 
       kiss_fftr(st->cfg, st->buf_wndw, st->kiss_fftbuf);
     }
@@ -228,14 +228,24 @@ void free_fft_wrap(fft_wrap_setting_t *st)
 }
 
 
-static void window_func(const double *src, double *dest, double *coef, int sz, int type, int block)
+static void window_func(const double *src, double *dest, double *coef, int sz, int type)
 {
   int i, sz2;
 
+  static int old_sz=-1,
+             old_type=-1;
+
+  static double *old_coef=NULL;
+
+
   sz2 = sz / 2;
 
-  if(!block)
+  if((sz != old_sz) || (type != old_type) || (coef != old_coef))
   {
+    old_sz = sz;
+    old_type = type;
+    old_coef = coef;
+
     if(type == FFT_WNDW_TYPE_HAMMING)
     {
       for(i=0; i<sz2; i++)
