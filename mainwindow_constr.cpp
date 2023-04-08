@@ -185,6 +185,7 @@ UI_Mainwindow::UI_Mainwindow()
   annot_created_by_rect_draw_numchan = -1;
   annot_created_by_rect_draw_onset = 0;
   annot_created_by_rect_draw_duration = 0;
+  annot_created_by_rect_draw_crosshair_delta = 0;
 
   for(i=0; i<8; i++)
   {

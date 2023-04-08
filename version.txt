@@ -8,6 +8,9 @@
    (to create a signal linked annotation): added the possibility to use the Shift button instead
    which will create a normal annotation (not signal linked).
 
+ - Annotation editor: when creating an annotation by using a pair of crosshairs and the Control button
+   is pressed, the delta of the amplitude will be printed into the annotation's description.
+
 
  version 2.01      March 18, 2023
  --------------

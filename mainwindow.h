@@ -307,6 +307,7 @@ long long annot_editor_user_button_epoch_len,
       annot_created_by_rect_draw_numchan;
   long long annot_created_by_rect_draw_onset,
             annot_created_by_rect_draw_duration;
+  double annot_created_by_rect_draw_crosshair_delta;
 
   QColor hrvdock_trace_color,
          annot_list_edited_txt_color,

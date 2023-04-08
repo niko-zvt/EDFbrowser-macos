@@ -783,8 +783,6 @@ void UI_AnnotationEditwindow::annot_by_rect_draw_side_menu_create(int n)
 
   if(!mainwindow->annot_created_by_rect_draw_active)  return;
 
-  mainwindow->annot_created_by_rect_draw_active = 0;
-
   annotEditSetOnset(mainwindow->annot_created_by_rect_draw_onset);
 
   annotEditSetDuration(mainwindow->annot_created_by_rect_draw_duration);
@@ -793,10 +791,20 @@ void UI_AnnotationEditwindow::annot_by_rect_draw_side_menu_create(int n)
 
   if(mainwindow->annot_created_by_rect_draw_numchan >= 0)
   {
+    if((QApplication::keyboardModifiers() == Qt::ControlModifier) &&
+       (mainwindow->annot_created_by_rect_draw_active == 2))
+    {
+      snprintf(str + strlen(str), 512 - strlen(str), " d:%.2f%s",
+               mainwindow->annot_created_by_rect_draw_crosshair_delta,
+               mainwindow->signalcomp[mainwindow->annot_created_by_rect_draw_numchan]->physdimension);
+    }
+
     strlcat(str, "@@", 512);
 
     strlcat(str, mainwindow->signalcomp[mainwindow->annot_created_by_rect_draw_numchan]->signallabel, 512);
   }
+
+  mainwindow->annot_created_by_rect_draw_active = 0;
 
   trim_spaces(str);
 

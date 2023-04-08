@@ -296,10 +296,12 @@ void ViewCurve::annot_sidemenu_act_by_crosshair(bool)
     if(crosshair_2.time_relative > crosshair_1.time_relative)
     {
       mainwindow->annot_created_by_rect_draw_duration = crosshair_2.time_relative - crosshair_1.time_relative;
+
+      mainwindow->annot_created_by_rect_draw_crosshair_delta = crosshair_2.value - crosshair_1.value;
     }
   }
 
-  mainwindow->annot_created_by_rect_draw_active = 1;
+  mainwindow->annot_created_by_rect_draw_active = 2;
 
   emit annot_created_by_rect_draw();
 }
