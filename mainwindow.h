@@ -303,6 +303,11 @@ long long annot_editor_user_button_epoch_len,
           session_video_starttime,
           last_check_for_updates_time;
 
+  int annot_created_by_rect_draw_active,
+      annot_created_by_rect_draw_numchan;
+  long long annot_created_by_rect_draw_onset,
+            annot_created_by_rect_draw_duration;
+
   QColor hrvdock_trace_color,
          annot_list_edited_txt_color,
          hypnogram_annot_ov_color[6],

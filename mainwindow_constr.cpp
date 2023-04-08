@@ -181,6 +181,11 @@ UI_Mainwindow::UI_Mainwindow()
   mc_v_scrollarea_auto = 0;
   mc_v_scrollarea_max_signals = 5;
 
+  annot_created_by_rect_draw_active = 0;
+  annot_created_by_rect_draw_numchan = -1;
+  annot_created_by_rect_draw_onset = 0;
+  annot_created_by_rect_draw_duration = 0;
+
   for(i=0; i<8; i++)
   {
     annot_edit_user_button_enabled[i] = 0;

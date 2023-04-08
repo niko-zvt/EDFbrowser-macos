@@ -4,6 +4,10 @@
 
  - EDF compatibility check: EDF header: reserved field: check all 44 bytes.
 
+ - Annotation editor: drawing a rectangle with the mouse while keeping the Ctrl button pressed
+   (to create a signal linked annotation): added the possibility to use the Shift button instead
+   which will create a normal annotation (not signal linked).
+
 
  version 2.01      March 18, 2023
  --------------

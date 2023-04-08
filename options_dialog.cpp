@@ -840,8 +840,8 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   hlayout_tmp = new QHBoxLayout;
   flayout7_2->addRow("Predefined annotations (used when drawing a rectangle)", hlayout_tmp);
-  flayout7_2->labelForField(hlayout_tmp)->setToolTip("These are the descriptions of the annotations which will appear and\n"
-                                                     "can be selected when drawing a rectangle while pressing the Ctrl key.");
+  flayout7_2->labelForField(hlayout_tmp)->setToolTip("These are the descriptions of the annotations which will appear and can be\n"
+                                                     "selected when drawing a rectangle while pressing the Control or Shift key.");
 
   annot_sidemenu_table = new QTableWidget;
   annot_sidemenu_table->setSelectionMode(QAbstractItemView::NoSelection);

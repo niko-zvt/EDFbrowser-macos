@@ -285,19 +285,21 @@ void ViewCurve::annot_sidemenu_act_by_crosshair(bool)
   }
   if(i == mainwindow->signalcomps)  return;
 
-  mainwindow->signalcomp[i]->annot_created_by_rect_draw_onset = crosshair_1.time_relative;
+  mainwindow->annot_created_by_rect_draw_numchan = i;
 
-  mainwindow->signalcomp[i]->annot_created_by_rect_draw_duration = -TIME_FIXP_SCALING;
+  mainwindow->annot_created_by_rect_draw_onset = crosshair_1.time_relative;
+
+  mainwindow->annot_created_by_rect_draw_duration = -TIME_FIXP_SCALING;
 
   if(mainwindow->signalcomp[i]->hascursor2)
   {
     if(crosshair_2.time_relative > crosshair_1.time_relative)
     {
-      mainwindow->signalcomp[i]->annot_created_by_rect_draw_duration = crosshair_2.time_relative - crosshair_1.time_relative;
+      mainwindow->annot_created_by_rect_draw_duration = crosshair_2.time_relative - crosshair_1.time_relative;
     }
   }
 
-  mainwindow->signalcomp[i]->annot_created_by_rect_draw_active = 1;
+  mainwindow->annot_created_by_rect_draw_active = 1;
 
   emit annot_created_by_rect_draw();
 }
@@ -565,10 +567,9 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
   setFocus(Qt::MouseFocusReason);
 
-  for(i=0; i<signalcomps; i++)
-  {
-    signalcomp[i]->annot_created_by_rect_draw_active = 0;
-  }
+  mainwindow->annot_created_by_rect_draw_active = 0;
+
+  mainwindow->annot_created_by_rect_draw_numchan = -1;
 
   if(press_event->button()==Qt::LeftButton)
   {
@@ -833,7 +834,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
 void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 {
-  int i, j, dist1, dist2, n,
+  int i, j, dist1, dist2,
       baseline,
       signalcomps,
       m_x,
@@ -933,49 +934,57 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
       if((m_x >= (mouse_press_coordinate_x + 15)) && (m_y >= (mouse_press_coordinate_y + 15)))
       {
-        if(QApplication::keyboardModifiers() == Qt::ControlModifier)
+        if((QApplication::keyboardModifiers() == Qt::ControlModifier) ||
+           (QApplication::keyboardModifiers() == Qt::ShiftModifier))
         {
           if((mainwindow->annot_editor_active) && (mainwindow->annotationEditDock != NULL) && signalcomps)
           {
-            n = 0;
-
-            if(signalcomps > 1)
+            if(QApplication::keyboardModifiers() == Qt::ControlModifier)
             {
-              dist1 = 0x7fffffff;
+              mainwindow->annot_created_by_rect_draw_numchan = 0;
 
-              for(i=0; i<signalcomps; i++)
+              if(signalcomps > 1)
               {
-//                 printf("draw_rectangle_sum_cnt: %i   draw_rectangle_sum_y: %i\n",
-//                        signalcomp[i]->draw_rectangle_sum_cnt, signalcomp[i]->draw_rectangle_sum_y / signalcomp[i]->draw_rectangle_sum_cnt);
-//
-//                 baseline = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
-//                 baseline *= (i + 1);
-//                 baseline += signalcomp[i]->screen_offset;
+                dist1 = 0x7fffffff;
 
-                if(signalcomp[i]->draw_rectangle_sum_cnt < 1)  continue;
-
-                baseline = signalcomp[i]->draw_rectangle_sum_y / signalcomp[i]->draw_rectangle_sum_cnt;
-
-                dist2 = baseline - ((mouse_press_coordinate_y + m_y) / 2) - scroll_h_offset;
-                if(dist2 < 0)
+                for(i=0; i<signalcomps; i++)
                 {
-                  dist2 *= -1;
-                }
+  //                 printf("draw_rectangle_sum_cnt: %i   draw_rectangle_sum_y: %i\n",
+  //                        signalcomp[i]->draw_rectangle_sum_cnt, signalcomp[i]->draw_rectangle_sum_y / signalcomp[i]->draw_rectangle_sum_cnt);
+  //
+  //                 baseline = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
+  //                 baseline *= (i + 1);
+  //                 baseline += signalcomp[i]->screen_offset;
 
-                if(dist2 < dist1)
-                {
-                  dist1 = dist2;
+                  if(signalcomp[i]->draw_rectangle_sum_cnt < 1)  continue;
 
-                  n = i;
+                  baseline = signalcomp[i]->draw_rectangle_sum_y / signalcomp[i]->draw_rectangle_sum_cnt;
+
+                  dist2 = baseline - ((mouse_press_coordinate_y + m_y) / 2) - scroll_h_offset;
+                  if(dist2 < 0)
+                  {
+                    dist2 *= -1;
+                  }
+
+                  if(dist2 < dist1)
+                  {
+                    dist1 = dist2;
+
+                    mainwindow->annot_created_by_rect_draw_numchan = i;
+                  }
                 }
               }
             }
+            else if(QApplication::keyboardModifiers() == Qt::ShiftModifier)
+              {
+                mainwindow->annot_created_by_rect_draw_numchan = -1;
+              }
 
-            signalcomp[n]->annot_created_by_rect_draw_onset = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime + (long long)(((double)mainwindow->pagetime / (double)w) * (double)mouse_press_coordinate_x);
+            mainwindow->annot_created_by_rect_draw_onset = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime + (long long)(((double)mainwindow->pagetime / (double)w) * (double)mouse_press_coordinate_x);
 
-            signalcomp[n]->annot_created_by_rect_draw_duration = (long long)((double)mainwindow->pagetime / ((double)w / (double)(m_x - mouse_press_coordinate_x)));
+            mainwindow->annot_created_by_rect_draw_duration = (long long)((double)mainwindow->pagetime / ((double)w / (double)(m_x - mouse_press_coordinate_x)));
 
-            signalcomp[n]->annot_created_by_rect_draw_active = 1;
+            mainwindow->annot_created_by_rect_draw_active = 1;
 
             emit annot_created_by_rect_draw();
           }

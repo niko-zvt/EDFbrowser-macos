@@ -369,9 +369,6 @@ typedef struct
   int aeeg_idx[MAXAEEGDOCKS];
   int avg_dialog[MAXAVERAGECURVEDIALOGS];
   int zscoredialog[MAXZSCOREDIALOGS];
-  int annot_created_by_rect_draw_active;
-  long long annot_created_by_rect_draw_onset;
-  long long annot_created_by_rect_draw_duration;
 } sigcompblck_t;
 
 typedef struct

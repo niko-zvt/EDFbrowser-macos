@@ -779,33 +779,24 @@ void UI_AnnotationEditwindow::annot_by_rect_draw_side_menu_7_clicked()
 
 void UI_AnnotationEditwindow::annot_by_rect_draw_side_menu_create(int n)
 {
-  int i;
-
   char str[512]="";
 
-  for(i=0; i<mainwindow->signalcomps; i++)
-  {
-    if(mainwindow->signalcomp[i]->annot_created_by_rect_draw_active)
-    {
-      break;
-    }
-  }
-  if(i == mainwindow->signalcomps)
-  {
-    return;
-  }
+  if(!mainwindow->annot_created_by_rect_draw_active)  return;
 
-  mainwindow->signalcomp[i]->annot_created_by_rect_draw_active = 0;
+  mainwindow->annot_created_by_rect_draw_active = 0;
 
-  annotEditSetOnset(mainwindow->signalcomp[i]->annot_created_by_rect_draw_onset);
+  annotEditSetOnset(mainwindow->annot_created_by_rect_draw_onset);
 
-  annotEditSetDuration(mainwindow->signalcomp[i]->annot_created_by_rect_draw_duration);
+  annotEditSetDuration(mainwindow->annot_created_by_rect_draw_duration);
 
   strlcpy(str, mainwindow->annot_by_rect_draw_description[n], 512);
 
-  strlcat(str, "@@", 512);
+  if(mainwindow->annot_created_by_rect_draw_numchan >= 0)
+  {
+    strlcat(str, "@@", 512);
 
-  strlcat(str, mainwindow->signalcomp[i]->signallabel, 512);
+    strlcat(str, mainwindow->signalcomp[mainwindow->annot_created_by_rect_draw_numchan]->signallabel, 512);
+  }
 
   trim_spaces(str);
 
