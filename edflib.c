@@ -4630,8 +4630,7 @@ static int edflib_write_edf_header(edfhdrblock_t *hdr)
   }
   else
   {
-    fputc(255, file);
-    fprintf(file, "BIOSEMI");
+    fprintf(file, "\xff" "BIOSEMI");
   }
 
   p = 0;

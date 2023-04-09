@@ -751,8 +751,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   }
   else
   {
-    fputc(255, outputfile);
-    fprintf(outputfile, "BIOSEMI");
+    fprintf(outputfile, "\xff" "BIOSEMI");
   }
 
   p = snprintf(scratchpad, 128, "%s", PatientnameLineEdit->text().toLatin1().data());

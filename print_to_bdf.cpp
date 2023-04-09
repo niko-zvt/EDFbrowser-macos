@@ -322,8 +322,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   if(bdfplus)
   {
-    fputc(255, outputfile);
-    fprintf(outputfile, "BIOSEMI");
+    fprintf(outputfile, "\xff" "BIOSEMI");
     if(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->edfplus || mainwindow->edfheaderlist[mainwindow->sel_viewtime]->bdfplus)
     {
       if(fread(scratchpad, 80, 1, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->file_hdl)!=1)
@@ -458,9 +457,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
       return;
     }
 
-    fputc(255, outputfile);
-
-    fprintf(outputfile, "BIOSEMI");
+    fprintf(outputfile, "\xff" "BIOSEMI");
 
     if(fwrite(scratchpad, 160, 1, outputfile)!=1)
     {

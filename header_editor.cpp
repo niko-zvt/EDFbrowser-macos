@@ -428,10 +428,7 @@ void UI_headerEditorWindow::open_file()
 
   if(!(strncmp(hdr, "0       ", 8)))  edf = 1;
 
-  if((!(strncmp(hdr + 1, "BIOSEMI", 7))) && (((unsigned char *)hdr)[0] == 255))
-  {
-    bdf = 1;
-  }
+  if(!(strncmp(hdr, "\xff" "BIOSEMI", 8)))  bdf = 1;
 
   if((!edf) && (!bdf))
   {

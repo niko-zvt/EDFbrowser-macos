@@ -150,10 +150,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
   }
   else
   {
-    fprintf(outputfile, "XBIOSEMI");
-    rewind(outputfile);
-    fputc(255, outputfile);
-    fseeko(outputfile, 0LL, SEEK_END);
+    fprintf(outputfile, "\xff" "BIOSEMI");
   }
   fseeko(inputfile, 8LL, SEEK_SET);
   if((hdr->edfplus)||(hdr->bdfplus))
