@@ -78,103 +78,111 @@
 
 #define EDFLIB_ANNOT_MEMBLOCKSZ  (1000)
 
-struct edfparamblock{
-        char   label[17];
-        char   transducer[81];
-        char   physdimension[9];
-        double phys_min;
-        double phys_max;
-        int    dig_min;
-        int    dig_max;
-        char   prefilter[81];
-        int    smp_per_record;
-        char   reserved[33];
-        double offset;
-        int    buf_offset;
-        double bitvalue;
-        int    annotation;
-        long long sample_pntr;
-      };
+typedef struct
+{
+  char   label[17];
+  char   transducer[81];
+  char   physdimension[9];
+  double phys_min;
+  double phys_max;
+  int    dig_min;
+  int    dig_max;
+  char   prefilter[81];
+  int    smp_per_record;
+  char   reserved[33];
+  double offset;
+  int    buf_offset;
+  double bitvalue;
+  int    annotation;
+  long long sample_pntr;
+} edfparamblock_t;
 
-struct edfhdrblock{
-        FILE      *file_hdl;
-        char      path[1024];
-        int       writemode;
-        char      version[32];
-        char      patient[81];
-        char      recording[81];
-        char      plus_patientcode[81];
-        char      plus_sex[16];
-        char      plus_birthdate[16];
-        int       plus_birthdate_day;
-        int       plus_birthdate_month;
-        int       plus_birthdate_year;
-        char      plus_patient_name[81];
-        char      plus_patient_additional[81];
-        char      plus_startdate[16];
-        char      plus_admincode[81];
-        char      plus_technician[81];
-        char      plus_equipment[81];
-        char      plus_recording_additional[81];
-        long long l_starttime;
-        int       startdate_day;
-        int       startdate_month;
-        int       startdate_year;
-        int       starttime_second;
-        int       starttime_minute;
-        int       starttime_hour;
-        char      reserved[45];
-        int       hdrsize;
-        int       edfsignals;
-        long long datarecords;
-        int       recordsize;
-        int       annot_ch[EDFLIB_MAXSIGNALS];
-        int       nr_annot_chns;
-        int       mapped_signals[EDFLIB_MAXSIGNALS];
-        int       edf;
-        int       edfplus;
-        int       bdf;
-        int       bdfplus;
-        int       discontinuous;
-        int       signal_write_sequence_pos;
-        long long starttime_offset;
-        double    data_record_duration;
-        long long long_data_record_duration;
-        int       annots_in_file;
-        int       annotlist_sz;
-        int       total_annot_bytes;
-        int       eq_sf;
-        char      *wrbuf;
-        int       wrbufsize;
-        struct edfparamblock *edfparam;
-      };
+typedef struct
+{
+  FILE      *file_hdl;
+  char      path[1024];
+  int       writemode;
+  char      version[32];
+  char      patient[81];
+  char      recording[81];
+  char      plus_patientcode[81];
+  char      plus_sex[16];
+  char      plus_birthdate[16];
+  int       plus_birthdate_day;
+  int       plus_birthdate_month;
+  int       plus_birthdate_year;
+  char      plus_patient_name[81];
+  char      plus_patient_additional[81];
+  char      plus_startdate[16];
+  char      plus_admincode[81];
+  char      plus_technician[81];
+  char      plus_equipment[81];
+  char      plus_recording_additional[81];
+  long long l_starttime;
+  int       startdate_day;
+  int       startdate_month;
+  int       startdate_year;
+  int       starttime_second;
+  int       starttime_minute;
+  int       starttime_hour;
+  char      reserved[45];
+  int       hdrsize;
+  int       edfsignals;
+  long long datarecords;
+  int       recordsize;
+  int       annot_ch[EDFLIB_MAXSIGNALS];
+  int       nr_annot_chns;
+  int       mapped_signals[EDFLIB_MAXSIGNALS];
+  int       edf;
+  int       edfplus;
+  int       bdf;
+  int       bdfplus;
+  int       discontinuous;
+  int       signal_write_sequence_pos;
+  long long starttime_offset;
+  double    data_record_duration;
+  long long long_data_record_duration;
+  int       annots_in_file;
+  int       annotlist_sz;
+  int       total_annot_bytes;
+  int       eq_sf;
+  char      *wrbuf;
+  int       wrbufsize;
+  edfparamblock_t *edfparam;
+} edfhdrblock_t;
 
-static struct edf_annotationblock{
-        long long onset;
-        long long duration_l;
-        char duration[16];
-        char annotation[EDFLIB_MAX_ANNOTATION_LEN + 1];
-       } *annotationslist[EDFLIB_MAXFILES];
+typedef struct
+{
+  long long onset;
+  long long duration_l;
+  char duration[16];
+  char annotation[EDFLIB_MAX_ANNOTATION_LEN + 1];
+} edf_read_annotationblock_t;
 
-static struct edf_write_annotationblock{
-        long long onset;
-        long long duration;
-        char annotation[EDFLIB_WRITE_MAX_ANNOTATION_LEN + 1];
-       } *write_annotationslist[EDFLIB_MAXFILES];
+static edf_read_annotationblock_t *annotationslist[EDFLIB_MAXFILES];
+
+typedef struct
+{
+  long long onset;
+  long long duration;
+  char annotation[EDFLIB_WRITE_MAX_ANNOTATION_LEN + 1];
+} edf_write_annotationblock_t;
+
+static edf_write_annotationblock_t *write_annotationslist[EDFLIB_MAXFILES];
 
 static int edf_files_open=0;
 
-static struct edfhdrblock *hdrlist[EDFLIB_MAXFILES];
+static edfhdrblock_t *hdrlist[EDFLIB_MAXFILES];
 
-static struct edfhdrblock * edflib_check_edf_file(FILE *, int *);
+static edfhdrblock_t * edflib_check_edf_file(FILE *, int *);
 static int edflib_is_integer_number(char *);
 static int edflib_is_number(char *);
 static long long edflib_get_long_duration(char *);
-static int edflib_get_annotations(struct edfhdrblock *, int, int);
+static int edflib_get_annotations(edfhdrblock_t *, int, int);
 static int edflib_is_duration_number(char *);
 static int edflib_is_onset_number(char *);
 static long long edflib_get_long_time(char *);
-static int edflib_write_edf_header(struct edfhdrblock *);
+static int edflib_write_edf_header(edfhdrblock_t *);
 static void edflib_latin1_to_ascii(char *, int);
 static void edflib_latin12utf8(char *, int);
 static void edflib_remove_padding_trailing_spaces(char *);
@@ -187,7 +195,7 @@ static int edflib_sprint_int_number_nonlocalized(char *, int, int, int);
 static int edflib_snprint_ll_number_nonlocalized(char *, long long, int, int, int);
 static int edflib_fprint_int_number_nonlocalized(FILE *, int, int, int);
 static int edflib_fprint_ll_number_nonlocalized(FILE *, long long, int, int);
-static int edflib_write_tal(struct edfhdrblock *, FILE *);
+static int edflib_write_tal(edfhdrblock_t *, FILE *);
 static int edflib_strlcpy(char *, const char *, int);
 static int edflib_strlcat(char *, const char *, int);
 
@@ -230,7 +238,7 @@ EDFLIB_API int edflib_get_handle(int file_number)
 }
 
 
-EDFLIB_API int edfopen_file_readonly(const char *path, struct edf_hdr_struct *edfhdr, int read_annotations_mode)
+EDFLIB_API int edfopen_file_readonly(const char *path, edflib_hdr_t *edfhdr, int read_annotations_mode)
 {
   int i, j,
       channel,
@@ -238,7 +246,7 @@ EDFLIB_API int edfopen_file_readonly(const char *path, struct edf_hdr_struct *ed
 
   FILE *file;
 
-  struct edfhdrblock *hdr;
+  edfhdrblock_t *hdr;
 
   union
   {
@@ -246,7 +254,7 @@ EDFLIB_API int edfopen_file_readonly(const char *path, struct edf_hdr_struct *ed
     int one;
   } byte_order_test_var;
 
-  memset(edfhdr, 0, sizeof(struct edf_hdr_struct));
+  memset(edfhdr, 0, sizeof(edflib_hdr_t));
 
   /* avoid surprises! */
   if((sizeof(char)      != 1) ||
@@ -461,7 +469,7 @@ EDFLIB_API int edfopen_file_readonly(const char *path, struct edf_hdr_struct *ed
 
 EDFLIB_API int edfclose_file(int handle)
 {
-  struct edf_write_annotationblock *annot2;
+  edf_write_annotationblock_t *annot2;
 
   int i, j, k, n, p, err,
       datrecsize,
@@ -472,7 +480,7 @@ EDFLIB_API int edfclose_file(int handle)
 
   char str[EDFLIB_ANNOTATION_BYTES * 2];
 
-  struct edfhdrblock *hdr;
+  edfhdrblock_t *hdr;
 
 
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
@@ -783,7 +791,7 @@ EDFLIB_API int edfread_physical_samples(int handle, int edfsignal, int n, double
             smp_per_record,
             jump;
 
-  struct edfhdrblock *hdr;
+  edfhdrblock_t *hdr;
 
   union {
           unsigned int one;
@@ -949,7 +957,7 @@ EDFLIB_API int edfread_digital_samples(int handle, int edfsignal, int n, int *bu
             smp_per_record,
             jump;
 
-  struct edfhdrblock *hdr;
+  edfhdrblock_t *hdr;
 
   union {
           unsigned int one;
@@ -1101,9 +1109,9 @@ EDFLIB_API int edfread_digital_samples(int handle, int edfsignal, int n, int *bu
 }
 
 
-EDFLIB_API int edf_get_annotation(int handle, int n, struct edf_annotation_struct *annot)
+EDFLIB_API int edf_get_annotation(int handle, int n, edflib_annotation_t *annot)
 {
-  memset(annot, 0, sizeof(struct edf_annotation_struct));
+  memset(annot, 0, sizeof(edflib_annotation_t));
 
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -1124,7 +1132,7 @@ EDFLIB_API int edf_get_annotation(int handle, int n, struct edf_annotation_struc
 }
 
 
-static struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_error)
+static edfhdrblock_t * edflib_check_edf_file(FILE *inputfile, int *edf_error)
 {
   int i, j, p, r=0, n,
       dotposition,
@@ -1134,7 +1142,7 @@ static struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_erro
        scratchpad[128],
        scratchpad2[64];
 
-  struct edfhdrblock *edfhdr;
+  edfhdrblock_t *edfhdr;
 
 /***************** check header ******************************/
 
@@ -1145,7 +1153,7 @@ static struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_erro
     return NULL;
   }
 
-  edfhdr = (struct edfhdrblock *)calloc(1, sizeof(struct edfhdrblock));
+  edfhdr = (edfhdrblock_t *)calloc(1, sizeof(edfhdrblock_t));
   if(edfhdr==NULL)
   {
     free(edf_hdr);
@@ -1624,7 +1632,7 @@ static struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_erro
     return NULL;
   }
 
-  edfhdr->edfparam = (struct edfparamblock *)calloc(1, sizeof(struct edfparamblock) * edfhdr->edfsignals);
+  edfhdr->edfparam = (edfparamblock_t *)calloc(1, sizeof(edfparamblock_t) * edfhdr->edfsignals);
   if(edfhdr->edfparam==NULL)
   {
     *edf_error = EDFLIB_MALLOC_ERROR;
@@ -2799,7 +2807,7 @@ EDFLIB_API int edflib_version(void)
 }
 
 
-static int edflib_get_annotations(struct edfhdrblock *edfhdr, int hdl, int read_annotations_mode)
+static int edflib_get_annotations(edfhdrblock_t *edfhdr, int hdl, int read_annotations_mode)
 {
   int i, j, k, p, r=0, n,
       edfsignals,
@@ -2831,9 +2839,9 @@ static int edflib_get_annotations(struct edfhdrblock *edfhdr, int hdl, int read_
 
   FILE *inputfile;
 
-  struct edfparamblock *edfparam;
+  edfparamblock_t *edfparam;
 
-  struct edf_annotationblock *new_annotation=NULL,
+  edf_read_annotationblock_t *new_annotation=NULL,
                              *malloc_list;
 
   inputfile = edfhdr->file_hdl;
@@ -3064,8 +3072,8 @@ static int edflib_get_annotations(struct edfhdrblock *edfhdr, int hdl, int read_
               {
                 if(edfhdr->annots_in_file >= edfhdr->annotlist_sz)
                 {
-                  malloc_list = (struct edf_annotationblock *)realloc(annotationslist[hdl],
-                                                                      sizeof(struct edf_annotationblock) * (edfhdr->annotlist_sz + EDFLIB_ANNOT_MEMBLOCKSZ));
+                  malloc_list = (edf_read_annotationblock_t *)realloc(annotationslist[hdl],
+                                                                      sizeof(edf_read_annotationblock_t) * (edfhdr->annotlist_sz + EDFLIB_ANNOT_MEMBLOCKSZ));
                   if(malloc_list==NULL)
                   {
                     free(cnv_buf);
@@ -3483,7 +3491,7 @@ EDFLIB_API int edfopen_file_writeonly(const char *path, int filetype, int number
 
   FILE *file;
 
-  struct edfhdrblock *hdr;
+  edfhdrblock_t *hdr;
 
   union
   {
@@ -3543,13 +3551,13 @@ EDFLIB_API int edfopen_file_writeonly(const char *path, int filetype, int number
     return EDFLIB_NUMBER_OF_SIGNALS_INVALID;
   }
 
-  hdr = (struct edfhdrblock *)calloc(1, sizeof(struct edfhdrblock));
+  hdr = (edfhdrblock_t *)calloc(1, sizeof(edfhdrblock_t));
   if(hdr==NULL)
   {
     return EDFLIB_MALLOC_ERROR;
   }
 
-  hdr->edfparam = (struct edfparamblock *)calloc(1, sizeof(struct edfparamblock) * number_of_signals);
+  hdr->edfparam = (edfparamblock_t *)calloc(1, sizeof(edfparamblock_t) * number_of_signals);
   if(hdr->edfparam==NULL)
   {
     free(hdr);
@@ -3753,7 +3761,7 @@ EDFLIB_API int edfwrite_digital_short_samples(int handle, short *buf)
 
   FILE *file;
 
-  struct edfhdrblock *hdr;
+  edfhdrblock_t *hdr;
 
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -3863,7 +3871,7 @@ EDFLIB_API int edfwrite_digital_samples(int handle, int *buf)
 
   FILE *file;
 
-  struct edfhdrblock *hdr;
+  edfhdrblock_t *hdr;
 
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -3988,7 +3996,7 @@ EDFLIB_API int edf_blockwrite_digital_samples(int handle, int *buf)
 
   FILE *file;
 
-  struct edfhdrblock *hdr;
+  edfhdrblock_t *hdr;
 
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -4112,7 +4120,7 @@ EDFLIB_API int edf_blockwrite_digital_short_samples(int handle, short *buf)
 
   FILE *file;
 
-  struct edfhdrblock *hdr;
+  edfhdrblock_t *hdr;
 
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -4227,7 +4235,7 @@ EDFLIB_API int edf_blockwrite_digital_3byte_samples(int handle, void *buf)
 
   FILE *file;
 
-  struct edfhdrblock *hdr;
+  edfhdrblock_t *hdr;
 
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -4286,7 +4294,7 @@ EDFLIB_API int edfwrite_physical_samples(int handle, double *buf)
 
   FILE *file;
 
-  struct edfhdrblock *hdr;
+  edfhdrblock_t *hdr;
 
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -4418,7 +4426,7 @@ EDFLIB_API int edf_blockwrite_physical_samples(int handle, double *buf)
 
   FILE *file;
 
-  struct edfhdrblock *hdr;
+  edfhdrblock_t *hdr;
 
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -4533,7 +4541,7 @@ EDFLIB_API int edf_blockwrite_physical_samples(int handle, double *buf)
 }
 
 
-static int edflib_write_edf_header(struct edfhdrblock *hdr)
+static int edflib_write_edf_header(edfhdrblock_t *hdr)
 {
   int i, j, p, q,
       len,
@@ -5544,7 +5552,7 @@ EDFLIB_API int edfwrite_annotation_utf8(int handle, long long onset, long long d
 {
   int i;
 
-  struct edf_write_annotationblock *list_annot, *malloc_list;
+  edf_write_annotationblock_t *list_annot, *malloc_list;
 
   if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
@@ -5556,8 +5564,8 @@ EDFLIB_API int edfwrite_annotation_utf8(int handle, long long onset, long long d
 
   if(hdrlist[handle]->annots_in_file >= hdrlist[handle]->annotlist_sz)
   {
-    malloc_list = (struct edf_write_annotationblock *)realloc(write_annotationslist[handle],
-                                                              sizeof(struct edf_write_annotationblock) * (hdrlist[handle]->annotlist_sz + EDFLIB_ANNOT_MEMBLOCKSZ));
+    malloc_list = (edf_write_annotationblock_t *)realloc(write_annotationslist[handle],
+                                                         sizeof(edf_write_annotationblock_t) * (hdrlist[handle]->annotlist_sz + EDFLIB_ANNOT_MEMBLOCKSZ));
     if(malloc_list==NULL)
     {
       return -1;
@@ -5596,7 +5604,7 @@ EDFLIB_API int edfwrite_annotation_utf8(int handle, long long onset, long long d
 
 EDFLIB_API int edfwrite_annotation_latin1(int handle, long long onset, long long duration, const char *description)
 {
-  struct edf_write_annotationblock *list_annot, *malloc_list;
+  edf_write_annotationblock_t *list_annot, *malloc_list;
 
   char str[EDFLIB_WRITE_MAX_ANNOTATION_LEN + 1];
 
@@ -5610,8 +5618,8 @@ EDFLIB_API int edfwrite_annotation_latin1(int handle, long long onset, long long
 
   if(hdrlist[handle]->annots_in_file >= hdrlist[handle]->annotlist_sz)
   {
-    malloc_list = (struct edf_write_annotationblock *)realloc(write_annotationslist[handle],
-                                                              sizeof(struct edf_write_annotationblock) * (hdrlist[handle]->annotlist_sz + EDFLIB_ANNOT_MEMBLOCKSZ));
+    malloc_list = (edf_write_annotationblock_t *)realloc(write_annotationslist[handle],
+                                                         sizeof(edf_write_annotationblock_t) * (hdrlist[handle]->annotlist_sz + EDFLIB_ANNOT_MEMBLOCKSZ));
     if(malloc_list==NULL)
     {
       return -1;
@@ -6310,7 +6318,7 @@ static int edflib_atoi_nonlocalized(const char *str)
 }
 
 
-static int edflib_write_tal(struct edfhdrblock *hdr, FILE *file)
+static int edflib_write_tal(edfhdrblock_t *hdr, FILE *file)
 {
   int p;
 

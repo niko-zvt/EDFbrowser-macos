@@ -205,7 +205,8 @@
 extern "C" {
 #endif
 
-struct edf_param_struct{         /* this structure contains all the relevant EDF-signal parameters of one signal */
+typedef struct edf_param_struct
+{                                /* this structure contains all the relevant EDF-signal parameters of one signal */
   char   label[17];              /* label (name) of the signal, null-terminated string */
   long long smp_in_file;         /* number of samples of this signal in the file */
   double phys_max;               /* physical maximum, usually the maximum input of the ADC */
@@ -216,16 +217,18 @@ struct edf_param_struct{         /* this structure contains all the relevant EDF
   char   physdimension[9];       /* physical dimension (uV, bpm, mA, etc.), null-terminated string */
   char   prefilter[81];          /* null-terminated string */
   char   transducer[81];         /* null-terminated string */
-      };
+} edflib_param_t;
 
-struct edf_annotation_struct{                           /* this structure is used for annotations */
+typedef struct edf_annotation_struct
+{                                                       /* this structure is used for annotations */
         long long onset;                                /* onset time of the event, expressed in units of 100 nanoseconds and relative to the start of the file */
         long long duration_l;                           /* duration time, expressed in units of 100 nanoseconds, a value of -10000000 means unused (duration not present) */
         char duration[16];                              /* duration time, this is a null-terminated ASCII text-string */
         char annotation[EDFLIB_MAX_ANNOTATION_LEN + 1]; /* description of the event in UTF-8, this is a null terminated string */
-       };
+} edflib_annotation_t;
 
-struct edf_hdr_struct{            /* this structure contains all the relevant EDF header info and will be filled when calling the function edf_open_file_readonly() */
+typedef struct edf_hdr_struct
+{                                 /* this structure contains all the relevant EDF header info and will be filled when calling the function edf_open_file_readonly() */
   int       handle;               /* a handle (identifier) used to distinguish the different files */
   int       filetype;             /* 0: EDF, 1: EDF+, 2: BDF, 3: BDF+, a negative number means an error */
   int       edfsignals;           /* number of EDF signals in the file, annotation channels are NOT included */
@@ -255,12 +258,12 @@ struct edf_hdr_struct{            /* this structure contains all the relevant ED
   long long datarecord_duration;                          /* duration of a datarecord expressed in units of 100 nanoseconds */
   long long datarecords_in_file;                          /* number of datarecords in the file */
   long long annotations_in_file;                          /* number of annotations in the file */
-  struct edf_param_struct signalparam[EDFLIB_MAXSIGNALS]; /* array of structs which contain the relevant signal parameters */
-       };
+  edflib_param_t signalparam[EDFLIB_MAXSIGNALS];             /* array of structs which contain the relevant signal parameters */
+} edflib_hdr_t;
 
 /*****************  the following functions are used to read files **************************/
 
-EDFLIB_API int edfopen_file_readonly(const char *path, struct edf_hdr_struct *edfhdr, int read_annotations);
+EDFLIB_API int edfopen_file_readonly(const char *path, edflib_hdr_t *edfhdr, int read_annotations);
 /* opens an existing file for reading
  * path is a null-terminated string containing the path to the file
  * hdr is a pointer to an edf_hdr_struct, all fields in this struct will be overwritten
@@ -272,7 +275,7 @@ EDFLIB_API int edfopen_file_readonly(const char *path, struct edf_hdr_struct *ed
  *                                       been found which contains the description "Recording ends"
  *   EDFLIB_READ_ALL_ANNOTATIONS         all annotations will be read immediately
 
- * returns 0 on success, in case of an error it returns -1 and an error code will be set in the member "filetype" of struct edf_hdr_struct
+ * returns 0 on success, in case of an error it returns -1 and an error code will be set in the member "filetype" of edflib_hdr_t
  * This function is required if you want to read a file
  */
 
@@ -315,8 +318,8 @@ EDFLIB_API void edfrewind(int handle, int edfsignal);
  * note that every signal has it's own independent sample position indicator and edfrewind() affects only one of them
  */
 
-EDFLIB_API int edf_get_annotation(int handle, int n, struct edf_annotation_struct *annot);
-/* Fills the edf_annotation_struct with the annotation n, returns 0 on success, otherwise -1
+EDFLIB_API int edf_get_annotation(int handle, int n, edflib_annotation_t *annot);
+/* Fills the edflib_annotation_t structure with the annotation n, returns 0 on success, otherwise -1
  * The string that describes the annotation/event is encoded in UTF-8
  * To obtain the number of annotations in a file, check edf_hdr_struct -> annotations_in_file.
  * returns 0 on success or -1 in case of an error
