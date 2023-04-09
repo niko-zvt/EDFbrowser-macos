@@ -33,7 +33,9 @@ void UI_Mainwindow::setup_viewbuf()
   int i, j, k, r, s,
       temp=0,
       skip,
-      hasprefilter=0;
+      hasprefilter=0,
+      precision=3,
+      prec_scale=10000;
 
   double pre_time=0.0,
          d_temp=0.0,
@@ -821,6 +823,19 @@ void UI_Mainwindow::setup_viewbuf()
   {
     viewtime_string[0] = 0;
 
+    pagetime_string[0] = 0;
+
+    if(annot_editor_highres)
+    {
+      precision = 6;
+      prec_scale = 10;
+    }
+    else
+    {
+      precision = 3;
+      prec_scale = 10000;
+    }
+
     if(viewtime_indicator_type == VIEWTIME_INDICATOR_TYPE_DATE_REAL_RELATIVE)
     {
       utc_to_date_time((edfheaderlist[sel_viewtime]->utc_starttime_hr + edfheaderlist[sel_viewtime]->viewtime) / TIME_FIXP_SCALING, &date_time_str);
@@ -832,18 +847,20 @@ void UI_Mainwindow::setup_viewbuf()
     {
       if(viewtime_indicator_type != VIEWTIME_INDICATOR_TYPE_RELATIVE)
       {
-        snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "%2i:%02i:%02i.%04i (",
+        snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "%2i:%02i:%02i.%0*i (",
                 (int)((((edfheaderlist[sel_viewtime]->starttime_hr + edfheaderlist[sel_viewtime]->viewtime) / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
                 (int)((((edfheaderlist[sel_viewtime]->starttime_hr + edfheaderlist[sel_viewtime]->viewtime) / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                 (int)(((edfheaderlist[sel_viewtime]->starttime_hr + edfheaderlist[sel_viewtime]->viewtime) / TIME_FIXP_SCALING) % 60LL),
-                (int)(((edfheaderlist[sel_viewtime]->starttime_hr + edfheaderlist[sel_viewtime]->viewtime) % TIME_FIXP_SCALING) / 1000LL));
+                precision,
+                (int)(((edfheaderlist[sel_viewtime]->starttime_hr + edfheaderlist[sel_viewtime]->viewtime) % TIME_FIXP_SCALING) / prec_scale));
       }
 
-      snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "%i:%02i:%02i.%04i",
+      snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "%i:%02i:%02i.%0*i",
               (int)((edfheaderlist[sel_viewtime]->viewtime / TIME_FIXP_SCALING)/ 3600LL),
               (int)(((edfheaderlist[sel_viewtime]->viewtime / TIME_FIXP_SCALING) % 3600LL) / 60LL),
               (int)((edfheaderlist[sel_viewtime]->viewtime / TIME_FIXP_SCALING) % 60LL),
-              (int)((edfheaderlist[sel_viewtime]->viewtime % TIME_FIXP_SCALING) / 1000LL));
+              precision,
+              (int)((edfheaderlist[sel_viewtime]->viewtime % TIME_FIXP_SCALING) / prec_scale));
 
       if(viewtime_indicator_type != VIEWTIME_INDICATOR_TYPE_RELATIVE)
       {
@@ -860,20 +877,22 @@ void UI_Mainwindow::setup_viewbuf()
 
       if(viewtime_indicator_type != VIEWTIME_INDICATOR_TYPE_RELATIVE)
       {
-        snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "%2i:%02i:%02i.%04i (",
+        snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "%2i:%02i:%02i.%0*i (",
                 (int)((((l_temp) / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
                 (int)((((l_temp) / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                 (int)(((l_temp) / TIME_FIXP_SCALING) % 60LL),
-                (int)(((l_temp) % TIME_FIXP_SCALING) / 1000LL));
+                precision,
+                (int)(((l_temp) % TIME_FIXP_SCALING) / prec_scale));
       }
 
       l_temp = -edfheaderlist[sel_viewtime]->viewtime;
 
-      snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "-%i:%02i:%02i.%04i",
+      snprintf(viewtime_string + strlen(viewtime_string), 128 - strlen(viewtime_string), "-%i:%02i:%02i.%0*i",
               (int)((l_temp / TIME_FIXP_SCALING)/ 3600LL),
               (int)(((l_temp / TIME_FIXP_SCALING) % 3600LL) / 60LL),
               (int)((l_temp / TIME_FIXP_SCALING) % 60LL),
-              (int)((l_temp % TIME_FIXP_SCALING) / 1000LL));
+              precision,
+              (int)((l_temp % TIME_FIXP_SCALING) / prec_scale));
 
       if(viewtime_indicator_type != VIEWTIME_INDICATOR_TYPE_RELATIVE)
       {
@@ -883,62 +902,69 @@ void UI_Mainwindow::setup_viewbuf()
 
     if(pagetime >= (3600LL * TIME_FIXP_SCALING))
     {
-      snprintf(pagetime_string, 128, "%i:%02i:%02i.%04i",
+      snprintf(pagetime_string, 128, "%i:%02i:%02i.%0*i",
               ((int)(pagetime / TIME_FIXP_SCALING)) / 3600,
               (((int)(pagetime / TIME_FIXP_SCALING)) % 3600) / 60,
               ((int)(pagetime / TIME_FIXP_SCALING)) % 60,
-              (int)((pagetime % TIME_FIXP_SCALING) / 1000LL));
+              precision,
+              (int)((pagetime % TIME_FIXP_SCALING) / prec_scale));
     }
     else if(pagetime > (600LL * TIME_FIXP_SCALING))
       {
         if(display_pagetime_mmsec)
         {
-          snprintf(pagetime_string, 128, "%i:%02i.%04i  (%i mm/min)",
+          snprintf(pagetime_string, 128, "%i:%02i.%0*i  (%i mm/min)",
                   ((int)(pagetime / TIME_FIXP_SCALING)) / 60,
                   ((int)(pagetime / TIME_FIXP_SCALING)) % 60,
-                  (int)((pagetime % TIME_FIXP_SCALING) / 1000LL),
+                  precision,
+                  (int)((pagetime % TIME_FIXP_SCALING) / prec_scale),
                   (int)((maincurve->width() * x_pixelsizefactor * 600) / (((double)pagetime) / TIME_FIXP_SCALING) + 0.5));
         }
         else
         {
-          snprintf(pagetime_string, 128, "%i:%02i.%04i",
+          snprintf(pagetime_string, 128, "%i:%02i.%0*i",
                   ((int)(pagetime / TIME_FIXP_SCALING)) / 60,
                   ((int)(pagetime / TIME_FIXP_SCALING)) % 60,
-                  (int)((pagetime % TIME_FIXP_SCALING) / 1000LL));
+                  precision,
+                  (int)((pagetime % TIME_FIXP_SCALING) / prec_scale));
         }
       }
       else if(pagetime >= (60LL * TIME_FIXP_SCALING))
         {
           if(display_pagetime_mmsec)
           {
-            snprintf(pagetime_string, 128, "%i:%02i.%04i  (%.1f mm/sec)",
+            snprintf(pagetime_string, 128, "%i:%02i.%0*i  (%.1f mm/sec)",
                     ((int)(pagetime / TIME_FIXP_SCALING)) / 60,
                     ((int)(pagetime / TIME_FIXP_SCALING)) % 60,
-                    (int)((pagetime % TIME_FIXP_SCALING) / 1000LL),
+                    precision,
+                    (int)((pagetime % TIME_FIXP_SCALING) / prec_scale),
                     (maincurve->width() * x_pixelsizefactor * 10) / (((double)pagetime) / TIME_FIXP_SCALING));
           }
           else
           {
-            snprintf(pagetime_string, 128, "%i:%02i.%04i",
+            snprintf(pagetime_string, 128, "%i:%02i.%0*i",
                     ((int)(pagetime / TIME_FIXP_SCALING)) / 60,
                     ((int)(pagetime / TIME_FIXP_SCALING)) % 60,
-                    (int)((pagetime % TIME_FIXP_SCALING) / 1000LL));
+                    precision,
+                    (int)((pagetime % TIME_FIXP_SCALING) / prec_scale));
           }
         }
         else if(pagetime >= TIME_FIXP_SCALING)
           {
             if(display_pagetime_mmsec)
             {
-              snprintf(pagetime_string, 128, "%i.%04i sec  (%i mm/sec)",
+              snprintf(pagetime_string, 128, "%i.%0*i sec  (%i mm/sec)",
                       (int)(pagetime / TIME_FIXP_SCALING),
-                      (int)((pagetime % TIME_FIXP_SCALING) / 1000LL),
+                      precision,
+                      (int)((pagetime % TIME_FIXP_SCALING) / prec_scale),
                       (int)((maincurve->width() * x_pixelsizefactor * 10) / (((double)pagetime) / TIME_FIXP_SCALING) + 0.5));
             }
             else
             {
-              snprintf(pagetime_string, 128, "%i.%04i sec",
+              snprintf(pagetime_string, 128, "%i.%0*i sec",
                       (int)(pagetime / TIME_FIXP_SCALING),
-                      (int)((pagetime % TIME_FIXP_SCALING) / 1000LL));
+                      precision,
+                      (int)((pagetime % TIME_FIXP_SCALING) / prec_scale));
             }
           }
           else

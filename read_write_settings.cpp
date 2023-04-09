@@ -1796,6 +1796,26 @@ void UI_Mainwindow::read_general_settings()
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "annotation_editor", 0)))
   {
+    if(!(xml_goto_nth_element_inside(xml_hdl, "annot_editor_highres", 0)))
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        xml_close(xml_hdl);
+        return;
+      }
+
+      if(atoi(result) == 1)
+      {
+        annot_editor_highres = 1;
+      }
+      else
+      {
+        annot_editor_highres = 0;
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
     for(i=0; i<8; i++)
     {
       if(!(xml_goto_nth_element_inside(xml_hdl, "annot_edit_user_button_enabled", i)))
@@ -3661,6 +3681,7 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "    </annotlistdock>\n");
 
     fprintf(cfgfile, "    <annotation_editor>\n");
+    fprintf(cfgfile, "      <annot_editor_highres>%i</annot_editor_highres>\n", annot_editor_highres);
     for(i=0; i<8; i++)
     {
       fprintf(cfgfile, "      <annot_edit_user_button_enabled>%i</annot_edit_user_button_enabled>\n", annot_edit_user_button_enabled[i]);

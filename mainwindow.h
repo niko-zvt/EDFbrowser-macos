@@ -184,6 +184,7 @@ public:
       viewtime_sync,
       print_to_edf_active,
       annot_editor_active,
+      annot_editor_highres,
       show_annot_markers,
       show_baselines,
       annotations_edited,

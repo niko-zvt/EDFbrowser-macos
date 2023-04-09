@@ -198,12 +198,11 @@
 
 <p>
   Use the Timescalemenu to choose the pagetime (the amount of seconds that must be displayed on the screen).<br>
-  Be aware that a pagetime of more than five minutes slowsdown the program. Specially when there are<br>
-  many signals on the screen and/or high samplefrequencies.<br>
   "30 mm/sec" will adjust the pagetime so that one second equals 30 mm horizontally. In case you get a different<br>
   result, calibrate your screen in Menu -&gt; Settings -&gt; Calibration.<br>
   The timescale can also be changed with the keyboard shortcuts Ctl++ and Ctl+-,<br>
-  or by turning the mousewheel while keeping the Ctl-key pressed.
+  or by turning the mousewheel while keeping the Ctl-key pressed.<br>
+  The resolution of the timescale indicator (milliSecond or microSecond) can be selected in: Settings -&gt; Options -&gt; Annotation editor.<br>
 </p>
 
 <p><br></p>
@@ -379,6 +378,7 @@
   In case multiple files are opened, the file position slider, the "Home" and "End" keyboard shortcuts and<br>
   the file position indicator, are referred to the file that is the "reference". For more info and how to change<br>
   the reference file, have a look at <a href="#Timelock">Timelock and File synchronisation</a>.<br>
+  The resolution of the fileposition indicator (milliSecond or microSecond) can be selected in: Settings -&gt; Options -&gt; Annotation editor.<br>
 <br>
   You can also <a href="#Zoomfunction">zoom-in</a>.
 </p>
@@ -429,6 +429,8 @@
 <br>
   If you like, you can enable "auto scroll" for the annotations window so that, when browsing through the recording, the annotation window's<br>
   scroll position is synchronized with the fileposition of the plotting window. This option is in Settings -&gt; Options -&gt; Other.<br>
+<br>
+  The resolution of the onset time (milliSecond or microSecond) can be selected in: Settings -&gt; Options -&gt; Annotation editor.<br>
 </p>
 
 <p><br></p>
@@ -517,7 +519,9 @@
   When the Control key is pressed when selecting the annotation (after having pressed "a"), the delta (difference) of the amplitude of<br>
   the two crosshairs will be printed into the annotation's description.<br><br>
 
-  Note: The annotation editor will limit the precision of the onset-time of the annotations to 1 milliSecond.
+  Note: By default, the annotation editor will limit the resolution of the onset-time of the annotations to 1 milliSecond.<br>
+  If desired, this can be changed to 1 microSecond in Settings -&gt; Options -&gt; Annotation editor.<br>
+  This affects also the resolution of the crosshairs and the viewtime and pagetime indicators (milliSecond or microSecond).<br>
 </p>
 
 <p><br></p>
@@ -1024,7 +1028,8 @@
   Pressing repeatedly Alt+Shift+C will move the crosshairs to the next signal.<br>
   Rightclick to remove the crosshair(s) or press the Escape key.<br>
   The looks of the crosshairs can be changed in the settings menu. You can enable/disable a horizontal line<br>
-  and/or a centered dot.
+  and/or a centered dot.<br>
+  The resolution (milliSecond or microSecond) can be selected in: Settings -&gt; Options -&gt; Annotation editor.<br>
 </p>
 
 <p><br></p>
@@ -1703,7 +1708,7 @@
  &nbsp;&nbsp;duration of file in seconds multiplied by 32. If the original file contains more trigger input events, they will be ignored.<br>
  &nbsp;&nbsp;If, for example, the duration of a file is 5 minutes, the first 9600 input triggers will be converted to BDF+ annotations.<br><br>
 
- - The precision of the annotations is limited to 100 microSeconds (0.0001 sec.).<br><br>
+ - The resolution of the annotations is limited to 100 microSeconds (0.0001 sec.).<br><br>
 
  - Only the 17 lowest bits of the Status signal will be evaluated and converted.<br><br>
 </p>

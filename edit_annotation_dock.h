@@ -73,6 +73,8 @@ public:
 
   void set_selected_annotation(int);
 
+  void set_high_resolution(int);
+
   void process_annot_by_rect_draw(void);
 
   void set_edf_header(edfhdrblck_t *);
@@ -102,7 +104,8 @@ private:
 
   QTimeEdit *onset_timeEdit;
 
-  QSpinBox  *onset_daySpinbox;
+  QSpinBox  *onset_daySpinbox,
+            *onset_us_spinbox;
 
   QDoubleSpinBox *duration_spinbox;
 

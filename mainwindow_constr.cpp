@@ -136,6 +136,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   linear_interpol = 0;
 
+  annot_editor_highres = 0;
+
   auto_update_annot_onset = 0;
 
   annot_editor_user_button_update_annot_description = 0;

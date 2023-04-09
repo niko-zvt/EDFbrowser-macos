@@ -688,6 +688,29 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   flayout7_1->labelForField(hlayout_tmp)->setToolTip("Enabling this option will automatically update the onsettime field of the annotation editor\n"
                                                      "when scrolling/navigating and a cross-hair is active.");
 
+  checkbox7_9 = new QCheckBox;
+  checkbox7_9->setTristate(false);
+  checkbox7_9->setToolTip("Enabling this option will set the resolution of the annotation editor to 1 microSecond."
+                          "\nOtherwise 1 milliSecond (default)"
+                          "\nThis affects also the resolution of the crosshairs and the viewtime and pagetime indicators.");
+  if(mainwindow->annot_editor_highres)
+  {
+    checkbox7_9->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox7_9->setCheckState(Qt::Unchecked);
+  }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(checkbox7_9);
+  hlayout_tmp->addStretch(1000);
+  flayout7_1->addRow("High resolution (1 uSec.)", hlayout_tmp);
+  QObject::connect(checkbox7_9, SIGNAL(stateChanged(int)), this, SLOT(checkbox7_9Clicked(int)));
+  flayout7_1->labelForField(hlayout_tmp)->setToolTip("Enabling this option will set the resolution of the annotation editor to 1 microSecond."
+                                                     "\nOtherwise 1 milliSecond (default)"
+                                                     "\nThis affects also the resolution of the crosshairs and the viewtime and pagetime indicators.");
+
   QVBoxLayout *vlayout7_1 = new QVBoxLayout;
   vlayout7_1->addLayout(flayout7_1);
   vlayout7_1->addStretch(1000);
@@ -2454,6 +2477,29 @@ void UI_OptionsDialog::checkbox7_7Clicked(int state)
   else
   {
     mainwindow->annot_editor_user_button_stay_on_epoch_boundary = 0;
+  }
+}
+
+
+void UI_OptionsDialog::checkbox7_9Clicked(int state)
+{
+  if(state==Qt::Checked)
+  {
+    mainwindow->annot_editor_highres = 1;
+
+    if(mainwindow->annotationEditDock != NULL)
+    {
+      mainwindow->annotationEditDock->set_high_resolution(1);
+    }
+  }
+  else
+  {
+    mainwindow->annot_editor_highres = 0;
+
+    if(mainwindow->annotationEditDock != NULL)
+    {
+      mainwindow->annotationEditDock->set_high_resolution(0);
+    }
   }
 }
 

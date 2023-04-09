@@ -74,6 +74,23 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(edfhdrblck_t *e_hdr, QWidget *w
   onset_timeEdit->setMinimumTime(QTime(-1, 0, 0, 0));
   onset_timeEdit->setToolTip("Onset time of the event (hh:mm:ss:mmm) relative to starttime");
 
+  onset_us_spinbox = new QSpinBox;
+  onset_us_spinbox->setRange(0, 999);
+  onset_us_spinbox->setSingleStep(1);
+  onset_us_spinbox->setValue(0);
+  onset_us_spinbox->setAlignment(Qt::AlignRight);
+  onset_us_spinbox->setSuffix(" uSec.");
+  onset_us_spinbox->setToolTip("microseconds relative to starttime");
+  onset_us_spinbox->setMinimumWidth(75 * mainwindow->w_scaling);
+  if(mainwindow->annot_editor_highres)
+  {
+    onset_us_spinbox->setEnabled(true);
+  }
+  else
+  {
+    onset_us_spinbox->setEnabled(false);
+  }
+
   durationLabel = new QLabel;
   durationLabel->setText("Duration");
 
@@ -129,6 +146,7 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(edfhdrblck_t *e_hdr, QWidget *w
   hlayout1->addWidget(posNegTimebox);
   hlayout1->addWidget(onset_daySpinbox);
   hlayout1->addWidget(onset_timeEdit);
+  hlayout1->addWidget(onset_us_spinbox);
   hlayout1->addStretch(1);
   hlayout1->addWidget(durationLabel);
   hlayout1->addWidget(duration_spinbox);
@@ -146,6 +164,7 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(edfhdrblck_t *e_hdr, QWidget *w
   hlayout1->addStretch(10);
 
   annot_edit_frame = new QFrame;
+  annot_edit_frame->setFrameShape(QFrame::NoFrame);
 
   annot_edit_frame->setLayout(hlayout1);
 
@@ -410,6 +429,11 @@ void UI_AnnotationEditwindow::annotEditSetOnset(long long onset)
             ((-(onset)) % TIME_FIXP_SCALING) / 10000);
 
     posNegTimebox->setCurrentIndex(1);
+
+    if(mainwindow->annot_editor_highres)
+    {
+      onset_us_spinbox->setValue(((-onset) % (TIME_FIXP_SCALING / 1000)) / 10);
+    }
   }
   else
   {
@@ -421,6 +445,11 @@ void UI_AnnotationEditwindow::annotEditSetOnset(long long onset)
             (onset % TIME_FIXP_SCALING) / 10000);
 
     posNegTimebox->setCurrentIndex(0);
+
+    if(mainwindow->annot_editor_highres)
+    {
+      onset_us_spinbox->setValue((onset % (TIME_FIXP_SCALING / 1000)) / 10);
+    }
   }
 
   onset_timeEdit->setTime(ta);
@@ -438,6 +467,11 @@ long long UI_AnnotationEditwindow::annotEditGetOnset(void)
   tmp += onset_timeEdit->time().second();
   tmp *= TIME_FIXP_SCALING;
   tmp += (onset_timeEdit->time().msec() * (TIME_FIXP_SCALING / 1000));
+
+  if(mainwindow->annot_editor_highres)
+  {
+    tmp += onset_us_spinbox->value() * (TIME_FIXP_SCALING / 1000000);
+  }
 
   if(posNegTimebox->currentIndex() == 1)
   {
@@ -504,6 +538,11 @@ void UI_AnnotationEditwindow::set_selected_annotation(int annot_nr)
             ((-(l_tmp)) % TIME_FIXP_SCALING) / 10000);
 
     posNegTimebox->setCurrentIndex(1);
+
+    if(mainwindow->annot_editor_highres)
+    {
+      onset_us_spinbox->setValue(((-l_tmp) % (TIME_FIXP_SCALING / 1000)) / 10);
+    }
   }
   else
   {
@@ -515,6 +554,11 @@ void UI_AnnotationEditwindow::set_selected_annotation(int annot_nr)
             (l_tmp % TIME_FIXP_SCALING) / 10000);
 
     posNegTimebox->setCurrentIndex(0);
+
+    if(mainwindow->annot_editor_highres)
+    {
+      onset_us_spinbox->setValue((l_tmp % (TIME_FIXP_SCALING / 1000)) / 10);
+    }
   }
   onset_timeEdit->setTime(ta);
 
@@ -575,6 +619,11 @@ void UI_AnnotationEditwindow::set_selected_annotation(annotblck_t *annot)
             ((-(l_tmp)) % TIME_FIXP_SCALING) / 10000);
 
     posNegTimebox->setCurrentIndex(1);
+
+    if(mainwindow->annot_editor_highres)
+    {
+      onset_us_spinbox->setValue(((-l_tmp) % (TIME_FIXP_SCALING / 1000)) / 10);
+    }
   }
   else
   {
@@ -586,6 +635,11 @@ void UI_AnnotationEditwindow::set_selected_annotation(annotblck_t *annot)
             (l_tmp % TIME_FIXP_SCALING) / 10000);
 
     posNegTimebox->setCurrentIndex(0);
+
+    if(mainwindow->annot_editor_highres)
+    {
+      onset_us_spinbox->setValue((l_tmp % (TIME_FIXP_SCALING / 1000)) / 10);
+    }
   }
   onset_timeEdit->setTime(ta);
 
@@ -813,6 +867,19 @@ void UI_AnnotationEditwindow::annot_by_rect_draw_side_menu_create(int n)
   createButtonClicked();
 }
 
+
+void UI_AnnotationEditwindow::set_high_resolution(int val)
+{
+  if(val)
+  {
+    onset_us_spinbox->setEnabled(true);
+  }
+  else
+  {
+    onset_us_spinbox->setEnabled(false);
+    onset_us_spinbox->setValue(0);
+  }
+}
 
 
 

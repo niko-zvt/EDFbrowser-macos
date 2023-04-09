@@ -11,6 +11,9 @@
  - Annotation editor: when creating an annotation by using a pair of crosshairs and the Control button
    is pressed, the delta of the amplitude will be printed into the annotation's description.
 
+ - Added the possibility to configure the resolution (milliSecond or microSecond) for the annotationslist,
+   the annotation editor, the fileposition indicator and timescale indicator.
+
 
  version 2.01      March 18, 2023
  --------------

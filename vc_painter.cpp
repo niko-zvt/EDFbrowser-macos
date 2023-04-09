@@ -1165,18 +1165,40 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         crosshair_1.value,
                         signalcomp[i]->physdimension);
         painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - (10 + (mono_font_pixel_height * 2)), str1);
-        snprintf(str1, 128, "%2i:%02i:%02i.%04i",
-                        (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
-                        (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                        (int)((crosshair_1.time_clock / TIME_FIXP_SCALING) % 60LL),
-                        (int)((crosshair_1.time_clock % TIME_FIXP_SCALING) / 1000LL));
+        if(mainwindow->annot_editor_highres)
+        {
+          snprintf(str1, 128, "%2i:%02i:%02i.%06i",
+                          (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                          (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                          (int)((crosshair_1.time_clock / TIME_FIXP_SCALING) % 60LL),
+                          (int)((crosshair_1.time_clock % TIME_FIXP_SCALING) / 10LL));
+        }
+        else
+        {
+          snprintf(str1, 128, "%2i:%02i:%02i.%03i",
+                          (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                          (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                          (int)((crosshair_1.time_clock / TIME_FIXP_SCALING) % 60LL),
+                          (int)((crosshair_1.time_clock % TIME_FIXP_SCALING) / 10000LL));
+        }
         if(crosshair_1.time_relative >= TIME_FIXP_SCALING)
         {
-          snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%04i)",
-                  (int)((crosshair_1.time_relative / TIME_FIXP_SCALING)/ 3600LL),
-                  (int)(((crosshair_1.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                  (int)((crosshair_1.time_relative / TIME_FIXP_SCALING) % 60LL),
-                  (int)((crosshair_1.time_relative % TIME_FIXP_SCALING) / 1000LL));
+          if(mainwindow->annot_editor_highres)
+          {
+            snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%06i)",
+                    (int)((crosshair_1.time_relative / TIME_FIXP_SCALING)/ 3600LL),
+                    (int)(((crosshair_1.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                    (int)((crosshair_1.time_relative / TIME_FIXP_SCALING) % 60LL),
+                    (int)((crosshair_1.time_relative % TIME_FIXP_SCALING) / 10LL));
+          }
+          else
+          {
+            snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%03i)",
+                    (int)((crosshair_1.time_relative / TIME_FIXP_SCALING)/ 3600LL),
+                    (int)(((crosshair_1.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                    (int)((crosshair_1.time_relative / TIME_FIXP_SCALING) % 60LL),
+                    (int)((crosshair_1.time_relative % TIME_FIXP_SCALING) / 10000LL));
+          }
         }
         else
         {
@@ -1259,18 +1281,40 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         crosshair_2.value,
                         signalcomp[i]->physdimension);
         painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (mono_font_pixel_height * 4)), str1);
-        snprintf(str1, 128, "%2i:%02i:%02i.%04i",
-                        (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
-                        (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                        (int)((crosshair_2.time_clock / TIME_FIXP_SCALING) % 60LL),
-                        (int)((crosshair_2.time_clock % TIME_FIXP_SCALING) / 1000LL));
+        if(mainwindow->annot_editor_highres)
+        {
+          snprintf(str1, 128, "%2i:%02i:%02i.%06i",
+                          (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                          (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                          (int)((crosshair_2.time_clock / TIME_FIXP_SCALING) % 60LL),
+                          (int)((crosshair_2.time_clock % TIME_FIXP_SCALING) / 10LL));
+        }
+        else
+        {
+          snprintf(str1, 128, "%2i:%02i:%02i.%03i",
+                          (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                          (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                          (int)((crosshair_2.time_clock / TIME_FIXP_SCALING) % 60LL),
+                          (int)((crosshair_2.time_clock % TIME_FIXP_SCALING) / 10000LL));
+        }
         if(crosshair_2.time_relative >= TIME_FIXP_SCALING)
         {
-          snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%04i)",
-                  (int)((crosshair_2.time_relative / TIME_FIXP_SCALING)/ 3600LL),
-                  (int)(((crosshair_2.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                  (int)((crosshair_2.time_relative / TIME_FIXP_SCALING) % 60LL),
-                  (int)((crosshair_2.time_relative % TIME_FIXP_SCALING) / 1000LL));
+          if(mainwindow->annot_editor_highres)
+          {
+            snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%06i)",
+                    (int)((crosshair_2.time_relative / TIME_FIXP_SCALING)/ 3600LL),
+                    (int)(((crosshair_2.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                    (int)((crosshair_2.time_relative / TIME_FIXP_SCALING) % 60LL),
+                    (int)((crosshair_2.time_relative % TIME_FIXP_SCALING) / 10LL));
+          }
+          else
+          {
+            snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%03i)",
+                    (int)((crosshair_2.time_relative / TIME_FIXP_SCALING)/ 3600LL),
+                    (int)(((crosshair_2.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                    (int)((crosshair_2.time_relative / TIME_FIXP_SCALING) % 60LL),
+                    (int)((crosshair_2.time_relative % TIME_FIXP_SCALING) / 10000LL));
+          }
         }
         else
         {
@@ -1288,11 +1332,22 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         if(l_time<0) l_time = -l_time;
         if(l_time >= TIME_FIXP_SCALING)
         {
-          snprintf(str1, 128, "delta %i:%02i:%02i.%04i",
-                          (int)((l_time / TIME_FIXP_SCALING)/ 3600LL),
-                          (int)(((l_time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                          (int)((l_time / TIME_FIXP_SCALING) % 60LL),
-                          (int)((l_time % TIME_FIXP_SCALING) / 1000LL));
+          if(mainwindow->annot_editor_highres)
+          {
+            snprintf(str1, 128, "delta %i:%02i:%02i.%06i",
+                            (int)((l_time / TIME_FIXP_SCALING)/ 3600LL),
+                            (int)(((l_time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                            (int)((l_time / TIME_FIXP_SCALING) % 60LL),
+                            (int)((l_time % TIME_FIXP_SCALING) / 10LL));
+          }
+          else
+          {
+            snprintf(str1, 128, "delta %i:%02i:%02i.%03i",
+                            (int)((l_time / TIME_FIXP_SCALING)/ 3600LL),
+                            (int)(((l_time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                            (int)((l_time / TIME_FIXP_SCALING) % 60LL),
+                            (int)((l_time % TIME_FIXP_SCALING) / 10000LL));
+          }
         }
         else
         {
