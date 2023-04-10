@@ -691,7 +691,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   checkbox7_9 = new QCheckBox;
   checkbox7_9->setTristate(false);
   checkbox7_9->setToolTip("Enabling this option will set the resolution of the annotation editor to 1 microSecond."
-                          "\nOtherwise 1 milliSecond (default)"
+                          "\nIf disabled the resolution is 1 milliSecond (default)"
                           "\nThis affects also the resolution of the crosshairs and the viewtime and pagetime indicators.");
   if(mainwindow->annot_editor_highres)
   {
@@ -705,10 +705,10 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp->setAlignment(Qt::AlignCenter);
   hlayout_tmp->addWidget(checkbox7_9);
   hlayout_tmp->addStretch(1000);
-  flayout7_1->addRow("High resolution (1 uSec.)", hlayout_tmp);
+  flayout7_1->addRow("High time-resolution (uSec.)", hlayout_tmp);
   QObject::connect(checkbox7_9, SIGNAL(stateChanged(int)), this, SLOT(checkbox7_9Clicked(int)));
   flayout7_1->labelForField(hlayout_tmp)->setToolTip("Enabling this option will set the resolution of the annotation editor to 1 microSecond."
-                                                     "\nOtherwise 1 milliSecond (default)"
+                                                     "\nIf disabled the resolution is 1 milliSecond (default)"
                                                      "\nThis affects also the resolution of the crosshairs and the viewtime and pagetime indicators.");
 
   QVBoxLayout *vlayout7_1 = new QVBoxLayout;
