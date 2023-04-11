@@ -862,9 +862,10 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   flayout7_2->addRow(hline7_2);
 
   hlayout_tmp = new QHBoxLayout;
-  flayout7_2->addRow("Predefined annotations (used when drawing a rectangle)", hlayout_tmp);
+  flayout7_2->addRow("Predefined annotations (pop-up menu)", hlayout_tmp);
   flayout7_2->labelForField(hlayout_tmp)->setToolTip("These are the descriptions of the annotations which will appear and can be\n"
-                                                     "selected when drawing a rectangle while pressing the Control or Shift key.");
+                                                     "selected when drawing a rectangle while pressing the Control or Shift key\n"
+                                                     "or when the crosshairs are active and pressing 'a'");
 
   annot_sidemenu_table = new QTableWidget;
   annot_sidemenu_table->setSelectionMode(QAbstractItemView::NoSelection);
@@ -885,7 +886,8 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   vlayout7_2->addLayout(flayout7_2);
   vlayout7_2->addWidget(annot_sidemenu_table, 1000);
   annot_sidemenu_table->setToolTip("These are the descriptions of the annotations which will appear and\n"
-                                   "can be selected when drawing a rectangle while pressing the Ctrl key.");
+                                   "can be selected when drawing a rectangle while pressing the Ctrl key\n"
+                                   "or when the crosshairs are active and pressing 'a'");
 
   QFrame *vline7_1 = new QFrame;
   vline7_1->setFrameShape(QFrame::VLine);
