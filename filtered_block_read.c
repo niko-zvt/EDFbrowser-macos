@@ -36,7 +36,7 @@
 
 int edf_hdl=-1, edf_chan=0, *edf_ibuf=NULL;
 
-struct edf_hdr_struct edfhdr;
+edflib_hdr_t edfhdr;
 
 #endif
 

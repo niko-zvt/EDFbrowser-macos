@@ -162,7 +162,7 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
 
   double status_sample_duration;
 
-  struct edf_hdr_struct hdr;
+  edflib_hdr_t hdr;
 
   annotlist_t annot_list;
 

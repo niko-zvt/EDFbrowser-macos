@@ -104,7 +104,7 @@ void UI_CardiotrakEDFwindow::select_file_button_pressed()
        path_out[MAX_PATH_LENGTH]="",
        str[4096]={""};
 
-  struct edf_hdr_struct hdr;
+  edflib_hdr_t hdr;
 
   for(i=0; i<MAX_SIGNALS; i++)
   {
