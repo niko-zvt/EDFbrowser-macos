@@ -61,7 +61,7 @@ win32 {
 }
 
 
-QMAKE_CFLAGS += -Wall -Wextra -Wshadow -Wformat-nonliteral -Wformat-security -Wtype-limits -Wfatal-errors -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE
+QMAKE_CFLAGS += -Wall -Wextra -Wshadow -Wformat-nonliteral -Wformat-security -Wtype-limits -Wfatal-errors -Wdeprecated-declarations -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE
 
 QMAKE_CXXFLAGS += -Wextra -Wshadow -Wformat -Wformat-nonliteral -Wformat-security -Wtype-limits -Wfatal-errors -Wdeprecated-declarations
 

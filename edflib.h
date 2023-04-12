@@ -244,7 +244,11 @@ typedef struct edf_hdr_struct
   char      recording[81];                                /* null-terminated string, contains recording field of header, is always empty when filetype is EDFPLUS or BDFPLUS */
   char      patientcode[81];                              /* null-terminated string, is always empty when filetype is EDF or BDF */
   char      sex[16];                                      /* null-terminated string, is always empty when filetype is EDF or BDF */
+#if defined(__GNUC__)
+  char      gender[16] __attribute__ ((deprecated ("use sex")));      /* DEPRECATED!! use "sex" */
+#else
   char      gender[16];  /* DEPRECATED!! use "sex" */
+#endif
   char      birthdate[16];                                /* null-terminated string, is always empty when filetype is EDF or BDF */
   int       birthdate_day;                                /* 1 - 31 */
   int       birthdate_month;                              /* 1 - 12 */
@@ -507,7 +511,11 @@ EDFLIB_API int edf_set_sex(int handle, int sex);
  * and before the first sample write action
  */
 
+#if defined(__GNUC__)
+EDFLIB_API int edf_set_gender(int handle, int sex) __attribute__ ((deprecated ("edf_set_sex()")));
+#else
 EDFLIB_API int edf_set_gender(int handle, int sex);
+#endif
 /* DEPRECATED!! USE edf_set_sex()
  * Sets the sex. 1 is male, 0 is female.
  * Returns 0 on success, otherwise -1

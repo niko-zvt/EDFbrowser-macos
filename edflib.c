@@ -399,7 +399,14 @@ EDFLIB_API int edfopen_file_readonly(const char *path, edflib_hdr_t *edfhdr, int
   {
     edflib_strlcpy(edfhdr->patientcode, hdr->plus_patientcode, 81);
     edflib_strlcpy(edfhdr->sex, hdr->plus_sex, 16);
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
     edflib_strlcpy(edfhdr->gender, hdr->plus_sex, 16);
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
     edflib_strlcpy(edfhdr->birthdate, hdr->plus_birthdate, 16);
     edfhdr->birthdate_day = hdr->plus_birthdate_day;
     edfhdr->birthdate_month = hdr->plus_birthdate_month;
