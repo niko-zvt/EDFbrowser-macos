@@ -776,7 +776,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
       if(annot->duration[0] == 0)
       {
-        edfwrite_annotation_utf8(hdl, annot->onset / 1000LL, -1LL, annot->description);
+        edfwrite_annotation_utf8_hr(hdl, annot->onset / 10LL, -1LL, annot->description);
       }
       else
       {
@@ -822,7 +822,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
           strlcat(str, "0000", 1024);
         }
 
-        edfwrite_annotation_utf8(hdl, annot->onset / 1000LL, atoi(str), annot->description);
+        edfwrite_annotation_utf8_hr(hdl, annot->onset / 10LL, atoi(str), annot->description);
       }
     }
 

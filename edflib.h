@@ -223,7 +223,7 @@ typedef struct edf_annotation_struct
 {                                                       /* this structure is used for annotations */
         long long onset;                                /* onset time of the event, expressed in units of 100 nanoseconds and relative to the start of the file */
         long long duration_l;                           /* duration time, expressed in units of 100 nanoseconds, a value of -10000000 means unused (duration not present) */
-        char duration[16];                              /* duration time, this is a null-terminated ASCII text-string */
+        char duration[20];                              /* duration time, this is a null-terminated ASCII text-string */
         char annotation[EDFLIB_MAX_ANNOTATION_LEN + 1]; /* description of the event in UTF-8, this is a null terminated string */
 } edflib_annotation_t;
 
@@ -512,7 +512,7 @@ EDFLIB_API int edf_set_sex(int handle, int sex);
  */
 
 #if defined(__GNUC__)
-EDFLIB_API int edf_set_gender(int handle, int sex) __attribute__ ((deprecated ("edf_set_sex()")));
+EDFLIB_API int edf_set_gender(int handle, int sex) __attribute__ ((deprecated ("use edf_set_sex()")));
 #else
 EDFLIB_API int edf_set_gender(int handle, int sex);
 #endif
@@ -656,8 +656,24 @@ EDFLIB_API int edf_blockwrite_digital_samples(int handle, int *buf);
  * Returns 0 on success, otherwise -1
  */
 
-EDFLIB_API int edfwrite_annotation_utf8(int handle, long long onset, long long duration, const char *description);
+EDFLIB_API int edfwrite_annotation_utf8_hr(int handle, long long onset, long long duration, const char *description);
 /* writes an annotation/event to the file
+ * onset is relative to the start of the file
+ * onset and duration are in units of 1 microSecond     resolution is 0.000001 second
+ * for example: 34.071 seconds must be written as 34071000
+ * if duration is unknown or not applicable: set a negative number (-1)
+ * description is a null-terminated UTF8-string containing the text that describes the event
+ * This function is optional and can be called only after opening a file in writemode
+ * and before closing the file
+ */
+
+#if defined(__GNUC__)
+EDFLIB_API int edfwrite_annotation_utf8(int handle, long long onset, long long duration, const char *description) __attribute__ ((deprecated ("use edfwrite_annotation_utf8_hr()")));
+#else
+EDFLIB_API int edfwrite_annotation_utf8(int handle, long long onset, long long duration, const char *description);
+#endif
+/* DEPRECATED!! USE edfwrite_annotation_utf8_hr()
+ * writes an annotation/event to the file
  * onset is relative to the start of the file
  * onset and duration are in units of 100 microSeconds!     resolution is 0.0001 second!
  * for example: 34.071 seconds must be written as 340710
@@ -667,8 +683,24 @@ EDFLIB_API int edfwrite_annotation_utf8(int handle, long long onset, long long d
  * and before closing the file
  */
 
-EDFLIB_API int edfwrite_annotation_latin1(int handle, long long onset, long long duration, const char *description);
+EDFLIB_API int edfwrite_annotation_latin1_hr(int handle, long long onset, long long duration, const char *description);
 /* writes an annotation/event to the file
+ * onset is relative to the start of the file
+ * onset and duration are in units of 1 microSecond     resolution is 0.000001 second
+ * for example: 34.071 seconds must be written as 34071000
+ * if duration is unknown or not applicable: set a negative number (-1)
+ * description is a null-terminated Latin1-string containing the text that describes the event
+ * This function is optional and can be called only after opening a file in writemode
+ * and before closing the file
+ */
+
+#if defined(__GNUC__)
+EDFLIB_API int edfwrite_annotation_latin1(int handle, long long onset, long long duration, const char *description) __attribute__ ((deprecated ("use edfwrite_annotation_latin1_hr()")));
+#else
+EDFLIB_API int edfwrite_annotation_latin1(int handle, long long onset, long long duration, const char *description);
+#endif
+/* DEPRECATED!! USE edfwrite_annotation_latin1_hr()
+ * writes an annotation/event to the file
  * onset is relative to the start of the file
  * onset and duration are in units of 100 microSeconds!     resolution is 0.0001 second!
  * for example: 34.071 seconds must be written as 340710

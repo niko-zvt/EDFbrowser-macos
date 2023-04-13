@@ -447,7 +447,7 @@ void UI_BI98002EDFwindow::SelectFileButton()
 
   progress.reset();
 
-  edfwrite_annotation_latin1(hdl, 0LL, -1LL, "Recording starts");
+  edfwrite_annotation_latin1_hr(hdl, 0LL, -1LL, "Recording starts");
 
   fseeko(evtfile, 0LL, SEEK_SET);
 
@@ -489,13 +489,13 @@ void UI_BI98002EDFwindow::SelectFileButton()
       {
         if(strlen(str) > 9)
         {
-          edfwrite_annotation_latin1(hdl, (starttime_second + (starttime_minute * 60) + (starttime_hour * 3600)) * 10000, -1, str + 9);
+          edfwrite_annotation_latin1_hr(hdl, (starttime_second + (starttime_minute * 60) + (starttime_hour * 3600)) * 1000000LL, -1, str + 9);
         }
       }
     }
   }
 
-  edfwrite_annotation_latin1(hdl, blocks_written * 10000LL, -1LL, "Recording ends");
+  edfwrite_annotation_latin1_hr(hdl, blocks_written * 1000000LL, -1LL, "Recording ends");
 
   edfclose_file(hdl);
 

@@ -1838,13 +1838,13 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
 
             trim_spaces(annotation);
 
-            onset *= 10000LL;
+            onset *= 1000000LL;
 
             onset /= evt_sf[k];
 
             if(char_encoding == 1)
             {
-              if(edfwrite_annotation_latin1(edf_hdl, onset, -1LL, annotation))
+              if(edfwrite_annotation_latin1_hr(edf_hdl, onset, -1LL, annotation))
               {
                 progress.reset();
                 textEdit1->append("An error occurred while writing the events to the EDF-file.\n");
@@ -1854,7 +1854,7 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
 
             if(char_encoding == 2)
             {
-              if(edfwrite_annotation_utf8(edf_hdl, onset, -1LL, annotation))
+              if(edfwrite_annotation_utf8_hr(edf_hdl, onset, -1LL, annotation))
               {
                 progress.reset();
                 textEdit1->append("An error occurred while writing the events to the EDF-file.\n");

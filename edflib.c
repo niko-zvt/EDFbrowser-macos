@@ -71,7 +71,7 @@
 #define EDFLIB_WRITE_MAX_ANNOTATION_LEN  (40)
 
 /* bytes in datarecord for EDF annotations, must be an integer multiple of three and two */
-#define EDFLIB_ANNOTATION_BYTES  (114)
+#define EDFLIB_ANNOTATION_BYTES  (120)
 
 /* for writing only */
 #define EDFLIB_MAX_ANNOTATION_CHANNELS  (64)
@@ -155,7 +155,7 @@ typedef struct
 {
   long long onset;
   long long duration_l;
-  char duration[16];
+  char duration[20];
   char annotation[EDFLIB_MAX_ANNOTATION_LEN + 1];
 } edf_read_annotationblock_t;
 
@@ -524,8 +524,6 @@ EDFLIB_API int edfclose_file(int handle)
 
       for(k=0; k<hdr->annots_in_file; k++)
       {
-        annot2 = write_annotationslist[handle] + k;
-
         p = edflib_fprint_ll_number_nonlocalized(hdr->file_hdl, (hdr->datarecords * hdr->long_data_record_duration + hdr->starttime_offset) / EDFLIB_TIME_DIMENSION, 0, 1);
 
         if((hdr->long_data_record_duration % EDFLIB_TIME_DIMENSION) || (hdr->starttime_offset))
@@ -584,7 +582,7 @@ EDFLIB_API int edfclose_file(int handle)
     {
       annot2 = write_annotationslist[handle] + k;
 
-      annot2->onset += hdr->starttime_offset / 1000LL;
+      annot2->onset += hdr->starttime_offset / 10LL;
 
       p = 0;
 
@@ -608,23 +606,23 @@ EDFLIB_API int edfclose_file(int handle)
         str[p++] =  0;
       }
 
-      n = edflib_snprint_ll_number_nonlocalized(str + p, annot2->onset / 10000LL, 0, 1, (EDFLIB_ANNOTATION_BYTES * 2) - p);
+      n = edflib_snprint_ll_number_nonlocalized(str + p, annot2->onset / 1000000LL, 0, 1, (EDFLIB_ANNOTATION_BYTES * 2) - p);
       p += n;
-      if(annot2->onset % 10000LL)
+      if(annot2->onset % 1000000LL)
       {
         str[p++] = '.';
-        n = edflib_snprint_ll_number_nonlocalized(str + p, annot2->onset % 10000LL, 4, 0, (EDFLIB_ANNOTATION_BYTES * 2) - p);
+        n = edflib_snprint_ll_number_nonlocalized(str + p, annot2->onset % 1000000LL, 6, 0, (EDFLIB_ANNOTATION_BYTES * 2) - p);
         p += n;
       }
       if(annot2->duration>=0LL)
       {
         str[p++] = 21;
-        n = edflib_snprint_ll_number_nonlocalized(str + p, annot2->duration / 10000LL, 0, 0, (EDFLIB_ANNOTATION_BYTES * 2) - p);
+        n = edflib_snprint_ll_number_nonlocalized(str + p, annot2->duration / 1000000LL, 0, 0, (EDFLIB_ANNOTATION_BYTES * 2) - p);
         p += n;
-        if(annot2->duration % 10000LL)
+        if(annot2->duration % 1000000LL)
         {
           str[p++] = '.';
-          n = edflib_snprint_ll_number_nonlocalized(str + p, annot2->duration % 10000LL, 4, 0, (EDFLIB_ANNOTATION_BYTES * 2) - p);
+          n = edflib_snprint_ll_number_nonlocalized(str + p, annot2->duration % 1000000LL, 6, 0, (EDFLIB_ANNOTATION_BYTES * 2) - p);
           p += n;
         }
       }
@@ -1132,7 +1130,7 @@ EDFLIB_API int edf_get_annotation(int handle, int n, edflib_annotation_t *annot)
 
   annot->onset = (annotationslist[handle] + n)->onset;
   annot->duration_l = (annotationslist[handle] + n)->duration_l;
-  edflib_strlcpy(annot->duration, (annotationslist[handle] + n)->duration, 16);
+  edflib_strlcpy(annot->duration, (annotationslist[handle] + n)->duration, 20);
   edflib_strlcpy(annot->annotation, (annotationslist[handle] + n)->annotation, EDFLIB_MAX_ANNOTATION_LEN + 1);
 
   return 0;
@@ -2834,22 +2832,22 @@ static int edflib_get_annotations(edfhdrblock_t *edfhdr, int hdl, int read_annot
       annots_in_tal,
       samplesize=2;
 
-  char *scratchpad,
-       *cnv_buf,
-       *time_in_txt,
-       *duration_in_txt;
+  char *scratchpad=NULL,
+       *cnv_buf=NULL,
+       *time_in_txt=NULL,
+       *duration_in_txt=NULL;
 
 
   long long data_record_duration,
             elapsedtime,
             time_tmp=0;
 
-  FILE *inputfile;
+  FILE *inputfile=NULL;
 
-  edfparamblock_t *edfparam;
+  edfparamblock_t *edfparam=NULL;
 
   edf_read_annotationblock_t *new_annotation=NULL,
-                             *malloc_list;
+                             *malloc_list=NULL;
 
   inputfile = edfhdr->file_hdl;
   edfsignals = edfhdr->edfsignals;
@@ -2882,6 +2880,8 @@ static int edflib_get_annotations(edfhdrblock_t *edfhdr, int hdl, int read_annot
   {
     if(max_tal_ln<edfparam[annot_ch[i]].smp_per_record * samplesize)  max_tal_ln = edfparam[annot_ch[i]].smp_per_record * samplesize;
   }
+
+  max_tal_ln += 2;
 
   if(max_tal_ln<128)  max_tal_ln = 128;
 
@@ -3101,7 +3101,7 @@ static int edflib_get_annotations(edfhdrblock_t *edfhdr, int hdl, int read_annot
 
                 if(duration)
                 {
-                  edflib_strlcpy(new_annotation->duration, duration_in_txt, 16);
+                  edflib_strlcpy(new_annotation->duration, duration_in_txt, 20);
                   new_annotation->duration_l = edflib_get_long_time(duration_in_txt);
                 }
                 else
@@ -5556,6 +5556,14 @@ EDFLIB_API int edf_set_startdatetime(int handle, int startdate_year, int startda
 
 EDFLIB_API int edfwrite_annotation_utf8(int handle, long long onset, long long duration, const char *description)
 {
+  if(duration > 0LL)  duration *= 100LL;
+
+  return edfwrite_annotation_utf8_hr(handle, onset * 100LL, duration, description);
+}
+
+
+EDFLIB_API int edfwrite_annotation_utf8_hr(int handle, long long onset, long long duration, const char *description)
+{
   int i;
 
   edf_write_annotationblock_t *list_annot, *malloc_list;
@@ -5609,6 +5617,14 @@ EDFLIB_API int edfwrite_annotation_utf8(int handle, long long onset, long long d
 
 
 EDFLIB_API int edfwrite_annotation_latin1(int handle, long long onset, long long duration, const char *description)
+{
+  if(duration > 0LL)  duration *= 100LL;
+
+  return edfwrite_annotation_latin1_hr(handle, onset * 100LL, duration, description);
+}
+
+
+EDFLIB_API int edfwrite_annotation_latin1_hr(int handle, long long onset, long long duration, const char *description)
 {
   edf_write_annotationblock_t *list_annot, *malloc_list;
 

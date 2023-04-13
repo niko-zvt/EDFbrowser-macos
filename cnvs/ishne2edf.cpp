@@ -839,7 +839,7 @@ struct
 
     onset += *((unsigned short *)(rbuf + 2));
 
-    edfwrite_annotation_latin1(edf_hdl, (onset * 10000LL) / sf, -1, annot_descr);
+    edfwrite_annotation_latin1_hr(edf_hdl, (onset * 1000000LL) / sf, -1, annot_descr);
   }
 
   textEdit1->append("Done\n");

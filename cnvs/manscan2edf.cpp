@@ -662,7 +662,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
 ////////////////// end of conversion ///////////////////////////////////////////
 
-    if(edfwrite_annotation_latin1(hdl, 0LL, -1LL, "Recording starts"))
+    if(edfwrite_annotation_latin1_hr(hdl, 0LL, -1LL, "Recording starts"))
     {
       textEdit1->append("Error: edfwrite_annotation_latin1()\n");
       fclose(header_inputfile);
@@ -676,7 +676,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
     for(i=0; i<segment_properties->ev_cnt; i++)
     {
-      if(edfwrite_annotation_latin1(hdl, segment_properties->ev_onset[i], segment_properties->ev_duration[i], segment_properties->ev_description[i]))
+      if(edfwrite_annotation_latin1_hr(hdl, segment_properties->ev_onset[i], segment_properties->ev_duration[i], segment_properties->ev_description[i]))
       {
         textEdit1->append("Error: edfwrite_annotation_latin1()\n");
         fclose(header_inputfile);
@@ -689,7 +689,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       }
     }
 
-    if(edfwrite_annotation_latin1(hdl, (long long)blocks * 10000LL, -1LL, "Recording ends"))
+    if(edfwrite_annotation_latin1_hr(hdl, (long long)blocks * 1000000LL, -1LL, "Recording ends"))
     {
       textEdit1->append("Error: edfwrite_annotation_latin1()\n");
       fclose(header_inputfile);
@@ -832,7 +832,7 @@ int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int se
             continue;
           }
 
-          onset = ((long long)startsmpl * 10000LL) / sf;
+          onset = ((long long)startsmpl * 1000000LL) / sf;
 
           if(durationsmpl < 2)
           {
@@ -840,7 +840,7 @@ int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int se
           }
           else
           {
-            duration = ((long long)durationsmpl * 10000LL) / sf;
+            duration = ((long long)durationsmpl * 1000000LL) / sf;
           }
 
           strlcpy(segprop->ev_description[ev_cnt], annot_descr, MBIMAXEVLEN + 1);

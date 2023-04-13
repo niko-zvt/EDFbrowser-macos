@@ -570,7 +570,7 @@ unsigned int fmt_chunk_offset,
   edf_set_startdatetime(edf_hdl, StartDatetimeedit->date().year(), StartDatetimeedit->date().month(), StartDatetimeedit->date().day(),
                         StartDatetimeedit->time().hour(), StartDatetimeedit->time().minute(), StartDatetimeedit->time().second());
 
-  edfwrite_annotation_latin1(edf_hdl, 0LL, -1, "Recording starts");
+  edfwrite_annotation_latin1_hr(edf_hdl, 0LL, -1, "Recording starts");
 
 /***************** start conversion **************************************/
 
@@ -680,7 +680,7 @@ unsigned int fmt_chunk_offset,
 
   progress.reset();
 
-  edfwrite_annotation_latin1(edf_hdl, (blocks * 10000LL) / sf_divider, -1, "Recording ends");
+  edfwrite_annotation_latin1_hr(edf_hdl, (blocks * 1000000LL) / sf_divider, -1, "Recording ends");
 
   edfclose_file(edf_hdl);
 

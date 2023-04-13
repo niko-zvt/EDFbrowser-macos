@@ -670,7 +670,7 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
     }
   }
 
-  edfwrite_annotation_latin1(hdl_out, 0LL, -1LL, "Recording starts");
+  edfwrite_annotation_latin1_hr(hdl_out, 0LL, -1LL, "Recording starts");
 
   j = edfplus_annotation_size(&annot_list);
 
@@ -680,17 +680,17 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
 
     if(annot_ptr->duration[0] == 0)
     {
-      edfwrite_annotation_utf8(hdl_out, annot_ptr->onset / 1000LL, -1LL, annot_ptr->description);
+      edfwrite_annotation_utf8_hr(hdl_out, annot_ptr->onset / 10LL, -1LL, annot_ptr->description);
     }
     else
     {
-      edfwrite_annotation_utf8(hdl_out, annot_ptr->onset / 1000LL, (long long)(atof(annot_ptr->duration) * 10000 + 0.5), annot_ptr->description);
+      edfwrite_annotation_utf8_hr(hdl_out, annot_ptr->onset / 10LL, annot_ptr->long_duration / 10LL, annot_ptr->description);
     }
   }
 
   free(buf);
 
-  edfwrite_annotation_latin1(hdl_out, hdr.datarecords_in_file * 10000LL, -1LL, "Recording ends");
+  edfwrite_annotation_latin1_hr(hdl_out, hdr.datarecords_in_file * 1000000LL, -1LL, "Recording ends");
 
 /////////////////// choose datarecord duration /////////////////////////////////////////////
 

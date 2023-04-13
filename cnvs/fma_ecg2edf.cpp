@@ -517,7 +517,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
   edf_set_startdatetime(hdl_out, StartDatetimeedit->date().year(), StartDatetimeedit->date().month(), StartDatetimeedit->date().day(),
                         StartDatetimeedit->time().hour(), StartDatetimeedit->time().minute(), StartDatetimeedit->time().second());
 
-  edfwrite_annotation_latin1(hdl_out, 0LL, -1, "Recording starts");
+  edfwrite_annotation_latin1_hr(hdl_out, 0LL, -1, "Recording starts");
 
 /***************** start conversion **************************************/
 
@@ -640,7 +640,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
 
   progress.reset();
 
-  edfwrite_annotation_latin1(hdl_out, blocks * 10000LL, -1, "Recording ends");
+  edfwrite_annotation_latin1_hr(hdl_out, blocks * 1000000LL, -1, "Recording ends");
 
   edfclose_file(hdl_out);
 

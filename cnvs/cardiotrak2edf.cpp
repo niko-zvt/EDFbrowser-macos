@@ -412,7 +412,7 @@ void UI_CardiotrakEDFwindow::select_file_button_pressed()
     {
       if(buf_in[mrk_chn_idx][r] & (1 << 0))
       {
-        if(edfwrite_annotation_utf8(hdl_out, ((i * hdr.datarecord_duration) + (r * (hdr.datarecord_duration / smpls_in[mrk_chn_idx]))) / 1000, -1, "User marker"))
+        if(edfwrite_annotation_utf8_hr(hdl_out, ((i * hdr.datarecord_duration) + (r * (hdr.datarecord_duration / smpls_in[mrk_chn_idx]))) / 10LL, -1, "User marker"))
         {
           logger_append_txt("error: edfwrite_annotation_utf8()\n\n");
           goto OUT_ERROR_1;
@@ -424,7 +424,7 @@ void UI_CardiotrakEDFwindow::select_file_button_pressed()
     {
       if(buf_in[pace_chn_idx][r] & (1 << 15))
       {
-        if(edfwrite_annotation_utf8(hdl_out, ((i * hdr.datarecord_duration) / 1000) + ((buf_in[pace_chn_idx][r] & 0x3ff) * 10LL), -1, "Pace"))
+        if(edfwrite_annotation_utf8_hr(hdl_out, ((i * hdr.datarecord_duration) / 10LL) + ((buf_in[pace_chn_idx][r] & 0x3ff) * 1000LL), -1, "Pace"))
         {
           logger_append_txt("error: edfwrite_annotation_utf8()\n\n");
           goto OUT_ERROR_1;

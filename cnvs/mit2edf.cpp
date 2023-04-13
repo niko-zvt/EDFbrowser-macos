@@ -1323,11 +1323,11 @@ OUT1:
 
                 if(annot_code < 42)
                 {
-                  edfwrite_annotation_latin1(hdl, (tc * 10000LL) / mit_hdr.sf_base_fl, -1, annotdescrlist[annot_code]);
+                  edfwrite_annotation_latin1_hr(hdl, (tc * 1000000LL) / mit_hdr.sf_base_fl, -1, annotdescrlist[annot_code]);
                 }
                 else
                 {
-                  edfwrite_annotation_latin1(hdl, (tc * 10000LL) / mit_hdr.sf_base_fl, -1, "user-defined");
+                  edfwrite_annotation_latin1_hr(hdl, (tc * 1000000LL) / mit_hdr.sf_base_fl, -1, "user-defined");
                 }
 
                 total_annots++;

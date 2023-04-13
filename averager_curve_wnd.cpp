@@ -453,10 +453,10 @@ void UI_AverageCurveWindow::export_edf(void)
     }
   }
 
-  edfwrite_annotation_latin1(edf_hdl,
-                             (avg_period * 10) / avg_trigger_position_ratio,
-                             -1,
-                             avg_annotation);
+  edfwrite_annotation_latin1_hr(edf_hdl,
+                               (avg_period * 1000) / avg_trigger_position_ratio,
+                               -1,
+                               avg_annotation);
 
   edfclose_file(edf_hdl);
 }

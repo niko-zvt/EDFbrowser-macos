@@ -1151,7 +1151,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     for(i=0; i<glob_msr_data.n_pace_spike; i++)
     {
-      edfwrite_annotation_latin1(hdl, glob_msr_data.pace_spike_offset[i] * 10, -1LL, "Pace");
+      edfwrite_annotation_latin1_hr(hdl, glob_msr_data.pace_spike_offset[i] * 1000LL, -1LL, "Pace");
     }
   }
 
