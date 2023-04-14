@@ -12,7 +12,9 @@
    is pressed, the delta of the amplitude will be printed into the annotation's description.
 
  - Added the possibility to configure the resolution (milliSecond or microSecond) for the annotationslist,
-   the annotation editor, the fileposition indicator and timescale indicator.
+   the annotation editor, the fileposition indicator and timescale indicator and the annotation markers.
+
+ - various bugfixes and code cleanup.
 
 
  version 2.01      March 18, 2023
