@@ -152,9 +152,9 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
       new_sf,
       samplerate_divider;
 
-  char str[2048],
+  char str[2048]={""},
        triggerlabel[24][64],
-       outputfilename[MAX_PATH_LENGTH];
+       outputfilename[MAX_PATH_LENGTH]={""};
 
   long long datarecords,
             trigger_cnt,
@@ -607,9 +607,9 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
                   }
                   if(!strcmp(annot_ptr->description, triggerlabel[j]))
                   {
-                    snprintf(str, 2048, "%.6f", ((datarecords * EDFLIB_TIME_DIMENSION) + (i * status_sample_duration) - annot_ptr->onset) / (double)EDFLIB_TIME_DIMENSION);
-                    str[15] = 0;
-                    strlcpy(annot_ptr->duration, str, 16);
+                    snprintf(str, 2048, "%.7f", ((datarecords * EDFLIB_TIME_DIMENSION) + (i * status_sample_duration) - annot_ptr->onset) / (double)EDFLIB_TIME_DIMENSION);
+                    str[19] = 0;
+                    strlcpy(annot_ptr->duration, str, 20);
                     annot_ptr->long_duration = edfplus_annotation_get_long_from_number(str);
                     break;
                   }
@@ -654,9 +654,10 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
                   }
                   if(!strcmp(annot_ptr->description, triggerlabel[j]))
                   {
-                    snprintf(str, 2048, "%.6f", ((datarecords * EDFLIB_TIME_DIMENSION) + (i * status_sample_duration) - annot_ptr->onset) / (double)EDFLIB_TIME_DIMENSION);
-                    str[15] = 0;
-                    strlcpy(annot_ptr->duration, str, 16);
+                    snprintf(str, 2048, "%.7f", ((datarecords * EDFLIB_TIME_DIMENSION) + (i * status_sample_duration) - annot_ptr->onset) / (double)EDFLIB_TIME_DIMENSION);
+                    str[19] = 0;
+                    strlcpy(annot_ptr->duration, str, 20);
+                    annot_ptr->long_duration = edfplus_annotation_get_long_from_number(str);
                     break;
                   }
                 }
@@ -678,13 +679,13 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
   {
     annot_ptr = edfplus_annotation_get_item(&annot_list, i);
 
-    if(annot_ptr->duration[0] == 0)
+    if(annot_ptr->long_duration > 0LL)
     {
-      edfwrite_annotation_utf8_hr(hdl_out, annot_ptr->onset / 10LL, -1LL, annot_ptr->description);
+      edfwrite_annotation_utf8_hr(hdl_out, annot_ptr->onset / 10LL, annot_ptr->long_duration / 10LL, annot_ptr->description);
     }
     else
     {
-      edfwrite_annotation_utf8_hr(hdl_out, annot_ptr->onset / 10LL, annot_ptr->long_duration / 10LL, annot_ptr->description);
+      edfwrite_annotation_utf8_hr(hdl_out, annot_ptr->onset / 10LL, -1LL, annot_ptr->description);
     }
   }
 

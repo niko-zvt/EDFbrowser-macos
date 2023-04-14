@@ -75,8 +75,9 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
 
   long long data_record_duration,
             elapsedtime,
-            time_tmp=0LL,
-            nk_trigger_sample_duration=0LL;
+            time_tmp=0LL;
+
+  double nk_trigger_sample_duration=1;
 
   FILE *inputfile=NULL;
 
@@ -150,7 +151,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
 
               nk_triggers_smpls = edfparam[nk_triggers_channel].smp_per_record;
 
-              nk_trigger_sample_duration = data_record_duration / (long long)nk_triggers_smpls;
+              nk_trigger_sample_duration = data_record_duration / (double)nk_triggers_smpls;
 
               strlcpy(nk_triggerlabel[0], "CAL mode", 32);
               strlcpy(nk_triggerlabel[1], "RESET condition", 32);
@@ -440,7 +441,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
 
                 if(duration)
                 {
-                  strlcpy(annotblock.duration, duration_in_txt, MAX_ANNOTATION_LEN_II + 1);
+                  strlcpy(annotblock.duration, duration_in_txt, 20);
 
                   annotblock.long_duration = get_long_time(duration_in_txt);
                 }
@@ -494,7 +495,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
 
             for(j=0; j<n; j++)
             {
-              if(j==15)  break;
+              if(j==19)  break;
               duration_in_txt[j] = scratchpad[j];
               if((duration_in_txt[j]<32)||(duration_in_txt[j]>126))
               {
@@ -553,7 +554,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
 
               memset(&annotblock, 0, sizeof(annotblck_t));
               annotblock.edfhdr = edf_hdr;
-              annotblock.onset = ((long long)i * data_record_duration) + ((long long)k * nk_trigger_sample_duration);
+              annotblock.onset = ((long long)i * data_record_duration) + (k * nk_trigger_sample_duration) + 0.5;
               strlcpy(annotblock.description, nk_triggerlabel[j], MAX_ANNOTATION_LEN_II + 1);
               annotblock.ident = (1 << ANNOT_ID_NK_TRIGGER);
 

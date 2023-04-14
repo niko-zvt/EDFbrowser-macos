@@ -46,7 +46,7 @@ typedef struct
 {
   void *edfhdr;
   long long onset;
-  char duration[16];
+  char duration[20];
   long long long_duration;
   long long file_offset;
   int datrec;
