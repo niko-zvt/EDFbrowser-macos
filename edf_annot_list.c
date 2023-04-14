@@ -567,13 +567,14 @@ int edfplus_annotation_get_max_annotation_strlen(annotlist_t *list)
 
 long long edfplus_annotation_get_long_from_number(const char *str)
 {
-  int i, len, hasdot=0, dotposition=0;
+  int i, len, hasdot=0, dotposition=0, hassign=0;
 
   long long value=0, radix;
 
   if((str[0] == '+') || (str[0] == '-'))
   {
     str++;
+    hassign++;
   }
 
   len = strlen(str);
@@ -617,7 +618,10 @@ long long edfplus_annotation_get_long_from_number(const char *str)
     }
   }
 
-  if(str[-1]=='-')  value = -value;
+  if(hassign)
+  {
+    if(str[-1]=='-')  value = -value;
+  }
 
   return value;
 }
