@@ -44,7 +44,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       annot_list_sz=0,
       annot_text_stack_idx=0,
       viewtimestr_end_x=0,
-      pagetimestr_start_x=0;
+      pagetimestr_start_x=0,
+      precision=3,
+      prec_scale=10000;
 
   double mono_font_pixel_height=20,
          mono_font_pixel_width=12,
@@ -126,6 +128,17 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   vertical_distance = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
 
   painter->fillRect(0, 0, w, h, backgroundcolor);
+
+  if(mainwindow->annot_editor_highres)
+  {
+    precision = 6;
+    prec_scale = 10;
+  }
+  else
+  {
+    precision = 3;
+    prec_scale = 10000;
+  }
 
   if(mainwindow->show_annot_markers)
   {
@@ -863,9 +876,12 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               former_marker_x = marker_x;
             }
 
-            if((annot->duration[0]) && (mainwindow->annotations_show_duration))
+            if((annot->long_duration > 0LL) && (mainwindow->annotations_show_duration))
             {
-              strlcpy(str1, annot->duration, 600);
+              snprintf(str1, 600, "%i.%0*i",
+                      (int)(annot->long_duration / TIME_FIXP_SCALING),
+                      precision,
+                      (int)(((annot->long_duration % TIME_FIXP_SCALING) / prec_scale)));
 
               remove_trailing_zeros(str1);
 
@@ -889,28 +905,31 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             {
               if(l_tmp < 0LL)
               {
-                snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "-%i:%02i:%02i.%04i",
+                snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "-%i:%02i:%02i.%0*i",
                         (int)(((-(l_tmp)) / TIME_FIXP_SCALING)/ 3600LL),
                         (int)((((-(l_tmp)) / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)(((-(l_tmp)) / TIME_FIXP_SCALING) % 60LL),
-                        (int)((((-(l_tmp)) % TIME_FIXP_SCALING) / 1000LL)));
+                        precision,
+                        (int)((((-(l_tmp)) % TIME_FIXP_SCALING) / prec_scale)));
               }
               else
               {
-                snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "%i:%02i:%02i.%04i",
+                snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "%i:%02i:%02i.%0*i",
                         (int)((l_tmp / TIME_FIXP_SCALING)/ 3600LL),
                         (int)(((l_tmp / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)((l_tmp / TIME_FIXP_SCALING) % 60LL),
-                        (int)(((l_tmp % TIME_FIXP_SCALING) / 1000LL)));
+                        precision,
+                        (int)(((l_tmp % TIME_FIXP_SCALING) / prec_scale)));
               }
             }
             else
             {
-              snprintf(str1, MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%04i",
+              snprintf(str1, MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%0*i",
                       (int)((((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) / TIME_FIXP_SCALING)/ 3600) % 24),
                       (int)((((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) / TIME_FIXP_SCALING) % 3600) / 60),
                       (int)(((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) / TIME_FIXP_SCALING) % 60),
-                      (int)(((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) % TIME_FIXP_SCALING) / 1000LL));
+                      precision,
+                      (int)(((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) % TIME_FIXP_SCALING) / prec_scale));
             }
 
             remove_trailing_zeros(str1);

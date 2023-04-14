@@ -97,7 +97,14 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(edfhdrblck_t *e_hdr, QWidget *w
   duration_spinbox = new QDoubleSpinBox;
   duration_spinbox->setRange(-1.0, 10000000.0);
   duration_spinbox->setSingleStep(1.0);
-  duration_spinbox->setDecimals(3);
+  if(mainwindow->annot_editor_highres)
+  {
+    duration_spinbox->setDecimals(6);
+  }
+  else
+  {
+    duration_spinbox->setDecimals(3);
+  }
   duration_spinbox->setSuffix(" sec");
   duration_spinbox->setValue(-1.0);
   duration_spinbox->setToolTip("Duration of the event in seconds, -1 if not applicable)");
@@ -873,11 +880,13 @@ void UI_AnnotationEditwindow::set_high_resolution(int val)
   if(val)
   {
     onset_us_spinbox->setEnabled(true);
+    duration_spinbox->setDecimals(6);
   }
   else
   {
     onset_us_spinbox->setEnabled(false);
     onset_us_spinbox->setValue(0);
+    duration_spinbox->setDecimals(3);
   }
 }
 
