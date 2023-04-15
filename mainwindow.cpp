@@ -4499,8 +4499,7 @@ void UI_Mainwindow::show_kb_shortcuts()
    "Ctrl++\t\tzoom in horizontally\n"
    "Ctrl+-\t\tzoom out horizontally\n"
    "F1 - F8\t\tload predefined montage\n"
-   "Alt+Shift+C\t\tcrosshair\n"
-   "(repeat for second crosshair)\n"
+   "Alt+Shift+C\tcrosshair (repeat for second crosshair)\n"
    "Esc\t\tremove crosshairs or floating ruler\n"
 
    "\nafter zooming in by drawing a rectangle:\n"
@@ -4521,10 +4520,14 @@ void UI_Mainwindow::show_kb_shortcuts()
    "Ctrl+Mousewheel\tzoom in or out horizontally\n"
    "Keep middle mousebutton pressed to drag horizontally\n"
 
-   "\nCtrl+Space\t\tToggle Playback or Pause\n"
+   "\nCtrl+Space\tToggle Playback or Pause\n"
    "Ctrl+Shift+V\tToggle Playback with video\n"
 
-   "\nAnnotation editor user buttons: press 1, 2, 3, etc.\n",
+   "\nAnnotation editor:\n"
+   "user buttons: press 1, 2, 3, etc.\n"
+   "Shift+draw rectangle\tcreate annotation\n"
+   "Ctrl+draw rectangle\tcreate signal linked annotation\n"
+   "A+crosshair(s) active\tcreate annotation,\n \tuse Ctrl to print amplitude difference\n",
    QMessageBox::Close
   );
 
