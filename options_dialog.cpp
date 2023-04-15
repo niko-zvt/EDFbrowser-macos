@@ -2505,6 +2505,8 @@ void UI_OptionsDialog::checkbox7_9Clicked(int state)
       mainwindow->annotationEditDock->set_high_resolution(0);
     }
   }
+
+  mainwindow->setup_viewbuf();
 }
 
 

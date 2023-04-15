@@ -211,7 +211,7 @@ int BDF_triggers::get_triggers(edfhdrblck_t *hdr)
         if(!status[16])  // rising edge detected
         {
           annotation.edfhdr = hdr;
-          annotation.onset = (records_read * TIME_FIXP_SCALING) + ((double)(i / 3) * status_sample_duration);
+          annotation.onset = (records_read * TIME_FIXP_SCALING) + ((double)(i / 3) * status_sample_duration) + 0.5;
           strlcpy(annotation.description, "new epoch", MAX_ANNOTATION_LEN_II + 1);
           annotation.ident = (1 << ANNOT_ID_BS_TRIGGER);
           if(edfplus_annotation_add_item(annot_list, annotation))
@@ -243,7 +243,7 @@ int BDF_triggers::get_triggers(edfhdrblck_t *hdr)
           if(!status[j])  // rising edge detected
           {
             annotation.edfhdr = hdr;
-            annotation.onset = (records_read * TIME_FIXP_SCALING) + ((double)(i / 3) * status_sample_duration);
+            annotation.onset = (records_read * TIME_FIXP_SCALING) + ((double)(i / 3) * status_sample_duration) + 0.5;
             snprintf(annotation.description, MAX_ANNOTATION_LEN_II + 1, "Trigger Input %i", j + 1);
             annotation.ident = (1 << ANNOT_ID_BS_TRIGGER);
             if(edfplus_annotation_add_item(annot_list, annotation))
