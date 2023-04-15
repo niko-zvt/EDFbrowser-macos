@@ -481,8 +481,8 @@ void UI_headerEditorWindow::read_header()
 {
   int i, j, p, r;
 
-  char scratchpad[256],
-       str[256];
+  char scratchpad[256]={""},
+       str[256]={""};
 
 
   if(file == NULL)
@@ -1348,7 +1348,14 @@ void UI_headerEditorWindow::save_hdr()
   fseeko(file, 181LL, SEEK_SET);
   fputc('.', file);
 
-  if(edfplus || bdfplus)           // reserved
+  fseeko(file, 192LL, SEEK_SET);           // reserved
+  if(fread(scratchpad, 44, 1, file) != 1)
+  {
+    QMessageBox::critical(myobjectDialog, "Error", "Cannot read from file.", QMessageBox::Close);
+    return;
+  };
+  scratchpad[44] = 0;
+  if(edfplus || bdfplus || (bdf && (!strncmp(scratchpad, "24BIT", 5))))
   {
     fseeko(file, 197LL, SEEK_SET);
     for(j=0; j<39; j++)

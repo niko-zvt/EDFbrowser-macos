@@ -471,17 +471,17 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
 
   if(edfhdr->edf)
   {
-    if(!strncmp(scratchpad, "EDF+C                                       ", 44))
+    if(!strcmp(scratchpad, "EDF+C                                       "))
     {
       edfhdr->edfplus = 1;
       edfhdr->discontinuous = 0;
     }
-    else if(!strncmp(scratchpad, "EDF+D                                       ", 44))
+    else if(!strcmp(scratchpad, "EDF+D                                       "))
       {
         edfhdr->edfplus = 1;
         edfhdr->discontinuous = 1;
       }
-      else if(strncmp(scratchpad, "                                            ", 44))
+      else if(strcmp(scratchpad, "                                            "))
       {
         snprintf(txt_string, txt_len, "Error, reserved field contains unrecognized data:\n"
                                       " \n"
@@ -498,17 +498,34 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
 
   if(edfhdr->bdf)
   {
-    if(!strncmp(scratchpad, "BDF+C                                       ", 44))
+    if(!strcmp(scratchpad, "BDF+C                                       "))
     {
       edfhdr->bdfplus = 1;
       edfhdr->discontinuous = 0;
     }
-
-    if(!strncmp(scratchpad, "BDF+D                                       ", 44))
-    {
-      edfhdr->bdfplus = 1;
-      edfhdr->discontinuous = 1;
-    }
+    else if(!strcmp(scratchpad, "BDF+D                                       "))
+      {
+        edfhdr->bdfplus = 1;
+        edfhdr->discontinuous = 1;
+      }
+      else if(!strcmp(scratchpad, "24BIT                                       "))
+        {
+          edfhdr->bdfplus = 0;
+          edfhdr->discontinuous = 0;
+        }
+        else if(strcmp(scratchpad, "                                            "))
+          {
+            snprintf(txt_string, txt_len, "Error, reserved field contains unrecognized data:\n"
+                                          " \n"
+                                          "\"%s\"\n"
+                                          " \n"
+                                          "You can fix this by using the EDF header editor.\n"
+                                          "Have a look at the manual for details.",
+                                          scratchpad);
+            free(edf_hdr);
+            free(edfhdr);
+            return NULL;
+          }
   }
 
   strncpy(edfhdr->reserved, edf_hdr + 192, 44);
