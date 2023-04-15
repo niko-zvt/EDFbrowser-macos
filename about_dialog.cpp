@@ -31,7 +31,7 @@
 
 UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
 {
-  char str[1024];
+  char str[1024]={""};
 
   strlcpy(str, " QT version at runtime is ", 512);
   strlcat(str, qVersion(), 512);
@@ -50,8 +50,7 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
 
   AboutDialog = new QDialog;
 
-  AboutDialog->setMinimumSize(640, 480);
-  AboutDialog->setGeometry(300, 250, 640, 480);
+  AboutDialog->setMinimumSize((int)(640 * mainwindow->w_scaling), (int)(640 * mainwindow->h_scaling));
   AboutDialog->setWindowTitle("About");
   AboutDialog->setModal(true);
   AboutDialog->setAttribute(Qt::WA_DeleteOnClose, true);

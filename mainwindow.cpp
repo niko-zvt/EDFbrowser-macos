@@ -4531,6 +4531,10 @@ void UI_Mainwindow::show_kb_shortcuts()
    QMessageBox::Close
   );
 
+  char str[1024]={""};
+  snprintf(str, 1024, "QLabel{min-width:%i px;}", (int)(400 * w_scaling));
+  messagewindow.setStyleSheet(str);
+
   messagewindow.exec();
 }
 
