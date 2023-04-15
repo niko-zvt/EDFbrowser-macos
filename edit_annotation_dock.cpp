@@ -283,9 +283,9 @@ void UI_AnnotationEditwindow::modifyButtonClicked()
 
   annot->onset = annotEditGetOnset();
 
-  if(dblcmp(duration_spinbox->value(), 0.0) > 0)
+  if(dblcmp(duration_spinbox->value(), 0) > 0)
   {
-    snprintf(annot->duration, 16, "%f", duration_spinbox->value());
+    snprintf(annot->duration, 20, "%f", duration_spinbox->value());
 
     remove_trailing_zeros(annot->duration);
 
@@ -380,9 +380,9 @@ void UI_AnnotationEditwindow::createButtonClicked()
 
   annotation.edfhdr = edf_hdr;
 
-  if(dblcmp(duration_spinbox->value(), 0.0) > 0)
+  if(dblcmp(duration_spinbox->value(), 0) > 0)
   {
-    snprintf(annotation.duration, 16, "%f", duration_spinbox->value());
+    snprintf(annotation.duration, 20, "%f", duration_spinbox->value());
 
     remove_trailing_zeros(annotation.duration);
 

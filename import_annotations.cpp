@@ -1151,7 +1151,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       }
 
       strlcpy(duration, result, 32);
-      duration[15] = 0;
+      duration[19] = 0;
       if((!(is_number(duration))) && (duration[0] != '-'))
       {
         remove_trailing_zeros(duration);
@@ -1190,7 +1190,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       }
       annotation.description[MAX_ANNOTATION_LEN] = 0;
       trim_spaces(annotation.description);
-      strlcpy(annotation.duration, duration, 32);
+      strlcpy(annotation.duration, duration, 20);
       annotation.long_duration = edfplus_annotation_get_long_from_number(duration);
       annotation.edfhdr = mainwindow->edfheaderlist[0];
       if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
@@ -1610,7 +1610,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 #endif
               strlcpy(duration, charpntr, 32);
               trim_spaces(duration);
-              duration[15] = 0;
+              duration[19] = 0;
               duration_is_set = 1;
             }
       }
@@ -1642,13 +1642,13 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
               {
                 annotation.long_duration -= annotation.onset;
 
-                tmp_len = snprintf(annotation.duration, 16, "%i", (int)(annotation.long_duration / TIME_FIXP_SCALING));
+                tmp_len = snprintf(annotation.duration, 20, "%i", (int)(annotation.long_duration / TIME_FIXP_SCALING));
 
                 if(annotation.long_duration % TIME_FIXP_SCALING)
                 {
-                  if(tmp_len < 14)
+                  if(tmp_len < 18)
                   {
-                    snprintf(annotation.duration + tmp_len, 16 - tmp_len, ".%07i", (int)(annotation.long_duration % TIME_FIXP_SCALING));
+                    snprintf(annotation.duration + tmp_len, 20 - tmp_len, ".%07i", (int)(annotation.long_duration % TIME_FIXP_SCALING));
                     remove_trailing_zeros(duration);
                   }
                 }
@@ -1659,11 +1659,11 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
               remove_trailing_zeros(duration);
               if(duration[0] == '+')
               {
-                strlcpy(annotation.duration, duration + 1, 16);
+                strlcpy(annotation.duration, duration + 1, 20);
               }
               else
               {
-                strlcpy(annotation.duration, duration, 16);
+                strlcpy(annotation.duration, duration, 20);
               }
             }
           }
