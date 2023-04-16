@@ -763,10 +763,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       edf_set_recording_additional(hdl, hdr->recording);
     }
 
-    int hasdot,
-        decimals;
-
-    for(j=0; j < annot_cnt; j++)
+    for(j=0; j<annot_cnt; j++)
     {
       annot = edfplus_annotation_get_item(annot_list, j);
       if(annot == NULL)
@@ -774,55 +771,13 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
         break;
       }
 
-      if(annot->duration[0] == 0)
+      if(annot->long_duration <= 0LL)
       {
         edfwrite_annotation_utf8_hr(hdl, annot->onset / 10LL, -1LL, annot->description);
       }
       else
       {
-        strlcpy(str, annot->duration, 1024);
-
-        len = strlen(str);
-
-        hasdot = 0;
-
-        for(i=0; i<len; i++)
-        {
-          if(str[i] == '.')
-          {
-            hasdot = 1;
-
-            for(decimals=0; decimals<4; decimals++)
-            {
-              str[i] = str[i+1];
-
-              if(str[i] == 0)
-              {
-                for( ; decimals<4; decimals++)
-                {
-                  str[i] = '0';
-
-                  i++;
-                }
-
-                i--;
-              }
-
-              i++;
-            }
-
-            str[i] = 0;
-
-            break;
-          }
-        }
-
-        if(!hasdot)
-        {
-          strlcat(str, "0000", 1024);
-        }
-
-        edfwrite_annotation_utf8_hr(hdl, annot->onset / 10LL, atoi(str), annot->description);
+        edfwrite_annotation_utf8_hr(hdl, annot->onset / 10LL, annot->long_duration / 10LL, annot->description);
       }
     }
 
