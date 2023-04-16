@@ -222,7 +222,7 @@ typedef struct edf_param_struct
 typedef struct edf_annotation_struct
 {                                                       /* this structure is used for annotations */
         long long onset;                                /* onset time of the event, expressed in units of 100 nanoseconds and relative to the start of the file */
-        long long duration_l;                           /* duration time, expressed in units of 100 nanoseconds, a value of -10000000 means unused (duration not present) */
+        long long duration_l;                           /* duration time, expressed in units of 100 nanoseconds, if less than zero: unused or not applicable */
         char duration[20];                              /* duration time, this is a null-terminated ASCII text-string */
         char annotation[EDFLIB_MAX_ANNOTATION_LEN + 1]; /* description of the event in UTF-8, this is a null terminated string */
 } edflib_annotation_t;
