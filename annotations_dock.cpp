@@ -1338,8 +1338,6 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
     if(annot->duration[0]!=0)
     {
       len += snprintf(str + len, MAX_ANNOTATION_LEN + 32 - len, "\nduration: %s",annot->duration);
-
-      remove_trailing_zeros(str);
     }
 
     remove_trailing_zeros(str);
