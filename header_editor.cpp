@@ -1412,25 +1412,19 @@ void UI_headerEditorWindow::save_hdr()
       {
         fprintf(file, "-32768  ");
       }
-      else
-      {
-        if(bdfplus)
+      else if(bdfplus)
         {
           fprintf(file, "-8388608");
         }
-      }
       fseeko(file, (long long)(256 + (edfsignals * 128) + (i * 8)), SEEK_SET);  // digital maximum
       if(edfplus)
       {
         fprintf(file, "32767   ");
       }
-      else
-      {
-        if(bdfplus)
+      else if(bdfplus)
         {
           fprintf(file, "8388607 ");
         }
-      }
       fseeko(file, (long long)(256 + (edfsignals * 104) + (i * 8)), SEEK_SET);  // physical minimum
       fprintf(file, "-1      ");
       fseeko(file, (long long)(256 + (edfsignals * 112) + (i * 8)), SEEK_SET);  // physical maximum
