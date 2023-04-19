@@ -2,7 +2,8 @@
  version 2.02      to be defined
  --------------
 
- - EDF compatibility check: EDF header: reserved field: check all 44 bytes.
+ - EDF compatibility check: EDF header: reserved field: check all 44 bytes (instead of just the first 5 bytes)
+   and refuse to open the file if any extraneous bytes are present that have no business there.
 
  - Annotation editor: drawing a rectangle with the mouse while keeping the Ctrl button pressed
    (to create a signal linked annotation): added the possibility to use the Shift button instead
@@ -14,7 +15,7 @@
  - Added the possibility to configure the resolution (milliSecond or microSecond) for the annotationslist,
    the annotation editor, the fileposition indicator and timescale indicator and the annotation markers.
 
- - various bugfixes and code cleanup.
+ - various bugfixes and code cleanups.
 
 
  version 2.01      March 18, 2023
