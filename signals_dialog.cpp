@@ -874,7 +874,12 @@ void UI_Signalswindow::HelpButtonClicked()
   "- Select (highlight) the signal \"C3\".\n"
   "- Click on the \"Subtract\" button.\n"
   "- Click on the \"Make derivation\" button.\n"
-  "- The result of \"P3\" minus \"C3\" will appear on the screen.");
+  "- The result of \"P3\" minus \"C3\" will appear on the screen.",
+  QMessageBox::Close, SignalsDialog);
+
+  char str[1024]={""};
+  snprintf(str, 1024, "QLabel{min-width:%i px;}", (int)(500 * mainwindow->w_scaling));
+  messagewindow.setStyleSheet(str);
 
   messagewindow.exec();
 }
