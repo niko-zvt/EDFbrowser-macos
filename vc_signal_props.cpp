@@ -35,7 +35,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   signal_nr = signal_nr_intern;
 
   sidemenu = new QDialog(this);
-  sidemenu->setMinimumSize(250 * w_scaling, 2133 * h_scaling * 0.3);
+  sidemenu->setMinimumSize(250 * w_scaling, 640 * h_scaling);
   sidemenu->setWindowTitle("Signal properties");
   sidemenu->setModal(true);
   sidemenu->setAttribute(Qt::WA_DeleteOnClose, true);
