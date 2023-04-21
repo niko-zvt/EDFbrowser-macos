@@ -54,8 +54,10 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   char *viewbuf=NULL,
        str1[600]="",
-       str3[128]="",
+       str2[600]="",
+       str3[600]="",
        str4[1024]="",
+       str5[128]="",
        *chp=NULL;
 
   long long time_ppixel,
@@ -886,17 +888,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               remove_trailing_zeros(str1);
 
               strlcat(str1, " sec", 600);
-
-              if(i % 2)
-              {
-                painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), str1);    //FIXME  (printing)
-              }
-              else
-              {
-                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), str1);    //FIXME  (printing)
-              }
-
-              annot_text_stack_idx++;
             }
 
             l_tmp = annot->onset;
@@ -905,7 +896,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             {
               if(l_tmp < 0LL)
               {
-                snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "-%i:%02i:%02i.%0*i",
+                snprintf(str2, (MAX_ANNOTATION_LEN + 32) / 2, "-%i:%02i:%02i.%0*i",
                         (int)(((-(l_tmp)) / TIME_FIXP_SCALING)/ 3600LL),
                         (int)((((-(l_tmp)) / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)(((-(l_tmp)) / TIME_FIXP_SCALING) % 60LL),
@@ -914,7 +905,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               }
               else
               {
-                snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "%i:%02i:%02i.%0*i",
+                snprintf(str2, (MAX_ANNOTATION_LEN + 32) / 2, "%i:%02i:%02i.%0*i",
                         (int)((l_tmp / TIME_FIXP_SCALING)/ 3600LL),
                         (int)(((l_tmp / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)((l_tmp / TIME_FIXP_SCALING) % 60LL),
@@ -924,7 +915,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             }
             else
             {
-              snprintf(str1, MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%0*i",
+              snprintf(str2, MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%0*i",
                       (int)((((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) / TIME_FIXP_SCALING)/ 3600) % 24),
                       (int)((((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) / TIME_FIXP_SCALING) % 3600) / 60),
                       (int)(((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) / TIME_FIXP_SCALING) % 60),
@@ -932,11 +923,47 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                       (int)(((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) % TIME_FIXP_SCALING) / prec_scale));
             }
 
-            remove_trailing_zeros(str1);
+            remove_trailing_zeros(str2);
+
+            strlcpy(str3, annot->description, 80);
+
+            utf8_set_char_len(str3, 20);
+
+            if((annot->long_duration > 0LL) && (mainwindow->annotations_show_duration))
+            {
+              if(i % 2)
+              {
+                painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(str3));    //FIXME  (printing)
+              }
+              else
+              {
+                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), str1);    //FIXME  (printing)
+              }
+
+              annot_text_stack_idx++;
+            }
 
             if(printing)
             {
-              painter->drawText(marker_x + (5  * printsize_x_factor), h - (25  * printsize_y_factor), str1);
+              painter->drawText(marker_x + (5  * printsize_x_factor), h - (25  * printsize_y_factor), str2);
+            }
+            else
+            {
+              if(i % 2)
+              {
+                painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), str2);
+              }
+              else
+              {
+                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), str2);
+              }
+            }
+
+            annot_text_stack_idx++;
+
+            if(printing)
+            {
+              painter->drawText(marker_x + (5  * printsize_x_factor), h - (40  * printsize_y_factor), QString::fromUtf8(str3));
             }
             else
             {
@@ -946,29 +973,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               }
               else
               {
-                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), str1);
-              }
-            }
-
-            annot_text_stack_idx++;
-
-            strlcpy(str1, annot->description, 80);
-
-            utf8_set_char_len(str1, 20);
-
-            if(printing)
-            {
-              painter->drawText(marker_x + (5  * printsize_x_factor), h - (40  * printsize_y_factor), QString::fromUtf8(str1));
-            }
-            else
-            {
-              if(i % 2)
-              {
-                painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(str1));
-              }
-              else
-              {
-                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(str1));
+                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(str3));
               }
             }
 
@@ -1221,9 +1226,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
         else
         {
-          convert_to_metric_suffix(str3, (double)crosshair_1.time_relative / TIME_FIXP_SCALING, 3, 128);
+          convert_to_metric_suffix(str5, (double)crosshair_1.time_relative / TIME_FIXP_SCALING, 3, 128);
 
-          snprintf(str1 + strlen(str1), 32, " (%.26sS)", str3);
+          snprintf(str1 + strlen(str1), 32, " (%.26sS)", str5);
         }
 
         painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - (10 + mono_font_pixel_height), str1);
@@ -1337,9 +1342,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
         else
         {
-          convert_to_metric_suffix(str3, (double)crosshair_2.time_relative / TIME_FIXP_SCALING, 3, 128);
+          convert_to_metric_suffix(str5, (double)crosshair_2.time_relative / TIME_FIXP_SCALING, 3, 128);
 
-          snprintf(str1 + strlen(str1), 32, " (%.26sS)", str3);
+          snprintf(str1 + strlen(str1), 32, " (%.26sS)", str5);
         }
 
         painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (mono_font_pixel_height * 3)), str1);
@@ -1370,9 +1375,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         }
         else
         {
-          convert_to_metric_suffix(str3, (double)l_time / TIME_FIXP_SCALING, 3, 128);
+          convert_to_metric_suffix(str5, (double)l_time / TIME_FIXP_SCALING, 3, 128);
 
-          snprintf(str1, 32, "delta %.24sS", str3);
+          snprintf(str1, 32, "delta %.24sS", str5);
         }
         painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + mono_font_pixel_height), str1);
         if(signalcomp[i]->alias[0] != 0)
