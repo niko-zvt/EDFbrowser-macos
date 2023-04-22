@@ -1618,6 +1618,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   spinbox5_1 = new QSpinBox;
   spinbox5_1->setRange(8, 24);
   spinbox5_1->setValue(mainwindow->font_size);
+  spinbox5_1->setMinimumWidth(40 * mainwindow->w_scaling);
   textEdit5_1 = new QTextEdit;
   textEdit5_1->setFont(*mainwindow->normfont);
   textEdit5_1->setPlainText(font_sz_example_txt);
@@ -1631,6 +1632,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   spinbox5_2 = new QSpinBox;
   spinbox5_2->setRange(8, 24);
   spinbox5_2->setValue(mainwindow->monofont_size);
+  spinbox5_2->setMinimumWidth(40 * mainwindow->w_scaling);
   textEdit5_2 = new QTextEdit;
   textEdit5_2->setFont(*mainwindow->monofont);
   textEdit5_2->setPlainText(font_sz_example_txt);
