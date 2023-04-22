@@ -49,7 +49,7 @@ sudo dnf groupinstall "Development Tools" "Development Libraries"
 sudo dnf install g++ qt5-qtbase qt5-qtbase-devel
 git clone https://gitlab.com/Teuniz/EDFbrowser.git
 cd EDFbrowser
-qmake
+qmake-qt5
 make -j8
 sudo make install
 edfbrowser
