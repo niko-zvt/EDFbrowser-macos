@@ -929,18 +929,20 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             utf8_set_char_len(str3, 20);
 
-            if((annot->long_duration > 0LL) && (mainwindow->annotations_show_duration))
+            if(i % 2)
             {
-              if(i % 2)
-              {
-                painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(str3));    //FIXME  (printing)
-              }
-              else
-              {
-                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), str1);    //FIXME  (printing)
-              }
+              painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(str3));    //FIXME  (printing)
 
               annot_text_stack_idx++;
+            }
+            else
+            {
+              if((annot->long_duration > 0LL) && (mainwindow->annotations_show_duration))
+              {
+                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), str1);    //FIXME  (printing)
+
+                annot_text_stack_idx++;
+              }
             }
 
             if(printing)
@@ -952,14 +954,16 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               if(i % 2)
               {
                 painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), str2);
+
+                annot_text_stack_idx++;
               }
               else
               {
                 painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), str2);
+
+                annot_text_stack_idx++;
               }
             }
-
-            annot_text_stack_idx++;
 
             if(printing)
             {
@@ -969,15 +973,20 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             {
               if(i % 2)
               {
-                painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), str1);
+                if((annot->long_duration > 0LL) && (mainwindow->annotations_show_duration))
+                {
+                  painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), str1);
+
+                  annot_text_stack_idx++;
+                }
               }
               else
               {
                 painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(str3));
+
+                annot_text_stack_idx++;
               }
             }
-
-            annot_text_stack_idx++;
 
             if(!annot_marker_moving)
             {
