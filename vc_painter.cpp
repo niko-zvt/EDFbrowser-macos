@@ -46,7 +46,9 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       viewtimestr_end_x=0,
       pagetimestr_start_x=0,
       precision=3,
-      prec_scale=10000;
+      prec_scale=10000,
+      file_idx=0,
+      annot_idx=0;
 
   double mono_font_pixel_height=20,
          mono_font_pixel_width=12,
@@ -54,10 +56,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   char *viewbuf=NULL,
        str1[600]="",
-       str2[600]="",
-       str3[600]="",
        str4[1024]="",
        str5[128]="",
+       annot_description_str[256]={""},
+       annot_onset_str[256]={""},
+       annot_duration_str[256]={""},
        *chp=NULL;
 
   long long time_ppixel,
@@ -144,28 +147,28 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   if(mainwindow->show_annot_markers)
   {
-    for(i=0; i<mainwindow->files_open; i++)
+    for(file_idx=0; file_idx<mainwindow->files_open; file_idx++)
     {
-      annot_list = &mainwindow->edfheaderlist[i]->annot_list;
+      annot_list = &mainwindow->edfheaderlist[file_idx]->annot_list;
 
       annot_list_sz = edfplus_annotation_size(annot_list);
 
-      for(j=0; j<annot_list_sz; j++)
+      for(annot_idx=0; annot_idx<annot_list_sz; annot_idx++)
       {
-        annot = edfplus_annotation_get_item(annot_list, j);
+        annot = edfplus_annotation_get_item(annot_list, annot_idx);
 
-        if(annot->long_duration)
+        if(annot->long_duration > 0LL)
         {
           l_tmp = annot->onset;
 
-          if(l_tmp > (long long)(mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
+          if(l_tmp > (long long)(mainwindow->edfheaderlist[file_idx]->viewtime + mainwindow->pagetime))
           {
             break;
           }
 
-          if(((l_tmp + annot->long_duration) > (mainwindow->edfheaderlist[i]->viewtime - TIME_FIXP_SCALING)) && (!annot->hidden || mainwindow->annot_filter->hide_in_list_only))
+          if(((l_tmp + annot->long_duration) > (mainwindow->edfheaderlist[file_idx]->viewtime - TIME_FIXP_SCALING)) && (!annot->hidden || mainwindow->annot_filter->hide_in_list_only))
           {
-            l_tmp -= mainwindow->edfheaderlist[i]->viewtime;
+            l_tmp -= mainwindow->edfheaderlist[file_idx]->viewtime;
 
             marker_x = (int)((((double)w) / mainwindow->pagetime) * l_tmp);
 
@@ -244,7 +247,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                   }
                   else
                   {
-                    painter->fillRect(marker_x, h - 92 + ((j % 3) * 30), marker_x2, 32, annot_duration_color_selected);
+                    if(file_idx % 2)
+                    {
+                      painter->fillRect(marker_x, 0, marker_x2, 4 * mono_font_pixel_height, annot_duration_color_selected);
+                    }
+                    else
+                    {
+                      painter->fillRect(marker_x, h - (4 * mono_font_pixel_height), marker_x2, 4 * mono_font_pixel_height, annot_duration_color_selected);
+                    }
                   }
                 }
                 else
@@ -259,7 +269,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                       }
                       else
                       {
-                        painter->fillRect(marker_x, h - 92 + ((j % 3) * 30), marker_x2, 32, mainwindow->mc_annot_ov_color_predefined[p]);
+                        if(file_idx % 2)
+                        {
+                          painter->fillRect(marker_x, 0, marker_x2, 4 * mono_font_pixel_height, mainwindow->mc_annot_ov_color_predefined[p]);
+                        }
+                        else
+                        {
+                          painter->fillRect(marker_x, h - (4 * mono_font_pixel_height), marker_x2, 4 * mono_font_pixel_height, mainwindow->mc_annot_ov_color_predefined[p]);
+                        }
                       }
                       break;
                     }
@@ -272,7 +289,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                     }
                     else
                     {
-                      painter->fillRect(marker_x, h - 92 + ((j % 3) * 30), marker_x2, 32, annot_duration_color);
+                      if(file_idx % 2)
+                      {
+                        painter->fillRect(marker_x, 0, marker_x2, 4 * mono_font_pixel_height, annot_duration_color);
+                      }
+                      else
+                      {
+                        painter->fillRect(marker_x, h - (4 * mono_font_pixel_height), marker_x2, 4 * mono_font_pixel_height, annot_duration_color);
+                      }
                     }
                   }
                 }
@@ -769,11 +793,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       active_markers->count = 0;
     }
 
-    for(i=0; i<mainwindow->files_open; i++)
+    for(file_idx=0; file_idx<mainwindow->files_open; file_idx++)
     {
       former_marker_x = -10000;
 
-      annot_list = &mainwindow->edfheaderlist[i]->annot_list;
+      annot_list = &mainwindow->edfheaderlist[file_idx]->annot_list;
 
       annot_list_sz = edfplus_annotation_size(annot_list);
 
@@ -782,18 +806,18 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
         mainwindow->toolbar_stats.sz = 0;
       }
 
-      for(j=0; j<annot_list_sz; j++)
+      for(annot_idx=0; annot_idx<annot_list_sz; annot_idx++)
       {
-        annot = edfplus_annotation_get_item(annot_list, j);
+        annot = edfplus_annotation_get_item(annot_list, annot_idx);
 
         l_tmp = annot->onset;
 
-        if(l_tmp > (long long)(mainwindow->edfheaderlist[i]->viewtime + mainwindow->pagetime))
+        if(l_tmp > (long long)(mainwindow->edfheaderlist[file_idx]->viewtime + mainwindow->pagetime))
         {
           break;
         }
 
-        if((l_tmp > (mainwindow->edfheaderlist[i]->viewtime - TIME_FIXP_SCALING)) && (!annot->hidden || mainwindow->annot_filter->hide_in_list_only))
+        if((l_tmp > (mainwindow->edfheaderlist[file_idx]->viewtime - TIME_FIXP_SCALING)) && (!annot->hidden || mainwindow->annot_filter->hide_in_list_only))
         {
           if(mainwindow->show_annot_markers)
           {
@@ -804,7 +828,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               painter->setPen(*annot_marker_pen);
             }
 
-            l_tmp -= mainwindow->edfheaderlist[i]->viewtime;
+            l_tmp -= mainwindow->edfheaderlist[file_idx]->viewtime;
 
             marker_x = (int)((((double)w) / mainwindow->pagetime) * l_tmp);
 
@@ -866,7 +890,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             if(marker_x > (former_marker_x + (mono_font_pixel_width * 22)))
             {
-              if(((marker_x > viewtimestr_end_x) && (marker_x < pagetimestr_start_x)) && (!(i % 2)))
+              if(((marker_x > viewtimestr_end_x) && (marker_x < pagetimestr_start_x)) && (!(file_idx % 2)))
               {
                 annot_text_stack_idx = 0;
               }
@@ -880,14 +904,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             if((annot->long_duration > 0LL) && (mainwindow->annotations_show_duration))
             {
-              snprintf(str1, 600, "%i.%0*i",
+              snprintf(annot_duration_str, 128, "%i.%0*i",
                       (int)(annot->long_duration / TIME_FIXP_SCALING),
                       precision,
                       (int)(((annot->long_duration % TIME_FIXP_SCALING) / prec_scale)));
 
-              remove_trailing_zeros(str1);
+              remove_trailing_zeros(annot_duration_str);
 
-              strlcat(str1, " sec", 600);
+              strlcat(annot_duration_str, " sec", 128);
             }
 
             l_tmp = annot->onset;
@@ -896,7 +920,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             {
               if(l_tmp < 0LL)
               {
-                snprintf(str2, (MAX_ANNOTATION_LEN + 32) / 2, "-%i:%02i:%02i.%0*i",
+                snprintf(annot_onset_str, 128, "-%i:%02i:%02i.%0*i",
                         (int)(((-(l_tmp)) / TIME_FIXP_SCALING)/ 3600LL),
                         (int)((((-(l_tmp)) / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)(((-(l_tmp)) / TIME_FIXP_SCALING) % 60LL),
@@ -905,7 +929,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               }
               else
               {
-                snprintf(str2, (MAX_ANNOTATION_LEN + 32) / 2, "%i:%02i:%02i.%0*i",
+                snprintf(annot_onset_str, 128, "%i:%02i:%02i.%0*i",
                         (int)((l_tmp / TIME_FIXP_SCALING)/ 3600LL),
                         (int)(((l_tmp / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)((l_tmp / TIME_FIXP_SCALING) % 60LL),
@@ -915,23 +939,23 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             }
             else
             {
-              snprintf(str2, MAX_ANNOTATION_LEN + 32, "%i:%02i:%02i.%0*i",
-                      (int)((((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) / TIME_FIXP_SCALING)/ 3600) % 24),
-                      (int)((((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) / TIME_FIXP_SCALING) % 3600) / 60),
-                      (int)(((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) / TIME_FIXP_SCALING) % 60),
+              snprintf(annot_onset_str, 128, "%i:%02i:%02i.%0*i",
+                      (int)((((annot->onset + mainwindow->edfheaderlist[file_idx]->starttime_hr) / TIME_FIXP_SCALING)/ 3600) % 24),
+                      (int)((((annot->onset + mainwindow->edfheaderlist[file_idx]->starttime_hr) / TIME_FIXP_SCALING) % 3600) / 60),
+                      (int)(((annot->onset + mainwindow->edfheaderlist[file_idx]->starttime_hr) / TIME_FIXP_SCALING) % 60),
                       precision,
-                      (int)(((annot->onset + mainwindow->edfheaderlist[i]->starttime_hr) % TIME_FIXP_SCALING) / prec_scale));
+                      (int)(((annot->onset + mainwindow->edfheaderlist[file_idx]->starttime_hr) % TIME_FIXP_SCALING) / prec_scale));
             }
 
-            remove_trailing_zeros(str2);
+            remove_trailing_zeros(annot_onset_str);
 
-            strlcpy(str3, annot->description, 80);
+            strlcpy(annot_description_str, annot->description, 128);
 
-            utf8_set_char_len(str3, 20);
+            utf8_set_char_len(annot_description_str, 20);
 
-            if(i % 2)
+            if(file_idx % 2)
             {
-              painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(str3));    //FIXME  (printing)
+              painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(annot_description_str));    //FIXME  (printing)
 
               annot_text_stack_idx++;
             }
@@ -939,7 +963,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             {
               if((annot->long_duration > 0LL) && (mainwindow->annotations_show_duration))
               {
-                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), str1);    //FIXME  (printing)
+                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), annot_duration_str);    //FIXME  (printing)
 
                 annot_text_stack_idx++;
               }
@@ -947,19 +971,19 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             if(printing)
             {
-              painter->drawText(marker_x + (5  * printsize_x_factor), h - (25  * printsize_y_factor), str2);
+              painter->drawText(marker_x + (5  * printsize_x_factor), h - (25  * printsize_y_factor), annot_onset_str);
             }
             else
             {
-              if(i % 2)
+              if(file_idx % 2)
               {
-                painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), str2);
+                painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), annot_onset_str);
 
                 annot_text_stack_idx++;
               }
               else
               {
-                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), str2);
+                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), annot_onset_str);
 
                 annot_text_stack_idx++;
               }
@@ -967,22 +991,22 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             if(printing)
             {
-              painter->drawText(marker_x + (5  * printsize_x_factor), h - (40  * printsize_y_factor), QString::fromUtf8(str3));
+              painter->drawText(marker_x + (5  * printsize_x_factor), h - (40  * printsize_y_factor), QString::fromUtf8(annot_description_str));
             }
             else
             {
-              if(i % 2)
+              if(file_idx % 2)
               {
                 if((annot->long_duration > 0LL) && (mainwindow->annotations_show_duration))
                 {
-                  painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), str1);
+                  painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), annot_duration_str);
 
                   annot_text_stack_idx++;
                 }
               }
               else
               {
-                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(str3));
+                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(annot_description_str));
 
                 annot_text_stack_idx++;
               }

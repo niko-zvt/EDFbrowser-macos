@@ -1,4 +1,10 @@
 
+ version 2.03      April 24, 2023
+ --------------
+
+ - Regression bug fix related to the onscreen annotation markers.
+
+
  version 2.02      April 22, 2023
  --------------
 
