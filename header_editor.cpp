@@ -1749,15 +1749,13 @@ void UI_headerEditorWindow::calculate_chars_left_name(int)
 
 int UI_headerEditorWindow::calculate_chars_left_name(const QString &)
 {
-  int n = 62;
+  int n = 62,
+      len=0,
+      cursorposition[3]={0,0,0};
 
-  int len;
+  char str[128]={""};
 
-  int cursorposition[3];
-
-  char str[128];
-
-  if(checkBox1->checkState() == Qt::Checked)  // birthdate
+  if(checkBox1->checkState() == Qt::Checked)  /* no birthdate? */
   {
     n += 10;
   }
@@ -1819,14 +1817,13 @@ int UI_headerEditorWindow::calculate_chars_left_name(const QString &)
 
 int UI_headerEditorWindow::calculate_chars_left_recording(const QString &)
 {
-  int n = 52;
+  int n = 62,
+      len=0,
+      cursorposition[4]={0,0,0,0};
 
-  int len;
+  char str[128]={""};
 
-  int cursorposition[4];
-
-  char str[128];
-
+  if(has_startdate)  n -= 10;
 
   cursorposition[0] = lineEdit6->cursorPosition();
   cursorposition[1] = lineEdit7->cursorPosition();
