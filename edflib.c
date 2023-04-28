@@ -256,6 +256,8 @@ EDFLIB_API int edfopen_file_readonly(const char *path, edflib_hdr_t *edfhdr, int
 
   memset(edfhdr, 0, sizeof(edflib_hdr_t));
 
+  edfhdr->handle = -1;
+
   /* avoid surprises! */
   if((sizeof(char)      != 1) ||
      (sizeof(short)     != 2) ||
@@ -760,23 +762,25 @@ EDFLIB_API long long edftell(int handle, int edfsignal)
 }
 
 
-EDFLIB_API void edfrewind(int handle, int edfsignal)
+EDFLIB_API int edfrewind(int handle, int edfsignal)
 {
   int channel;
 
-  if((handle<0)||(handle>=EDFLIB_MAXFILES))  return;
+  if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
 
-  if(hdrlist[handle]==NULL)  return;
+  if(hdrlist[handle]==NULL)  return -1;
 
-  if(edfsignal<0)  return;
+  if(edfsignal<0)  return -1;
 
-  if(hdrlist[handle]->writemode)  return;
+  if(hdrlist[handle]->writemode)  return -1;
 
-  if(edfsignal>=(hdrlist[handle]->edfsignals - hdrlist[handle]->nr_annot_chns))  return;
+  if(edfsignal>=(hdrlist[handle]->edfsignals - hdrlist[handle]->nr_annot_chns))  return -1;
 
   channel = hdrlist[handle]->mapped_signals[edfsignal];
 
   hdrlist[handle]->edfparam[channel].sample_pntr = 0LL;
+
+  return 0;
 }
 
 
