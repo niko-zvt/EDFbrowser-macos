@@ -703,6 +703,7 @@ public slots:
   void set_timesync(int);
   void shift_vert_scrollbar_up_act_triggered();
   void shift_vert_scrollbar_down_act_triggered();
+  void open_manual(const char *);
 
 private slots:
   void open_new_file();

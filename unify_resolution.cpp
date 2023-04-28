@@ -617,18 +617,7 @@ void UI_unify_resolution::select_file_button_clicked()
 
 void UI_unify_resolution::helpbuttonpressed()
 {
-#ifdef Q_OS_LINUX
-  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html#Unify_resolution"));
-#endif
-
-#ifdef Q_OS_WIN32
-  char p_path[MAX_PATH_LENGTH];
-
-  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
-  strlcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
-  strlcat(p_path, "\\EDFbrowser\\manual.html#Unify_resolution", MAX_PATH_LENGTH);
-  QDesktopServices::openUrl(QUrl(p_path));
-#endif
+  mainwindow->open_manual("#Unify_resolution");
 }
 
 

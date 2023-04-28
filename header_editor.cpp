@@ -1892,18 +1892,7 @@ int UI_headerEditorWindow::calculate_chars_left_recording(const QString &)
 
 void UI_headerEditorWindow::helpbuttonpressed()
 {
-#ifdef Q_OS_LINUX
-  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html#Header_editor"));
-#endif
-
-#ifdef Q_OS_WIN32
-  char p_path[MAX_PATH_LENGTH];
-
-  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
-  strlcat(p_path, mainwindow->specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
-  strlcat(p_path, "\\EDFbrowser\\manual.html#Header_editor", MAX_PATH_LENGTH);
-  QDesktopServices::openUrl(QUrl(p_path));
-#endif
+  mainwindow->open_manual("#Header_editor");
 }
 
 

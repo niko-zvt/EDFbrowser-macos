@@ -4465,18 +4465,7 @@ void UI_Mainwindow::set_dc_offset_to_zero(int n)
 
 void UI_Mainwindow::show_help()
 {
-#ifdef Q_OS_LINUX
-  QDesktopServices::openUrl(QUrl("file:///usr/share/doc/edfbrowser/manual.html"));
-#endif
-
-#ifdef Q_OS_WIN32
-  char p_path[MAX_PATH_LENGTH];
-
-  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
-  strlcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
-  strlcat(p_path, "\\EDFbrowser\\manual.html", MAX_PATH_LENGTH);
-  QDesktopServices::openUrl(QUrl(p_path));
-#endif
+  open_manual("");
 }
 
 
@@ -5407,7 +5396,23 @@ void UI_Mainwindow::set_linear_interpol(bool checked)
 }
 
 
+void UI_Mainwindow::open_manual(const char *sect)
+{
+#ifdef Q_OS_LINUX
+  char p_path[MAX_PATH_LENGTH]={""};
+  snprintf(p_path, MAX_PATH_LENGTH, "file:///usr/share/doc/edfbrowser/manual.html%s", sect);
+  QDesktopServices::openUrl(QUrl(p_path));
+#endif
 
+#ifdef Q_OS_WIN32
+  char p_path[MAX_PATH_LENGTH]={""};
+  strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
+  strlcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(p_path, "\\EDFbrowser\\manual.html", MAX_PATH_LENGTH);
+  strlcat(p_path, sect, MAX_PATH_LENGTH);
+  QDesktopServices::openUrl(QUrl(p_path));
+#endif
+}
 
 
 
