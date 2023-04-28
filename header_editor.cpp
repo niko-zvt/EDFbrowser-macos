@@ -652,6 +652,7 @@ void UI_headerEditorWindow::read_header()
         dateEdit1->setDate(QDate(atoi(scratchpad + p + 7), r, atoi(scratchpad + p)));
 
         checkBox1->setCheckState(Qt::Unchecked);
+        dateEdit1->setEnabled(true);
       }
 
       p += 10;
@@ -659,6 +660,7 @@ void UI_headerEditorWindow::read_header()
     else
     {
       checkBox1->setCheckState(Qt::Checked);
+      dateEdit1->setEnabled(false);
     }
 
     p = ++i;
@@ -1749,15 +1751,21 @@ void UI_headerEditorWindow::calculate_chars_left_name(int)
 
 int UI_headerEditorWindow::calculate_chars_left_name(const QString &)
 {
-  int n = 62,
+  int n = 73,
       len=0,
       cursorposition[3]={0,0,0};
 
   char str[128]={""};
 
-  if(checkBox1->checkState() == Qt::Checked)  /* no birthdate? */
+  if(checkBox1->checkState() == Qt::Unchecked)  /* birthdate? */
   {
-    n += 10;
+    dateEdit1->setEnabled(true);
+
+    n -= 10;
+  }
+  else
+  {
+    dateEdit1->setEnabled(false);
   }
 
   cursorposition[0] = lineEdit3->cursorPosition();
@@ -1767,19 +1775,19 @@ int UI_headerEditorWindow::calculate_chars_left_name(const QString &)
   len = strlen(lineEdit3->text().toLatin1().data());
   if(len>1)
   {
-    n -= (len - 1);
+    n -= len - 1;
   }
 
   len = strlen(lineEdit4->text().toLatin1().data());
   if(len>1)
   {
-    n -= (len - 1);
+    n -= len - 1;
   }
 
   len = strlen(lineEdit5->text().toLatin1().data());
-  if(len>1)
+  if(len>0)
   {
-    n -= (len - 1);
+    n -= len + 1;
   }
 
   if(n<1)
@@ -1817,7 +1825,7 @@ int UI_headerEditorWindow::calculate_chars_left_name(const QString &)
 
 int UI_headerEditorWindow::calculate_chars_left_recording(const QString &)
 {
-  int n = 62,
+  int n = 63,
       len=0,
       cursorposition[4]={0,0,0,0};
 
@@ -1833,25 +1841,25 @@ int UI_headerEditorWindow::calculate_chars_left_recording(const QString &)
   len = strlen(lineEdit6->text().toLatin1().data());
   if(len>1)
   {
-    n -= (len - 1);
+    n -=  len - 1;
   }
 
   len = strlen(lineEdit7->text().toLatin1().data());
   if(len>1)
   {
-    n -= (len - 1);
+    n -= len - 1;
   }
 
   len = strlen(lineEdit8->text().toLatin1().data());
   if(len>1)
   {
-    n -= (len - 1);
+    n -= len - 1;
   }
 
   len = strlen(lineEdit9->text().toLatin1().data());
   if(len>0)
   {
-    n -= len;
+    n -= len + 1;
   }
 
   if(n<1)
