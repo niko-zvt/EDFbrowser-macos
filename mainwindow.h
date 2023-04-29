@@ -770,6 +770,9 @@ private slots:
   void set_user_defined_amplitude();
   void print_to_bdf();
   void print_to_img_640x480();
+  void print_to_img_1920x1080();
+  void print_to_img_2560x1440();
+  void print_to_img_3840x2160();
   void print_to_img_800x600();
   void print_to_img_1024x768();
   void print_to_img_1280x1024();

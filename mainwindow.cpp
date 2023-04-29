@@ -4185,6 +4185,24 @@ void UI_Mainwindow::print_to_img_1600x1200()
 }
 
 
+void UI_Mainwindow::print_to_img_1920x1080()
+{
+  maincurve->print_to_image(1920, 1080);
+}
+
+
+void UI_Mainwindow::print_to_img_2560x1440()
+{
+  maincurve->print_to_image(2560, 1440);
+}
+
+
+void UI_Mainwindow::print_to_img_3840x2160()
+{
+  maincurve->print_to_image(3840, 2160);
+}
+
+
 long long UI_Mainwindow::get_long_time(char *str)
 {
   int i, len, hasdot=0, dotposition=0, neg=0;

@@ -589,6 +589,9 @@ UI_Mainwindow::UI_Mainwindow()
   print_img_menu->addAction("1024 x 768",  this, SLOT(print_to_img_1024x768()));
   print_img_menu->addAction("1280 x 1024", this, SLOT(print_to_img_1280x1024()));
   print_img_menu->addAction("1600 x 1200", this, SLOT(print_to_img_1600x1200()));
+  print_img_menu->addAction("1920 x 1080", this, SLOT(print_to_img_1920x1080()));
+  print_img_menu->addAction("2560 x 1440", this, SLOT(print_to_img_2560x1440()));
+  print_img_menu->addAction("3840 x 2160", this, SLOT(print_to_img_3840x2160()));
 
   printmenu = new QMenu(this);
   printmenu->setTitle("Print");
@@ -596,9 +599,6 @@ UI_Mainwindow::UI_Mainwindow()
   printmenu->addAction("to Printer",    maincurve, SLOT(print_to_printer()), QKeySequence::Print);
 #else
   printmenu->addAction("to Printer", QKeySequence::Print, maincurve, SLOT(print_to_printer()));
-#endif
-#if QT_VERSION < 0x050000
-  printmenu->addAction("to PostScript", maincurve, SLOT(print_to_postscript()));
 #endif
   printmenu->addAction("to PDF",        maincurve, SLOT(print_to_pdf()));
   printmenu->addMenu(print_img_menu);

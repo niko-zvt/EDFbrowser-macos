@@ -157,11 +157,10 @@ ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
   ruler_active = 0;
   ruler_moving = 0;
 
-  printsize_x_factor=1.0,
-  printsize_y_factor=1.0;
+  printsize_x_factor = 1;
+  printsize_y_factor = 1;
 
-  printfont = new QFont;
-  printfont->setFamily("Arial");
+  printfont = new QFont(*mainwindow->monofont);
 
   screensamples = (int *)calloc(1, sizeof(int[MAXSIGNALS]));
 
@@ -1313,14 +1312,7 @@ void ViewCurve::paintEvent(QPaintEvent *)
 
 void ViewCurve::print_to_printer()
 {
-  int i, j,
-      len;
-
-  char path[MAX_PATH_LENGTH];
-
-  double height_factor;
-
-  date_time_t date_time;
+  int border_sz=500;
 
 
   if(!mainwindow->files_open)  return;
@@ -1341,222 +1333,47 @@ void ViewCurve::print_to_printer()
   QPrintDialog printerdialog(&print, this);
   printerdialog.setWindowTitle("Print");
 
-  if(printerdialog.exec()==QDialog::Accepted)
-  {
-    if(blackwhite_printing)
-    {
-      backup_colors_for_printing();
-    }
-#if QT_VERSION >= 0x050D00
-    height_factor = ((double)print.pageLayout().paintRectPixels(print.resolution()).height()) / 9000.0;
-#else
-    height_factor = ((double)print.pageRect().height()) / 9000.0;
-#endif
-    QPainter paint(&print);
-#if (QT_VERSION >= 0x050000) && (QT_VERSION < 0x060000)
-    paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
-#endif
-    paint.translate(0, (int)(260.0 * height_factor));
-#if QT_VERSION >= 0x050D00
-    drawCurve_stage_1(&paint, print.pageLayout().paintRectPixels(print.resolution()).width() - 30,
-                      (int)((double)print.pageLayout().paintRectPixels(print.resolution()).height() - (260.0 * height_factor) - 30), 2);
-#else
-    drawCurve_stage_1(&paint, print.pageRect().width() - 30, (int)((double)print.pageRect().height() - (260.0 * height_factor) - 30), 2);
-#endif
-    paint.translate(0, -(int)(260.0 * height_factor));
-
-    len = strlen(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename);
-    for(i=len-1; i>=0; i--)
-    {
-      if((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename[i] == '/')||(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename[i] == '\\'))  break;
-    }
-    i++;
-
-    strlcpy(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename + i, MAX_PATH_LENGTH);
-    strlcat(path, "  ", MAX_PATH_LENGTH);
-    strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->patient, MAX_PATH_LENGTH);
-    remove_trailing_spaces(path);
-
-    utc_to_date_time(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime, &date_time);
-
-    date_time.month_str[0] += 32;
-    date_time.month_str[1] += 32;
-    date_time.month_str[2] += 32;
-
-    snprintf(path + strlen(path), MAX_PATH_LENGTH - strlen(path), "  %i %s %i  ",
-            date_time.day,
-            date_time.month_str,
-            date_time.year);
-
-    if(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->edfplus||mainwindow->edfheaderlist[mainwindow->sel_viewtime]->bdfplus)
-    {
-      strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording + 22, MAX_PATH_LENGTH);
-    }
-    else
-    {
-      strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording, MAX_PATH_LENGTH);
-    }
-    remove_trailing_spaces(path);
-
-    len = strlen(path);
-    for(j=0; j<len; j++)
-    {
-      if(path[j]=='_')
-      {
-        path[j] = ' ';
-      }
-    }
-#if QT_VERSION >= 0x050D00
-    printfont->setPixelSize((int)((double)print.pageLayout().paintRectPixels(print.resolution()).width() / 104.0));
-#else
-    printfont->setPixelSize((int)((double)print.pageRect().width() / 104.0));
-#endif
-    paint.setPen(text_color);
-    paint.setFont(*printfont);
-
-    paint.drawText(0, (int)(160.0 * height_factor), path);
-
-    if(blackwhite_printing)
-    {
-      restore_colors_after_printing();
-    }
-
-    drawCurve_stage_1();
-  }
-}
-
-
-#if QT_VERSION < 0x050000
-void ViewCurve::print_to_postscript()
-{
-  double height_factor;
-
-  int i, j,
-      len;
-
-  char path[MAX_PATH_LENGTH];
-
-  date_time_t date_time;
-
-
-  if(!mainwindow->files_open)  return;
-  if(!mainwindow->signalcomps)  return;
-
-  path[0] = 0;
-  if(mainwindow->recent_savedir[0]!=0)
-  {
-    strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
-    strlcat(path, "/", MAX_PATH_LENGTH);
-  }
-  len = strlen(path);
-  get_filename_from_path(path + len, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename, MAX_PATH_LENGTH - len);
-  remove_extension_from_filename(path);
-  strlcat(path, ".ps", MAX_PATH_LENGTH);
-
-  strlcpy(path, QFileDialog::getSaveFileName(0, "Print to PostScript", QString::fromLocal8Bit(path), "PostScript files (*.ps *.PS)").toLocal8Bit().data(), MAX_PATH_LENGTH);
-
-  if(!strcmp(path, ""))
+  if(printerdialog.exec()!=QDialog::Accepted)
   {
     return;
   }
-
-  get_directory_from_path(mainwindow->recent_savedir, path, MAX_PATH_LENGTH);
-
-  QPrinter print(QPrinter::HighResolution);
-
-  print.setOutputFormat(QPrinter::PostScriptFormat);
-  print.setOutputFileName(QString::fromLocal8Bit(path));
-  print.setPageSize(QPrinter::A4);
-  print.setOrientation(QPrinter::Landscape);
-  print.setCreator(PROGRAM_NAME);
 
   if(blackwhite_printing)
   {
     backup_colors_for_printing();
   }
 
-  height_factor = ((double)print.pageRect().height()) / 9000.0;
-
   QPainter paint(&print);
-
-  paint.translate(0, (int)(260.0 * height_factor));
-
-  drawCurve_stage_1(&paint, print.pageRect().width() - 30, (int)((double)print.pageRect().height() - (260.0 * height_factor) - 30), 2);
-
-  paint.translate(0, -(int)(260.0 * height_factor));
-
-  len = strlen(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename);
-  for(i=len; i>=0; i--)
-  {
-    if((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename[i] == '/')||(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename[i] == '\\'))
-    {
-      break;
-    }
-  }
-  i++;
-
-  strlcpy(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename + i, MAX_PATH_LENGTH);
-  strlcat(path, "  ", MAX_PATH_LENGTH);
-  strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->patient, MAX_PATH_LENGTH);
-  remove_trailing_spaces(path);
-
-  utc_to_date_time(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime, &date_time);
-
-  date_time.month_str[0] += 32;
-  date_time.month_str[1] += 32;
-  date_time.month_str[2] += 32;
-
-  snprintf(path + strlen(path), MAX_PATH_LENGTH - strlen(path), "  %i %s %i  ",
-          date_time.day,
-          date_time.month_str,
-          date_time.year);
-
-  if(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->edfplus||mainwindow->edfheaderlist[mainwindow->sel_viewtime]->bdfplus)
-  {
-    strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording + 22, MAX_PATH_LENGTH);
-  }
-  else
-  {
-    strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording, MAX_PATH_LENGTH);
-  }
-
-  remove_trailing_spaces(path);
-
-  len = strlen(path);
-  for(j=0; j<len; j++)
-  {
-    if(path[j]=='_')
-    {
-      path[j] = ' ';
-    }
-  }
-
-  printfont->setPixelSize((int)((double)print.pageRect().width() / 104.0));
-  paint.setPen(text_color);
-  paint.setFont(*printfont);
-
-  paint.drawText(0, (int)(160.0 * height_factor), path);
-
+#if (QT_VERSION >= 0x050000) && (QT_VERSION < 0x060000)
+  paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
+#endif
+  paint.translate(border_sz, border_sz);
+#if QT_VERSION >= 0x050D00
+  drawCurve_stage_1(&paint,
+                    print.pageLayout().paintRectPixels(print.resolution()).width() - (border_sz * 2),
+                    print.pageLayout().paintRectPixels(print.resolution()).height() - (border_sz * 2),
+                    2);
+#else
+  drawCurve_stage_1(&paint,
+                    print.pageRect().width() - (border_sz * 2),
+                    print.pageRect().height() - (border_sz * 2),
+                    2);
+#endif
   if(blackwhite_printing)
   {
     restore_colors_after_printing();
   }
 
-  drawCurve_stage_1();
+  mainwindow->setup_viewbuf();
 }
-#endif
 
 
 void ViewCurve::print_to_pdf()
 {
-  double height_factor;
-
-  int i, j,
-      len;
+  int len,
+      border_sz=500;
 
   char path[MAX_PATH_LENGTH];
-
-  date_time_t date_time;
 
 
   if(!mainwindow->files_open)  return;
@@ -1599,102 +1416,43 @@ void ViewCurve::print_to_pdf()
   {
     backup_colors_for_printing();
   }
-#if QT_VERSION >= 0x050D00
-  height_factor = ((double)print.pageLayout().paintRectPixels(print.resolution()).height()) / 9000.0;
-#else
-  height_factor = ((double)print.pageRect().height()) / 9000.0;
-#endif
+
   QPainter paint(&print);
 #if (QT_VERSION >= 0x050000) && (QT_VERSION < 0x060000)
     paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
-  paint.translate(0, (int)(260.0 * height_factor));
+  paint.translate(border_sz, border_sz);
 #if QT_VERSION >= 0x050D00
-  drawCurve_stage_1(&paint, print.pageLayout().paintRectPixels(print.resolution()).width() - 30,
-                    (int)((double)print.pageLayout().paintRectPixels(print.resolution()).height() - (260.0 * height_factor) - 30), 2);
+  drawCurve_stage_1(&paint,
+                    print.pageLayout().paintRectPixels(print.resolution()).width() - (border_sz * 2),
+                    print.pageLayout().paintRectPixels(print.resolution()).height() - (border_sz * 2),
+                    2);
 #else
-  drawCurve_stage_1(&paint, print.pageRect().width() - 30, (int)((double)print.pageRect().height() - (260.0 * height_factor) - 30), 2);
+  drawCurve_stage_1(&paint,
+                    print.pageRect().width() - (border_sz * 2),
+                    print.pageRect().height() - (border_sz * 2)),
+                    2);
 #endif
-  paint.translate(0, -(int)(260.0 * height_factor));
-
-  len = strlen(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename);
-  for(i=len; i>=0; i--)
-  {
-    if((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename[i] == '/')||(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename[i] == '\\'))
-    {
-      break;
-    }
-  }
-  i++;
-
-  strlcpy(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename + i, MAX_PATH_LENGTH);
-  strlcat(path, "  ", MAX_PATH_LENGTH);
-  strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->patient, MAX_PATH_LENGTH);
-  remove_trailing_spaces(path);
-
-  utc_to_date_time(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime, &date_time);
-
-  date_time.month_str[0] += 32;
-  date_time.month_str[1] += 32;
-  date_time.month_str[2] += 32;
-
-  snprintf(path + strlen(path), MAX_PATH_LENGTH - strlen(path), "  %i %s %i  ",
-          date_time.day,
-          date_time.month_str,
-          date_time.year);
-
-  if(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->edfplus||mainwindow->edfheaderlist[mainwindow->sel_viewtime]->bdfplus)
-  {
-    strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording + 22, MAX_PATH_LENGTH);
-  }
-  else
-  {
-    strlcat(path, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording, MAX_PATH_LENGTH);
-  }
-
-  remove_trailing_spaces(path);
-
-  len = strlen(path);
-  for(j=0; j<len; j++)
-  {
-    if(path[j]=='_')
-    {
-      path[j] = ' ';
-    }
-  }
-#if QT_VERSION >= 0x050D00
-  printfont->setPixelSize((int)((double)print.pageLayout().paintRectPixels(print.resolution()).width() / 104.0));
-#else
-  printfont->setPixelSize((int)((double)print.pageRect().width() / 104.0));
-#endif
-  paint.setPen(text_color);
-  paint.setFont(*printfont);
-
-  paint.drawText(0, (int)(160.0 * height_factor), path);
 
   if(blackwhite_printing)
   {
     restore_colors_after_printing();
   }
 
-  drawCurve_stage_1();
+  mainwindow->setup_viewbuf();
 }
 
 
 void ViewCurve::print_to_image(int w_img, int h_img)
 {
-  int i, j, len;
+  int len;
 
-  char path[MAX_PATH_LENGTH],
-       str[1024];
-
-  date_time_t date_time;
+  char path[MAX_PATH_LENGTH]={""};
 
 
   if(!mainwindow->files_open)  return;
   if(!mainwindow->signalcomps)  return;
 
-  path[0] = 0;
   if(mainwindow->recent_savedir[0]!=0)
   {
     strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
@@ -1720,69 +1478,11 @@ void ViewCurve::print_to_image(int w_img, int h_img)
 #if (QT_VERSION >= 0x050000) && (QT_VERSION < 0x060000)
     paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
-  paint.fillRect(0, 0, w_img, h_img, backgroundcolor);
-
-  paint.translate(0, 25);
-
-  drawCurve_stage_1(&paint, w_img, h_img - 25, 0);
-
-  paint.translate(0, -25);
-
-  len = strlen(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename);
-  for(i=len; i>=0; i--)
-  {
-    if((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename[i] == '/')||(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename[i] == '\\'))
-    {
-      break;
-    }
-  }
-  i++;
-
-  strlcpy(str, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename + i, 1024);
-  strlcat(str, "  ", 1024);
-  strlcat(str, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->patient, 1024);
-  remove_trailing_spaces(str);
-
-  utc_to_date_time(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime, &date_time);
-
-  date_time.month_str[0] += 32;
-  date_time.month_str[1] += 32;
-  date_time.month_str[2] += 32;
-
-  snprintf(str + strlen(str), 1024 - strlen(str), "  %i %s %i  ",
-          date_time.day,
-          date_time.month_str,
-          date_time.year);
-
-  if(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->edfplus||mainwindow->edfheaderlist[mainwindow->sel_viewtime]->bdfplus)
-  {
-    strlcat(str, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording + 22, 1024);
-  }
-  else
-  {
-    strlcat(str, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->recording, 1024);
-  }
-
-  len = strlen(str);
-  for(j=0; j<len; j++)
-  {
-    if(str[j]=='_')
-    {
-      str[j] = ' ';
-    }
-  }
-
-  remove_trailing_spaces(str);
-
-  printfont->setPixelSize((int)((double)w / 104.0));
-  paint.setPen(text_color);
-  paint.setFont(*printfont);
-
-  paint.drawText(5, 15, str);
+  drawCurve_stage_1(&paint, w_img, h_img, 0);
 
   pixmap.save(QString::fromLocal8Bit(path), "PNG", 90);
 
-  drawCurve_stage_1();
+  mainwindow->setup_viewbuf();
 }
 
 
@@ -1834,40 +1534,40 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
   painter_pixelsizefactor = 1 / mainwindow->y_pixelsizefactor;
 
-  if(!w_width||!w_height)
+  if(mainwindow->mc_v_scrollarea_auto)
   {
-    if(mainwindow->mc_v_scrollarea_auto)
+    mainwindow->mc_v_scrollarea_ratio = signalcomps / mainwindow->mc_v_scrollarea_max_signals;
+
+    if(signalcomps % mainwindow->mc_v_scrollarea_max_signals)
     {
-      mainwindow->mc_v_scrollarea_ratio = signalcomps / mainwindow->mc_v_scrollarea_max_signals;
+      mainwindow->mc_v_scrollarea_ratio++;
+    }
 
-      if(signalcomps % mainwindow->mc_v_scrollarea_max_signals)
-      {
-        mainwindow->mc_v_scrollarea_ratio++;
-      }
+    if(!mainwindow->mc_v_scrollarea_ratio)
+    {
+      mainwindow->mc_v_scrollarea_ratio++;
+    }
 
-      if(!mainwindow->mc_v_scrollarea_ratio)
-      {
-        mainwindow->mc_v_scrollarea_ratio++;
-      }
+    if(mainwindow->mc_v_scrollarea_ratio > 1)
+    {
+      mainwindow->mc_v_scrollbar->setPageStep(100000 / (mainwindow->mc_v_scrollarea_ratio - 1));
 
-      if(mainwindow->mc_v_scrollarea_ratio > 1)
-      {
-        mainwindow->mc_v_scrollbar->setPageStep(100000 / (mainwindow->mc_v_scrollarea_ratio - 1));
-
-        mainwindow->mc_v_scrollbar->setEnabled(true);
-      }
-      else
-      {
-        mainwindow->mc_v_scrollbar->setEnabled(false);
-      }
+      mainwindow->mc_v_scrollbar->setEnabled(true);
     }
     else
     {
-      mainwindow->mc_v_scrollarea_ratio = 1;
-
       mainwindow->mc_v_scrollbar->setEnabled(false);
     }
+  }
+  else
+  {
+    mainwindow->mc_v_scrollarea_ratio = 1;
 
+    mainwindow->mc_v_scrollbar->setEnabled(false);
+  }
+
+  if(!w_width||!w_height)
+  {
     w = width();
     h = height() * mainwindow->mc_v_scrollarea_ratio;
 
@@ -1878,10 +1578,12 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
     printing = 0;
   }
-  else
+  else  /* printing */
   {
     w = w_width;
-    h = w_height;
+    h = w_height * mainwindow->mc_v_scrollarea_ratio;
+
+    scroll_h_offset = w_height * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
 
     printsize_x_factor = ((double)w_width) / ((double)width());
     printsize_y_factor = ((double)w_height) / ((double)height());

@@ -548,9 +548,6 @@ void SignalCurve::exec_sidemenu()
   sidemenu->setLayout(vlayout1);
 
   QObject::connect(sidemenuButton1, SIGNAL(clicked()), this, SLOT(print_to_printer()));
-#if QT_VERSION < 0x050000
-  QObject::connect(sidemenuButton2, SIGNAL(clicked()), this, SLOT(print_to_postscript()));
-#endif
   QObject::connect(sidemenuButton3, SIGNAL(clicked()), this, SLOT(print_to_pdf()));
   QObject::connect(sidemenuButton4, SIGNAL(clicked()), this, SLOT(print_to_image()));
   QObject::connect(sidemenuButton5, SIGNAL(clicked()), this, SLOT(print_to_ascii()));
@@ -670,50 +667,6 @@ void SignalCurve::print_to_ascii()
 
   sidemenu->close();
 }
-
-
-#if QT_VERSION < 0x050000
-void SignalCurve::print_to_postscript()
-{
-  char path[SC_MAX_PATH_LEN];
-
-  path[0] = 0;
-  if(recent_savedir[0]!=0)
-  {
-    strlcpy(path, recent_savedir, SC_MAX_PATH_LEN);
-    strlcat(path, "/", SC_MAX_PATH_LEN);
-  }
-  strlcat(path, "curve.ps", SC_MAX_PATH_LEN);
-
-  strlcpy(path, QFileDialog::getSaveFileName(0, "Print to PostScript", QString::fromLocal8Bit(path), "PostScript files (*.ps *.PS)").toLocal8Bit().data(), SC_MAX_PATH_LEN);
-
-  if(!strcmp(path, ""))
-  {
-    sidemenu->close();
-
-    return;
-  }
-
-  get_directory_from_path(recent_savedir, path, SC_MAX_PATH_LEN);
-
-  QPrinter curve_printer(QPrinter::HighResolution);
-
-  curve_printer.setOutputFormat(QPrinter::PostScriptFormat);
-  curve_printer.setOutputFileName(path);
-  curve_printer.setPageSize(QPrinter::A4);
-  curve_printer.setOrientation(QPrinter::Landscape);
-
-  backup_colors_for_printing();
-
-  QPainter paint(&curve_printer);
-
-  drawWidget_to_printer(&paint, curve_printer.pageRect().width(), curve_printer.pageRect().height());
-
-  restore_colors_after_printing();
-
-  sidemenu->close();
-}
-#endif
 
 
 void SignalCurve::print_to_pdf()

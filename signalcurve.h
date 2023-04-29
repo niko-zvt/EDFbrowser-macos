@@ -135,9 +135,6 @@ signals:
 
 private slots:
   void exec_sidemenu();
-#if QT_VERSION < 0x050000
-  void print_to_postscript();
-#endif
   void print_to_pdf();
   void print_to_image();
   void print_to_printer();

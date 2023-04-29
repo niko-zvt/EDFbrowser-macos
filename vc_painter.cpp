@@ -50,6 +50,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       file_idx=0,
       annot_idx=0;
 
+  static int old_w=100;
+
   double mono_font_pixel_height=20,
          mono_font_pixel_width=12,
          dtmp=0;
@@ -69,8 +71,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             l_tmp,
             l_tmp2=0LL;
 
-  static int old_w=100;
-
   sigcompblck_t **signalcomp=NULL;
 
   annotlist_t *annot_list=NULL;
@@ -86,39 +86,53 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   signalcomp = mainwindow->signalcomp;
   viewbuf = mainwindow->viewbuf;
 
-  mono_font_pixel_height = mainwindow->mono_font_pixel_height;
-  mono_font_pixel_width = mainwindow->mono_font_pixel_width;
-
   vertical_distance = 1;
 
   painter_pixelsizefactor = 1.0 / mainwindow->y_pixelsizefactor;
 
-  if(!w_width||!w_height)
-  {
-    w = width();
-    h = height();
-
-    scroll_h_offset = h * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
-
-    painter->setFont(*mainwindow->monofont);
-
-    printing = 0;
-  }
-  else
+  if(w_width && w_height)  /* printing */
   {
     w = w_width;
     h = w_height;
-
-    printfont->setPixelSize((int)((double)w / 104.0));
-
-    painter->setFont(*printfont);
 
     printsize_x_factor = ((double)w_width) / ((double)width());
     printsize_y_factor = ((double)w_height) / ((double)height());
 
     painter_pixelsizefactor *= printsize_y_factor;
 
+    mono_font_pixel_width = mainwindow->mono_font_pixel_width * printsize_x_factor;
+    mono_font_pixel_height = mainwindow->mono_font_pixel_height * printsize_y_factor;
+
+    *printfont = *mainwindow->monofont;
+    printfont->setPixelSize(mono_font_pixel_width * 1.6 + 0.5);
+    painter->setFont(*printfont);
+
+    scroll_h_offset = h * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
+
+    painter->setClipping(true);
+
+    painter->setClipRect(0, 0, w, h);
+
     printing = 1;
+  }
+  else  /* not printing */
+  {
+    w = width();
+    h = height();
+
+    printsize_x_factor = 1;
+    printsize_y_factor = 1;
+
+    scroll_h_offset = h * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
+
+    mono_font_pixel_width = mainwindow->mono_font_pixel_width;
+    mono_font_pixel_height = mainwindow->mono_font_pixel_height;
+
+    painter->setFont(*mainwindow->monofont);
+
+    painter->setClipping(false);
+
+    printing = 0;
   }
 
   for(i=0; i<signalcomps; i++)
@@ -323,15 +337,15 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   ruler_pen->setWidth(print_linewidth);
 
-  if(printing)
-  {
-    ruler_pen->setColor(Qt::black);
-    painter->setPen(*ruler_pen);
-    painter->drawLine(0, 0, 0, h-1);
-    painter->drawLine(0, 0, w-1, 0);
-    painter->drawLine(w-1, h-1, w-1, 0);
-    painter->drawLine(w-1, h-1, 0, h-1);
-  }
+//   if(printing)
+//   {
+//     ruler_pen->setColor(Qt::black);
+//     painter->setPen(*ruler_pen);
+//     painter->drawLine(0, 0, 0, h-1);
+//     painter->drawLine(0, 0, w-1, 0);
+//     painter->drawLine(w-1, h-1, w-1, 0);
+//     painter->drawLine(w-1, h-1, 0, h-1);
+//   }
 
   if(m_pagetime<=20)
   {
@@ -342,14 +356,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     {
       if((ll_elapsed_time / (TIME_FIXP_SCALING / 10))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 10)))
       {
-        if(printing)
-        {
-          painter->drawLine(x_pix, 0, x_pix, 4 * printsize_y_factor);
-        }
-        else
-        {
-          painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling);
-        }
+        painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling * printsize_y_factor);
       }
 
       if(((ll_elapsed_time / TIME_FIXP_SCALING)!=((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) ||
@@ -368,18 +375,12 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           {
             snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) % 60);
           }
-          painter->drawText(x_pix + 2, 20 * h_scaling, str4);
+          painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
           ruler_pen->setColor(small_ruler_color);
           painter->setPen(*ruler_pen);
         }
-        if(printing)
-        {
-          painter->drawLine(x_pix, 0, x_pix, 8 * printsize_y_factor);
-        }
-        else
-        {
-          painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling);
-        }
+
+        painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling * printsize_y_factor);
       }
 
       ll_elapsed_time += time_ppixel;
@@ -395,14 +396,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     {
       if((ll_elapsed_time / (TIME_FIXP_SCALING / 5))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 5)))
       {
-        if(printing)
-        {
-          painter->drawLine(x_pix, 0, x_pix, 4 * printsize_y_factor);
-        }
-        else
-        {
-          painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling);
-        }
+        painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling * printsize_y_factor);
       }
 
       if(((ll_elapsed_time / TIME_FIXP_SCALING)!=((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) ||
@@ -419,7 +413,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             {
               snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / TIME_FIXP_SCALING)) % 60);
 
-              painter->drawText(x_pix + 2, 20 * h_scaling, str4);
+              painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
             }
           }
           else
@@ -428,20 +422,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             {
               snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) % 60);
 
-              painter->drawText(x_pix + 2, 20 * h_scaling, str4);
+              painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
             }
           }
           ruler_pen->setColor(small_ruler_color);
           painter->setPen(*ruler_pen);
         }
-        if(printing)
-        {
-          painter->drawLine(x_pix, 0, x_pix, 8 * printsize_y_factor);
-        }
-        else
-        {
-          painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling);
-        }
+
+        painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling * printsize_y_factor);
       }
 
       ll_elapsed_time += time_ppixel;
@@ -457,14 +445,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     {
       if((ll_elapsed_time / 33333333LL)!=((ll_elapsed_time + time_ppixel) / 33333333LL))
       {
-        if(printing)
-        {
-          painter->drawLine(x_pix, 0, x_pix, 4 * printsize_y_factor);
-        }
-        else
-        {
-          painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling);
-        }
+        painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling * printsize_y_factor);
       }
 
       if(((ll_elapsed_time / (TIME_FIXP_SCALING * 10))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 10))) ||
@@ -481,7 +462,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             {
               snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / TIME_FIXP_SCALING)) % 60);
 
-              painter->drawText(x_pix + 2, 20 * h_scaling, str4);
+              painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
             }
           }
           else
@@ -490,20 +471,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             {
               snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) % 60);
 
-              painter->drawText(x_pix + 2, 20 * h_scaling, str4);
+              painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
             }
           }
           ruler_pen->setColor(small_ruler_color);
           painter->setPen(*ruler_pen);
         }
-        if(printing)
-        {
-          painter->drawLine(x_pix, 0, x_pix, 8 * printsize_y_factor);
-        }
-        else
-        {
-          painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling);
-        }
+
+        painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling * printsize_y_factor);
       }
 
       ll_elapsed_time += time_ppixel;
@@ -519,14 +494,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     {
       if((ll_elapsed_time / (TIME_FIXP_SCALING * 10))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 10)))
       {
-        if(printing)
-        {
-          painter->drawLine(x_pix, 0, x_pix, 4 * printsize_y_factor);
-        }
-        else
-        {
-          painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling);
-        }
+        painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling * printsize_y_factor);
       }
 
       if(((ll_elapsed_time / (TIME_FIXP_SCALING * 60))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 60)))  ||
@@ -549,18 +517,12 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 60))) % 60);
           }
-          painter->drawText(x_pix + 2, 20 * h_scaling, str4);
+          painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
           ruler_pen->setColor(small_ruler_color);
           painter->setPen(*ruler_pen);
         }
-        if(printing)
-        {
-          painter->drawLine(x_pix, 0, x_pix, 8 * printsize_y_factor);
-        }
-        else
-        {
-          painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling);
-        }
+
+        painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling * printsize_y_factor);
       }
 
       ll_elapsed_time += time_ppixel;
@@ -576,14 +538,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     {
       if((ll_elapsed_time / (TIME_FIXP_SCALING * 600))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 600)))
       {
-        if(printing)
-        {
-          painter->drawLine(x_pix, 0, x_pix, 4 * printsize_y_factor);
-        }
-        else
-        {
-          painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling);
-        }
+        painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling * printsize_y_factor);
       }
 
       if(((ll_elapsed_time / (TIME_FIXP_SCALING * 3600))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 3600))) ||
@@ -606,18 +561,12 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
             snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 3600))) % 24);
           }
-          painter->drawText(x_pix + 2, 20 * h_scaling, str4);
+          painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
           ruler_pen->setColor(small_ruler_color);
           painter->setPen(*ruler_pen);
         }
-        if(printing)
-        {
-          painter->drawLine(x_pix, 0, x_pix, 8 * printsize_y_factor);
-        }
-        else
-        {
-          painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling);
-        }
+
+        painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling * printsize_y_factor);
       }
 
       ll_elapsed_time += time_ppixel;
@@ -633,14 +582,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     {
       if((ll_elapsed_time / (TIME_FIXP_SCALING * 3600))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 3600)))
       {
-        if(printing)
-        {
-          painter->drawLine(x_pix, 0, x_pix, 4 * printsize_y_factor);
-        }
-        else
-        {
-          painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling);
-        }
+        painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling * printsize_y_factor);
       }
 
       if(((ll_elapsed_time / (TIME_FIXP_SCALING * 86400))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 86400))) ||
@@ -654,14 +596,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           ruler_pen->setColor(small_ruler_color);
           painter->setPen(*ruler_pen);
         }
-        if(printing)
-        {
-          painter->drawLine(x_pix, 0, x_pix, 8 * printsize_y_factor);
-        }
-        else
-        {
-          painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling);
-        }
+
+        painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling * printsize_y_factor);
       }
 
       ll_elapsed_time += time_ppixel;
@@ -719,61 +655,29 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           }
         }
 
-        if(printing)
+        if((baseline + vert_ruler_offset) > ((h * mainwindow->mc_v_scrollarea_ratio) - (15 * printsize_y_factor)))
         {
-          if((baseline + vert_ruler_offset)>(h - (15 * printsize_y_factor)))
-          {
-            break;
-          }
-
-          if((baseline - vert_ruler_offset)<(15 * printsize_y_factor))
-          {
-            break;
-          }
+          break;
         }
-        else
+
+        if((baseline - vert_ruler_offset) < (15 * printsize_y_factor))
         {
-          if((baseline + vert_ruler_offset)>((h * mainwindow->mc_v_scrollarea_ratio) - 15))
-          {
-            break;
-          }
-          else if((baseline - vert_ruler_offset)<15)
-            {
-              break;
-            }
+          break;
         }
 
         painter->drawLine(0, baseline - vert_ruler_offset - scroll_h_offset, w, baseline - vert_ruler_offset - scroll_h_offset);
 
-        if(printing)
-        {
-          snprintf(str1, 128, "%+.*f %s", p_decimals,
-            ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor))) * (double)signalcomp[i]->polarity,
-            signalcomp[i]->physdimension);
-        }
-        else
-        {
-          snprintf(str1, 128, "%+.*f %s", p_decimals,
-            ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / painter_pixelsizefactor)) * (double)signalcomp[i]->polarity,
-            signalcomp[i]->physdimension);
-        }
+        snprintf(str1, 128, "%+.*f %s", p_decimals,
+          ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor))) * (double)signalcomp[i]->polarity,
+          signalcomp[i]->physdimension);
 
         painter->drawText(5 * printsize_x_factor, baseline - vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1);
 
         painter->drawLine(0, baseline + vert_ruler_offset - scroll_h_offset, w, baseline + vert_ruler_offset - scroll_h_offset);
 
-        if(printing)
-        {
-          snprintf(str1, 128, "%+.*f %s", p_decimals,
-            (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor)) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity,
-            signalcomp[i]->physdimension);
-        }
-        else
-        {
-          snprintf(str1, 128, "%+.*f %s", p_decimals,
-            (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / painter_pixelsizefactor) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity,
-            signalcomp[i]->physdimension);
-        }
+        snprintf(str1, 128, "%+.*f %s", p_decimals,
+          (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor)) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity,
+          signalcomp[i]->physdimension);
 
         painter->drawText(5 * printsize_x_factor, baseline + vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1);
       }
@@ -969,47 +873,33 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
               }
             }
 
-            if(printing)
+            if(file_idx % 2)
             {
-              painter->drawText(marker_x + (5  * printsize_x_factor), h - (25  * printsize_y_factor), annot_onset_str);
+              painter->drawText(marker_x + (5 * printsize_x_factor), (5 * printsize_y_factor) + (annot_text_stack_idx * mono_font_pixel_height), annot_onset_str);
+
+              annot_text_stack_idx++;
             }
             else
             {
-              if(file_idx % 2)
-              {
-                painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), annot_onset_str);
+              painter->drawText(marker_x + (5 * printsize_x_factor), (h - (5 * printsize_y_factor)) - (annot_text_stack_idx * mono_font_pixel_height), annot_onset_str);
 
-                annot_text_stack_idx++;
-              }
-              else
-              {
-                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), annot_onset_str);
-
-                annot_text_stack_idx++;
-              }
+              annot_text_stack_idx++;
             }
 
-            if(printing)
+            if(file_idx % 2)
             {
-              painter->drawText(marker_x + (5  * printsize_x_factor), h - (40  * printsize_y_factor), QString::fromUtf8(annot_description_str));
+              if((annot->long_duration > 0LL) && (mainwindow->annotations_show_duration))
+              {
+                painter->drawText(marker_x + (5 * printsize_x_factor), (5 * printsize_y_factor) + (annot_text_stack_idx * mono_font_pixel_height), annot_duration_str);
+
+                annot_text_stack_idx++;
+              }
             }
             else
             {
-              if(file_idx % 2)
-              {
-                if((annot->long_duration > 0LL) && (mainwindow->annotations_show_duration))
-                {
-                  painter->drawText(marker_x + 5, 5 + (annot_text_stack_idx * mono_font_pixel_height), annot_duration_str);
+              painter->drawText(marker_x + (5 * printsize_x_factor), (h - (5 * printsize_y_factor)) - (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(annot_description_str));
 
-                  annot_text_stack_idx++;
-                }
-              }
-              else
-              {
-                painter->drawText(marker_x + 5, (h - 5) - (annot_text_stack_idx * mono_font_pixel_height), QString::fromUtf8(annot_description_str));
-
-                annot_text_stack_idx++;
-              }
+              annot_text_stack_idx++;
             }
 
             if(!annot_marker_moving)
@@ -1169,7 +1059,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  painter->setClipping(false);
+  if(!printing)  painter->setClipping(false);
 
   for(i=0; i<signalcomps; i++)
   {
@@ -1493,31 +1383,24 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   painter->setPen(text_color);
 
-  if(printing)
+  painter->fillRect(6 * printsize_x_factor, h - mono_font_pixel_height - 1,
+                    strlen(mainwindow->viewtime_string) * mono_font_pixel_width, (4 * printsize_y_factor) + mono_font_pixel_height, backgroundcolor);
+  painter->drawText(mono_font_pixel_width / 2, h - (4 * printsize_y_factor), mainwindow->viewtime_string);
+  if((old_w != w) && mainwindow->display_pagetime_mmsec)
   {
-    painter->drawText((int)(8.0 * printsize_y_factor), h - (int)(4.0 * printsize_y_factor), mainwindow->viewtime_string);
-    painter->drawText(w - (int)(60.0 * printsize_y_factor), h - (int)(4.0 * printsize_y_factor), mainwindow->pagetime_string);
-  }
-  else
-  {
-    painter->fillRect(6, h - mono_font_pixel_height, 4 + (strlen(mainwindow->viewtime_string) * mono_font_pixel_width), mono_font_pixel_height, backgroundcolor);
-    painter->drawText(8, h - 4, mainwindow->viewtime_string);
-    if((old_w == w) || (!mainwindow->display_pagetime_mmsec))
+    if((mainwindow->pagetime >= (TIME_FIXP_SCALING / 10)) && (mainwindow->pagetime < (3600LL * TIME_FIXP_SCALING)))
     {
-      painter->fillRect(w - mono_font_pixel_width - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - mono_font_pixel_height,
-                        (strlen(mainwindow->pagetime_string) + 2) * mono_font_pixel_width, mono_font_pixel_height,
-                        backgroundcolor);
-      painter->drawText(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - 4, mainwindow->pagetime_string);
-    }
-    else
-    {
-      if((mainwindow->pagetime >= (TIME_FIXP_SCALING / 10)) && (mainwindow->pagetime < (3600LL * TIME_FIXP_SCALING)))
+      for(int r=0; r<64; r++)
       {
-        for(int r=0; r<64; r++)
-        {
-          if(mainwindow->pagetime_string[r] == 0)  break;
+        if(mainwindow->pagetime_string[r] == 0)  break;
 
-          if(mainwindow->pagetime_string[r] == '(')
+        if(mainwindow->pagetime_string[r] == '(')
+        {
+          if(printing)
+          {
+            mainwindow->pagetime_string[r] = 0;
+          }
+          else
           {
             if(mainwindow->pagetime > (600LL * TIME_FIXP_SCALING))
             {
@@ -1534,20 +1417,20 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                 snprintf(mainwindow->pagetime_string + r, 64, "(%i mm/sec)",
                         (int)((w * mainwindow->x_pixelsizefactor * 10) / (((double)mainwindow->pagetime) / TIME_FIXP_SCALING) + 0.5));
               }
-
-            remove_trailing_zeros(mainwindow->pagetime_string);
-
-            break;
           }
+
+          remove_trailing_zeros(mainwindow->pagetime_string);
+
+          break;
         }
       }
-
-      painter->fillRect(w - mono_font_pixel_width - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - mono_font_pixel_height - 1,
-                        (strlen(mainwindow->pagetime_string) + 2) * mono_font_pixel_width, (4 + mono_font_pixel_height),
-                        backgroundcolor);
-      painter->drawText(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - 4, mainwindow->pagetime_string);
     }
   }
+
+  painter->fillRect(w - mono_font_pixel_width - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - mono_font_pixel_height - 1,
+                    (strlen(mainwindow->pagetime_string) + 2) * mono_font_pixel_width, (4 * printsize_y_factor) + mono_font_pixel_height,
+                    backgroundcolor);
+  painter->drawText(w - (mono_font_pixel_width / 2) - (strlen(mainwindow->pagetime_string) * mono_font_pixel_width), h - (4 * printsize_y_factor), mainwindow->pagetime_string);
 
   old_w = w;
 }
