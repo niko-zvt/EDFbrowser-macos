@@ -611,13 +611,13 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
     {
       if(crosshair_1.active)
       {
-        if((m_y < (crosshair_1.y_position - 6)) && (m_y > (crosshair_1.y_position - 6 - (mainwindow->mono_font_pixel_height * 3))) &&
+        if((m_y >= (crosshair_1.y_position - 10 - mainwindow->mono_font_pixel_height)) && (m_y < (crosshair_1.y_position - 10 + (mainwindow->mono_font_pixel_height * 2))) &&
            (m_x >= crosshair_1.x_position) && (m_x < (crosshair_1.x_position + (mainwindow->mono_font_pixel_width * 17))))
         {
           crosshair_1.moving = 1;
         }
 
-        if(m_x > (crosshair_1.x_position - mainwindow->mono_font_pixel_width) && (m_x < (crosshair_1.x_position + mainwindow->mono_font_pixel_width)))
+        if((m_x > (crosshair_1.x_position - mainwindow->mono_font_pixel_width)) && (m_x < (crosshair_1.x_position + mainwindow->mono_font_pixel_width)))
         {
           crosshair_1.moving = 1;
         }
@@ -628,13 +628,13 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
     {
       if(crosshair_2.active)
       {
-        if((m_y < (crosshair_2.y_position - 6)) && (m_y > (crosshair_2.y_position - 6 - (mainwindow->mono_font_pixel_height * 5))) &&
+        if((m_y >= (crosshair_2.y_position - 10 - mainwindow->mono_font_pixel_height)) && (m_y < (crosshair_2.y_position - 10 + (mainwindow->mono_font_pixel_height * 4))) &&
            (m_x >= crosshair_2.x_position) && (m_x < (crosshair_2.x_position + (mainwindow->mono_font_pixel_width * 17))))
         {
           crosshair_2.moving = 1;
         }
 
-        if(m_x > (crosshair_2.x_position - mainwindow->mono_font_pixel_width) && (m_x < (crosshair_2.x_position + mainwindow->mono_font_pixel_width)))
+        if((m_x > (crosshair_2.x_position - mainwindow->mono_font_pixel_width)) && (m_x < (crosshair_2.x_position + mainwindow->mono_font_pixel_width)))
         {
           crosshair_2.moving = 1;
         }
@@ -1176,6 +1176,10 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
         {
           crosshair_1.y_position = 1;
         }
+        else if(crosshair_1.y_position>(h-30))
+          {
+            crosshair_1.y_position = h - 30;
+          }
       }
     }
 
@@ -1199,6 +1203,10 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
         {
           crosshair_2.y_position = 1;
         }
+        else if(crosshair_2.y_position>(h-30))
+          {
+            crosshair_2.y_position = h - 30;
+          }
       }
     }
 
@@ -1566,19 +1574,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
     mainwindow->mc_v_scrollbar->setEnabled(false);
   }
 
-  if(!w_width||!w_height)
-  {
-    w = width();
-    h = height() * mainwindow->mc_v_scrollarea_ratio;
-
-    scroll_h_offset = height() * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
-
-    printsize_x_factor = 1;
-    printsize_y_factor = 1;
-
-    printing = 0;
-  }
-  else  /* printing */
+  if(w_width && w_height)  /* printing */
   {
     w = w_width;
     h = w_height * mainwindow->mc_v_scrollarea_ratio;
@@ -1591,6 +1587,18 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
     painter_pixelsizefactor *= printsize_y_factor;
 
     printing = 1;
+  }
+  else  /* not printing */
+  {
+    w = width();
+    h = height() * mainwindow->mc_v_scrollarea_ratio;
+
+    scroll_h_offset = height() * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
+
+    printsize_x_factor = 1;
+    printsize_y_factor = 1;
+
+    printing = 0;
   }
 
   for(i=0; i<signalcomps; i++)
@@ -1818,14 +1826,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
         if(((int)dig_value)>signalcomp[i]->max_dig_value)  signalcomp[i]->max_dig_value = dig_value;
         if(((int)dig_value)<signalcomp[i]->min_dig_value)  signalcomp[i]->min_dig_value = dig_value;
 
-        if(printing)
-        {
-          value = baseline - value + (int)(signalcomp[i]->screen_offset * printsize_y_factor);
-        }
-        else
-        {
-          value = baseline - value + signalcomp[i]->screen_offset;
-        }
+        value = baseline - value + (signalcomp[i]->screen_offset * printsize_y_factor);
 
         if(s>=signalcomp[i]->sample_start)
         {

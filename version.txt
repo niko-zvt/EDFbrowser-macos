@@ -1,4 +1,12 @@
 
+ version 2.04      to be defined
+ --------------
+
+ - Print to printer, PDF or image: fixed and cleaned up old and broken code.
+
+ - Make it easier to drag and drop the crosshairs.
+
+
  version 2.03      April 24, 2023
  --------------
 

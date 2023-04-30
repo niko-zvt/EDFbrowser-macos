@@ -1070,249 +1070,185 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     if(signalcomp[i]->hascursor1)
     {
-      if(printing)
+      painter->setPen((Qt::GlobalColor)crosshair_1.color);
+      if(crosshair_1.has_hor_line)
       {
-        painter->setPen((Qt::GlobalColor)crosshair_1.color);
-        painter->drawLine(0, crosshair_1.y_value, w, crosshair_1.y_value);
-        painter->drawLine((int)((double)crosshair_1.x_position * printsize_x_factor), 0, (int)((double)crosshair_1.x_position * printsize_x_factor), h);
-        snprintf(str1, 128, "%+f %s",
-                        crosshair_1.value,
-                        signalcomp[i]->physdimension);
-        painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 40.0) * printsize_y_factor), str1);
-        snprintf(str1, 128, "%2i:%02i:%02i.%04i",
+        painter->drawLine(0, crosshair_1.y_value - scroll_h_offset, w, crosshair_1.y_value - scroll_h_offset);
+      }
+      if(crosshair_1.dot_sz)
+      {
+        painter->setBrush(QBrush((Qt::GlobalColor)crosshair_1.color));
+        painter->drawEllipse((crosshair_1.x_position - crosshair_1.dot_sz) * printsize_x_factor,
+                             crosshair_1.y_value - scroll_h_offset - (crosshair_1.dot_sz * printsize_y_factor),
+                             (crosshair_1.dot_sz * 2 + 1) * printsize_x_factor, (crosshair_1.dot_sz * 2 + 1) * printsize_y_factor);
+      }
+      painter->drawLine(crosshair_1.x_position * printsize_x_factor, 0, crosshair_1.x_position * printsize_x_factor, h);
+      snprintf(str1, 128, "%+f %s",
+                      crosshair_1.value,
+                      signalcomp[i]->physdimension);
+      painter->drawText((crosshair_1.x_position + 5) * printsize_x_factor, ((crosshair_1.y_position - 10) * printsize_y_factor) + (mono_font_pixel_height * 2), str1);
+      if(mainwindow->annot_editor_highres)
+      {
+        snprintf(str1, 128, "%2i:%02i:%02i.%06i",
                         (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
                         (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)((crosshair_1.time_clock / TIME_FIXP_SCALING) % 60LL),
-                        (int)((crosshair_1.time_clock % TIME_FIXP_SCALING) / 1000LL));
-        painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 25.0) * printsize_y_factor), str1);
-        if(signalcomp[i]->alias[0] != 0)
-        {
-          painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 10.0) * printsize_y_factor), signalcomp[i]->alias);
-        }
-        else
-        {
-          painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 10.0) * printsize_y_factor), signalcomp[i]->signallabel);
-        }
-        painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
+                        (int)((crosshair_1.time_clock % TIME_FIXP_SCALING) / 10LL));
       }
       else
       {
-        painter->setPen((Qt::GlobalColor)crosshair_1.color);
-        if(crosshair_1.has_hor_line)
-        {
-          painter->drawLine(0, crosshair_1.y_value - scroll_h_offset, w, crosshair_1.y_value - scroll_h_offset);
-        }
-        if(crosshair_1.dot_sz)
-        {
-          painter->setBrush(QBrush((Qt::GlobalColor)crosshair_1.color));
-          painter->drawEllipse(crosshair_1.x_position - crosshair_1.dot_sz, crosshair_1.y_value - crosshair_1.dot_sz - scroll_h_offset, crosshair_1.dot_sz * 2 + 1, crosshair_1.dot_sz * 2 + 1);
-        }
-        painter->drawLine(crosshair_1.x_position, 0, crosshair_1.x_position, h);
-        snprintf(str1, 128, "%+f %s",
-                        crosshair_1.value,
-                        signalcomp[i]->physdimension);
-        painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - (10 + (mono_font_pixel_height * 2)), str1);
+        snprintf(str1, 128, "%2i:%02i:%02i.%03i",
+                        (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                        (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                        (int)((crosshair_1.time_clock / TIME_FIXP_SCALING) % 60LL),
+                        (int)((crosshair_1.time_clock % TIME_FIXP_SCALING) / 10000LL));
+      }
+      if(crosshair_1.time_relative >= TIME_FIXP_SCALING)
+      {
         if(mainwindow->annot_editor_highres)
         {
-          snprintf(str1, 128, "%2i:%02i:%02i.%06i",
-                          (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
-                          (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                          (int)((crosshair_1.time_clock / TIME_FIXP_SCALING) % 60LL),
-                          (int)((crosshair_1.time_clock % TIME_FIXP_SCALING) / 10LL));
+          snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%06i)",
+                  (int)((crosshair_1.time_relative / TIME_FIXP_SCALING)/ 3600LL),
+                  (int)(((crosshair_1.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                  (int)((crosshair_1.time_relative / TIME_FIXP_SCALING) % 60LL),
+                  (int)((crosshair_1.time_relative % TIME_FIXP_SCALING) / 10LL));
         }
         else
         {
-          snprintf(str1, 128, "%2i:%02i:%02i.%03i",
-                          (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
-                          (int)(((crosshair_1.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                          (int)((crosshair_1.time_clock / TIME_FIXP_SCALING) % 60LL),
-                          (int)((crosshair_1.time_clock % TIME_FIXP_SCALING) / 10000LL));
+          snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%03i)",
+                  (int)((crosshair_1.time_relative / TIME_FIXP_SCALING)/ 3600LL),
+                  (int)(((crosshair_1.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                  (int)((crosshair_1.time_relative / TIME_FIXP_SCALING) % 60LL),
+                  (int)((crosshair_1.time_relative % TIME_FIXP_SCALING) / 10000LL));
         }
-        if(crosshair_1.time_relative >= TIME_FIXP_SCALING)
-        {
-          if(mainwindow->annot_editor_highres)
-          {
-            snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%06i)",
-                    (int)((crosshair_1.time_relative / TIME_FIXP_SCALING)/ 3600LL),
-                    (int)(((crosshair_1.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                    (int)((crosshair_1.time_relative / TIME_FIXP_SCALING) % 60LL),
-                    (int)((crosshair_1.time_relative % TIME_FIXP_SCALING) / 10LL));
-          }
-          else
-          {
-            snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%03i)",
-                    (int)((crosshair_1.time_relative / TIME_FIXP_SCALING)/ 3600LL),
-                    (int)(((crosshair_1.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                    (int)((crosshair_1.time_relative / TIME_FIXP_SCALING) % 60LL),
-                    (int)((crosshair_1.time_relative % TIME_FIXP_SCALING) / 10000LL));
-          }
-        }
-        else
-        {
-          convert_to_metric_suffix(str5, (double)crosshair_1.time_relative / TIME_FIXP_SCALING, 3, 128);
+      }
+      else
+      {
+        convert_to_metric_suffix(str5, (double)crosshair_1.time_relative / TIME_FIXP_SCALING, 3, 128);
 
-          snprintf(str1 + strlen(str1), 32, " (%.26sS)", str5);
-        }
+        snprintf(str1 + strlen(str1), 32, " (%.26sS)", str5);
+      }
 
-        painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - (10 + mono_font_pixel_height), str1);
-        if(signalcomp[i]->alias[0] != 0)
-        {
-          painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - 10, signalcomp[i]->alias);
-        }
-        else
-        {
-          painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - 10, signalcomp[i]->signallabel);
-        }
-        painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
+      painter->drawText((crosshair_1.x_position + 5) * printsize_x_factor, ((crosshair_1.y_position - 10) * printsize_y_factor) + mono_font_pixel_height, str1);
+      if(signalcomp[i]->alias[0] != 0)
+      {
+        painter->drawText((crosshair_1.x_position + 5) * printsize_x_factor, ((crosshair_1.y_position - 10) * printsize_y_factor), signalcomp[i]->alias);
+      }
+      else
+      {
+        painter->drawText((crosshair_1.x_position + 5) * printsize_x_factor, ((crosshair_1.y_position - 10) * printsize_y_factor), signalcomp[i]->signallabel);
+      }
+      painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
 
-        if(mainwindow->auto_update_annot_onset && (!crosshair_1.moving) && (mainwindow->annotationEditDock != NULL))
-        {
-          mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
-        }
+      if(mainwindow->auto_update_annot_onset && (!crosshair_1.moving) && (mainwindow->annotationEditDock != NULL))
+      {
+        mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
       }
     }
 
     if(signalcomp[i]->hascursor2)
     {
-      if(printing)
+      painter->setPen((Qt::GlobalColor)crosshair_2.color);
+      if(crosshair_2.has_hor_line)
       {
-        painter->setPen((Qt::GlobalColor)crosshair_2.color);
-        painter->drawLine(0, crosshair_2.y_value, w, crosshair_2.y_value);
-        painter->drawLine((int)((double)crosshair_2.x_position * printsize_x_factor), 0, (int)((double)crosshair_2.x_position * printsize_x_factor), h);
-        snprintf(str1, 128, "%+f %s",
-                        crosshair_2.value,
-                        signalcomp[i]->physdimension);
-        painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 70.0) * printsize_y_factor), str1);
-        snprintf(str1, 128, "%2i:%02i:%02i.%04i",
+        painter->drawLine(0, crosshair_2.y_value - scroll_h_offset, w, crosshair_2.y_value - scroll_h_offset);
+      }
+      if(crosshair_2.dot_sz)
+      {
+        painter->setBrush(QBrush((Qt::GlobalColor)crosshair_2.color));
+        painter->drawEllipse((crosshair_2.x_position - crosshair_2.dot_sz) * printsize_x_factor,
+                             crosshair_2.y_value - scroll_h_offset - (crosshair_2.dot_sz * printsize_y_factor),
+                             (crosshair_2.dot_sz * 2 + 1) * printsize_x_factor, (crosshair_2.dot_sz * 2 + 1) * printsize_y_factor);
+      }
+      painter->drawLine(crosshair_2.x_position * printsize_x_factor, 0, crosshair_2.x_position * printsize_x_factor, h);
+      snprintf(str1, 128, "%+f %s",
+                      crosshair_2.value,
+                      signalcomp[i]->physdimension);
+      painter->drawText((crosshair_2.x_position + 5) * printsize_x_factor, ((crosshair_2.y_position - 10) * printsize_y_factor) + (mono_font_pixel_height * 4), str1);
+      if(mainwindow->annot_editor_highres)
+      {
+        snprintf(str1, 128, "%2i:%02i:%02i.%06i",
                         (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
                         (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
                         (int)((crosshair_2.time_clock / TIME_FIXP_SCALING) % 60LL),
-                        (int)((crosshair_2.time_clock % TIME_FIXP_SCALING) / 1000LL));
-        painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 55.0) * printsize_y_factor), str1);
-        snprintf(str1, 128, "delta %+f %s",
-                        crosshair_2.value - crosshair_1.value,
-                        signalcomp[i]->physdimension);
-        painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 40.0) * printsize_y_factor), str1);
-        l_time = crosshair_2.time_clock - crosshair_1.time_clock;
-        if(l_time<0) l_time = -l_time;
-        snprintf(str1, 128, "delta %i:%02i:%02i.%04i",
-                        (int)((l_time / TIME_FIXP_SCALING)/ 3600LL),
-                        (int)(((l_time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                        (int)((l_time / TIME_FIXP_SCALING) % 60LL),
-                        (int)((l_time % TIME_FIXP_SCALING) / 1000LL));
-        painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 25.0) * printsize_y_factor), str1);
-        if(signalcomp[i]->alias[0] != 0)
-        {
-          painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 10.0) * printsize_y_factor), signalcomp[i]->alias);
-        }
-        else
-        {
-          painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 10.0) * printsize_y_factor), signalcomp[i]->signallabel);
-        }
-        painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
+                        (int)((crosshair_2.time_clock % TIME_FIXP_SCALING) / 10LL));
       }
       else
       {
-        painter->setPen((Qt::GlobalColor)crosshair_2.color);
-        if(crosshair_2.has_hor_line)
-        {
-          painter->drawLine(0, crosshair_2.y_value - scroll_h_offset, w, crosshair_2.y_value - scroll_h_offset);
-        }
-        if(crosshair_2.dot_sz)
-        {
-          painter->setBrush(QBrush((Qt::GlobalColor)crosshair_2.color));
-          painter->drawEllipse(crosshair_2.x_position - crosshair_2.dot_sz, crosshair_2.y_value - crosshair_2.dot_sz - scroll_h_offset, crosshair_2.dot_sz * 2 + 1, crosshair_2.dot_sz * 2 + 1);
-        }
-        painter->drawLine(crosshair_2.x_position, 0, crosshair_2.x_position, h);
-        snprintf(str1, 128, "%+f %s",
-                        crosshair_2.value,
-                        signalcomp[i]->physdimension);
-        painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (mono_font_pixel_height * 4)), str1);
+        snprintf(str1, 128, "%2i:%02i:%02i.%03i",
+                        (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
+                        (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                        (int)((crosshair_2.time_clock / TIME_FIXP_SCALING) % 60LL),
+                        (int)((crosshair_2.time_clock % TIME_FIXP_SCALING) / 10000LL));
+      }
+      if(crosshair_2.time_relative >= TIME_FIXP_SCALING)
+      {
         if(mainwindow->annot_editor_highres)
         {
-          snprintf(str1, 128, "%2i:%02i:%02i.%06i",
-                          (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
-                          (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                          (int)((crosshair_2.time_clock / TIME_FIXP_SCALING) % 60LL),
-                          (int)((crosshair_2.time_clock % TIME_FIXP_SCALING) / 10LL));
+          snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%06i)",
+                  (int)((crosshair_2.time_relative / TIME_FIXP_SCALING)/ 3600LL),
+                  (int)(((crosshair_2.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                  (int)((crosshair_2.time_relative / TIME_FIXP_SCALING) % 60LL),
+                  (int)((crosshair_2.time_relative % TIME_FIXP_SCALING) / 10LL));
         }
         else
         {
-          snprintf(str1, 128, "%2i:%02i:%02i.%03i",
-                          (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING)/ 3600LL) % 24LL),
-                          (int)(((crosshair_2.time_clock / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                          (int)((crosshair_2.time_clock / TIME_FIXP_SCALING) % 60LL),
-                          (int)((crosshair_2.time_clock % TIME_FIXP_SCALING) / 10000LL));
+          snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%03i)",
+                  (int)((crosshair_2.time_relative / TIME_FIXP_SCALING)/ 3600LL),
+                  (int)(((crosshair_2.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                  (int)((crosshair_2.time_relative / TIME_FIXP_SCALING) % 60LL),
+                  (int)((crosshair_2.time_relative % TIME_FIXP_SCALING) / 10000LL));
         }
-        if(crosshair_2.time_relative >= TIME_FIXP_SCALING)
-        {
-          if(mainwindow->annot_editor_highres)
-          {
-            snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%06i)",
-                    (int)((crosshair_2.time_relative / TIME_FIXP_SCALING)/ 3600LL),
-                    (int)(((crosshair_2.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                    (int)((crosshair_2.time_relative / TIME_FIXP_SCALING) % 60LL),
-                    (int)((crosshair_2.time_relative % TIME_FIXP_SCALING) / 10LL));
-          }
-          else
-          {
-            snprintf(str1 + strlen(str1), 32, " (%i:%02i:%02i.%03i)",
-                    (int)((crosshair_2.time_relative / TIME_FIXP_SCALING)/ 3600LL),
-                    (int)(((crosshair_2.time_relative / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                    (int)((crosshair_2.time_relative / TIME_FIXP_SCALING) % 60LL),
-                    (int)((crosshair_2.time_relative % TIME_FIXP_SCALING) / 10000LL));
-          }
-        }
-        else
-        {
-          convert_to_metric_suffix(str5, (double)crosshair_2.time_relative / TIME_FIXP_SCALING, 3, 128);
-
-          snprintf(str1 + strlen(str1), 32, " (%.26sS)", str5);
-        }
-
-        painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (mono_font_pixel_height * 3)), str1);
-        snprintf(str1, 128, "delta %+f %s",
-                        crosshair_2.value - crosshair_1.value,
-                        signalcomp[i]->physdimension);
-        painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + (mono_font_pixel_height * 2)), str1);
-        l_time = crosshair_2.time_clock - crosshair_1.time_clock;
-        if(l_time<0) l_time = -l_time;
-        if(l_time >= TIME_FIXP_SCALING)
-        {
-          if(mainwindow->annot_editor_highres)
-          {
-            snprintf(str1, 128, "delta %i:%02i:%02i.%06i",
-                            (int)((l_time / TIME_FIXP_SCALING)/ 3600LL),
-                            (int)(((l_time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                            (int)((l_time / TIME_FIXP_SCALING) % 60LL),
-                            (int)((l_time % TIME_FIXP_SCALING) / 10LL));
-          }
-          else
-          {
-            snprintf(str1, 128, "delta %i:%02i:%02i.%03i",
-                            (int)((l_time / TIME_FIXP_SCALING)/ 3600LL),
-                            (int)(((l_time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
-                            (int)((l_time / TIME_FIXP_SCALING) % 60LL),
-                            (int)((l_time % TIME_FIXP_SCALING) / 10000LL));
-          }
-        }
-        else
-        {
-          convert_to_metric_suffix(str5, (double)l_time / TIME_FIXP_SCALING, 3, 128);
-
-          snprintf(str1, 32, "delta %.24sS", str5);
-        }
-        painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - (10 + mono_font_pixel_height), str1);
-        if(signalcomp[i]->alias[0] != 0)
-        {
-          painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - 10, signalcomp[i]->alias);
-        }
-        else
-        {
-          painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - 10, signalcomp[i]->signallabel);
-        }
-        painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
       }
+      else
+      {
+        convert_to_metric_suffix(str5, (double)crosshair_2.time_relative / TIME_FIXP_SCALING, 3, 128);
+
+        snprintf(str1 + strlen(str1), 32, " (%.26sS)", str5);
+      }
+
+      painter->drawText((crosshair_2.x_position + 5) * printsize_x_factor, ((crosshair_2.y_position - 10) * printsize_y_factor) + (mono_font_pixel_height * 3), str1);
+      snprintf(str1, 128, "delta %+f %s",
+                      crosshair_2.value - crosshair_1.value,
+                      signalcomp[i]->physdimension);
+      painter->drawText((crosshair_2.x_position + 5) * printsize_x_factor, ((crosshair_2.y_position - 10) * printsize_y_factor) + (mono_font_pixel_height * 2), str1);
+      l_time = crosshair_2.time_clock - crosshair_1.time_clock;
+      if(l_time<0) l_time = -l_time;
+      if(l_time >= TIME_FIXP_SCALING)
+      {
+        if(mainwindow->annot_editor_highres)
+        {
+          snprintf(str1, 128, "delta %i:%02i:%02i.%06i",
+                          (int)((l_time / TIME_FIXP_SCALING)/ 3600LL),
+                          (int)(((l_time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                          (int)((l_time / TIME_FIXP_SCALING) % 60LL),
+                          (int)((l_time % TIME_FIXP_SCALING) / 10LL));
+        }
+        else
+        {
+          snprintf(str1, 128, "delta %i:%02i:%02i.%03i",
+                          (int)((l_time / TIME_FIXP_SCALING)/ 3600LL),
+                          (int)(((l_time / TIME_FIXP_SCALING) % 3600LL) / 60LL),
+                          (int)((l_time / TIME_FIXP_SCALING) % 60LL),
+                          (int)((l_time % TIME_FIXP_SCALING) / 10000LL));
+        }
+      }
+      else
+      {
+        convert_to_metric_suffix(str5, (double)l_time / TIME_FIXP_SCALING, 3, 128);
+
+        snprintf(str1, 32, "delta %.24sS", str5);
+      }
+      painter->drawText((crosshair_2.x_position + 5) * printsize_x_factor, ((crosshair_2.y_position - 10) * printsize_y_factor) + mono_font_pixel_height, str1);
+      if(signalcomp[i]->alias[0] != 0)
+      {
+        painter->drawText((crosshair_2.x_position + 5) * printsize_x_factor, (crosshair_2.y_position - 10) * printsize_y_factor, signalcomp[i]->alias);
+      }
+      else
+      {
+        painter->drawText((crosshair_2.x_position + 5) * printsize_x_factor, (crosshair_2.y_position - 10) * printsize_y_factor, signalcomp[i]->signallabel);
+      }
+      painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
     }
 
     if(signalcomp[i]->hasoffsettracking)
