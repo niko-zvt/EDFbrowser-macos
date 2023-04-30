@@ -37,7 +37,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       p_decimals=0,
       m_pagetime=10,
       vert_ruler_offset,
-      vertical_distance,
       marker_x,
       marker_x2,
       former_marker_x,
@@ -54,6 +53,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   double mono_font_pixel_height=20,
          mono_font_pixel_width=12,
+         vertical_distance=1,
          dtmp=0;
 
   char *viewbuf=NULL,
@@ -77,7 +77,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   annotblck_t *annot=NULL;
 
-  if(mainwindow->exit_in_progress)
+  if(mainwindow->exit_in_progress || (painter == NULL))
   {
     return;
   }
@@ -85,8 +85,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   signalcomps = mainwindow->signalcomps;
   signalcomp = mainwindow->signalcomp;
   viewbuf = mainwindow->viewbuf;
-
-  vertical_distance = 1;
 
   painter_pixelsizefactor = 1.0 / mainwindow->y_pixelsizefactor;
 
@@ -144,7 +142,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     signalcomp[i]->draw_rectangle_sum_cnt = 0;
   }
 
-  vertical_distance = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
+  vertical_distance = ((double)h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1.0);
 
   painter->fillRect(0, 0, w, h, backgroundcolor);
 
@@ -336,16 +334,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   }
 
   ruler_pen->setWidth(print_linewidth);
-
-//   if(printing)
-//   {
-//     ruler_pen->setColor(Qt::black);
-//     painter->setPen(*ruler_pen);
-//     painter->drawLine(0, 0, 0, h-1);
-//     painter->drawLine(0, 0, w-1, 0);
-//     painter->drawLine(w-1, h-1, w-1, 0);
-//     painter->drawLine(w-1, h-1, 0, h-1);
-//   }
 
   if(m_pagetime<=20)
   {
@@ -606,7 +594,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   if(mainwindow->show_baselines)
   {
-    vertical_distance = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
+    vertical_distance = ((double)h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1.0);
 
     painter->setPen(baseline_color);
 
@@ -1018,7 +1006,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   {
     painter->setClipping(true);
 
-    vertical_distance = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
+    vertical_distance = ((double)h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1.0);
   }
 
   for(i=0; i<signalcomps; i++)
@@ -1272,12 +1260,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  vertical_distance = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
+  vertical_distance = ((double)h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1.0);
 
   for(i=0; i<signalcomps; i++)
   {
-    baseline = vertical_distance * (i + 1);
-    baseline -= scroll_h_offset;
+    baseline = (vertical_distance * (i + 1)) - scroll_h_offset;
 
     if(signalcomp[i]->alias[0] != 0)
     {
@@ -1301,7 +1288,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     if(signalcomp[i]->hasruler)
     {
-      floating_ruler(painter, ruler_x_position, ruler_y_position, signalcomp[i], print_linewidth);
+      floating_ruler(painter, ruler_x_position, ruler_y_position, signalcomp[i], print_linewidth, mono_font_pixel_width);
     }
   }
 
@@ -1372,7 +1359,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 }
 
 
-inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, sigcompblck_t *signalcomp, int print_linewidth)
+inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, sigcompblck_t *signalcomp, int print_linewidth, double mono_font_px_width)
 {
   int i, j, v_use_exp=0, h_use_exp=0;
 
@@ -1444,7 +1431,7 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
   }
   else
   {
-    w_size = (double)w / 10.0;
+    w_size = w / 10.0;
   }
 
   d_tmp = h_size / 7.0;
@@ -1598,7 +1585,7 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
 
   for(i=0; i<7; i++)
   {
-    painter->drawText(x_pos - (mainwindow->mono_font_pixel_width/2) - (strlen(str_hz[i]) * mainwindow->mono_font_pixel_width), y_pos + (h / 204.8) + d_tmp2 + (d_tmp * i) + (h_scaling * 3.0 - 3.0), str_hz[i]);
+    painter->drawText(x_pos - (mono_font_px_width/2) - (strlen(str_hz[i]) * mono_font_px_width), y_pos + (h / 204.8) + d_tmp2 + (d_tmp * i) + (h_scaling * 3.0 - 3.0), str_hz[i]);
   }
 
   for(i=0; i<8; i++)
@@ -1643,7 +1630,7 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
 
   for(i=0; i<5; i++)
   {
-    painter->drawText(x_pos - (mainwindow->mono_font_pixel_width/2) - (strlen(str_uv[i]) * mainwindow->mono_font_pixel_width), y_pos + ((double)h / 204.8) + (d_tmp * i) + (h_scaling * 3.0 - 3.0), str_uv[i]);
+    painter->drawText(x_pos - (mono_font_px_width/2) - (strlen(str_uv[i]) * mono_font_px_width), y_pos + ((double)h / 204.8) + (d_tmp * i) + (h_scaling * 3.0 - 3.0), str_uv[i]);
 
     painter->drawLine(x_pos + ((double)w / 160.0), y_pos + (d_tmp * i), x_pos + ((double)w / 45.7), y_pos + (d_tmp * i));
   }
@@ -1672,7 +1659,7 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
 
   for(i=0; i<4; i++)
   {
-    painter->drawText(x_pos - (mainwindow->mono_font_pixel_width/2) - (strlen(str_s[i]) * mainwindow->mono_font_pixel_width) + (d_tmp2 * i), y_pos + ((double)h / 204.8) + (d_tmp * i), str_s[i]);
+    painter->drawText(x_pos - (mono_font_px_width/2) - (strlen(str_s[i]) * mono_font_px_width) + (d_tmp2 * i), y_pos + ((double)h / 204.8) + (d_tmp * i), str_s[i]);
   }
 
   painter->drawText(x_pos + ((double)w / 125.0) + w_size, y_pos + ((double)h / 204.8), "Sec");

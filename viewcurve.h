@@ -274,7 +274,7 @@ private:
 
   drawCurve_stage_1_thread *thr[MAXSIGNALS];
 
-  inline void floating_ruler(QPainter *, int, int, sigcompblck_t *, int);
+  inline void floating_ruler(QPainter *, int, int, sigcompblck_t *, int, double);
 
   void backup_colors_for_printing(void);
   void restore_colors_after_printing(void);

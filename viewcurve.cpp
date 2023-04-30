@@ -693,8 +693,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
     {
       for(i=0; i<signalcomps; i++)
       {
-        baseline = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
-        baseline *= (i + 1);
+        baseline = (((double)h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1.0)) * (i + 1);
         baseline -= scroll_h_offset;
 
         if(signalcomp[i]->alias[0] != 0)
@@ -745,8 +744,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
     for(i=0; i<signalcomps; i++)
     {
-      baseline = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
-      baseline *= (i + 1);
+      baseline = (((double)h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1.0)) * (i + 1);
       baseline -= scroll_h_offset;
 
       if(signalcomp[i]->alias[0] != 0)
@@ -1066,8 +1064,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
     for(i=0; i<signalcomps; i++)
     {
-      baseline = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
-      baseline *= (i + 1);
+      baseline = (((double)h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1.0)) * (i + 1);
       baseline -= scroll_h_offset;
 
       if(signalcomp[i]->alias[0] != 0)
@@ -1680,8 +1677,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
       signalcomp[i]->stat_sum_sqr = 0;
       signalcomp[i]->stat_sum_rectified = 0;
 
-      baseline = h / (signalcomps + 1);
-      baseline *= (i + 1);
+      baseline = ((double)h / (signalcomps + 1.0)) * (i + 1);
 
       signalcomp[i]->pixels_shift = signalcomp[i]->sample_timeoffset_part / signalcomp[i]->sample_pixel_ratio;
 
@@ -2056,8 +2052,7 @@ void drawCurve_stage_1_thread::run()
     signalcomp->stat_sum_sqr = 0;
     signalcomp->stat_sum_rectified = 0;
 
-    baseline = h / (signalcomps + 1);
-    baseline *= (i + 1);
+    baseline = ((double)h / (signalcomps + 1.0)) * (i + 1);
 
     signalcomp->pixels_shift = signalcomp->sample_timeoffset_part / signalcomp->sample_pixel_ratio;
 
@@ -2568,7 +2563,7 @@ void ViewCurve::set_vertical_scroll_value(int val)
 {
   scrollbar_h_value = val;
 
-  scroll_h_offset = height() * (mainwindow->mc_v_scrollarea_ratio - 1) * (val / 100000.0);
+  scroll_h_offset = height() * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
 }
 
 
