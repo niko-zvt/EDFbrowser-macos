@@ -538,7 +538,8 @@ private:
                *close_filemenu,
                *montagemenu,
                *patternmenu,
-               *print_img_menu;
+               *print_img_menu,
+               *print_pdf_menu;
 
   char path[MAX_PATH_LENGTH],
        videopath[MAX_PATH_LENGTH],

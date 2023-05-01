@@ -593,6 +593,12 @@ UI_Mainwindow::UI_Mainwindow()
   print_img_menu->addAction("2560 x 1440", this, SLOT(print_to_img_2560x1440()));
   print_img_menu->addAction("3840 x 2160", this, SLOT(print_to_img_3840x2160()));
 
+  print_pdf_menu = new QMenu(this);
+  print_pdf_menu->setTitle("to PDF");
+  print_pdf_menu->addAction("Letter", maincurve, SLOT(print_to_pdf_Letter()));
+  print_pdf_menu->addAction("A4",     maincurve, SLOT(print_to_pdf_A4()));
+  print_pdf_menu->addAction("A3",     maincurve, SLOT(print_to_pdf_A3()));
+
   printmenu = new QMenu(this);
   printmenu->setTitle("Print");
 #if QT_VERSION < 0x060000
@@ -600,7 +606,7 @@ UI_Mainwindow::UI_Mainwindow()
 #else
   printmenu->addAction("to Printer", QKeySequence::Print, maincurve, SLOT(print_to_printer()));
 #endif
-  printmenu->addAction("to PDF",        maincurve, SLOT(print_to_pdf()));
+  printmenu->addMenu(print_pdf_menu);
   printmenu->addMenu(print_img_menu);
   printmenu->addAction("to EDF",        this, SLOT(print_to_edf()));
   printmenu->addAction("to BDF",        this, SLOT(print_to_bdf()));

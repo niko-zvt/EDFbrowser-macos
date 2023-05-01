@@ -216,10 +216,16 @@ public:
 public slots:
 
   void exec_sidemenu(int);
-  void print_to_pdf();
+  void print_to_pdf_A3();
+  void print_to_pdf_A4();
+  void print_to_pdf_Letter();
   void print_to_image(int, int);
   void print_to_printer();
   void next_crosshair_act_triggered();
+
+private slots:
+
+  void print_to_pdf(int);
 
 private:
 

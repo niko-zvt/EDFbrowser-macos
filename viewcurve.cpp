@@ -28,6 +28,9 @@
 #include "viewcurve.h"
 
 
+#define PRINT_LINE_WIDTH   (6)
+
+
 ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
 {
   int i;
@@ -1357,12 +1360,12 @@ void ViewCurve::print_to_printer()
   drawCurve_stage_1(&paint,
                     print.pageLayout().paintRectPixels(print.resolution()).width() - (border_sz * 2),
                     print.pageLayout().paintRectPixels(print.resolution()).height() - (border_sz * 2),
-                    2);
+                    PRINT_LINE_WIDTH);
 #else
   drawCurve_stage_1(&paint,
                     print.pageRect().width() - (border_sz * 2),
                     print.pageRect().height() - (border_sz * 2),
-                    2);
+                    PRINT_LINE_WIDTH);
 #endif
   if(blackwhite_printing)
   {
@@ -1373,7 +1376,22 @@ void ViewCurve::print_to_printer()
 }
 
 
-void ViewCurve::print_to_pdf()
+void ViewCurve::print_to_pdf_A3()
+{
+  print_to_pdf(3);
+}
+
+void ViewCurve::print_to_pdf_A4()
+{
+  print_to_pdf(4);
+}
+
+void ViewCurve::print_to_pdf_Letter()
+{
+  print_to_pdf(11);
+}
+
+void ViewCurve::print_to_pdf(int paper_sz)
 {
   int len,
       border_sz=500;
@@ -1409,10 +1427,28 @@ void ViewCurve::print_to_pdf()
   print.setOutputFormat(QPrinter::PdfFormat);
   print.setOutputFileName(QString::fromLocal8Bit(path));
 #if QT_VERSION >= 0x050D00
-  print.setPageSize(QPageSize(QPageSize::A4));
+  switch(paper_sz)
+  {
+    case  3: print.setPageSize(QPageSize(QPageSize::A3));
+             break;
+    case  4: print.setPageSize(QPageSize(QPageSize::A4));
+             break;
+    case 11: print.setPageSize(QPageSize(QPageSize::Letter));
+             break;
+    default: print.setPageSize(QPageSize(QPageSize::A4));
+  }
   print.setPageOrientation(QPageLayout::Landscape);
 #else
-  print.setPageSize(QPrinter::A4);
+  switch(paper_sz)
+  {
+    case  3: print.setPageSize(QPrinter::A3);
+             break;
+    case  4: print.setPageSize(QPrinter::A4);
+             break;
+    case 11: print.setPageSize(QPrinter::Letter);
+             break;
+    default: print.setPageSize(QPrinter::A4);
+  }
   print.setOrientation(QPrinter::Landscape);
 #endif
   print.setCreator(PROGRAM_NAME);
@@ -1431,12 +1467,12 @@ void ViewCurve::print_to_pdf()
   drawCurve_stage_1(&paint,
                     print.pageLayout().paintRectPixels(print.resolution()).width() - (border_sz * 2),
                     print.pageLayout().paintRectPixels(print.resolution()).height() - (border_sz * 2),
-                    2);
+                    PRINT_LINE_WIDTH);
 #else
   drawCurve_stage_1(&paint,
                     print.pageRect().width() - (border_sz * 2),
                     print.pageRect().height() - (border_sz * 2)),
-                    2);
+                    PRINT_LINE_WIDTH);
 #endif
 
   if(blackwhite_printing)
