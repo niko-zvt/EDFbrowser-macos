@@ -1419,12 +1419,12 @@ inline void ViewCurve::floating_ruler(QPainter *painter, int x_pos, int y_pos, s
   {
     w_size = pixels_per_second;
 
-    while(w_size > (w / 5))
+    while(w_size > (w / 6.0))
     {
       w_size /= 2;
     }
 
-    while(w_size < (w / 20))
+    while(w_size < (w / 12.1))
     {
       w_size *= 2;
     }
