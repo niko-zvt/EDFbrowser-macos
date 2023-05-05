@@ -28,7 +28,6 @@
 #include "viewcurve.h"
 
 
-#define PRINT_LINE_WIDTH   (6)
 
 
 ViewCurve::ViewCurve(QWidget *w_parent) : QWidget(w_parent)
@@ -1360,12 +1359,12 @@ void ViewCurve::print_to_printer()
   drawCurve_stage_1(&paint,
                     print.pageLayout().paintRectPixels(print.resolution()).width() - (border_sz * 2),
                     print.pageLayout().paintRectPixels(print.resolution()).height() - (border_sz * 2),
-                    PRINT_LINE_WIDTH);
+                    PRINT_LINE_WIDTH, PRINT_FORMAT_PRINTER);
 #else
   drawCurve_stage_1(&paint,
                     print.pageRect().width() - (border_sz * 2),
                     print.pageRect().height() - (border_sz * 2),
-                    PRINT_LINE_WIDTH);
+                    PRINT_LINE_WIDTH, PRINT_FORMAT_PRINTER);
 #endif
   if(blackwhite_printing)
   {
@@ -1378,17 +1377,17 @@ void ViewCurve::print_to_printer()
 
 void ViewCurve::print_to_pdf_A3()
 {
-  print_to_pdf(3);
+  print_to_pdf(PRINT_FORMAT_PDF_A3);
 }
 
 void ViewCurve::print_to_pdf_A4()
 {
-  print_to_pdf(4);
+  print_to_pdf(PRINT_FORMAT_PDF_A4);
 }
 
 void ViewCurve::print_to_pdf_Letter()
 {
-  print_to_pdf(11);
+  print_to_pdf(PRINT_FORMAT_PDF_LETTER);
 }
 
 void ViewCurve::print_to_pdf(int paper_sz)
@@ -1429,11 +1428,11 @@ void ViewCurve::print_to_pdf(int paper_sz)
 #if QT_VERSION >= 0x050D00
   switch(paper_sz)
   {
-    case  3: print.setPageSize(QPageSize(QPageSize::A3));
+    case     PRINT_FORMAT_PDF_A3: print.setPageSize(QPageSize(QPageSize::A3));
              break;
-    case  4: print.setPageSize(QPageSize(QPageSize::A4));
+    case     PRINT_FORMAT_PDF_A4: print.setPageSize(QPageSize(QPageSize::A4));
              break;
-    case 11: print.setPageSize(QPageSize(QPageSize::Letter));
+    case PRINT_FORMAT_PDF_LETTER: print.setPageSize(QPageSize(QPageSize::Letter));
              break;
     default: print.setPageSize(QPageSize(QPageSize::A4));
   }
@@ -1441,11 +1440,11 @@ void ViewCurve::print_to_pdf(int paper_sz)
 #else
   switch(paper_sz)
   {
-    case  3: print.setPageSize(QPrinter::A3);
+    case     PRINT_FORMAT_PDF_A3: print.setPageSize(QPrinter::A3);
              break;
-    case  4: print.setPageSize(QPrinter::A4);
+    case     PRINT_FORMAT_PDF_A4: print.setPageSize(QPrinter::A4);
              break;
-    case 11: print.setPageSize(QPrinter::Letter);
+    case PRINT_FORMAT_PDF_LETTER: print.setPageSize(QPrinter::Letter);
              break;
     default: print.setPageSize(QPrinter::A4);
   }
@@ -1467,12 +1466,12 @@ void ViewCurve::print_to_pdf(int paper_sz)
   drawCurve_stage_1(&paint,
                     print.pageLayout().paintRectPixels(print.resolution()).width() - (border_sz * 2),
                     print.pageLayout().paintRectPixels(print.resolution()).height() - (border_sz * 2),
-                    PRINT_LINE_WIDTH);
+                    PRINT_LINE_WIDTH, paper_sz);
 #else
   drawCurve_stage_1(&paint,
                     print.pageRect().width() - (border_sz * 2),
                     print.pageRect().height() - (border_sz * 2)),
-                    PRINT_LINE_WIDTH);
+                    PRINT_LINE_WIDTH, paper_sz);
 #endif
 
   if(blackwhite_printing)
@@ -1484,7 +1483,7 @@ void ViewCurve::print_to_pdf(int paper_sz)
 }
 
 
-void ViewCurve::print_to_image(int w_img, int h_img)
+void ViewCurve::print_to_image(int w_img, int h_img, int img_format)
 {
   int len;
 
@@ -1519,7 +1518,7 @@ void ViewCurve::print_to_image(int w_img, int h_img)
 #if (QT_VERSION >= 0x050000) && (QT_VERSION < 0x060000)
     paint.setRenderHint(QPainter::Qt4CompatiblePainting, true);
 #endif
-  drawCurve_stage_1(&paint, w_img, h_img, 0);
+  drawCurve_stage_1(&paint, w_img, h_img, 0, img_format);
 
   pixmap.save(QString::fromLocal8Bit(path), "PNG", 90);
 
@@ -1527,7 +1526,7 @@ void ViewCurve::print_to_image(int w_img, int h_img)
 }
 
 
-void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, int print_linewidth)
+void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, int print_linewidth, int print_format)
 {
   int i, j, n, x1, y1, x2, y2,
       tmp,
@@ -1607,7 +1606,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
     mainwindow->mc_v_scrollbar->setEnabled(false);
   }
 
-  if(w_width && w_height)  /* printing */
+  if(w_width && w_height && (print_format != PRINT_FORMAT_NONE))  /* printing */
   {
     w = w_width;
     h = w_height * mainwindow->mc_v_scrollarea_ratio;
@@ -2001,7 +2000,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
   if(printing)
   {
-    drawCurve_stage_2(painter, w_width, w_height, print_linewidth);
+    drawCurve_stage_2(painter, w_width, w_height, print_linewidth, print_format);
   }
   else
   {
@@ -2399,7 +2398,7 @@ void ViewCurve::backup_colors_for_printing()
   backup_color_2 = small_ruler_color;
   small_ruler_color = Qt::black;
   backup_color_3 = big_ruler_color;
-  big_ruler_color = Qt::black;
+  big_ruler_color = Qt::gray;
   backup_color_4 = mouse_rect_color;
   mouse_rect_color = Qt::black;
   backup_color_5 = text_color;
@@ -2417,7 +2416,7 @@ void ViewCurve::backup_colors_for_printing()
   backup_color_12 = crosshair_2.color;
   crosshair_2.color = Qt::black;
   backup_color_13 = baseline_color;
-  baseline_color = Qt::black;
+  baseline_color = Qt::gray;
   backup_color_15 = annot_marker_color;
   annot_marker_color = Qt::black;
   backup_color_16 = annot_marker_selected_color;

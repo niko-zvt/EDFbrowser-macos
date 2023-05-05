@@ -208,7 +208,7 @@ public:
             *shift_page_up_shortcut,
             *shift_page_down_shortcut;
 
-  void drawCurve_stage_1(QPainter *painter=NULL, int w_width=0, int w_height=0, int print_linewidth=0);
+  void drawCurve_stage_1(QPainter *painter=NULL, int w_width=0, int w_height=0, int print_linewidth=0, int print_format=PRINT_FORMAT_NONE);
   void setCrosshair_1_center(void);
   void arrowkeys_shortcuts_global_set_enabled(bool);
   void set_vertical_scroll_value(int);
@@ -219,7 +219,7 @@ public slots:
   void print_to_pdf_A3();
   void print_to_pdf_A4();
   void print_to_pdf_Letter();
-  void print_to_image(int, int);
+  void print_to_image(int, int, int);
   void print_to_printer();
   void next_crosshair_act_triggered();
 
@@ -314,7 +314,7 @@ protected slots:
 protected:
   void paintEvent(QPaintEvent *);
   void resizeEvent(QResizeEvent *);
-  void drawCurve_stage_2(QPainter *painter, int w_width=0, int w_height=0, int print_linewidth=0);
+  void drawCurve_stage_2(QPainter *painter, int w_width=0, int w_height=0, int print_linewidth=0, int print_format=PRINT_FORMAT_NONE);
   void mousePressEvent(QMouseEvent *);
   void mouseReleaseEvent(QMouseEvent *);
   void mouseMoveEvent(QMouseEvent *);

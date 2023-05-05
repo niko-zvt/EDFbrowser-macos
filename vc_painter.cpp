@@ -29,7 +29,7 @@
 
 
 
-void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, int print_linewidth)
+void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, int print_linewidth, int print_format)
 {
   int i, j, k, n, p, x_pix=0, x_tmp,
       signalcomps=0,
@@ -88,7 +88,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   painter_pixelsizefactor = 1.0 / mainwindow->y_pixelsizefactor;
 
-  if(w_width && w_height)  /* printing */
+  if(w_width && w_height && (print_format != PRINT_FORMAT_NONE))  /* printing */
   {
     w = w_width;
     h = w_height;
@@ -107,8 +107,13 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
     scroll_h_offset = h * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
 
-    painter->setClipping(true);
+    if((print_format == PRINT_FORMAT_PDF_A3) || (print_format == PRINT_FORMAT_PDF_A4) || (print_format == PRINT_FORMAT_PDF_LETTER) || (print_format == PRINT_FORMAT_PRINTER))
+    {
+      painter->setPen(QPen(QBrush(Qt::black), PRINT_LINE_WIDTH));
+      painter->drawRect(-PRINT_LINE_WIDTH, -PRINT_LINE_WIDTH, w + PRINT_LINE_WIDTH, h + PRINT_LINE_WIDTH);
+    }
 
+    painter->setClipping(true);
     painter->setClipRect(0, 0, w, h);
 
     printing = 1;

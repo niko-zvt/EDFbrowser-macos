@@ -164,6 +164,15 @@
 
 #define RC_CMD_MASK  (0xffffffff & (~RC_CMD_QUERY))
 
+#define PRINT_LINE_WIDTH           (6)
+
+#define PRINT_FORMAT_NONE          (0)
+#define PRINT_FORMAT_PDF_A3        (1)
+#define PRINT_FORMAT_PDF_A4        (2)
+#define PRINT_FORMAT_PDF_LETTER    (3)
+#define PRINT_FORMAT_PRINTER       (4)
+#define PRINT_FORMAT_IMG           (5)
+
 
 #include "edf_annot_list.h"
 #include "filt/ecg_filter.h"

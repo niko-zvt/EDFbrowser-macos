@@ -4157,49 +4157,49 @@ void UI_Mainwindow::unify_resolution()
 
 void UI_Mainwindow::print_to_img_640x480()
 {
-  maincurve->print_to_image(640, 480);
+  maincurve->print_to_image(640, 480, PRINT_FORMAT_IMG);
 }
 
 
 void UI_Mainwindow::print_to_img_800x600()
 {
-  maincurve->print_to_image(800, 600);
+  maincurve->print_to_image(800, 600, PRINT_FORMAT_IMG);
 }
 
 
 void UI_Mainwindow::print_to_img_1024x768()
 {
-  maincurve->print_to_image(1024, 768);
+  maincurve->print_to_image(1024, 768, PRINT_FORMAT_IMG);
 }
 
 
 void UI_Mainwindow::print_to_img_1280x1024()
 {
-  maincurve->print_to_image(1280, 1024);
+  maincurve->print_to_image(1280, 1024, PRINT_FORMAT_IMG);
 }
 
 
 void UI_Mainwindow::print_to_img_1600x1200()
 {
-  maincurve->print_to_image(1600, 1200);
+  maincurve->print_to_image(1600, 1200, PRINT_FORMAT_IMG);
 }
 
 
 void UI_Mainwindow::print_to_img_1920x1080()
 {
-  maincurve->print_to_image(1920, 1080);
+  maincurve->print_to_image(1920, 1080, PRINT_FORMAT_IMG);
 }
 
 
 void UI_Mainwindow::print_to_img_2560x1440()
 {
-  maincurve->print_to_image(2560, 1440);
+  maincurve->print_to_image(2560, 1440, PRINT_FORMAT_IMG);
 }
 
 
 void UI_Mainwindow::print_to_img_3840x2160()
 {
-  maincurve->print_to_image(3840, 2160);
+  maincurve->print_to_image(3840, 2160, PRINT_FORMAT_IMG);
 }
 
 
