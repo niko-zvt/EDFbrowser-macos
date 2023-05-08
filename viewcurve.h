@@ -199,7 +199,10 @@ public:
          backup_color_5,
          backup_color_13,
          backup_color_15,
-         backup_color_16;
+         backup_color_16,
+         backup_color_17,
+         backup_color_18,
+         mc_annot_ov_color_predefined_bu[8];
 
   QFont *printfont;
 

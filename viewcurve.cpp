@@ -2421,6 +2421,16 @@ void ViewCurve::backup_colors_for_printing()
   annot_marker_color = Qt::black;
   backup_color_16 = annot_marker_selected_color;
   annot_marker_selected_color = Qt::black;
+  backup_color_17 = annot_duration_color;
+  annot_duration_color = QColor(192, 192, 192, 32);
+  backup_color_18 = annot_duration_color_selected;
+  annot_duration_color_selected = QColor(192, 192, 192, 32);
+
+  for(i=0; i<8; i++)
+  {
+    mc_annot_ov_color_predefined_bu[i] = mainwindow->mc_annot_ov_color_predefined[i];
+    mainwindow->mc_annot_ov_color_predefined[i] = QColor(192, 192, 192, 32);
+  }
 }
 
 
@@ -2444,6 +2454,13 @@ void ViewCurve::restore_colors_after_printing()
   baseline_color = backup_color_13;
   annot_marker_color = backup_color_15;
   annot_marker_selected_color = backup_color_16;
+  annot_duration_color = backup_color_17;
+  annot_duration_color_selected = backup_color_18;
+
+  for(i=0; i<8; i++)
+  {
+    mainwindow->mc_annot_ov_color_predefined[i] = mc_annot_ov_color_predefined_bu[i];
+  }
 }
 
 
