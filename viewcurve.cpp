@@ -1470,7 +1470,7 @@ void ViewCurve::print_to_pdf(int paper_sz)
 #else
   drawCurve_stage_1(&paint,
                     print.pageRect().width() - (border_sz * 2),
-                    print.pageRect().height() - (border_sz * 2)),
+                    print.pageRect().height() - (border_sz * 2),
                     PRINT_LINE_WIDTH, paper_sz);
 #endif
 
