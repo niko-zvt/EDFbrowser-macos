@@ -113,6 +113,11 @@ int main(int argc, char *argv[])
 #if (QT_VERSION >= 0x050600) && (QT_VERSION < 0x060000)
   QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
 #endif
+#if (QT_VERSION >= 0x060000)
+#ifdef Q_OS_WIN32
+  qputenv("QT_ENABLE_HIGHDPI_SCALING", "0");
+#endif
+#endif
   QApplication app(argc, argv);
 
   QPixmap pixmap(":/images/splash.png");
