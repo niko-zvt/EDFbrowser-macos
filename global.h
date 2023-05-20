@@ -38,7 +38,7 @@
 
 #else
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__)
-/* nothing */
+/* nothing here */
 #else
 #error "You need the GNU C compiler!"
 #endif
@@ -55,22 +55,15 @@
 #include <stdio.h>
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__HAIKU__)
-
 #define fopeno fopen
-
 #else
-
 #define fseeko fseeko64
 #define ftello ftello64
 #define fopeno fopen64
-
 #endif
 
-/* don't change (keep it undefined), used only for refactoring/debugging/testing purposes */
-// #define EDFBROWSER_REFACTORING
-
 #define PROGRAM_NAME                "EDFbrowser"
-#define PROGRAM_VERSION                   "2.03"
+#define PROGRAM_VERSION                   "2.04"
 #define PROGRAM_BETA_SUFFIX                   ""
 #define MINIMUM_QT4_VERSION           (0x040807)
 #define MINIMUM_QT5_VERSION           (0x050C06)
@@ -260,12 +253,12 @@ typedef struct
   int       genuine_biosemi;
   double    data_record_duration;
   unsigned long long long_data_record_duration;
-  long long viewtime;         /* file position expressed in units of 1/TIME_FIXP_SCALING seconds, relative to the first sample in the recording */
+  long long viewtime;          /* file position expressed in units of 1/TIME_FIXP_SCALING seconds, relative to the first sample in the recording */
   long long prefiltertime;
   long long starttime_hr;      /* high resolution clocktime (24 hours, no date), multiplied by TIME_FIXP_SCALING (includes the subsecond starttime) */
   long long utc_starttime;     /* seconds since the epoch january 1, 1970 */
   long long utc_starttime_hr;  /* high resolution, multiplied by TIME_FIXP_SCALING (includes the subsecond starttime) */
-  long long starttime_subsec;  /* subsecond starttime (used by EDF+), multiplied by TIME_FIXP_SCALING */
+  long long starttime_subsec;  /* subsecond starttime (used by EDF+ and BDF+), multiplied by TIME_FIXP_SCALING */
   long long utc_endtime_hr;    /* high resolution, multiplied by TIME_FIXP_SCALING (includes the subsecond starttime) */
   int       recording_len_sec; /* duration of the recording in seconds */
   long long recording_duration_hr;  /* duration of the recording, high resolution, multiplied by TIME_FIXP_SCALING */
@@ -284,7 +277,7 @@ typedef struct
   int num_of_signals;
   int edfsignal[MAXSIGNALS];
   double factor[MAXSIGNALS];
-  edfpar_t *edfparam_0;  /* shortcut to edfparam[0] */
+  edfpar_t *edfparam_0;    /* points to edfparam[0] */
 
   int polarity;
   char signallabel[512];

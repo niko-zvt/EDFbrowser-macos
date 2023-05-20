@@ -1,10 +1,15 @@
 
- version 2.04      to be defined
+ version 2.04      May 20, 2023
  --------------
 
  - Print to printer, PDF or image: fixed and cleaned up old and broken code.
 
  - Make it easier to drag and drop the crosshairs.
+
+ - various minor improvements and code cleanups.
+
+ - Header editor -> Recording field -> characters left indicator: check if startdate is absent ('X') and
+   adapt the numbers of characters left accordingly.
 
 
  version 2.03      April 24, 2023
