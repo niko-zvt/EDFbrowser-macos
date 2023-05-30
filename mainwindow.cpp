@@ -4508,6 +4508,7 @@ void UI_Mainwindow::show_kb_shortcuts()
    "F1 - F8\t\tload predefined montage\n"
    "Alt+Shift+C\tcrosshair (repeat for second crosshair)\n"
    "Esc\t\tremove crosshairs or floating ruler\n"
+   "Ctrl+M\t\ttoggle annotation markers\n"
 
    "\nafter zooming in by drawing a rectangle:\n"
    "Backspace\t\tzoom back\n"

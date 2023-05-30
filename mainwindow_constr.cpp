@@ -1006,6 +1006,11 @@ UI_Mainwindow::UI_Mainwindow()
 
   view_markers_act = new QAction("Annotation Markers", this);
   view_markers_act->setCheckable(true);
+#if QT_VERSION < 0x060000
+  view_markers_act->setShortcut(Qt::CTRL + Qt::Key_M);
+#else
+  view_markers_act->setShortcut(Qt::CTRL | Qt::Key_M);
+#endif
   if(show_annot_markers)
   {
     view_markers_act->setChecked(true);

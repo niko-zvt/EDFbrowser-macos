@@ -1,4 +1,10 @@
 
+ version 2.05      to be defined
+ --------------
+
+ - Added keyboard shortcut Ctrl+M to toggle annotation markers.
+
+
  version 2.04      May 20, 2023
  --------------
 
