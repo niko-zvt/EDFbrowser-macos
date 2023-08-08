@@ -202,6 +202,7 @@ public:
       read_biosemi_status_signal,
       read_nk_trigger_signal,
       live_stream_active,
+      live_stream_active_paused,
       playback_realtime_active,
       live_stream_update_interval,
       signal_averaging_active,

@@ -118,6 +118,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   live_stream_active = 0;
 
+  live_stream_active_paused = 0;
+
   playback_realtime_active = 0;
 
   signal_averaging_active = 0;

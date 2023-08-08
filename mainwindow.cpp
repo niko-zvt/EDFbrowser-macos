@@ -201,6 +201,8 @@ void UI_Mainwindow::open_stream()
 
   live_stream_active = 1;
 
+  live_stream_active_paused = 0;
+
   open_new_file();
 
   if(files_open == 1)
@@ -211,17 +213,18 @@ void UI_Mainwindow::open_stream()
     windowmenu->actions().at(0)->setEnabled(false);  // Annotations window
     windowmenu->actions().at(1)->setEnabled(false);  // Annotation editor
     former_page_Act->setEnabled(false);
-    shift_page_left_Act->setEnabled(false);
-    shift_page_right_Act->setEnabled(false);
+//    shift_page_left_Act->setEnabled(false);
+//    shift_page_right_Act->setEnabled(false);
     next_page_Act->setEnabled(false);
 //     shift_page_up_Act->setEnabled(false);
 //     shift_page_down_Act->setEnabled(false);
     printmenu->setEnabled(false);
     recent_filesmenu->setEnabled(false);
     recent_session_menu->setEnabled(false);
-    playback_file_Act->setEnabled(false);
+//    playback_file_Act->setEnabled(false);
 
     live_stream_timer->start(live_stream_update_interval);
+    playback_file_Act->setIcon(QIcon(":/images/media-playback-pause-symbolic.symbolic.png"));
   }
   else
   {
@@ -1297,6 +1300,19 @@ void UI_Mainwindow::playback_file()
 
   if(live_stream_active)
   {
+    if(live_stream_active_paused)
+    {
+      live_stream_timer->start(live_stream_update_interval);
+      live_stream_active_paused = 0;
+      playback_file_Act->setIcon(QIcon(":/images/media-playback-pause-symbolic.symbolic.png"));
+    }
+    else
+    {
+      live_stream_timer->stop();
+      live_stream_active_paused = 1;
+      playback_file_Act->setIcon(QIcon(":/images/media-playback-start-symbolic.symbolic.png"));
+    }
+
     return;
   }
 
@@ -2959,7 +2975,9 @@ void UI_Mainwindow::close_all_files()
   toolbar_stats.active = 0;
   nav_toolbar_label->setText("");
   live_stream_active = 0;
+  live_stream_active_paused = 0;
   live_stream_timer->stop();
+  playback_file_Act->setIcon(QIcon(":/images/media-playback-start-symbolic.symbolic.png"));
   toolsmenu->setEnabled(true);
   timemenu->setEnabled(true);
 //  windowmenu->setEnabled(true);
