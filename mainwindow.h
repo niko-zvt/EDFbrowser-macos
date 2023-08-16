@@ -676,6 +676,7 @@ private:
   int mpr_read(char *, int);
   int parse_rc_command(const char *, char [CMD_MAX_SUB_CMDS][CMD_PARSE_STR_LEN], int *, char *, int);
   int process_rc_cmd_file(const char *, int *, int);
+  int process_rc_cmd_stream(const char *, int *, int);
   int process_rc_cmd_montage(const char *, int *, int);
   int process_rc_cmd_session(const char *, int *, int);
   int process_rc_cmd_signal(const char *, int *, int);

@@ -150,8 +150,9 @@
 #define RC_CMD_SESSION      (31)
 #define RC_CMD_PLAY         (32)
 #define RC_CMD_STOP         (33)
+#define RC_CMD_STREAM       (34)
 
-#define RC_CMD_LIST_SZ      (34)
+#define RC_CMD_LIST_SZ      (35)
 #define RC_CMD_QUERY    (1 << 8)
 #define RC_ERR_QUEUE_SZ     (64)
 

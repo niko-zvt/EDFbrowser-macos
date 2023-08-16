@@ -66,7 +66,8 @@ const char rc_cmd_key_lst[RC_CMD_LIST_SZ][32]=
   "MODE",       /* 30 */
   "SESSION",    /* 31 */
   "PLAY",       /* 32 */
-  "STOP"        /* 33 */
+  "STOP",       /* 33 */
+  "STREAM"      /* 34 */
 };
 
 
@@ -165,7 +166,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
   static int rx_idx=0;
 
-  char tx_msg_str[1024]="",
+  char tx_msg_str[2048]="",
        cmd_args[1024]="",
        cmds_parsed[CMD_MAX_SUB_CMDS][CMD_PARSE_STR_LEN]={"","","","","","","",""};
 
@@ -275,7 +276,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
         register_rc_err(203);
         continue;
       }
-      len = snprintf(tx_msg_str, 1024,
+      len = snprintf(tx_msg_str, 2048,
               "*LIST?\n"
               "*IDN?\n"
               "*QUIT\n"
@@ -286,6 +287,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
               "FILe:CLOse:ALL\n"
               "FILe:PLAy\n"
               "FILe:STOp\n"
+              "STReam:OPEn <path>\n"
               "MONtage:LOAd <path>\n"
               "SESsion:LOAd <path>\n"
               "SIGnal:ADD:LABel <label> <file number>\n"
@@ -369,6 +371,16 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
     if((cmds_parsed_key[0] & RC_CMD_MASK) == RC_CMD_FILE)
     {
       err = process_rc_cmd_file(cmd_args, cmds_parsed_key, n_sub_cmds);
+      if(err)
+      {
+        register_rc_err(err);
+      }
+      continue;
+    }
+
+    if((cmds_parsed_key[0] & RC_CMD_MASK) == RC_CMD_STREAM)
+    {
+      err = process_rc_cmd_stream(cmd_args, cmds_parsed_key, n_sub_cmds);
       if(err)
       {
         register_rc_err(err);
@@ -670,6 +682,40 @@ int UI_Mainwindow::process_rc_cmd_file(const char *cmd_args, int *cmds_parsed_ke
             return 202;
           }
         }
+
+  return 202;
+}
+
+
+int UI_Mainwindow::process_rc_cmd_stream(const char *cmd_args, int *cmds_parsed_key, int n_sub_cmds)
+{
+  if(n_sub_cmds < 2)
+  {
+    return 202;
+  }
+
+  if(cmds_parsed_key[1] == RC_CMD_OPEN)
+  {
+    if(n_sub_cmds == 2)
+    {
+      if(!strlen(cmd_args))
+      {
+        return 204;
+      }
+      if(files_open)  return 109;
+
+      strlcpy(drop_path, cmd_args, MAX_PATH_LENGTH);
+      rc_file_open_requested = 1;
+      open_stream();
+      drop_path[0] = 0;
+      rc_file_open_requested = 0;
+      return rc_file_open_err;
+    }
+    else
+    {
+      return 202;
+    }
+  }
 
   return 202;
 }
