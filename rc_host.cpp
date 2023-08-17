@@ -658,7 +658,7 @@ int UI_Mainwindow::process_rc_cmd_file(const char *cmd_args, int *cmds_parsed_ke
       {
         if(n_sub_cmds == 2)
         {
-          if((!files_open) || live_stream_active)  return 205;
+          if(!files_open)  return 205;
 
           playback_file();
           return 0;
