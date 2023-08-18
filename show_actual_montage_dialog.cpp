@@ -437,7 +437,11 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
     }
   }
 
-  snprintf(txtbuf, 2048, "timescale: %f seconds", (double)mainwindow->pagetime / (double)TIME_FIXP_SCALING);
+  snprintf(txtbuf, 2048, "Timescale: %i:%02i:%02i.%04i",
+                       ((int)(mainwindow->pagetime / TIME_FIXP_SCALING)) / 3600,
+                       (((int)(mainwindow->pagetime / TIME_FIXP_SCALING)) % 3600) / 60,
+                       ((int)(mainwindow->pagetime / TIME_FIXP_SCALING)) % 60,
+                       ((int)(mainwindow->pagetime % TIME_FIXP_SCALING)) / 1000);
   remove_trailing_zeros(txtbuf);
   parentItem->appendRow(new QStandardItem(txtbuf));
 

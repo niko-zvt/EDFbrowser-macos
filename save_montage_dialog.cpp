@@ -104,7 +104,9 @@ UI_SaveMontagewindow::UI_SaveMontagewindow(QWidget *w_parent)
 void UI_SaveMontagewindow::SaveButtonClicked()
 {
   int i, j, k, n, r,
-      use_index=0;
+      use_index=0,
+      hdr_idx=0,
+      sigcomp_idx=0;
 
   char mtg_path[MAX_PATH_LENGTH];
 
@@ -429,6 +431,145 @@ void UI_SaveMontagewindow::SaveButtonClicked()
         fprintf(mtgfile, "  </powerspectrumdock>\n");
       }
     }
+  }
+
+  for(i=0; i<MAXHYPNOGRAMDOCKS; i++)
+  {
+    if(mainwindow->hypnogram_dock[i] == NULL)  continue;
+
+    for(hdr_idx=0; hdr_idx<mainwindow->files_open; hdr_idx++)
+    {
+      if(mainwindow->edfheaderlist[hdr_idx] == mainwindow->hypnogram_dock[i]->param.edfhdr)
+      {
+        break;
+      }
+    }
+    if(hdr_idx == mainwindow->files_open)  continue;
+
+    fprintf(mtgfile, "  <hypnogram>\n");
+
+    fprintf(mtgfile, "    <instance_num>%i</instance_num>\n", mainwindow->hypnogram_dock[i]->param.instance_num);
+
+    for(j=0; j<HYPNOGRAM_STAGENUM; j++)
+    {
+      fprintf(mtgfile, "    <stage_name>");
+      xml_fwrite_encode_entity(mtgfile, mainwindow->hypnogram_dock[i]->param.stage_name[j]);
+      fprintf(mtgfile, "</stage_name>\n");
+    }
+
+    for(j=0; j<HYPNOGRAM_STAGENUM; j++)
+    {
+      fprintf(mtgfile, "    <annot_name>");
+      xml_fwrite_encode_entity(mtgfile, mainwindow->hypnogram_dock[i]->param.annot_name[j]);
+      fprintf(mtgfile, "</annot_name>\n");
+    }
+
+    for(j=0; j<HYPNOGRAM_OVNUM; j++)
+    {
+      fprintf(mtgfile, "    <annot_ov_name>");
+      xml_fwrite_encode_entity(mtgfile, mainwindow->hypnogram_dock[i]->param.annot_ov_name[j]);
+      fprintf(mtgfile, "</annot_ov_name>\n");
+    }
+
+    for(j=0; j<HYPNOGRAM_OVNUM; j++)
+    {
+      fprintf(mtgfile, "    <annot_ov_color>\n"
+                        "      <red>%i</red>\n"
+                        "      <green>%i</green>\n"
+                        "      <blue>%i</blue>\n"
+                        "      <alpha>%i</alpha>\n"
+                        "    </annot_ov_color>\n",
+                        mainwindow->hypnogram_dock[i]->param.annot_ov_color[j].r,
+                        mainwindow->hypnogram_dock[i]->param.annot_ov_color[j].g,
+                        mainwindow->hypnogram_dock[i]->param.annot_ov_color[j].b,
+                        mainwindow->hypnogram_dock[i]->param.annot_ov_color[j].a);
+    }
+
+    fprintf(mtgfile, "    <hypnogram_use_epoch_len>%i</hypnogram_use_epoch_len>\n", mainwindow->hypnogram_dock[i]->param.use_epoch_len);
+
+    fprintf(mtgfile, "    <use_overlays>%i</use_overlays>\n", mainwindow->hypnogram_dock[i]->param.use_overlays);
+
+    fprintf(mtgfile, "    <hdr_idx>%i</hdr_idx>\n", hdr_idx);
+
+    fprintf(mtgfile, "  </hypnogram>\n");
+  }
+
+  for(i=0; i<MAXCDSADOCKS; i++)
+  {
+    if(mainwindow->cdsa_dock[i] == NULL)  continue;
+
+    for(sigcomp_idx=0; sigcomp_idx<mainwindow->signalcomps; sigcomp_idx++)
+    {
+      if(mainwindow->signalcomp[sigcomp_idx] == mainwindow->cdsa_dock[i]->param.signalcomp)
+      {
+        break;
+      }
+    }
+    if(sigcomp_idx == mainwindow->signalcomps)  continue;
+
+    fprintf(mtgfile, "  <cdsa>\n");
+
+    fprintf(mtgfile, "    <sigcomp_idx>%i</sigcomp_idx>\n", sigcomp_idx);
+
+    fprintf(mtgfile, "    <min_hz>%i</min_hz>\n", mainwindow->cdsa_dock[i]->param.min_hz);
+
+    fprintf(mtgfile, "    <max_hz>%i</max_hz>\n", mainwindow->cdsa_dock[i]->param.max_hz);
+
+    fprintf(mtgfile, "    <segment_len>%i</segment_len>\n", mainwindow->cdsa_dock[i]->param.segment_len);
+
+    fprintf(mtgfile, "    <block_len>%i</block_len>\n", mainwindow->cdsa_dock[i]->param.block_len);
+
+    fprintf(mtgfile, "    <overlap>%i</overlap>\n", mainwindow->cdsa_dock[i]->param.overlap);
+
+    fprintf(mtgfile, "    <window_func>%i</window_func>\n", mainwindow->cdsa_dock[i]->param.window_func);
+
+    fprintf(mtgfile, "    <max_voltage>%.10e</max_voltage>\n", mainwindow->cdsa_dock[i]->param.max_voltage);
+
+    fprintf(mtgfile, "    <max_pwr>%i</max_pwr>\n", mainwindow->cdsa_dock[i]->param.max_pwr);
+
+    fprintf(mtgfile, "    <min_pwr>%i</min_pwr>\n", mainwindow->cdsa_dock[i]->param.min_pwr);
+
+    fprintf(mtgfile, "    <log>%i</log>\n", mainwindow->cdsa_dock[i]->param.log);
+
+    fprintf(mtgfile, "    <power_voltage>%i</power_voltage>\n", mainwindow->cdsa_dock[i]->param.power_voltage);
+
+    fprintf(mtgfile, "    <instance_num>%i</instance_num>\n", mainwindow->cdsa_dock[i]->param.instance_num);
+
+    fprintf(mtgfile, "  </cdsa>\n");
+  }
+
+  for(i=0; i<MAXAEEGDOCKS; i++)
+  {
+    if(mainwindow->aeeg_dock[i] == NULL)  continue;
+
+    for(sigcomp_idx=0; sigcomp_idx<mainwindow->signalcomps; sigcomp_idx++)
+    {
+      if(mainwindow->signalcomp[sigcomp_idx] == mainwindow->aeeg_dock[i]->param.signalcomp)
+      {
+        break;
+      }
+    }
+    if(sigcomp_idx == mainwindow->signalcomps)  continue;
+
+    fprintf(mtgfile, "  <aeeg>\n");
+
+    fprintf(mtgfile, "    <sigcomp_idx>%i</sigcomp_idx>\n", sigcomp_idx);
+
+    fprintf(mtgfile, "    <bp_min_hz>%e</bp_min_hz>\n", mainwindow->aeeg_dock[i]->param.bp_min_hz);
+
+    fprintf(mtgfile, "    <bp_max_hz>%e</bp_max_hz>\n", mainwindow->aeeg_dock[i]->param.bp_max_hz);
+
+    fprintf(mtgfile, "    <segment_len>%i</segment_len>\n", mainwindow->aeeg_dock[i]->param.segment_len);
+
+    fprintf(mtgfile, "    <lp_hz>%e</lp_hz>\n", mainwindow->aeeg_dock[i]->param.lp_hz);
+
+    fprintf(mtgfile, "    <scale_max_amp>%e</scale_max_amp>\n", mainwindow->aeeg_dock[i]->param.scale_max_amp);
+
+    fprintf(mtgfile, "    <plot_margins>%i</plot_margins>\n", mainwindow->aeeg_dock[i]->param.plot_margins);
+
+    fprintf(mtgfile, "    <instance_num>%i</instance_num>\n", mainwindow->aeeg_dock[i]->param.instance_num);
+
+    fprintf(mtgfile, "  </aeeg>\n");
   }
 
   fprintf(mtgfile, "</" PROGRAM_NAME "_montage>\n");

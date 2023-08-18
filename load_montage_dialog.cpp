@@ -108,7 +108,7 @@ UI_LoadMontagewindow::UI_LoadMontagewindow(QWidget *w_parent, char *path)
 
 int UI_LoadMontagewindow::LoadButtonClicked()
 {
-  int i, k, n=0, p, r,
+  int i, j, k, n=0, p, r,
       tmp,
       skip,
       found,
@@ -138,7 +138,9 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       not_compatibel,
       sf,
       n_taps,
-      sense;
+      sense,
+      hdr_idx=0,
+      sigcomp_idx=0;
 
   char result[XML_STRBUFLEN],
        scratchpad[2048]="",
@@ -2274,6 +2276,755 @@ int UI_LoadMontagewindow::LoadButtonClicked()
         settings[i].minvalue_sqrt_vlog = atof(result);
 
         xml_go_up(xml_hdl);
+      }
+
+      xml_go_up(xml_hdl);
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  xml_goto_root(xml_hdl);
+
+  hypnogram_dock_param_t hypnogram_param;
+
+  memset(&hypnogram_param, 0, sizeof(hypnogram_dock_param_t));
+
+  for(i=0; i<MAXHYPNOGRAMDOCKS; i++)
+  {
+    if(!(xml_goto_nth_element_inside(xml_hdl, "hypnogram", i)))
+    {
+      memset(&hypnogram_param, 0, sizeof(hypnogram_dock_param_t));
+
+      if(xml_goto_nth_element_inside(xml_hdl, "instance_num", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        hypnogram_param.instance_num = atoi(result);
+        if((hypnogram_param.instance_num < 0) || (hypnogram_param.instance_num >= MAXHYPNOGRAMDOCKS))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "hdr_idx", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        hdr_idx = atoi(result);
+        if((hdr_idx < 0) || (hdr_idx >= mainwindow->files_open))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        hypnogram_param.edfhdr = mainwindow->edfheaderlist[hdr_idx];
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(!xml_goto_nth_element_inside(xml_hdl, "hypnogram_use_epoch_len", 0))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        hypnogram_param.use_epoch_len = atoi(result);
+        if(hypnogram_param.use_epoch_len != 1)
+        {
+          hypnogram_param.use_epoch_len = 0;
+        }
+
+        mainwindow->hypnogram_use_epoch_len = hypnogram_param.use_epoch_len;
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(!xml_goto_nth_element_inside(xml_hdl, "use_overlays", 0))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        hypnogram_param.use_overlays = atoi(result);
+        if(hypnogram_param.use_overlays != 1)
+        {
+          hypnogram_param.use_overlays = 0;
+        }
+
+        mainwindow->hypnogram_use_overlays = hypnogram_param.use_overlays;
+
+        xml_go_up(xml_hdl);
+      }
+
+      for(j=0; j<HYPNOGRAM_STAGENUM; j++)
+      {
+        if(xml_goto_nth_element_inside(xml_hdl, "stage_name", j))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        strlcpy(hypnogram_param.stage_name[j], result, 32);
+
+        strlcpy(mainwindow->hypnogram_stage_name[j], hypnogram_param.stage_name[j], 32);
+
+        xml_go_up(xml_hdl);
+      }
+
+      for(j=0; j<HYPNOGRAM_STAGENUM; j++)
+      {
+        if(xml_goto_nth_element_inside(xml_hdl, "annot_name", j))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        strlcpy(hypnogram_param.annot_name[j], result, 32);
+
+        strlcpy(mainwindow->hypnogram_annot_name[j], hypnogram_param.annot_name[j], 32);
+
+        xml_go_up(xml_hdl);
+      }
+
+      for(j=0; j<HYPNOGRAM_OVNUM; j++)
+      {
+        if(!xml_goto_nth_element_inside(xml_hdl, "annot_ov_name", j))
+        {
+          if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+          {
+            return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+          }
+
+          strlcpy(hypnogram_param.annot_ov_name[j], result, 32);
+
+          strlcpy(mainwindow->hypnogram_annot_ov_name[j], hypnogram_param.annot_ov_name[j], 32);
+
+          xml_go_up(xml_hdl);
+        }
+      }
+
+      for(j=0; j<HYPNOGRAM_OVNUM; j++)
+      {
+        mainwindow->get_rgbcolor_settings(xml_hdl, "annot_ov_color", j, &mainwindow->hypnogram_annot_ov_color[j]);
+
+        hypnogram_param.annot_ov_color[j].r = mainwindow->hypnogram_annot_ov_color[j].red();
+        hypnogram_param.annot_ov_color[j].g = mainwindow->hypnogram_annot_ov_color[j].green();
+        hypnogram_param.annot_ov_color[j].b = mainwindow->hypnogram_annot_ov_color[j].blue();
+        hypnogram_param.annot_ov_color[j].a = mainwindow->hypnogram_annot_ov_color[j].alpha();
+      }
+
+      hypnogram_param.mainwindow = mainwindow;
+
+      mainwindow->hypnogram_dock[hypnogram_param.instance_num] = new UI_hypnogram_dock(mainwindow, hypnogram_param);
+
+      mainwindow->addToolBar(Qt::BottomToolBarArea, mainwindow->hypnogram_dock[hypnogram_param.instance_num]->hypnogram_dock);
+
+      mainwindow->insertToolBarBreak(mainwindow->hypnogram_dock[hypnogram_param.instance_num]->hypnogram_dock);
+
+      hypnogram_param.edfhdr->hypnogram_idx[hypnogram_param.instance_num] = hypnogram_param.instance_num + 1;
+
+      QObject::connect(mainwindow, SIGNAL(annot_docklist_changed()), mainwindow->hypnogram_dock[hypnogram_param.instance_num], SLOT(update_curve()));
+
+      xml_go_up(xml_hdl);
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  xml_goto_root(xml_hdl);
+
+  cdsa_dock_param_t cdsa_param;
+
+  memset(&cdsa_param, 0, sizeof(cdsa_dock_param_t));
+
+  for(i=0; i<MAXCDSADOCKS; i++)
+  {
+    if(!(xml_goto_nth_element_inside(xml_hdl, "cdsa", i)))
+    {
+      memset(&cdsa_param, 0, sizeof(cdsa_dock_param_t));
+
+      if(xml_goto_nth_element_inside(xml_hdl, "instance_num", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        cdsa_param.instance_num = atoi(result);
+        if((cdsa_param.instance_num < 0) || (cdsa_param.instance_num >= MAXCDSADOCKS))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "sigcomp_idx", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        sigcomp_idx = atoi(result);
+        if((sigcomp_idx < 0) || (sigcomp_idx >= mainwindow->signalcomps))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        cdsa_param.signalcomp = mainwindow->signalcomp[sigcomp_idx];
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "min_hz", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        cdsa_param.min_hz = atoi(result);
+        if(cdsa_param.min_hz < 0)
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "max_hz", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        cdsa_param.max_hz = atoi(result);
+        if(cdsa_param.max_hz < 0)
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "segment_len", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        cdsa_param.segment_len = atoi(result);
+        if((cdsa_param.segment_len < 5) || (cdsa_param.segment_len > 300))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "block_len", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        cdsa_param.block_len = atoi(result);
+        if((cdsa_param.block_len < 1) || (cdsa_param.block_len > 10))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "overlap", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        cdsa_param.overlap = atoi(result);
+        if((cdsa_param.overlap < 1) || (cdsa_param.overlap > 5))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "window_func", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        cdsa_param.window_func = atoi(result);
+        if((cdsa_param.window_func < 0) || (cdsa_param.window_func > 12))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "max_voltage", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        cdsa_param.max_voltage = atof(result);
+        if((cdsa_param.max_voltage < 1.0e-7) || (cdsa_param.max_voltage > 1.0e5))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "max_pwr", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        cdsa_param.max_pwr = atoi(result);
+        if((cdsa_param.max_pwr < -159) || (cdsa_param.max_pwr > 160))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "min_pwr", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        cdsa_param.min_pwr = atoi(result);
+        if((cdsa_param.min_pwr < -160) || (cdsa_param.min_pwr > 159))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "log", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        cdsa_param.log = atoi(result);
+        if((cdsa_param.log < 0) || (cdsa_param.log > 1))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "power_voltage", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        cdsa_param.power_voltage = atoi(result);
+        if((cdsa_param.power_voltage < 0) || (cdsa_param.power_voltage > 1))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if((!mainwindow->files_open) || (!mainwindow->signalcomps) || (mainwindow->live_stream_active))
+      {
+        xml_go_up(xml_hdl);
+        continue;
+      }
+
+      if(cdsa_param.signalcomp->ecg_filter != NULL)
+      {
+        xml_go_up(xml_hdl);
+        continue;
+      }
+
+      if(cdsa_param.signalcomp->edfhdr->edfparam[cdsa_param.signalcomp->edfsignal[0]].sf_int < 30)
+      {
+        xml_go_up(xml_hdl);
+        continue;
+      }
+
+      if(cdsa_param.signalcomp->edfhdr->recording_len_sec < 30)
+      {
+        xml_go_up(xml_hdl);
+        continue;
+      }
+
+      for(j=0; j<MAXCDSADOCKS; j++)
+      {
+        if(mainwindow->cdsa_dock[j] == NULL)
+        {
+          UI_cdsa_window wndw(mainwindow, cdsa_param.signalcomp, j, &cdsa_param);
+          break;
+        }
+      }
+
+      xml_go_up(xml_hdl);
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  xml_goto_root(xml_hdl);
+
+  aeeg_dock_param_t aeeg_param;
+
+  memset(&aeeg_param, 0, sizeof(aeeg_dock_param_t));
+
+  for(i=0; i<MAXAEEGDOCKS; i++)
+  {
+    if(!(xml_goto_nth_element_inside(xml_hdl, "aeeg", i)))
+    {
+      memset(&aeeg_param, 0, sizeof(aeeg_dock_param_t));
+
+      if(xml_goto_nth_element_inside(xml_hdl, "instance_num", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        aeeg_param.instance_num = atoi(result);
+        if((aeeg_param.instance_num < 0) || (aeeg_param.instance_num >= MAXAEEGDOCKS))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "sigcomp_idx", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        sigcomp_idx = atoi(result);
+        if((sigcomp_idx < 0) || (sigcomp_idx >= mainwindow->signalcomps))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        aeeg_param.signalcomp = mainwindow->signalcomp[sigcomp_idx];
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "bp_min_hz", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        aeeg_param.bp_min_hz = atof(result);
+        if(aeeg_param.bp_min_hz < 1)
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "bp_max_hz", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        aeeg_param.bp_max_hz = atof(result);
+        if(aeeg_param.bp_max_hz < 2)
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "segment_len", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        aeeg_param.segment_len = atoi(result);
+        if((aeeg_param.segment_len < 5) || (aeeg_param.segment_len > 300))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "lp_hz", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        aeeg_param.lp_hz = atof(result);
+        if((aeeg_param.lp_hz < 0.00999) || (aeeg_param.lp_hz > 5.001))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "scale_max_amp", 0))
+      {
+        return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        aeeg_param.scale_max_amp = atof(result);
+        if((aeeg_param.scale_max_amp < 9.999) || (aeeg_param.scale_max_amp > 500.001))
+        {
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          continue;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "plot_margins", 0))
+      {
+        aeeg_param.plot_margins = 1;
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return format_error(__FILE__, __LINE__, NULL, xml_hdl);
+        }
+
+        aeeg_param.plot_margins = atoi(result);
+        if(aeeg_param.plot_margins != 0)
+        {
+          aeeg_param.plot_margins = 1;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+
+      if((!mainwindow->files_open) || (!mainwindow->signalcomps) || (mainwindow->live_stream_active))
+      {
+        xml_go_up(xml_hdl);
+        continue;
+      }
+
+      if(aeeg_param.signalcomp->ecg_filter != NULL)
+      {
+        xml_go_up(xml_hdl);
+        continue;
+      }
+
+      if(aeeg_param.signalcomp->edfhdr->edfparam[aeeg_param.signalcomp->edfsignal[0]].sf_f < 99.999)
+      {
+        xml_go_up(xml_hdl);
+        continue;
+      }
+
+      if(aeeg_param.signalcomp->edfhdr->recording_len_sec < 300)
+      {
+        xml_go_up(xml_hdl);
+        continue;
+      }
+
+      for(j=0; j<MAXAEEGDOCKS; j++)
+      {
+        if(mainwindow->aeeg_dock[j] == NULL)
+        {
+          UI_aeeg_window wndw(mainwindow, aeeg_param.signalcomp, j, &aeeg_param);
+          break;
+        }
       }
 
       xml_go_up(xml_hdl);

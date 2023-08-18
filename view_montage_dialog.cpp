@@ -88,7 +88,7 @@ UI_ViewMontagewindow::UI_ViewMontagewindow(QWidget *w_parent)
 
 void UI_ViewMontagewindow::SelectButtonClicked()
 {
-  int r,
+  int i, j, r,
       signalcomps_read=0,
       signals_read,
       signal_cnt,
@@ -116,33 +116,65 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       holdoff=100,
       plif_powerlinefrequency,
       n_taps,
-      idx_used=0;
+      idx_used=0,
+      hdr_idx=0,
+      sigcomp_idx=0,
+      min_hz=0,
+      max_hz=0,
+      segment_len=0,
+      block_len=0,
+      overlap=1,
+      window_func=0,
+      log=0,
+      power_voltage=0,
+      max_pwr=0,
+      min_pwr=0,
+      dftblocksize=0;
 
   char result[XML_STRBUFLEN]="",
        composition_txt[2048]="",
        label[256]="",
        str2[2048]="",
-       str3[64]="";
+       str3[64]="",
+       e_file_path[MAXFILES][MAX_PATH_LENGTH];
 
   double frequency,
          frequency2,
          voltpercm,
          ripple,
-         timescale,
          d_tmp,
          velocity,
          factor[MAXSIGNALS],
-         *fir_vars=NULL;
+         *fir_vars=NULL,
+         max_voltage=0,
+         bp_min_hz=0,
+         bp_max_hz=0,
+         lp_hz=0,
+         scale_max_amp=0;
+
+  long long timescale=0LL;
 
   QStandardItem *parentItem,
                 *signalItem,
                 *filterItem,
                 *firfilterItem,
+                *powerspectrumdockItem,
+                *hypnogramItem,
+                *cdsaItem,
+                *aeegItem,
+                *tmp_item=NULL,
                 *math_item_before=NULL,
                 *math_item_after=NULL;
 
+  QColor tmp_color;
+
   xml_hdl_t *xml_hdl;
 
+
+  for(i=0; i<MAXFILES; i++)
+  {
+    e_file_path[i][0] = 0;
+  }
 
   strlcpy(mtg_path, QFileDialog::getOpenFileName(0, "Choose a montage", QString::fromLocal8Bit(mtg_dir), "Montage files (*.mtg *.MTG)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
@@ -1184,11 +1216,835 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       format_error(__FILE__, __LINE__, xml_hdl);
       return;
     }
-    timescale = atof(result);
-    timescale /= TIME_FIXP_SCALING;
-    snprintf(composition_txt, 2048, "Timescale: %f seconds", timescale);
+    timescale = atoll(result);
+    snprintf(composition_txt, 2048, "Timescale: %i:%02i:%02i.%04i",
+                         ((int)(timescale / TIME_FIXP_SCALING)) / 3600,
+                         (((int)(timescale / TIME_FIXP_SCALING)) % 3600) / 60,
+                         ((int)(timescale / TIME_FIXP_SCALING)) % 60,
+                         ((int)(timescale % TIME_FIXP_SCALING)) / 1000);
     remove_trailing_zeros(composition_txt);
     parentItem->appendRow(new QStandardItem(composition_txt));
+  }
+
+  xml_goto_root(xml_hdl);
+
+  for(i=0; i<MAXSPECTRUMDOCKS; i++)
+  {
+    if(xml_goto_nth_element_inside(xml_hdl, "powerspectrumdock", i))
+    {
+      break;
+    }
+
+    powerspectrumdockItem = new QStandardItem("Power Spectrum");
+
+    parentItem->appendRow(powerspectrumdockItem);
+
+    if(xml_goto_nth_element_inside(xml_hdl, "signalnum", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      sigcomp_idx = atoi(result);
+      if(sigcomp_idx < 0)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      snprintf(str2, 2048, "Signal index: %i", sigcomp_idx + 1);
+      powerspectrumdockItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "dftblocksize", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      dftblocksize = atoi(result);
+      if(dftblocksize < 1)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      snprintf(str2, 2048, "FFT blocksize: %i samples", dftblocksize);
+      powerspectrumdockItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "overlap", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      overlap = atoi(result);
+      if(overlap < 1)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      switch(overlap)
+      {
+        case 1 : powerspectrumdockItem->appendRow(new QStandardItem("Overlap: 0%"));
+                 break;
+        case 2 : powerspectrumdockItem->appendRow(new QStandardItem("Overlap: 50%"));
+                 break;
+        case 3 : powerspectrumdockItem->appendRow(new QStandardItem("Overlap: 67%"));
+                 break;
+        case 4 : powerspectrumdockItem->appendRow(new QStandardItem("Overlap: 75%"));
+                 break;
+        case 5 : powerspectrumdockItem->appendRow(new QStandardItem("Overlap: 80%"));
+                 break;
+        default : powerspectrumdockItem->appendRow(new QStandardItem("Overlap: ??%"));
+                 break;
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "window_type", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      window_func = atoi(result);
+      if((window_func < 0) || (window_func > 12))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      switch(window_func)
+      {
+        case FFT_WNDW_TYPE_RECT                  : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: None"));
+                break;
+        case FFT_WNDW_TYPE_HAMMING               : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: Hamming"));
+                break;
+        case FFT_WNDW_TYPE_4TERM_BLACKMANHARRIS  : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: 4-term Blackman-Harris"));
+                break;
+        case FFT_WNDW_TYPE_7TERM_BLACKMANHARRIS  : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: 7-term Blackman-Harris"));
+                break;
+        case FFT_WNDW_TYPE_NUTTALL3B             : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: Nuttall3b"));
+                break;
+        case FFT_WNDW_TYPE_NUTTALL4C             : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: Nuttall4c"));
+                break;
+        case FFT_WNDW_TYPE_HANN                  : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: Hann"));
+                break;
+        case FFT_WNDW_TYPE_HFT223D               : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: HFT223D"));
+                break;
+        case FFT_WNDW_TYPE_HFT95                 : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: HFT95"));
+                break;
+        case FFT_WNDW_TYPE_KAISER_A2             : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: Kaiser2"));
+                break;
+        case FFT_WNDW_TYPE_KAISER_A3             : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: Kaiser3"));
+                break;
+        case FFT_WNDW_TYPE_KAISER_A4             : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: Kaiser4"));
+                break;
+        case FFT_WNDW_TYPE_KAISER_A5             : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: Kaiser5"));
+                break;
+        default                                  : powerspectrumdockItem->appendRow(new QStandardItem("FFT window function: ??"));
+                break;
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
+  for(i=0; i<MAXHYPNOGRAMDOCKS; i++)
+  {
+    if(xml_goto_nth_element_inside(xml_hdl, "hypnogram", i))
+    {
+      break;
+    }
+
+    hypnogramItem = new QStandardItem("hypnogram");
+
+    parentItem->appendRow(hypnogramItem);
+
+    if(xml_goto_nth_element_inside(xml_hdl, "hdr_idx", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      hdr_idx = atoi(result);
+      if(hdr_idx < 0)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      snprintf(str2, 2048, "File: %s", e_file_path[hdr_idx]);
+      hypnogramItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    for(j=0; j<HYPNOGRAM_STAGENUM; j++)
+    {
+      if(!xml_goto_nth_element_inside(xml_hdl, "stage_name", j))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          format_error(__FILE__, __LINE__, xml_hdl);
+          return;
+        }
+
+        snprintf(str2, 2048, "Stage %i name: %.2000s", j + 1, result);
+
+        xml_go_up(xml_hdl);
+
+        if(xml_goto_nth_element_inside(xml_hdl, "annot_name", j))
+        {
+          format_error(__FILE__, __LINE__, xml_hdl);
+          return;
+        }
+
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          format_error(__FILE__, __LINE__, xml_hdl);
+          return;
+        }
+
+        strlcat(str2, "   Annotation: ", 2048);
+        strlcat(str2, result, 2048);
+        hypnogramItem->appendRow(new QStandardItem(str2));
+
+        xml_go_up(xml_hdl);
+      }
+    }
+
+    if(!xml_goto_nth_element_inside(xml_hdl, "use_overlays", 0))
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      if(atoi(result) == 1)
+      {
+        hypnogramItem->appendRow(new QStandardItem(" use overlays: yes"));
+      }
+      else
+      {
+        hypnogramItem->appendRow(new QStandardItem(" use overlays: no"));
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
+    for(j=0; j<HYPNOGRAM_OVNUM; j++)
+    {
+      if(!xml_goto_nth_element_inside(xml_hdl, "annot_ov_name", j))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          format_error(__FILE__, __LINE__, xml_hdl);
+          return;
+        }
+
+        xml_go_up(xml_hdl);
+
+        snprintf(str2, 2048, "Overlay annotation: %s", result);
+        tmp_item = new QStandardItem(str2);
+
+        mainwindow->get_rgbcolor_settings(xml_hdl, "annot_ov_color", j, &tmp_color);
+        if(tmp_color.isValid() == true)
+        {
+          tmp_item->setBackground(QBrush(tmp_color));
+        }
+
+        hypnogramItem->appendRow(tmp_item);
+      }
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
+  for(i=0; i<MAXCDSADOCKS; i++)
+  {
+    if(xml_goto_nth_element_inside(xml_hdl, "cdsa", i))
+    {
+      break;
+    }
+
+    cdsaItem = new QStandardItem("CDSA");
+
+    parentItem->appendRow(cdsaItem);
+
+    if(xml_goto_nth_element_inside(xml_hdl, "sigcomp_idx", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      sigcomp_idx = atoi(result);
+      if(sigcomp_idx < 0)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      snprintf(str2, 2048, "Signal index: %i", sigcomp_idx + 1);
+      cdsaItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "min_hz", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      min_hz = atoi(result);
+      if(min_hz < 0)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      snprintf(str2, 2048, "Lower frequency bin: %i Hz", min_hz);
+      cdsaItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "max_hz", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      max_hz = atoi(result);
+      if(max_hz < 0)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      snprintf(str2, 2048, "Upper frequency bin: %i Hz", max_hz);
+      cdsaItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "segment_len", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      segment_len = atoi(result);
+      if(segment_len < 1)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      snprintf(str2, 2048, "Segment length: %i seconds", segment_len);
+      cdsaItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "block_len", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      block_len = atoi(result);
+      if(block_len < 1)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      snprintf(str2, 2048, "Block length: %i seconds", block_len);
+      cdsaItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "overlap", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      overlap = atoi(result);
+      if(overlap < 1)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      switch(overlap)
+      {
+        case 1 : cdsaItem->appendRow(new QStandardItem("Overlap: 0%"));
+                 break;
+        case 2 : cdsaItem->appendRow(new QStandardItem("Overlap: 50%"));
+                 break;
+        case 3 : cdsaItem->appendRow(new QStandardItem("Overlap: 67%"));
+                 break;
+        case 4 : cdsaItem->appendRow(new QStandardItem("Overlap: 75%"));
+                 break;
+        case 5 : cdsaItem->appendRow(new QStandardItem("Overlap: 80%"));
+                 break;
+        default : cdsaItem->appendRow(new QStandardItem("Overlap: ??%"));
+                 break;
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "window_func", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      window_func = atoi(result);
+      if((window_func < 0) || (window_func > 12))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      switch(window_func)
+      {
+        case FFT_WNDW_TYPE_RECT                  : cdsaItem->appendRow(new QStandardItem("FFT window function: None"));
+                break;
+        case FFT_WNDW_TYPE_HAMMING               : cdsaItem->appendRow(new QStandardItem("FFT window function: Hamming"));
+                break;
+        case FFT_WNDW_TYPE_4TERM_BLACKMANHARRIS  : cdsaItem->appendRow(new QStandardItem("FFT window function: 4-term Blackman-Harris"));
+                break;
+        case FFT_WNDW_TYPE_7TERM_BLACKMANHARRIS  : cdsaItem->appendRow(new QStandardItem("FFT window function: 7-term Blackman-Harris"));
+                break;
+        case FFT_WNDW_TYPE_NUTTALL3B             : cdsaItem->appendRow(new QStandardItem("FFT window function: Nuttall3b"));
+                break;
+        case FFT_WNDW_TYPE_NUTTALL4C             : cdsaItem->appendRow(new QStandardItem("FFT window function: Nuttall4c"));
+                break;
+        case FFT_WNDW_TYPE_HANN                  : cdsaItem->appendRow(new QStandardItem("FFT window function: Hann"));
+                break;
+        case FFT_WNDW_TYPE_HFT223D               : cdsaItem->appendRow(new QStandardItem("FFT window function: HFT223D"));
+                break;
+        case FFT_WNDW_TYPE_HFT95                 : cdsaItem->appendRow(new QStandardItem("FFT window function: HFT95"));
+                break;
+        case FFT_WNDW_TYPE_KAISER_A2             : cdsaItem->appendRow(new QStandardItem("FFT window function: Kaiser2"));
+                break;
+        case FFT_WNDW_TYPE_KAISER_A3             : cdsaItem->appendRow(new QStandardItem("FFT window function: Kaiser3"));
+                break;
+        case FFT_WNDW_TYPE_KAISER_A4             : cdsaItem->appendRow(new QStandardItem("FFT window function: Kaiser4"));
+                break;
+        case FFT_WNDW_TYPE_KAISER_A5             : cdsaItem->appendRow(new QStandardItem("FFT window function: Kaiser5"));
+                break;
+        default                                  : cdsaItem->appendRow(new QStandardItem("FFT window function: ??"));
+                break;
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "log", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      log = atoi(result);
+      if((log < 0) || (log > 1))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      if(log)
+      {
+        cdsaItem->appendRow(new QStandardItem("Logarithmic: yes"));
+      }
+      else
+      {
+        cdsaItem->appendRow(new QStandardItem("Logarithmic: no"));
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(log)
+    {
+      if(xml_goto_nth_element_inside(xml_hdl, "max_pwr", 0))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          format_error(__FILE__, __LINE__, xml_hdl);
+          return;
+        }
+
+        max_pwr = atoi(result);
+
+        snprintf(str2, 2048, "Max. level: %idB", max_pwr);
+
+        cdsaItem->appendRow(new QStandardItem(str2));
+
+        xml_go_up(xml_hdl);
+      }
+
+      if(xml_goto_nth_element_inside(xml_hdl, "min_pwr", 0))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          format_error(__FILE__, __LINE__, xml_hdl);
+          return;
+        }
+
+        min_pwr = atoi(result);
+
+        snprintf(str2, 2048, "Min. level: %idB", min_pwr);
+
+        cdsaItem->appendRow(new QStandardItem(str2));
+
+        xml_go_up(xml_hdl);
+      }
+
+    }
+    else
+    {
+      if(xml_goto_nth_element_inside(xml_hdl, "max_voltage", 0))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+      else
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          format_error(__FILE__, __LINE__, xml_hdl);
+          return;
+        }
+
+        max_voltage = atof(result);
+
+        snprintf(str2, 2048, "Max. level: %e", max_voltage);
+
+        cdsaItem->appendRow(new QStandardItem(str2));
+
+        xml_go_up(xml_hdl);
+      }
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "power_voltage", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      power_voltage = atoi(result);
+      if((power_voltage < 0) || (power_voltage > 1))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      if(power_voltage)
+      {
+        cdsaItem->appendRow(new QStandardItem("Power: yes"));
+      }
+      else
+      {
+        cdsaItem->appendRow(new QStandardItem("Power: no"));
+      }
+
+      xml_go_up(xml_hdl);
+    }
+
+      xml_go_up(xml_hdl);
+  }
+
+  for(i=0; i<MAXAEEGDOCKS; i++)
+  {
+    if(xml_goto_nth_element_inside(xml_hdl, "aeeg", i))
+    {
+      break;
+    }
+
+    aeegItem = new QStandardItem("aEEG");
+
+    parentItem->appendRow(aeegItem);
+
+    if(xml_goto_nth_element_inside(xml_hdl, "sigcomp_idx", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      sigcomp_idx = atoi(result);
+      if(sigcomp_idx < 0)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      snprintf(str2, 2048, "Signal index: %i", sigcomp_idx + 1);
+      aeegItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "bp_min_hz", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      bp_min_hz = atof(result);
+      if(bp_min_hz < 0.999)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      snprintf(str2, 2048, "Bandpass min. frequency: %.1f Hz", bp_min_hz);
+      aeegItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "bp_max_hz", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      bp_max_hz = atof(result);
+      if(bp_max_hz < 1.999)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      snprintf(str2, 2048, "Bandpass max. frequency: %.1f Hz", bp_max_hz);
+      aeegItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "segment_len", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      segment_len = atoi(result);
+      if(segment_len < 5)
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      snprintf(str2, 2048, "Segment length: %i seconds", segment_len);
+      aeegItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "lp_hz", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      lp_hz = atof(result);
+      if((lp_hz < 0.009999) || (lp_hz > 5.00001))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      snprintf(str2, 2048, "Envelope lowpass filter: %.2f sec", lp_hz);
+      aeegItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "scale_max_amp", 0))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    else
+    {
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+
+      scale_max_amp = atof(result);
+
+      snprintf(str2, 2048, "Max. amplitude: %.1f", scale_max_amp);
+
+      aeegItem->appendRow(new QStandardItem(str2));
+
+      xml_go_up(xml_hdl);
+    }
+
+    xml_go_up(xml_hdl);
   }
 
   xml_close(xml_hdl);

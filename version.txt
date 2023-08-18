@@ -4,6 +4,12 @@
 
  - Added keyboard shortcut Ctrl+M to toggle annotation markers.
 
+ - When saving a montage, if there's a aEEG/CDSA/Hypnogram instance present, save them as well into the montage file.
+
+ - Remote control: added command: STReam:OPEn
+
+ - Allow to pause fileposition updates during streaming.
+
 
  version 2.04      May 20, 2023
  --------------
