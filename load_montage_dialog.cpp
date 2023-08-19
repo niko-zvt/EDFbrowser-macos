@@ -140,7 +140,8 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       n_taps,
       sense,
       hdr_idx=0,
-      sigcomp_idx=0;
+      sigcomp_idx=0,
+      inst_num=0;
 
   char result[XML_STRBUFLEN],
        scratchpad[2048]="",
@@ -231,6 +232,18 @@ int UI_LoadMontagewindow::LoadButtonClicked()
         }
       }
 
+      for(i=0; i<MAXAEEGDOCKS; i++)
+      {
+        p = mainwindow->signalcomp[k]->aeeg_idx[i];
+
+        if(p != 0)
+        {
+          delete mainwindow->aeeg_dock[p - 1];
+
+          mainwindow->aeeg_dock[p - 1] = NULL;
+        }
+      }
+
       for(i=0; i<MAXSPECTRUMDOCKS; i++)
       {
         if(mainwindow->spectrumdock[i]->signalcomp == mainwindow->signalcomp[k])
@@ -261,6 +274,40 @@ int UI_LoadMontagewindow::LoadButtonClicked()
           delete mainwindow->averagecurvedialog[p - 1];
 
           mainwindow->averagecurvedialog[p - 1] = NULL;
+        }
+      }
+
+      for(i=0; i<MAXHYPNOGRAMDOCKS; i++)
+      {
+        inst_num = edf_hdr->hypnogram_idx[i];
+
+        if(inst_num > 0)
+        {
+          if(mainwindow->hypnogram_dock[inst_num - 1] != NULL)
+          {
+            delete mainwindow->hypnogram_dock[inst_num - 1];
+
+            mainwindow->hypnogram_dock[inst_num - 1] = NULL;
+          }
+
+          edf_hdr->hypnogram_idx[i] = 0;
+        }
+      }
+
+      for(i=0; i<MAXHRVDOCKS; i++)
+      {
+        inst_num = edf_hdr->hrv_dock[i];
+
+        if(inst_num > 0)
+        {
+          if(mainwindow->hrv_dock[inst_num - 1] != NULL)
+          {
+            delete mainwindow->hrv_dock[inst_num - 1];
+
+            mainwindow->hrv_dock[inst_num - 1] = NULL;
+          }
+
+          edf_hdr->hrv_dock[i] = 0;
         }
       }
 
