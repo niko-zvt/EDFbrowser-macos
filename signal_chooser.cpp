@@ -325,7 +325,7 @@ void UI_SignalChooser::signalEdit()
 
 void UI_SignalChooser::signalUp()
 {
-  int i, n,
+  int i, j, n,
       size,
       sigcomp_nr,
       selected_signals[MAXSIGNALS];
@@ -361,6 +361,46 @@ void UI_SignalChooser::signalUp()
     mainwindow->signalcomp[sigcomp_nr] = mainwindow->signalcomp[sigcomp_nr - 1];
 
     mainwindow->signalcomp[sigcomp_nr - 1] = signalcomp;
+
+    for(j=0; j<MAXSPECTRUMDIALOGS; j++)
+    {
+      if(mainwindow->signalcomp[sigcomp_nr]->spectr_dialog[j] == (sigcomp_nr + 1))
+      {
+        mainwindow->signalcomp[sigcomp_nr]->spectr_dialog[j]--;
+      }
+    }
+
+    for(j=0; j<MAXCDSADOCKS; j++)
+    {
+      if(mainwindow->signalcomp[sigcomp_nr]->cdsa_idx[j] == (sigcomp_nr + 1))
+      {
+        mainwindow->signalcomp[sigcomp_nr]->cdsa_idx[j]--;
+      }
+    }
+
+    for(j=0; j<MAXAEEGDOCKS; j++)
+    {
+      if(mainwindow->signalcomp[sigcomp_nr]->aeeg_idx[j] == (sigcomp_nr + 1))
+      {
+        mainwindow->signalcomp[sigcomp_nr]->aeeg_idx[j]--;
+      }
+    }
+
+    for(j=0; j<MAXAVERAGECURVEDIALOGS; j++)
+    {
+      if(mainwindow->signalcomp[sigcomp_nr]->avg_dialog[j] == (sigcomp_nr + 1))
+      {
+        mainwindow->signalcomp[sigcomp_nr]->avg_dialog[j]--;
+      }
+    }
+
+    for(j=0; j<MAXZSCOREDIALOGS; j++)
+    {
+      if(mainwindow->signalcomp[sigcomp_nr]->zscoredialog[j] == (sigcomp_nr + 1))
+      {
+        mainwindow->signalcomp[sigcomp_nr]->zscoredialog[j]--;
+      }
+    }
   }
 
   load_signalcomps();
@@ -376,7 +416,7 @@ void UI_SignalChooser::signalUp()
 
 void UI_SignalChooser::signalDown()
 {
-  int i, n,
+  int i, j, n,
       size,
       sigcomp_nr,
       selected_signals[MAXSIGNALS];
@@ -414,6 +454,46 @@ void UI_SignalChooser::signalDown()
     mainwindow->signalcomp[sigcomp_nr + 1] = signalcomp;
 
     selected_signals[i] = sigcomp_nr;
+
+    for(j=0; j<MAXSPECTRUMDIALOGS; j++)
+    {
+      if(mainwindow->signalcomp[sigcomp_nr]->spectr_dialog[j] == (sigcomp_nr + 1))
+      {
+        mainwindow->signalcomp[sigcomp_nr]->spectr_dialog[j]++;
+      }
+    }
+
+    for(j=0; j<MAXCDSADOCKS; j++)
+    {
+      if(mainwindow->signalcomp[sigcomp_nr]->cdsa_idx[j] == (sigcomp_nr + 1))
+      {
+        mainwindow->signalcomp[sigcomp_nr]->cdsa_idx[j]++;
+      }
+    }
+
+    for(j=0; j<MAXAEEGDOCKS; j++)
+    {
+      if(mainwindow->signalcomp[sigcomp_nr]->aeeg_idx[j] == (sigcomp_nr + 1))
+      {
+        mainwindow->signalcomp[sigcomp_nr]->aeeg_idx[j]++;
+      }
+    }
+
+    for(j=0; j<MAXAVERAGECURVEDIALOGS; j++)
+    {
+      if(mainwindow->signalcomp[sigcomp_nr]->avg_dialog[j] == (sigcomp_nr + 1))
+      {
+        mainwindow->signalcomp[sigcomp_nr]->avg_dialog[j]++;
+      }
+    }
+
+    for(j=0; j<MAXZSCOREDIALOGS; j++)
+    {
+      if(mainwindow->signalcomp[sigcomp_nr]->zscoredialog[j] == (sigcomp_nr + 1))
+      {
+        mainwindow->signalcomp[sigcomp_nr]->zscoredialog[j]++;
+      }
+    }
   }
 
   load_signalcomps();
