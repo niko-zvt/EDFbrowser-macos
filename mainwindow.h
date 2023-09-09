@@ -295,7 +295,8 @@ public:
       display_pagetime_mmsec,
       mc_v_scrollarea_ratio,
       mc_v_scrollarea_auto,
-      mc_v_scrollarea_max_signals;
+      mc_v_scrollarea_max_signals,
+      default_invert_eeg_signals;
 
 volatile int rc_cmd_in_progress;
 

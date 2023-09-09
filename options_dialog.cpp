@@ -1318,6 +1318,25 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QObject::connect(checkbox4_16, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_16Clicked(int)));
   QObject::connect(spinbox4_6, SIGNAL(valueChanged(int)), this, SLOT(spinbox4_6ValueChanged(int)));
 
+  checkbox4_18 = new QCheckBox;
+  checkbox4_18->setTristate(false);
+  checkbox4_18->setToolTip("When adding signals to display in the signals dialog and the signal label starts with \"EEG \", invert the plotting of the signal");
+  if(mainwindow->default_invert_eeg_signals)
+  {
+    checkbox4_18->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox4_18->setCheckState(Qt::Unchecked);
+  }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(checkbox4_18);
+  hlayout_tmp->addStretch(1000);
+  flayout4_1->addRow("Invert EEG signals", hlayout_tmp);
+  flayout4_1->labelForField(hlayout_tmp)->setToolTip("When adding signals to display in the signals dialog and the signal label starts with \"EEG \", invert the plotting of the signal");
+  QObject::connect(checkbox4_18, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_18Clicked(int)));
+
   QFormLayout *flayout4_2 = new QFormLayout;
   flayout4_2->setSpacing(20);
 
@@ -2324,6 +2343,19 @@ void UI_OptionsDialog::checkbox4_16Clicked(int state)
   }
 
   mainwindow->maincurve->drawCurve_stage_1();
+}
+
+
+void UI_OptionsDialog::checkbox4_18Clicked(int state)
+{
+  if(state==Qt::Checked)
+  {
+    mainwindow->default_invert_eeg_signals = 1;
+  }
+  else
+  {
+    mainwindow->default_invert_eeg_signals = 0;
+  }
 }
 
 

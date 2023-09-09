@@ -395,13 +395,29 @@ void UI_Signalswindow::DisplayCompButtonClicked()
     }
   }
 
+  newsignalcomp->edfparam_0 = &newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]];
+
+  if(mainwindow->default_invert_eeg_signals)
+  {
+    if(strlen(newsignalcomp->signallabel) > 4)
+    {
+      if(!strncmp(newsignalcomp->signallabel, "EEG ", 4))
+      {
+        if(newsignalcomp->edfparam_0->bitvalue >= 0)
+        {
+          newsignalcomp->polarity *= -1;
+
+          newsignalcomp->screen_offset *= -1;
+        }
+      }
+    }
+  }
+
   remove_trailing_spaces(newsignalcomp->signallabel);
   newsignalcomp->signallabellen = strlen(newsignalcomp->signallabel);
 
-  strlcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension, 9);
+  strlcpy(newsignalcomp->physdimension, newsignalcomp->edfparam_0->physdimension, 9);
   remove_trailing_spaces(newsignalcomp->physdimension);
-
-  newsignalcomp->edfparam_0 = &newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]];
 
   mainwindow->signalcomp[mainwindow->signalcomps] = newsignalcomp;
   mainwindow->signalcomps++;
@@ -481,11 +497,27 @@ void UI_Signalswindow::DisplayButtonClicked()
     newsignalcomp->hasruler = 0;
     newsignalcomp->polarity = 1;
 
-    if(newsignalcomp->edfhdr->edfparam[s].bitvalue < 0.0)
+    if(newsignalcomp->edfhdr->edfparam[s].bitvalue < 0)
     {
       newsignalcomp->voltpercm *= -1;
     }
     newsignalcomp->sensitivity = newsignalcomp->edfhdr->edfparam[s].bitvalue / ((double)newsignalcomp->voltpercm * mainwindow->y_pixelsizefactor);
+
+    if(mainwindow->default_invert_eeg_signals)
+    {
+      if(strlen(newsignalcomp->edfhdr->edfparam[s].label) > 4)
+      {
+        if(!strncmp(newsignalcomp->edfhdr->edfparam[s].label, "EEG ", 4))
+        {
+          if(newsignalcomp->edfhdr->edfparam[s].bitvalue >= 0)
+          {
+            newsignalcomp->polarity *= -1;
+
+            newsignalcomp->screen_offset *= -1;
+          }
+        }
+      }
+    }
 
     strlcpy(newsignalcomp->signallabel, newsignalcomp->edfhdr->edfparam[s].label, 256);
     if(mainwindow->strip_label_types)

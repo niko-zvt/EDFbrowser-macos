@@ -10,6 +10,9 @@
 
  - Allow to pause fileposition updates during streaming.
 
+ - Options/Settings: added the option to enable to invert signals by default (when manually added in the signals dialog) and
+   if the signals are marked as EEG in the signal label.
+
 
  version 2.04      May 20, 2023
  --------------

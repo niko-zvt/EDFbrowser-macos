@@ -370,6 +370,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   rc_system_locked = 0;
 
+  default_invert_eeg_signals = 0;
+
   session_start_video = 0;
 
   session_video_starttime = 0;
