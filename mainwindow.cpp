@@ -2390,7 +2390,7 @@ void UI_Mainwindow::remove_all_filters()
 
       strlcpy(signalcomp[i]->signallabel, signalcomp[i]->signallabel_bu, 512);
       signalcomp[i]->signallabellen = signalcomp[i]->signallabellen_bu;
-      strlcpy(signalcomp[i]->physdimension, signalcomp[i]->physdimension_bu, 512);
+      strlcpy(signalcomp[i]->physdimension, signalcomp[i]->physdimension_bu, 9);
     }
 
     if(signalcomp[i]->zratio_filter != NULL)
@@ -2401,7 +2401,7 @@ void UI_Mainwindow::remove_all_filters()
 
       strlcpy(signalcomp[i]->signallabel, signalcomp[i]->signallabel_bu, 512);
       signalcomp[i]->signallabellen = signalcomp[i]->signallabellen_bu;
-      strlcpy(signalcomp[i]->physdimension, signalcomp[i]->physdimension_bu, 512);
+      strlcpy(signalcomp[i]->physdimension, signalcomp[i]->physdimension_bu, 9);
     }
   }
 
@@ -2871,7 +2871,7 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
 
         strlcpy(signalcomp[j]->signallabel, signalcomp[j]->signallabel_bu, 512);
         signalcomp[j]->signallabellen = signalcomp[j]->signallabellen_bu;
-        strlcpy(signalcomp[j]->physdimension, signalcomp[j]->physdimension_bu, 512);
+        strlcpy(signalcomp[j]->physdimension, signalcomp[j]->physdimension_bu, 9);
       }
 
       for(k=0; k<signalcomp[j]->fidfilter_cnt; k++)
@@ -5210,7 +5210,7 @@ void UI_Mainwindow::remove_signalcomp(int signal_nr)
 
     strlcpy(signalcomp[signal_nr]->signallabel, signalcomp[signal_nr]->signallabel_bu, 512);
     signalcomp[signal_nr]->signallabellen = signalcomp[signal_nr]->signallabellen_bu;
-    strlcpy(signalcomp[signal_nr]->physdimension, signalcomp[signal_nr]->physdimension_bu, 32);
+    strlcpy(signalcomp[signal_nr]->physdimension, signalcomp[signal_nr]->physdimension_bu, 9);
   }
 
   if(signalcomp[signal_nr]->zratio_filter != NULL)

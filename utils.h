@@ -145,7 +145,7 @@ int t_lcm(int, int);  /* returns least common multiple */
  * plus the length of src. While this may seem somewhat confusing,
  * it was done to make truncation detection simple."
  */
-#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__FreeBSD__) || defined(__HAIKU__)
+#if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__FreeBSD__) || defined(__HAIKU__) || ((__GLIBC__ >= 2) && (__GLIBC_MINOR__ >= 38)) || (__GLIBC__ >= 3)
 /* nothing here */
 #else
 int strlcpy(char *, const char *, int);

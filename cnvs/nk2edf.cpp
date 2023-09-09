@@ -660,7 +660,7 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
 
   char *buf,
        *annotations,
-       scratchpad[48];
+       scratchpad[256];
 
 /************************* filter events ******************************************/
 
