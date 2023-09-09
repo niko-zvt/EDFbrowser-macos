@@ -197,13 +197,13 @@ UI_Mainwindow::UI_Mainwindow()
     annot_editor_user_button_onset_on_page_middle[i] = 0;
     annot_edit_user_button_name[i][0] = 0;
   }
-  strlcpy(annot_edit_user_button_name[0], "W", 64);
-  strlcpy(annot_edit_user_button_name[1], "R", 64);
-  strlcpy(annot_edit_user_button_name[2], "N1", 64);
-  strlcpy(annot_edit_user_button_name[3], "N2", 64);
-  strlcpy(annot_edit_user_button_name[4], "N3", 64);
-  strlcpy(annot_edit_user_button_name[5], "N4", 64);
-  strlcpy(annot_edit_user_button_name[6], "N5", 64);
+  strlcpy(annot_edit_user_button_name[0], "W", 32);
+  strlcpy(annot_edit_user_button_name[1], "R", 32);
+  strlcpy(annot_edit_user_button_name[2], "N1", 32);
+  strlcpy(annot_edit_user_button_name[3], "N2", 32);
+  strlcpy(annot_edit_user_button_name[4], "N3", 32);
+  strlcpy(annot_edit_user_button_name[5], "N4", 32);
+  strlcpy(annot_edit_user_button_name[6], "N5", 32);
   for(i=0; i<MAX_ANNOTEDIT_SIDE_MENU_ANNOTS; i++)
   {
     annot_by_rect_draw_description[i][0] = 0;
