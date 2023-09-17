@@ -235,11 +235,15 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   {
     checkbox2_3->setCheckState(Qt::Unchecked);
   }
+  checkbox2_3->setToolTip("If enabled and an annotation description is \"signal linked\" e.g. \"some event@@EEG F4\",\n"
+                          "the annotation marker and overlay color will only be drawn over that trace instead of from top to bottom");
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->setAlignment(Qt::AlignCenter);
   hlayout_tmp->addWidget(checkbox2_3);
   hlayout_tmp->addStretch(1000);
   flayout1_2->addRow("Use signal linked annotations", hlayout_tmp);
+  flayout1_2->labelForField(hlayout_tmp)->setToolTip("If enabled and an annotation description is \"signal linked\" e.g. \"some event@@EEG F4\",\n"
+                                                     "the annotation marker and overlay color will only be drawn over that trace instead of from top to bottom");
 
   checkbox2_1 = new QCheckBox;
   checkbox2_1->setTristate(false);
