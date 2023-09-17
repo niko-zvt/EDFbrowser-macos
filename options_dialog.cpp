@@ -1644,9 +1644,12 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->setAlignment(Qt::AlignCenter);
   hlayout_tmp->addWidget(spinbox5_1);
+  hlayout_tmp->setAlignment(spinbox5_1, Qt::AlignTop);
   hlayout_tmp->addWidget(textEdit5_1, 500);
+  hlayout_tmp->setAlignment(textEdit5_1, Qt::AlignTop);
   hlayout_tmp->addStretch(100);
   flayout5_1->addRow("Font size", hlayout_tmp);
+  ((QLabel *)(flayout5_1->labelForField(hlayout_tmp)))->setAlignment(Qt::AlignTop);
 
   spinbox5_2 = new QSpinBox;
   spinbox5_2->setRange(8, 24);
@@ -1658,9 +1661,12 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->setAlignment(Qt::AlignCenter);
   hlayout_tmp->addWidget(spinbox5_2);
+  hlayout_tmp->setAlignment(spinbox5_2, Qt::AlignTop);
   hlayout_tmp->addWidget(textEdit5_2, 500);
+  hlayout_tmp->setAlignment(textEdit5_2, Qt::AlignTop);
   hlayout_tmp->addStretch(100);
   flayout5_1->addRow("Monofont size", hlayout_tmp);
+  ((QLabel *)(flayout5_1->labelForField(hlayout_tmp)))->setAlignment(Qt::AlignTop);
 
   DefaultButton5 = new QPushButton;
 #if QT_VERSION >= 0x050200
