@@ -101,9 +101,9 @@
  *
  * When accessing EDFlib from different threads, use a mutex.<br>
  *
- * For more info about the EDF and EDF+ format, visit: http://edfplus.info/specs/<br>
+ * For more info about the EDF and EDF+ format, visit: https://edfplus.info/specs/<br>
  *
- * For more info about the BDF and BDF+ format, visit: http://www.teuniz.net/edfbrowser/bdfplus%20format%20description.html<br>
+ * For more info about the BDF and BDF+ format, visit: https://www.teuniz.net/edfbrowser/bdfplus%20format%20description.html<br>
  *
  */
 
@@ -177,8 +177,8 @@
 #define EDFLIB_MALLOC_ERROR                 (-1)
 #define EDFLIB_NO_SUCH_FILE_OR_DIRECTORY    (-2)
 
-/* when this error occurs, try to open the file with EDFbrowser,
-   it will give you full details about the cause of the error. */
+/* when this error occurs, try to open the file with EDFbrowser (https://www.teuniz.net/edfbrowser/),
+   it will give you full details about the cause of the error. It can also fix most errors. */
 #define EDFLIB_FILE_CONTAINS_FORMAT_ERRORS  (-3)
 
 #define EDFLIB_MAXFILES_REACHED             (-4)
@@ -300,6 +300,9 @@ typedef struct edf_hdr_struct
  * @return
  * 0 on success, in case of an error it returns -1 and an error code will be set in the member "filetype" of edfhdr.
  * This function is required if you want to read a file
+ *
+ * In case of a file format error (-3), try to open the file with EDFbrowser: https://www.teuniz.net/edfbrowser/
+ * It will give you full details about the cause of the error and it can also fix most errors.
  */
 EDFLIB_API int edfopen_file_readonly(const char *path, edflib_hdr_t *edfhdr, int read_annotations);
 
@@ -877,7 +880,7 @@ EDFLIB_API int edf_set_admincode(int handle, const char *admincode);
 EDFLIB_API int edf_set_technician(int handle, const char *technician);
 
 /**
- * Sets the equipments brand and/or model<br>
+ * Sets the equipment brand and/or model<br>
  * This function is optional and can be called only after opening a file in writemode and<br>
  * before the first sample write action.
  *
@@ -885,7 +888,7 @@ EDFLIB_API int edf_set_technician(int handle, const char *technician);
  * File handle.
  *
  * @param[in] equipment
- * A pointer to a NULL-terminated ASCII-string containing the equipments brand and/or model<br>
+ * A pointer to a NULL-terminated ASCII-string containing the equipment brand and/or model<br>
  * used for the recording.
  *
  * @return
@@ -1071,10 +1074,10 @@ EDFLIB_API int edf_blockwrite_digital_samples(int handle, int *buf);
  * File handle.
  *
  * @param[in] onset
- * microSeconds since start of recording.
+ * microseconds since start of recording.
  *
  * @param[in] duration
- * microSeconds, > 0 or -1 if not used.
+ * microseconds, > 0 or -1 if not used.
  *
  * @param[in] description
  * A null-terminated UTF8-string containing the text that describes the event.
@@ -1092,7 +1095,7 @@ EDFLIB_API int edfwrite_annotation_utf8(int handle, long long onset, long long d
 /* DEPRECATED!! USE edfwrite_annotation_utf8_hr()
  * writes an annotation/event to the file
  * onset is relative to the start of the file
- * onset and duration are in units of 100 microSeconds!     resolution is 0.0001 second!
+ * onset and duration are in units of 100 microseconds!     resolution is 0.0001 second!
  * for example: 34.071 seconds must be written as 340710
  * if duration is unknown or not applicable: set a negative number (-1)
  * description is a null-terminated UTF8-string containing the text that describes the event
@@ -1109,10 +1112,10 @@ EDFLIB_API int edfwrite_annotation_utf8(int handle, long long onset, long long d
  * File handle.
  *
  * @param[in] onset
- * microSeconds since start of recording.
+ * microseconds since start of recording.
  *
  * @param[in] duration
- * microSeconds, > 0 or -1 if not used.
+ * microseconds, > 0 or -1 if not used.
  *
  * @param[in] description
  * A null-terminated Latin1-string containing the text that describes the event.
@@ -1130,7 +1133,7 @@ EDFLIB_API int edfwrite_annotation_latin1(int handle, long long onset, long long
 /* DEPRECATED!! USE edfwrite_annotation_latin1_hr()
  * writes an annotation/event to the file
  * onset is relative to the start of the file
- * onset and duration are in units of 100 microSeconds!     resolution is 0.0001 second!
+ * onset and duration are in units of 100 microseconds!     resolution is 0.0001 second!
  * for example: 34.071 seconds must be written as 340710
  * if duration is unknown or not applicable: set a negative number (-1)
  * description is a null-terminated Latin1-string containing the text that describes the event
@@ -1140,7 +1143,7 @@ EDFLIB_API int edfwrite_annotation_latin1(int handle, long long onset, long long
 
 /**
  * Sets the datarecord duration. The default value is 1 second.<br>
- * ATTENTION: the argument \p duration is expressed in units of 10 microSeconds.<br>
+ * ATTENTION: the argument \p duration is expressed in units of 10 microseconds.<br>
  * So, if you want to set the datarecord duration to 0.1 second, you must write a value of 10000.<br>
  * The datarecord duration must be in the range 0.001 to 60 seconds.<br>
  * This function can be used when you want to use a samplerate<br>
@@ -1164,7 +1167,7 @@ EDFLIB_API int edf_set_datarecord_duration(int handle, int duration);
 /**
  * Sets the datarecord duration to a very small value.<br>
  * ATTENTION: the argument \p duration is expressed in units of 1 microSecond.<br>
- * The datarecord duration must be in the range 1 to 9999 micro-seconds.<br>
+ * The datarecord duration must be in the range 1 to 9999 microseconds.<br>
  * This function can be used when you want to use a very high samplerate.<br>
  * For example, if you want to use a samplerate of 5 GHz,<br>
  * set the samplefrequency to 5000 Hz and the datarecord duration to 1 micro-second.<br>
@@ -1208,7 +1211,7 @@ EDFLIB_API int edf_set_number_of_annotation_signals(int handle, int annot_signal
  * Valid range is 0 to 9999999 inclusive. Default is 0.<br>
  * This function is optional and can be called only after opening a file in writemode<br>
  * and before the first sample write action.<br>
- * It is recommended to use a maximum resolution of not more than 100 micro-Seconds.<br>
+ * It is recommended to use a maximum resolution of not more than 100 microseconds.<br>
  * E.g. use 1234000  to set a starttime offset of 0.1234 seconds (instead of for example 1234217).<br>
  * In other words, leave the last 3 digits at zero.<br>
  *
@@ -1216,7 +1219,7 @@ EDFLIB_API int edf_set_number_of_annotation_signals(int handle, int annot_signal
  * File handle.
  *
  * @param[in] subsecond
- * Subsecond starttime expressed in units of 100 nanoSeconds.
+ * Subsecond starttime expressed in units of 100 nanoseconds.
  *
  * @return
  * 0 on success, otherwise -1.<br>
