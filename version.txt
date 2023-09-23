@@ -1,5 +1,5 @@
 
- version 2.05      to be defined
+ version 2.05      September 23, 2023
  --------------
 
  - Added keyboard shortcut Ctrl+M to toggle annotation markers.
@@ -12,6 +12,8 @@
 
  - Options/Settings: added the option to enable to invert signals by default (when manually added in the signals dialog) and
    if the signals are marked as EEG in the signal label.
+
+ - Fixed some compiler errors & warnings caused & revealed by GLIBC 2.38 & GCC 13.
 
 
  version 2.04      May 20, 2023
