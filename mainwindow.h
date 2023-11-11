@@ -296,7 +296,9 @@ public:
       mc_v_scrollarea_ratio,
       mc_v_scrollarea_auto,
       mc_v_scrollarea_max_signals,
-      default_invert_eeg_signals;
+      default_invert_eeg_signals,
+      default_time_scale,
+      default_fit_signals_to_pane;
 
 volatile int rc_cmd_in_progress;
 

@@ -1,4 +1,12 @@
 
+ version 2.06      to be defined
+ --------------
+
+ - Added an option to set the default timescale.
+
+ - Added an option to fit the signals to their panes when opening a file.
+
+
  version 2.05      September 23, 2023
  --------------
 

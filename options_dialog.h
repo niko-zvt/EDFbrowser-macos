@@ -92,6 +92,8 @@ SpecialButton  *BgColorButton,
                *slabel2_3,
                *annotlistdock_edited_txt_color_button;
 
+QLabel         *label_4_1;
+
 QSpinBox       *spinbox1_1,
                *spinbox2_1,
                *spinbox2_2,
@@ -100,6 +102,7 @@ QSpinBox       *spinbox1_1,
                *spinbox4_3,
                *spinbox4_5,
                *spinbox4_6,
+               *spinbox4_7,
                *spinbox5_1,
                *spinbox5_2,
                *spinbox7_1,
@@ -254,6 +257,7 @@ void spinBox4_2ValueChanged(int);
 void spinBox4_3ValueChanged(int);
 void spinbox4_5ValueChanged(int);
 void spinbox4_6ValueChanged(int);
+void spinbox4_7ValueChanged(int);
 void saveColorSchemaButtonClicked();
 void loadColorSchemaButtonClicked();
 void loadColorSchema_NK();

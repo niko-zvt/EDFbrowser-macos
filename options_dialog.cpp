@@ -1341,6 +1341,20 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   flayout4_1->labelForField(hlayout_tmp)->setToolTip("When adding signals to display in the signals dialog and the signal label starts with \"EEG \", invert the plotting of the signal");
   QObject::connect(checkbox4_18, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_18Clicked(int)));
 
+  spinbox4_7 = new QSpinBox;
+  spinbox4_7->setMinimum(0);
+  spinbox4_7->setMaximum(86400);
+  spinbox4_7->setSuffix(" Sec/page");
+  spinbox4_7->setToolTip("Sets the default timescale when opening a file (if zero, show whole recording)");
+  spinbox4_7->setValue(mainwindow->default_time_scale);
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(spinbox4_7);
+  hlayout_tmp->addStretch(1000);
+  flayout4_1->addRow("Default Timescale", hlayout_tmp);
+  flayout4_1->labelForField(hlayout_tmp)->setToolTip("Sets the default timescale when opening a file (if zero, show whole recording)");
+  QObject::connect(spinbox4_7, SIGNAL(valueChanged(int)), this, SLOT(spinbox4_7ValueChanged(int)));
+
   QFormLayout *flayout4_2 = new QFormLayout;
   flayout4_2->setSpacing(20);
 
@@ -1427,9 +1441,11 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   QRadioButton *def_amp_radio_button0 = new QRadioButton;
   QRadioButton *def_amp_radio_button1 = new QRadioButton;
+  QRadioButton *def_amp_radio_button2 = new QRadioButton;
   def_amp_radio_group = new QButtonGroup(this);
   def_amp_radio_group->addButton(def_amp_radio_button0, 0);
   def_amp_radio_group->addButton(def_amp_radio_button1, 1);
+  def_amp_radio_group->addButton(def_amp_radio_button2, 2);
 #if QT_VERSION < 0x060000
   QObject::connect(def_amp_radio_group, SIGNAL(buttonClicked(int)), this, SLOT(def_amp_radio_group_clicked(int)));
 #else
@@ -1463,20 +1479,42 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp->addStretch(1000);
   vlayout_tmp->addLayout(hlayout_tmp);
 
-  if(mainwindow->default_amplitude_use_physmax_div)
+  label_4_1 = new QLabel;
+  label_4_1->setText("Fit signals to pane");
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(def_amp_radio_button2);
+  hlayout_tmp->addWidget(label_4_1);
+  hlayout_tmp->addStretch(1000);
+  vlayout_tmp->addLayout(hlayout_tmp);
+
+  if(mainwindow->default_fit_signals_to_pane)
   {
     def_amp_radio_button0->setChecked(false);
-    def_amp_radio_button1->setChecked(true);
-    dspinbox4_4->setEnabled(false);
-  }
-  else
-  {
     def_amp_radio_button1->setChecked(false);
-    def_amp_radio_button0->setChecked(true);
+    def_amp_radio_button2->setChecked(true);
+    dspinbox4_4->setEnabled(false);
     spinbox4_5->setEnabled(false);
   }
+  else if(mainwindow->default_amplitude_use_physmax_div)
+    {
+      def_amp_radio_button0->setChecked(false);
+      def_amp_radio_button2->setChecked(false);
+      def_amp_radio_button1->setChecked(true);
+      dspinbox4_4->setEnabled(false);
+      label_4_1->setEnabled(false);
+    }
+    else
+    {
+      def_amp_radio_button1->setChecked(false);
+      def_amp_radio_button2->setChecked(false);
+      def_amp_radio_button0->setChecked(true);
+      spinbox4_5->setEnabled(false);
+      label_4_1->setEnabled(false);
+    }
 
   flayout4_2->addRow("Default amplitude", vlayout_tmp);
+  flayout4_2->labelForField(vlayout_tmp)->setToolTip("Default vertical scale when opening a file");
   QObject::connect(dspinbox4_4, SIGNAL(valueChanged(double)), this, SLOT(dspinbox4_4ValueChanged(double)));
   QObject::connect(spinbox4_5,  SIGNAL(valueChanged(int)),    this, SLOT(spinbox4_5ValueChanged(int)));
 
@@ -3931,18 +3969,30 @@ void UI_OptionsDialog::tab7_settings_changed()
 
 void UI_OptionsDialog::def_amp_radio_group_clicked(int id)
 {
-  if(id == 1)
+  if(id == 2)
   {
     dspinbox4_4->setEnabled(false);
-    spinbox4_5->setEnabled(true);
-    mainwindow->default_amplitude_use_physmax_div = 1;
-  }
-  else
-  {
     spinbox4_5->setEnabled(false);
-    dspinbox4_4->setEnabled(true);
+    label_4_1->setEnabled(true);
     mainwindow->default_amplitude_use_physmax_div = 0;
+    mainwindow->default_fit_signals_to_pane = 1;
   }
+  else if(id == 1)
+    {
+      dspinbox4_4->setEnabled(false);
+      label_4_1->setEnabled(false);
+      spinbox4_5->setEnabled(true);
+      mainwindow->default_amplitude_use_physmax_div = 1;
+      mainwindow->default_fit_signals_to_pane = 0;
+    }
+    else
+    {
+      spinbox4_5->setEnabled(false);
+      label_4_1->setEnabled(false);
+      dspinbox4_4->setEnabled(true);
+      mainwindow->default_amplitude_use_physmax_div = 0;
+      mainwindow->default_fit_signals_to_pane = 0;
+    }
 }
 
 
@@ -3974,6 +4024,12 @@ void UI_OptionsDialog::spinbox4_6ValueChanged(int val)
   mainwindow->mc_v_scrollarea_max_signals = val;
 
   mainwindow->maincurve->drawCurve_stage_1();
+}
+
+
+void UI_OptionsDialog::spinbox4_7ValueChanged(int val)
+{
+  mainwindow->default_time_scale = val;
 }
 
 

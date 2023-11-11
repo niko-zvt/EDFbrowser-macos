@@ -2131,6 +2131,20 @@ void UI_Mainwindow::open_new_file()
     files_open++;
   }
 
+  if(files_open == 1)
+  {
+    if(default_time_scale > 0)
+    {
+      pagetime = default_time_scale * TIME_FIXP_SCALING;
+    }
+    else if(default_time_scale == 0)
+    {
+      pagetime = edfhdr->recording_duration_hr;
+    }
+
+    if(pagetime < 100LL)  pagetime = 10 * TIME_FIXP_SCALING;
+  }
+
   if(!rc_file_open_requested)
   {
     if((montagepath[0]!=0)&&(cmdlineargument==2))
@@ -2155,6 +2169,11 @@ void UI_Mainwindow::open_new_file()
           recent_file_mtg_path[0][0] = 0;
 
           UI_Signalswindow signalwindow(this);
+
+          if(!signalcomps)
+          {
+            setup_viewbuf();
+          }
         }
         else
         {
@@ -2163,6 +2182,11 @@ void UI_Mainwindow::open_new_file()
           if(recent_file_mtg_path[0][0] == 0)
           {
             UI_Signalswindow signalwindow(this);
+
+            if(!signalcomps)
+            {
+              setup_viewbuf();
+            }
           }
         }
       }
@@ -2175,6 +2199,14 @@ void UI_Mainwindow::open_new_file()
           setup_viewbuf();
         }
       }
+    }
+  }
+
+  if((files_open == 1) && (montagepath[0]==0))
+  {
+    if(default_fit_signals_to_pane)
+    {
+      fit_signals_to_pane(-1);
     }
   }
 

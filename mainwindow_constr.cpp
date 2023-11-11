@@ -372,6 +372,10 @@ UI_Mainwindow::UI_Mainwindow()
 
   default_invert_eeg_signals = 0;
 
+  default_time_scale = 10;
+
+  default_fit_signals_to_pane = 0;
+
   session_start_video = 0;
 
   session_video_starttime = 0;

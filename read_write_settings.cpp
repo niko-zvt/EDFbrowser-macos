@@ -1006,6 +1006,40 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "default_time_scale", 0)))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    default_time_scale = atoi(result);
+    if((default_time_scale < 0) || (default_time_scale > 86400))
+    {
+      default_time_scale = 10;
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
+  if(!(xml_goto_nth_element_inside(xml_hdl, "default_fit_signals_to_pane", 0)))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    default_fit_signals_to_pane = atoi(result);
+    if(default_fit_signals_to_pane != 1)
+    {
+      default_fit_signals_to_pane = 0;
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
   if(!(xml_goto_nth_element_inside(xml_hdl, "spectrummarkerblock", 0)))
   {
     if(xml_goto_nth_element_inside(xml_hdl, "items", 0))
@@ -3433,6 +3467,12 @@ void UI_Mainwindow::write_settings()
 
     fprintf(cfgfile, "    <default_invert_eeg_signals>%i</default_invert_eeg_signals>\n",
                     default_invert_eeg_signals);
+
+    fprintf(cfgfile, "    <default_time_scale>%i</default_time_scale>\n",
+                    default_time_scale);
+
+    fprintf(cfgfile, "    <default_fit_signals_to_pane>%i</default_fit_signals_to_pane>\n",
+                    default_fit_signals_to_pane);
 
 #ifdef Q_OS_WIN32
     __mingw_fprintf(cfgfile, "    <maxfilesize_to_readin_annotations>%lli</maxfilesize_to_readin_annotations>\n",
