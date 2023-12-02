@@ -586,7 +586,8 @@ void UI_FIRFilterDialog::check_text()
     snprintf(filter_description_txt_2, 512, "Customized or user provided coefficients");
   }
 
-  textEdit->setMinimumWidth((max_len + 4) * mainwindow->norm_font_pixel_width);
+  textEdit->setMinimumWidth(((max_len + 2) * mainwindow->mono_font_pixel_width) +
+    (int)(qApp->style()->pixelMetric(QStyle::PM_ScrollBarExtent)));
 
   err = fir_filter_freqz(taps, n_taps, z, deg, FIR_FILTER_MAX_MEAS_PNTS);
   if(err)
