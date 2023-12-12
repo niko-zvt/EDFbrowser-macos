@@ -707,7 +707,7 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
 
 void UI_Signalswindow::show_signals(int row)
 {
-  int i, j, len, skip, signal_cnt=0;
+  int i, j, idx, len, skip, signal_cnt=0;
 
   char str[256]={""};
 
@@ -830,7 +830,7 @@ void UI_Signalswindow::show_signals(int row)
 
   signal_cnt = mainwindow->edfheaderlist[row]->edfsignals;
 
-  for(i=0; i<signal_cnt; i++)
+  for(i=0, idx=1; i<signal_cnt; i++)
   {
     if(mainwindow->edfheaderlist[row]->edfplus || mainwindow->edfheaderlist[row]->bdfplus)
     {
@@ -849,7 +849,7 @@ void UI_Signalswindow::show_signals(int row)
       }
     }
 
-    snprintf(str, 256, "%-3i ", i + 1);
+    snprintf(str, 256, "%-3i ", idx++);
     strlcat(str, mainwindow->edfheaderlist[row]->edfparam[i].label, 256);
     strlcat(str, "   ", 256);
     if(mainwindow->edfheaderlist[row]->edfparam[i].sf_int)
