@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 Version=1.0
 Type=Application
 Name=EDFbrowser
@@ -11,3 +10,4 @@ Terminal=false
 Categories=Science;Application;
 MimeType=application/x-edf;application/x-bdf
 InitialPreference=9
+Keywords=graphics;medical;eeg;emg;ecg;edf;bdf;
