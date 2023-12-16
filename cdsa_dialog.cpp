@@ -48,10 +48,10 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, sigcompblck_t *signal_comp, in
 
   export_data = 0;
 
-  sf = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_int;
+  sf = signalcomp->edfparam_0->sf_int;
   if(!sf)
   {
-    sf = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f + 0.5;
+    sf = signalcomp->edfparam_0->sf_f + 0.5;
   }
 
   if(no_dialog_params != NULL)
@@ -135,7 +135,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, sigcompblck_t *signal_comp, in
   max_hz_spinbox->setToolTip("Highest frequency output (bin) of the FFT that will be used to display the CDSA");
 
   strlcpy(str, " ", 128);
-  strlcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 128);
+  strlcat(str, signalcomp->edfparam_0->physdimension, 128);
   remove_trailing_spaces(str);
 
   max_voltage_spinbox = new QDoubleSpinBox;
@@ -147,12 +147,12 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, sigcompblck_t *signal_comp, in
   max_voltage_spinbox->setToolTip("The highest level that can be displayed (white). Higher levels will clip to white");
 
   strlcpy(str, " dB", 128);
-  strlcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 128);
+  strlcat(str, signalcomp->edfparam_0->physdimension, 128);
   remove_trailing_spaces(str);
 
   max_pwr_spinbox = new QSpinBox;
   max_pwr_spinbox->setSuffix(str);
-  max_pwr_spinbox->setMinimum(-159);
+  max_pwr_spinbox->setMinimum(-160);
   max_pwr_spinbox->setMaximum(160);
   max_pwr_spinbox->setValue(mainwindow->cdsa_max_pwr);
   max_pwr_spinbox->setToolTip("The highest level that can be displayed (white). Higher levels will clip to white");
@@ -160,7 +160,7 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, sigcompblck_t *signal_comp, in
   min_pwr_spinbox = new QSpinBox;
   min_pwr_spinbox->setSuffix(str);
   min_pwr_spinbox->setMinimum(-160);
-  min_pwr_spinbox->setMaximum(159);
+  min_pwr_spinbox->setMaximum(160);
   min_pwr_spinbox->setValue(mainwindow->cdsa_min_pwr);
   min_pwr_spinbox->setToolTip("The lowest level that can be displayed (black). Lower levels will clip to black");
 
@@ -262,94 +262,10 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, sigcompblck_t *signal_comp, in
   {
     QObject::connect(default_button,     SIGNAL(clicked()),         this, SLOT(default_button_clicked()));
     QObject::connect(start_button,       SIGNAL(clicked()),         this, SLOT(start_button_clicked()));
-    QObject::connect(segmentlen_spinbox, SIGNAL(valueChanged(int)), this, SLOT(segmentlen_spinbox_changed(int)));
-    QObject::connect(blocklen_spinbox,   SIGNAL(valueChanged(int)), this, SLOT(blocklen_spinbox_changed(int)));
-    QObject::connect(min_hz_spinbox,     SIGNAL(valueChanged(int)), this, SLOT(min_hz_spinbox_changed(int)));
-    QObject::connect(max_hz_spinbox,     SIGNAL(valueChanged(int)), this, SLOT(max_hz_spinbox_changed(int)));
-    QObject::connect(min_pwr_spinbox,    SIGNAL(valueChanged(int)), this, SLOT(min_pwr_spinbox_changed(int)));
-    QObject::connect(max_pwr_spinbox,    SIGNAL(valueChanged(int)), this, SLOT(max_pwr_spinbox_changed(int)));
     QObject::connect(log_checkbox,       SIGNAL(stateChanged(int)), this, SLOT(log_checkbox_changed(int)));
   }
 
   myobjectDialog->exec();
-}
-
-
-void UI_cdsa_window::segmentlen_spinbox_changed(int value)
-{
-  QObject::blockSignals(true);
-
-  if(blocklen_spinbox->value() > (value / 3))
-  {
-    blocklen_spinbox->setValue(value / 3);
-  }
-
-  QObject::blockSignals(false);
-}
-
-
-void UI_cdsa_window::blocklen_spinbox_changed(int value)
-{
-  QObject::blockSignals(true);
-
-  if(segmentlen_spinbox->value() < (value * 3))
-  {
-    segmentlen_spinbox->setValue(value * 3);
-  }
-
-  QObject::blockSignals(false);
-}
-
-
-void UI_cdsa_window::min_hz_spinbox_changed(int value)
-{
-  QObject::blockSignals(true);
-
-  if(max_hz_spinbox->value() <= value)
-  {
-    max_hz_spinbox->setValue(value + 1);
-  }
-
-  QObject::blockSignals(false);
-}
-
-
-void UI_cdsa_window::max_hz_spinbox_changed(int value)
-{
-  QObject::blockSignals(true);
-
-  if(min_hz_spinbox->value() >= value)
-  {
-    min_hz_spinbox->setValue(value - 1);
-  }
-
-  QObject::blockSignals(false);
-}
-
-
-void UI_cdsa_window::min_pwr_spinbox_changed(int value)
-{
-  QObject::blockSignals(true);
-
-  if(max_pwr_spinbox->value() <= value)
-  {
-    max_pwr_spinbox->setValue(value + 1);
-  }
-
-  QObject::blockSignals(false);
-}
-
-
-void UI_cdsa_window::max_pwr_spinbox_changed(int value)
-{
-  QObject::blockSignals(true);
-
-  if(min_pwr_spinbox->value() >= value)
-  {
-    min_pwr_spinbox->setValue(value - 1);
-  }
-
-  QObject::blockSignals(false);
 }
 
 
@@ -379,7 +295,16 @@ void UI_cdsa_window::log_checkbox_changed(int state)
 
 void UI_cdsa_window::default_button_clicked()
 {
+  int mv=0;
+
+  char str[16]={""};
+
   QObject::blockSignals(true);
+
+  strlcpy(str, signalcomp->edfparam_0->physdimension, 16);
+  remove_trailing_spaces(str);
+  ascii_toupper(str);
+  if(!strcmp(str, "MV"))  mv = 1;
 
   segmentlen_spinbox->setValue(30);
   blocklen_spinbox->setValue(2);
@@ -387,9 +312,18 @@ void UI_cdsa_window::default_button_clicked()
   windowfunc_combobox->setCurrentIndex(9);
   min_hz_spinbox->setValue(1);
   max_hz_spinbox->setValue(30);
-  max_pwr_spinbox->setValue(13);
-  min_pwr_spinbox->setValue(-5);
-  max_voltage_spinbox->setValue(5.0);
+  if(mv)
+  {
+    max_pwr_spinbox->setValue(-47);
+    min_pwr_spinbox->setValue(-65);
+    max_voltage_spinbox->setValue(0.005);
+  }
+  else
+  {
+    max_pwr_spinbox->setValue(13);
+    min_pwr_spinbox->setValue(-5);
+    max_voltage_spinbox->setValue(5.0);
+  }
   log_checkbox->setCheckState(Qt::Checked);
   pwr_voltage_checkbox->setCheckState(Qt::Checked);
   pwr_voltage_checkbox->setEnabled(false);
@@ -450,6 +384,28 @@ void UI_cdsa_window::start_button_clicked()
   FILE *dat_f=NULL;
 
   export_data = 0;
+
+
+  if(myobjectDialog  != NULL)
+  {
+    if(min_hz_spinbox->value() >= max_hz_spinbox->value())
+    {
+      QMessageBox::critical(myobjectDialog, "Error", "Min. freq. must be lower than Max. freq.");
+      return;
+    }
+
+    if(min_pwr_spinbox->value() >= max_pwr_spinbox->value())
+    {
+      QMessageBox::critical(myobjectDialog, "Error", "Min. level must be lower than Max. level");
+      return;
+    }
+
+    if(blocklen_spinbox->value() > (segmentlen_spinbox->value() / 3))
+    {
+      QMessageBox::critical(myobjectDialog, "Error", "Segment length must be at least 3 times block length");
+      return;
+    }
+  }
 
   for(i=0; i<256; i++)
   {
@@ -632,7 +588,7 @@ void UI_cdsa_window::start_button_clicked()
 
   smpl_in_block = sf * blocklen;
 
-  samples_in_file = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smpls;
+  samples_in_file = signalcomp->edfparam_0->smpls;
 
   segments_in_recording = samples_in_file / (long long)smpls_in_segment;
 
@@ -936,11 +892,11 @@ void UI_cdsa_window::start_button_clicked()
   if(log_density)
   {
     strlcpy(dock_param.unit, "dB", 32);
-    strlcat(dock_param.unit, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 32);
+    strlcat(dock_param.unit, signalcomp->edfparam_0->physdimension, 32);
   }
   else
   {
-    strlcpy(dock_param.unit, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 32);
+    strlcpy(dock_param.unit, signalcomp->edfparam_0->physdimension, 32);
   }
   remove_trailing_spaces(dock_param.unit);
 

@@ -94,12 +94,6 @@ private slots:
 
   void start_button_clicked();
   void default_button_clicked();
-  void segmentlen_spinbox_changed(int);
-  void blocklen_spinbox_changed(int);
-  void min_hz_spinbox_changed(int);
-  void max_hz_spinbox_changed(int);
-  void min_pwr_spinbox_changed(int);
-  void max_pwr_spinbox_changed(int);
   void log_checkbox_changed(int);
 
 };
