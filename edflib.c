@@ -5212,6 +5212,10 @@ EDFLIB_API int edf_set_label(int handle, int edfsignal, const char *label)
 
   if((edfsignal<0) || (edfsignal>=hdrlist[handle]->edfsignals))  return -1;
 
+  if(!strncmp(label, "EDF Annotations", 15))  return -1;
+
+  if(!strncmp(label, "BDF Annotations", 15))  return -1;
+
   strncpy(hdrlist[handle]->edfparam[edfsignal].label, label, 16);
 
   hdrlist[handle]->edfparam[edfsignal].label[16] = 0;
