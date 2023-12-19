@@ -283,7 +283,7 @@ void UI_FilterDialog::updatecurve(void)
   {
     for(i=0; i<FILT_RESP_ARR_SZ; i++)
     {
-      array[i] = ravg_filter_response(type, order, (double)i / 800.0);
+      array[i] = ravg_filter_response(type, order, (double)i / (2.0 * FILT_RESP_ARR_SZ));
     }
 
     curve1->drawCurve(array, FILT_RESP_ARR_SZ, 1.4, 0.0);

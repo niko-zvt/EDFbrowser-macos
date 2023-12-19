@@ -6,6 +6,10 @@
 
  - Added an option to fit the signals to their panes when opening a file.
 
+ - CDSA dialog: adjust default settings in case units is mV instead of uV.
+
+ - Classic filter dialog: fixed a minor bug in the plotting of the moving average filter curve.
+
 
  version 2.05      September 23, 2023
  --------------
