@@ -35,7 +35,7 @@
 
 #include "edflib.h"
 
-#define EDFLIB_VERSION  (124)
+#define EDFLIB_VERSION  (125)
 #define EDFLIB_MAXFILES  (64)
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__HAIKU__) || defined(__ANDROID__)
@@ -154,6 +154,7 @@ typedef struct
   int       eq_sf;
   char      *wrbuf;
   int       wrbufsize;
+  int       annot_chan_idx_pos;
   edfparamblock_t *edfparam;
 } edfhdrblock_t;
 
@@ -572,13 +573,33 @@ EDFLIB_API int edfclose_file(int handle)
     {
       if(hdr->edf)
       {
-        offset += (long long)(hdr->edfparam[i].smp_per_record * 2);
+        if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
+        {
+          offset += (long long)(hdr->edfparam[i].smp_per_record * 2);
+        }
+        else if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+          {
+            if(i < (hdr->edfsignals / 2))
+            {
+              offset += (long long)(hdr->edfparam[i].smp_per_record * 2);
+            }
+          }
 
         datrecsize += (hdr->edfparam[i].smp_per_record * 2);
       }
       else
       {
-        offset += (long long)(hdr->edfparam[i].smp_per_record * 3);
+        if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
+        {
+          offset += (long long)(hdr->edfparam[i].smp_per_record * 3);
+        }
+        else if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+          {
+            if(i < (hdr->edfsignals / 2))
+            {
+              offset += (long long)(hdr->edfparam[i].smp_per_record * 3);
+            }
+          }
 
         datrecsize += (hdr->edfparam[i].smp_per_record * 3);
       }
@@ -3812,6 +3833,21 @@ EDFLIB_API int edfwrite_digital_short_samples(int handle, short *buf)
 
   digmin = hdr->edfparam[edfsignal].dig_min;
 
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    if(hdr->signal_write_sequence_pos == 0)
+    {
+      if(edflib_write_tal(hdr, file))  return -1;
+    }
+  }
+  else if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+  {
+    if(hdr->signal_write_sequence_pos == (hdr->edfsignals / 2))
+    {
+      if(edflib_write_tal(hdr, file))  return -1;
+    }
+  }
+
   if(hdr->edf)
   {
     if((digmax != 0x7fff) || (digmin != -0x8000))
@@ -3865,7 +3901,10 @@ EDFLIB_API int edfwrite_digital_short_samples(int handle, short *buf)
   {
     hdr->signal_write_sequence_pos = 0;
 
-    if(edflib_write_tal(hdr, file))  return -1;
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
+    {
+      if(edflib_write_tal(hdr, file))  return -1;
+    }
 
     hdr->datarecords++;
 
@@ -3919,6 +3958,21 @@ EDFLIB_API int edfwrite_digital_samples(int handle, int *buf)
   digmax = hdr->edfparam[edfsignal].dig_max;
 
   digmin = hdr->edfparam[edfsignal].dig_min;
+
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    if(hdr->signal_write_sequence_pos == 0)
+    {
+      if(edflib_write_tal(hdr, file))  return -1;
+    }
+  }
+  else if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+  {
+    if(hdr->signal_write_sequence_pos == (hdr->edfsignals / 2))
+    {
+      if(edflib_write_tal(hdr, file))  return -1;
+    }
+  }
 
   if(hdr->edf)
   {
@@ -3989,7 +4043,10 @@ EDFLIB_API int edfwrite_digital_samples(int handle, int *buf)
   {
     hdr->signal_write_sequence_pos = 0;
 
-    if(edflib_write_tal(hdr, file))  return -1;
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
+    {
+      if(edflib_write_tal(hdr, file))  return -1;
+    }
 
     hdr->datarecords++;
 
@@ -4038,7 +4095,16 @@ EDFLIB_API int edf_blockwrite_digital_samples(int handle, int *buf)
     if(error)  return error;
   }
 
-  buf_offset = 0;
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    if(edflib_write_tal(hdr, file))  return -1;
+
+    buf_offset = hdr->total_annot_bytes;
+  }
+  else
+  {
+    buf_offset = 0;
+  }
 
   for(j=0; j<edfsignals; j++)
   {
@@ -4114,7 +4180,10 @@ EDFLIB_API int edf_blockwrite_digital_samples(int handle, int *buf)
     buf_offset += sf;
   }
 
-  if(edflib_write_tal(hdr, file))  return -1;
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
+  {
+    if(edflib_write_tal(hdr, file))  return -1;
+  }
 
   hdr->datarecords++;
 
@@ -4167,7 +4236,19 @@ EDFLIB_API int edf_blockwrite_digital_short_samples(int handle, short *buf)
     }
   }
 
-  buf_offset = 0;
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    if(hdr->signal_write_sequence_pos == 0)
+    {
+      if(edflib_write_tal(hdr, file))  return -1;
+    }
+
+    buf_offset = hdr->total_annot_bytes;
+  }
+  else
+  {
+    buf_offset = 0;
+  }
 
   for(j=0; j<edfsignals; j++)
   {
@@ -4233,7 +4314,10 @@ EDFLIB_API int edf_blockwrite_digital_short_samples(int handle, short *buf)
     buf_offset += sf;
   }
 
-  if(edflib_write_tal(hdr, file))  return -1;
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
+  {
+    if(edflib_write_tal(hdr, file))  return -1;
+  }
 
   hdr->datarecords++;
 
@@ -4279,6 +4363,11 @@ EDFLIB_API int edf_blockwrite_digital_3byte_samples(int handle, void *buf)
     if(error)  return error;
   }
 
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    if(edflib_write_tal(hdr, file))  return -1;
+  }
+
   for(j=0; j<edfsignals; j++)
   {
     total_samples += hdr->edfparam[j].smp_per_record;
@@ -4286,7 +4375,10 @@ EDFLIB_API int edf_blockwrite_digital_3byte_samples(int handle, void *buf)
 
   if(fwrite(buf, total_samples * 3, 1, file) != 1)  return -1;
 
-  if(edflib_write_tal(hdr, file))  return -1;
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
+  {
+    if(edflib_write_tal(hdr, file))  return -1;
+  }
 
   hdr->datarecords++;
 
@@ -4346,6 +4438,21 @@ EDFLIB_API int edfwrite_physical_samples(int handle, double *buf)
   bitvalue = hdr->edfparam[edfsignal].bitvalue;
 
   phys_offset = hdr->edfparam[edfsignal].offset;
+
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    if(hdr->signal_write_sequence_pos == 0)
+    {
+      if(edflib_write_tal(hdr, file))  return -1;
+    }
+  }
+  else if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+  {
+    if(hdr->signal_write_sequence_pos == (hdr->edfsignals / 2))
+    {
+      if(edflib_write_tal(hdr, file))  return -1;
+    }
+  }
 
   if(hdr->edf)
   {
@@ -4416,7 +4523,10 @@ EDFLIB_API int edfwrite_physical_samples(int handle, double *buf)
   {
     hdr->signal_write_sequence_pos = 0;
 
-    if(edflib_write_tal(hdr, file))  return -1;
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
+    {
+      if(edflib_write_tal(hdr, file))  return -1;
+    }
 
     hdr->datarecords++;
 
@@ -4468,7 +4578,16 @@ EDFLIB_API int edf_blockwrite_physical_samples(int handle, double *buf)
     if(error)  return error;
   }
 
-  buf_offset = 0;
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    if(edflib_write_tal(hdr, file))  return -1;
+
+    buf_offset = hdr->total_annot_bytes;
+  }
+  else
+  {
+    buf_offset = 0;
+  }
 
   for(j=0; j<edfsignals; j++)
   {
@@ -4548,7 +4667,10 @@ EDFLIB_API int edf_blockwrite_physical_samples(int handle, double *buf)
     buf_offset += sf;
   }
 
-  if(edflib_write_tal(hdr, file))  return -1;
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
+  {
+    if(edflib_write_tal(hdr, file))  return -1;
+  }
 
   hdr->datarecords++;
 
@@ -5013,8 +5135,39 @@ static int edflib_write_edf_header(edfhdrblock_t *hdr)
     fputc(' ', file);
   }
 
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    for(j=0; j<hdr->nr_annot_chns; j++)
+    {
+      if(hdr->edf)
+      {
+        fprintf(file, "EDF Annotations ");
+      }
+      else
+      {
+        fprintf(file, "BDF Annotations ");
+      }
+    }
+  }
   for(i=0; i<edfsignals; i++)
   {
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+    {
+      if(i == (edfsignals / 2))
+      {
+        for(j=0; j<hdr->nr_annot_chns; j++)
+        {
+          if(hdr->edf)
+          {
+            fprintf(file, "EDF Annotations ");
+          }
+          else
+          {
+            fprintf(file, "BDF Annotations ");
+          }
+        }
+      }
+    }
     len = strlen(hdr->edfparam[i].label);
     edflib_latin1_to_ascii(hdr->edfparam[i].label, len);
     for(j=0; j<len; j++)
@@ -5026,19 +5179,39 @@ static int edflib_write_edf_header(edfhdrblock_t *hdr)
       fputc(' ', file);
     }
   }
-  for(j=0; j<hdr->nr_annot_chns; j++)
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
   {
-    if(hdr->edf)
+    for(j=0; j<hdr->nr_annot_chns; j++)
     {
-      fprintf(file, "EDF Annotations ");
+      if(hdr->edf)
+      {
+        fprintf(file, "EDF Annotations ");
+      }
+      else
+      {
+        fprintf(file, "BDF Annotations ");
+      }
     }
-    else
+  }
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    for(j=0; j<(80 * hdr->nr_annot_chns); j++)
     {
-      fprintf(file, "BDF Annotations ");
+      fputc(' ', file);
     }
   }
   for(i=0; i<edfsignals; i++)
   {
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+    {
+      if(i == (edfsignals / 2))
+      {
+        for(j=0; j<(80 * hdr->nr_annot_chns); j++)
+        {
+          fputc(' ', file);
+        }
+      }
+    }
     len = strlen(hdr->edfparam[i].transducer);
     edflib_latin1_to_ascii(hdr->edfparam[i].transducer, len);
     for(j=0; j<len; j++)
@@ -5050,15 +5223,32 @@ static int edflib_write_edf_header(edfhdrblock_t *hdr)
       fputc(' ', file);
     }
   }
-  for(j=0; j<hdr->nr_annot_chns; j++)
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
   {
-    for(i=0; i<80; i++)
+    for(j=0; j<(80 * hdr->nr_annot_chns); j++)
     {
       fputc(' ', file);
     }
   }
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    for(j=0; j<hdr->nr_annot_chns; j++)
+    {
+      fprintf(file, "        ");
+    }
+  }
   for(i=0; i<edfsignals; i++)
   {
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+    {
+      if(i == (edfsignals / 2))
+      {
+        for(j=0; j<hdr->nr_annot_chns; j++)
+        {
+          fprintf(file, "        ");
+        }
+      }
+    }
     len = strlen(hdr->edfparam[i].physdimension);
     edflib_latin1_to_ascii(hdr->edfparam[i].physdimension, len);
     for(j=0; j<len; j++)
@@ -5070,12 +5260,32 @@ static int edflib_write_edf_header(edfhdrblock_t *hdr)
       fputc(' ', file);
     }
   }
-  for(j=0; j<hdr->nr_annot_chns; j++)
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
   {
-    fprintf(file, "        ");
+    for(j=0; j<hdr->nr_annot_chns; j++)
+    {
+      fprintf(file, "        ");
+    }
+  }
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    for(j=0; j<hdr->nr_annot_chns; j++)
+    {
+      fprintf(file, "-1      ");
+    }
   }
   for(i=0; i<edfsignals; i++)
   {
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+    {
+      if(i == (edfsignals / 2))
+      {
+        for(j=0; j<hdr->nr_annot_chns; j++)
+        {
+          fprintf(file, "-1      ");
+        }
+      }
+    }
     p = edflib_snprint_number_nonlocalized(str, hdr->edfparam[i].phys_min, 128);
     for(; p<8; p++)
     {
@@ -5084,12 +5294,32 @@ static int edflib_write_edf_header(edfhdrblock_t *hdr)
     str[8] = 0;
     fprintf(file, "%s", str);
   }
-  for(j=0; j<hdr->nr_annot_chns; j++)
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
   {
-    fprintf(file, "-1      ");
+    for(j=0; j<hdr->nr_annot_chns; j++)
+    {
+      fprintf(file, "-1      ");
+    }
+  }
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    for(j=0; j<hdr->nr_annot_chns; j++)
+    {
+      fprintf(file, "1       ");
+    }
   }
   for(i=0; i<edfsignals; i++)
   {
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+    {
+      if(i == (edfsignals / 2))
+      {
+        for(j=0; j<hdr->nr_annot_chns; j++)
+        {
+          fprintf(file, "1       ");
+        }
+      }
+    }
     p = edflib_snprint_number_nonlocalized(str, hdr->edfparam[i].phys_max, 128);
     for(; p<8; p++)
     {
@@ -5098,50 +5328,141 @@ static int edflib_write_edf_header(edfhdrblock_t *hdr)
     str[8] = 0;
     fprintf(file, "%s", str);
   }
-  for(j=0; j<hdr->nr_annot_chns; j++)
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
   {
-    fprintf(file, "1       ");
+    for(j=0; j<hdr->nr_annot_chns; j++)
+    {
+      fprintf(file, "1       ");
+    }
+  }
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    for(j=0; j<hdr->nr_annot_chns; j++)
+    {
+      if(hdr->edf)
+      {
+        fprintf(file, "-32768  ");
+      }
+      else
+      {
+        fprintf(file, "-8388608");
+      }
+    }
   }
   for(i=0; i<edfsignals; i++)
   {
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+    {
+      if(i == (edfsignals / 2))
+      {
+        for(j=0; j<hdr->nr_annot_chns; j++)
+        {
+          if(hdr->edf)
+          {
+            fprintf(file, "-32768  ");
+          }
+          else
+          {
+            fprintf(file, "-8388608");
+          }
+        }
+      }
+    }
     p = edflib_fprint_int_number_nonlocalized(file, hdr->edfparam[i].dig_min, 0, 0);
     for(; p<8; p++)
     {
       fputc(' ', file);
     }
   }
-  for(j=0; j<hdr->nr_annot_chns; j++)
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
   {
-    if(hdr->edf)
+    for(j=0; j<hdr->nr_annot_chns; j++)
     {
-      fprintf(file, "-32768  ");
+      if(hdr->edf)
+      {
+        fprintf(file, "-32768  ");
+      }
+      else
+      {
+        fprintf(file, "-8388608");
+      }
     }
-    else
+  }
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    for(j=0; j<hdr->nr_annot_chns; j++)
     {
-      fprintf(file, "-8388608");
+      if(hdr->edf)
+      {
+        fprintf(file, "32767   ");
+      }
+      else
+      {
+        fprintf(file, "8388607 ");
+      }
     }
   }
   for(i=0; i<edfsignals; i++)
   {
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+    {
+      if(i == (edfsignals / 2))
+      {
+        for(j=0; j<hdr->nr_annot_chns; j++)
+        {
+          if(hdr->edf)
+          {
+            fprintf(file, "32767   ");
+          }
+          else
+          {
+            fprintf(file, "8388607 ");
+          }
+        }
+      }
+    }
     p = edflib_fprint_int_number_nonlocalized(file, hdr->edfparam[i].dig_max, 0, 0);
     for(; p<8; p++)
     {
       fputc(' ', file);
     }
   }
-  for(j=0; j<hdr->nr_annot_chns; j++)
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
   {
-    if(hdr->edf)
+    for(j=0; j<hdr->nr_annot_chns; j++)
     {
-      fprintf(file, "32767   ");
+      if(hdr->edf)
+      {
+        fprintf(file, "32767   ");
+      }
+      else
+      {
+        fprintf(file, "8388607 ");
+      }
     }
-    else
+  }
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    for(i=0; i<hdr->nr_annot_chns; i++)
     {
-      fprintf(file, "8388607 ");
+      for(j=0; j<80; j++)
+      {
+        fputc(' ', file);
+      }
     }
   }
   for(i=0; i<edfsignals; i++)
   {
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+    {
+      if(i == (edfsignals / 2))
+      {
+        for(j=0; j<(80 * hdr->nr_annot_chns); j++)
+        {
+          fputc(' ', file);
+        }
+      }
+    }
     len = strlen(hdr->edfparam[i].prefilter);
     edflib_latin1_to_ascii(hdr->edfparam[i].prefilter, len);
     for(j=0; j<len; j++)
@@ -5153,45 +5474,94 @@ static int edflib_write_edf_header(edfhdrblock_t *hdr)
       fputc(' ', file);
     }
   }
-  for(i=0; i<hdr->nr_annot_chns; i++)
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
   {
-    for(j=0; j<80; j++)
+    for(i=0; i<hdr->nr_annot_chns; i++)
     {
-      fputc(' ', file);
+      for(j=0; j<80; j++)
+      {
+        fputc(' ', file);
+      }
+    }
+  }
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
+  {
+    for(j=0; j<hdr->nr_annot_chns; j++)
+    {
+      if(hdr->edf)
+      {
+        p = edflib_fprint_int_number_nonlocalized(file, EDFLIB_ANNOTATION_BYTES / 2, 0, 0);
+        for(; p<8; p++)
+        {
+          fputc(' ', file);
+        }
+      }
+      else
+      {
+        p = edflib_fprint_int_number_nonlocalized(file, EDFLIB_ANNOTATION_BYTES / 3, 0, 0);
+        for(; p<8; p++)
+        {
+          fputc(' ', file);
+        }
+      }
     }
   }
   for(i=0; i<edfsignals; i++)
   {
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+    {
+      if(i == (edfsignals / 2))
+      {
+        for(j=0; j<hdr->nr_annot_chns; j++)
+        {
+          if(hdr->edf)
+          {
+            p = edflib_fprint_int_number_nonlocalized(file, EDFLIB_ANNOTATION_BYTES / 2, 0, 0);
+            for(; p<8; p++)
+            {
+              fputc(' ', file);
+            }
+          }
+          else
+          {
+            p = edflib_fprint_int_number_nonlocalized(file, EDFLIB_ANNOTATION_BYTES / 3, 0, 0);
+            for(; p<8; p++)
+            {
+              fputc(' ', file);
+            }
+          }
+        }
+      }
+    }
     p = edflib_fprint_int_number_nonlocalized(file, hdr->edfparam[i].smp_per_record, 0, 0);
     for(; p<8; p++)
     {
       fputc(' ', file);
     }
   }
-  for(j=0; j<hdr->nr_annot_chns; j++)
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
   {
-    if(hdr->edf)
+    for(j=0; j<hdr->nr_annot_chns; j++)
     {
-      p = edflib_fprint_int_number_nonlocalized(file, EDFLIB_ANNOTATION_BYTES / 2, 0, 0);
-      for(; p<8; p++)
+      if(hdr->edf)
       {
-        fputc(' ', file);
+        p = edflib_fprint_int_number_nonlocalized(file, EDFLIB_ANNOTATION_BYTES / 2, 0, 0);
+        for(; p<8; p++)
+        {
+          fputc(' ', file);
+        }
       }
-    }
-    else
-    {
-      p = edflib_fprint_int_number_nonlocalized(file, EDFLIB_ANNOTATION_BYTES / 3, 0, 0);
-      for(; p<8; p++)
+      else
       {
-        fputc(' ', file);
+        p = edflib_fprint_int_number_nonlocalized(file, EDFLIB_ANNOTATION_BYTES / 3, 0, 0);
+        for(; p<8; p++)
+        {
+          fputc(' ', file);
+        }
       }
     }
   }
-  for(i=0; i<(edfsignals * 32); i++)
-  {
-    fputc(' ', file);
-  }
-  for(i=0; i<(hdr->nr_annot_chns * 32); i++)
+  for(i=0; i<((edfsignals + hdr->nr_annot_chns) * 32); i++)
   {
     fputc(' ', file);
   }
@@ -5677,6 +6047,24 @@ EDFLIB_API int edfwrite_annotation_latin1_hr(int handle, long long onset, long l
   list_annot->annotation[EDFLIB_WRITE_MAX_ANNOTATION_LEN] = 0;
 
   hdrlist[handle]->annots_in_file++;
+
+  return 0;
+}
+
+
+EDFLIB_API int edf_set_annot_chan_idx_pos(int handle, int pos)
+{
+  if((handle<0)||(handle>=EDFLIB_MAXFILES))  return -1;
+
+  if(hdrlist[handle]==NULL)  return -1;
+
+  if(!hdrlist[handle]->writemode)  return -1;
+
+  if(hdrlist[handle]->datarecords)  return -1;
+
+  if((pos < 0) || (pos > 2))  return -1;
+
+  hdrlist[handle]->annot_chan_idx_pos = pos;
 
   return 0;
 }

@@ -168,6 +168,10 @@
 #define EDFSEEK_CUR  (1)
 #define EDFSEEK_END  (2)
 
+#define EDF_ANNOT_IDX_POS_END     (0)
+#define EDF_ANNOT_IDX_POS_MIDDLE  (1)
+#define EDF_ANNOT_IDX_POS_START   (2)
+
 /* the following defines are used in the member "filetype" of the edf_hdr_struct
    and as return value for the function edfopen_file_readonly() */
 #define EDFLIB_FILETYPE_EDF                  (0)
@@ -1225,6 +1229,26 @@ EDFLIB_API int edf_set_number_of_annotation_signals(int handle, int annot_signal
  * 0 on success, otherwise -1.<br>
  */
 EDFLIB_API int edf_set_subsecond_starttime(int handle, int subsecond);
+
+/**
+ * Sets the preferred position of the annotation channels(s) before, after or in the middle of the list<br>
+ * of regular signals. The default is to put them at the end (after the regular signals).<br>
+ * This function is optional and can be called only after opening a file in writemode<br>
+ * and before the first sample write action.<br>
+ *
+ * @param[in] handle
+ * File handle.
+ *
+ * @param[in] pos
+ * Preferred position of the annotation channel(s):<br>
+ * EDF_ANNOT_IDX_POS_START<br>
+ * EDF_ANNOT_IDX_POS_MIDDLE<br>
+ * EDF_ANNOT_IDX_POS_END<br>
+ *
+ * @return
+ * 0 on success, otherwise -1.<br>
+ */
+EDFLIB_API int edf_set_annot_chan_idx_pos(int handle, int pos);
 
 #ifdef __cplusplus
 } /* extern "C" */
