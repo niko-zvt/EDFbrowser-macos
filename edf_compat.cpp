@@ -86,7 +86,7 @@ UI_EDFCompatwindow::UI_EDFCompatwindow(QWidget *w_parent)
 
 void UI_EDFCompatwindow::CheckButtonClicked()
 {
-  int i, j, k, p, r=0, n,
+  int i, j, k, p, r=0, n, q,
       len,
       edfsignals,
       datarecords,
@@ -107,7 +107,8 @@ void UI_EDFCompatwindow::CheckButtonClicked()
       temp,
       samplesize,
       annots_in_tal,
-      progress_steps;
+      progress_steps,
+      annots_in_record;
 
   char *scratchpad,
        *cnv_buf,
@@ -329,6 +330,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
       duration_start = 0;
       scratchpad[0] = 0;
       annots_in_tal = 0;
+      annots_in_record = 0;
 
       p = edfparam[annot_ch[r]].buf_offset;
       max = edfparam[annot_ch[r]].smp_per_record * samplesize;
@@ -451,9 +453,30 @@ void UI_EDFCompatwindow::CheckButtonClicked()
 
           if((scratchpad[n]==20)&&onset&&(!duration_start))
           {
-           annots_in_tal++;
-           n = 0;
-           continue;
+            if(r||annots_in_record)
+            {
+              if(n >= 0)
+              {
+                for(q=0; q<n; q++)
+                {
+                  if(q==MAX_ANNOTATION_LEN)  break;
+                  if(((unsigned char *)scratchpad)[q] < 32)
+                  {
+                    if((scratchpad[q] != '\t') &&
+                       (scratchpad[q] != '\n') &&
+                       (scratchpad[q] != '\r'))
+                    {
+                      error = 38;  /* non-printable characters in description string */
+                      goto END;
+                    }
+                  }
+                }
+              }
+            }
+            annots_in_tal++;
+            annots_in_record++;
+            n = 0;
+            continue;
           }
 
           if(!onset)
@@ -569,6 +592,12 @@ void UI_EDFCompatwindow::CheckButtonClicked()
         {
           snprintf(txt_string, 1700, "Error.\n\nInvalid annotation in datarecord %i,\n"
                  "duration has an invalid number.\n",
+                 i + 1);
+        }
+        if(error==38)
+        {
+          snprintf(txt_string, 1700, "Error.\n\nInvalid annotation in datarecord %i,\n"
+                 "description has a non-printable character.\n",
                  i + 1);
         }
         len = strlen(txt_string);

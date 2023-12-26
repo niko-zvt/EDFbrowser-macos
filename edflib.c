@@ -3145,6 +3145,16 @@ static int edflib_get_annotations(edfhdrblock_t *edfhdr, int hdl, int read_annot
                 {
                   if(j==EDFLIB_MAX_ANNOTATION_LEN)  break;
                   new_annotation->annotation[j] = scratchpad[j];
+                  if(((unsigned char *)new_annotation->annotation)[j] < 32)
+                  {
+                    if((new_annotation->annotation[j] != '\t') &&
+                       (new_annotation->annotation[j] != '\n') &&
+                       (new_annotation->annotation[j] != '\r'))
+                    {
+                      error = 38;  /* non-printable characters in description string */
+                      goto END;
+                    }
+                  }
                 }
                 new_annotation->annotation[j] = 0;
 
