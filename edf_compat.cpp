@@ -95,7 +95,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
       discontinuous,
       bdf,
       bdfplus,
-      *annot_ch,
+      *annot_ch=NULL,
       nr_annot_chns,
       max,
       onset,
@@ -110,13 +110,13 @@ void UI_EDFCompatwindow::CheckButtonClicked()
       progress_steps,
       annots_in_record;
 
-  char *scratchpad,
-       *cnv_buf,
-       txt_string[2048];
+  char *scratchpad=NULL,
+       *cnv_buf=NULL,
+       txt_string[2048]={""};
 
   double data_record_duration,
          elapsedtime,
-         time_tmp=0.0;
+         time_tmp=0;
 
   union {
           unsigned int one;
@@ -126,7 +126,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
           unsigned char four[4];
         } var;
 
-  FILE *inputfile;
+  FILE *inputfile=NULL;
 
   edfpar_t *edfparam=NULL;
 
@@ -517,6 +517,8 @@ void UI_EDFCompatwindow::CheckButtonClicked()
       if(error)
       {
         progress.reset();
+
+        txt_string[0] = 0;
 
         if(error==1)
         {

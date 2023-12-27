@@ -1043,11 +1043,11 @@ void UI_headerEditorWindow::save_hdr()
 {
   int i, j, p, len, hassign, digmin=0, digmax=0, dig_ok, dots, commas;
 
-  char scratchpad[256],
-       scratchpad2[256],
-       str[256];
+  char scratchpad[256]={""},
+       scratchpad2[256]={""},
+       str[256]={""};
 
-  long long filesize,
+  long long filesize=0LL,
             l_tmp=0LL;
 
 
