@@ -460,7 +460,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
                 for(q=0; q<n; q++)
                 {
                   if(q==MAX_ANNOTATION_LEN)  break;
-                  if(((unsigned char *)scratchpad)[q] < 32)
+                  if((((unsigned char *)scratchpad)[q] < 32) || (((unsigned char *)scratchpad)[q] == 127))
                   {
                     if((scratchpad[q] != '\t') &&
                        (scratchpad[q] != '\n') &&

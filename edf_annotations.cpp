@@ -436,7 +436,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
                 {
                   if(j==MAX_ANNOTATION_LEN)  break;
                   annotblock.description[j] = scratchpad[j];
-                  if(((unsigned char *)annotblock.description)[j] < 32)
+                  if((((unsigned char *)annotblock.description)[j] < 32) || (((unsigned char *)annotblock.description)[j] == 127))
                   {
                     if((annotblock.description[j] != '\t') &&
                        (annotblock.description[j] != '\n') &&
