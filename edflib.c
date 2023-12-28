@@ -68,11 +68,13 @@
 #endif
 
 /* max length of annotation's description in bytes
- * changing this value will break the unittest
+ * you may modify this number in order to create more space for longer description strings
  */
 #define EDFLIB_WRITE_MAX_ANNOTATION_LEN  (40)
 
-/* number of bytes in datarecord for the annotations track, must be a multiple of six */
+/* number of bytes in datarecord for the annotations track, must be a multiple of six
+ * do not modify this macro
+ */
 #if ((EDFLIB_WRITE_MAX_ANNOTATION_LEN + 80) % 6)
 #define EDFLIB_ANNOTATION_BYTES  ((((EDFLIB_WRITE_MAX_ANNOTATION_LEN + 80) / 6) + 1) * 6)
 #else
