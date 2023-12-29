@@ -4110,21 +4110,23 @@ EDFLIB_API int edf_blockwrite_digital_samples(int handle, int *buf)
   if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
   {
     if(edflib_write_tal(hdr, file))  return -1;
-
-    buf_offset = hdr->total_annot_bytes;
-  }
-  else
-  {
-    buf_offset = 0;
   }
 
-  for(j=0; j<edfsignals; j++)
+  for(j=0, buf_offset=0; j<edfsignals; j++)
   {
     sf = hdr->edfparam[j].smp_per_record;
 
     digmax = hdr->edfparam[j].dig_max;
 
     digmin = hdr->edfparam[j].dig_min;
+
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+    {
+      if(j == (edfsignals / 2))
+      {
+        if(edflib_write_tal(hdr, file))  return -1;
+      }
+    }
 
     if(hdr->edf)
     {
@@ -4250,25 +4252,24 @@ EDFLIB_API int edf_blockwrite_digital_short_samples(int handle, short *buf)
 
   if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
   {
-    if(hdr->signal_write_sequence_pos == 0)
-    {
-      if(edflib_write_tal(hdr, file))  return -1;
-    }
-
-    buf_offset = hdr->total_annot_bytes;
-  }
-  else
-  {
-    buf_offset = 0;
+    if(edflib_write_tal(hdr, file))  return -1;
   }
 
-  for(j=0; j<edfsignals; j++)
+  for(j=0, buf_offset=0; j<edfsignals; j++)
   {
     sf = hdr->edfparam[j].smp_per_record;
 
     digmax = hdr->edfparam[j].dig_max;
 
     digmin = hdr->edfparam[j].dig_min;
+
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+    {
+      if(j == (edfsignals / 2))
+      {
+        if(edflib_write_tal(hdr, file))  return -1;
+      }
+    }
 
     if(hdr->edf)
     {
@@ -4344,7 +4345,8 @@ EDFLIB_API int edf_blockwrite_digital_3byte_samples(int handle, void *buf)
   int  j,
        error,
        edfsignals,
-       total_samples=0;
+       total_samples,
+       mid_samples;
 
   FILE *file;
 
@@ -4380,12 +4382,37 @@ EDFLIB_API int edf_blockwrite_digital_3byte_samples(int handle, void *buf)
     if(edflib_write_tal(hdr, file))  return -1;
   }
 
-  for(j=0; j<edfsignals; j++)
+  for(j=0, total_samples=0, mid_samples=0; j<edfsignals; j++)
   {
     total_samples += hdr->edfparam[j].smp_per_record;
+
+    if(j < (edfsignals / 2))  mid_samples = total_samples;
   }
 
-  if(fwrite(buf, total_samples * 3, 1, file) != 1)  return -1;
+  if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+  {
+    if(mid_samples)
+    {
+      if(fwrite(buf, mid_samples * 3, 1, file) != 1)  return -1;
+
+      if(edflib_write_tal(hdr, file))  return -1;
+
+      if(total_samples > mid_samples)
+      {
+        if(fwrite(((unsigned char *)buf) + (mid_samples * 3), (total_samples - mid_samples) * 3, 1, file) != 1)  return -1;
+      }
+    }
+    else
+    {
+      if(edflib_write_tal(hdr, file))  return -1;
+
+      if(fwrite(buf, total_samples * 3, 1, file) != 1)  return -1;
+    }
+  }
+  else
+  {
+    if(fwrite(buf, total_samples * 3, 1, file) != 1)  return -1;
+  }
 
   if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_END)
   {
@@ -4593,15 +4620,9 @@ EDFLIB_API int edf_blockwrite_physical_samples(int handle, double *buf)
   if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_START)
   {
     if(edflib_write_tal(hdr, file))  return -1;
-
-    buf_offset = hdr->total_annot_bytes;
-  }
-  else
-  {
-    buf_offset = 0;
   }
 
-  for(j=0; j<edfsignals; j++)
+  for(j=0, buf_offset=0; j<edfsignals; j++)
   {
     sf = hdr->edfparam[j].smp_per_record;
 
@@ -4612,6 +4633,14 @@ EDFLIB_API int edf_blockwrite_physical_samples(int handle, double *buf)
     bitvalue = hdr->edfparam[j].bitvalue;
 
     phys_offset = hdr->edfparam[j].offset;
+
+    if(hdr->annot_chan_idx_pos == EDF_ANNOT_IDX_POS_MIDDLE)
+    {
+      if(j == (edfsignals / 2))
+      {
+        if(edflib_write_tal(hdr, file))  return -1;
+      }
+    }
 
     if(hdr->edf)
     {
