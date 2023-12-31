@@ -2160,7 +2160,7 @@ static edfhdrblock_t * edflib_check_edf_file(FILE *inputfile, int *edf_error)
     strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 224) + (i * 32), 32);
     for(j=0; j<32; j++)
     {
-      if((scratchpad[j]<32)||(scratchpad[j]>126))
+      if(scratchpad[j] != ' ')
       {
         *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS;
         free(edf_hdr);
