@@ -1299,9 +1299,10 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
     strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 224) + (i * 32), 32);
     for(j=0; j<32; j++)
     {
-      if((scratchpad[j]<32)||(scratchpad[j]>126))
+      if(scratchpad[j] != ' ')
       {
-        snprintf(txt_string, txt_len, "Error, %ith character of reserved field of signal %i is not a valid 7-bit ASCII character.",
+        snprintf(txt_string, txt_len, "Error, %ith character of reserved field of signal %i is not a space.\n"
+                                      "Reserved fields must be empty",
         j + 1,
         i + 1);
         free(edf_hdr);
