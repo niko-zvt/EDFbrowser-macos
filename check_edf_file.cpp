@@ -1302,7 +1302,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
       if(scratchpad[j] != ' ')
       {
         snprintf(txt_string, txt_len, "Error, %ith character of reserved field of signal %i is not a space.\n"
-                                      "Reserved fields must be empty",
+                                      "Use the header editor to repair your file. Look at the manual for the details.",
         j + 1,
         i + 1);
         free(edf_hdr);
