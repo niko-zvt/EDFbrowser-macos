@@ -1,5 +1,5 @@
 
- version 2.06      to be defined
+ version 2.06      January 2, 2024
  --------------
 
  - Added an option to set the default timescale.
@@ -9,6 +9,8 @@
  - CDSA dialog: adjust default settings in case units is mV instead of uV.
 
  - Classic filter dialog: fixed a minor bug in the plotting of the moving average filter curve.
+
+ - EDF validator: check also the reserved fields of the signal headers.
 
 
  version 2.05      September 23, 2023
