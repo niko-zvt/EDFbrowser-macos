@@ -34,7 +34,9 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
 {
   int i, n, s, sf=0;
 
-  char str[256];
+  char str[256]={""};
+
+  double dthreshold=0;
 
   QListWidgetItem *item;
 
@@ -61,7 +63,8 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
   list->setSelectionMode(QAbstractItemView::ExtendedSelection);
   list->setToolTip("Only signals with a physical dimension V, mV or uV and\n"
                    "a samplerate of >= 240Hz and\n"
-                   "an integer ratio to 50 or 60 Hz will be listed here.");
+                   "an integer ratio to 50 or 60 Hz and\n"
+                   "a resolution better than or equal to 5 uV/bit will be listed here.");
 
   CancelButton = new QPushButton;
   CancelButton->setText("&Close");
@@ -83,11 +86,29 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
       continue;
     }
 
-    strlcpy(str, mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[0]].physdimension, 256);
+    strlcpy(str, mainwindow->signalcomp[i]->edfparam_0->physdimension, 256);
 
     remove_trailing_spaces(str);
 
     if(strcmp(str, "uV") && strcmp(str, "mV") && strcmp(str, "V"))
+    {
+      continue;
+    }
+
+    if(!strcmp(str, "uV"))
+    {
+      dthreshold = 5.0 / mainwindow->signalcomp[i]->edfparam_0->bitvalue;
+    }
+    else if(!strcmp(str, "mV"))
+      {
+        dthreshold = 5e-3 / mainwindow->signalcomp[i]->edfparam_0->bitvalue;
+      }
+      else if(!strcmp(str, "V"))
+        {
+          dthreshold = 5e-6 / mainwindow->signalcomp[i]->edfparam_0->bitvalue;
+        }
+
+    if(dthreshold < 0.999)  /* resolution must be better than or equal to 5 uV/bit */
     {
       continue;
     }
@@ -210,7 +231,7 @@ void UI_PLIF_ECG_filter_dialog::ApplyButtonClicked()
     item = selectedlist.at(i);
     s = item->data(Qt::UserRole).toInt();
 
-    sf = mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].sf_int;
+    sf = mainwindow->signalcomp[s]->edfparam_0->sf_int;
 
     if((sf % plf) || (!sf))
     {
@@ -221,21 +242,21 @@ void UI_PLIF_ECG_filter_dialog::ApplyButtonClicked()
       break;
     }
 
-    strlcpy(str, mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].physdimension, 256);
+    strlcpy(str, mainwindow->signalcomp[s]->edfparam_0->physdimension, 256);
 
     remove_trailing_spaces(str);
 
     if(!strcmp(str, "uV"))
     {
-      dthreshold = 5.0 / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
+      dthreshold = 5.0 / mainwindow->signalcomp[s]->edfparam_0->bitvalue;
     }
     else if(!strcmp(str, "mV"))
       {
-        dthreshold = 5e-3 / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
+        dthreshold = 5e-3 / mainwindow->signalcomp[s]->edfparam_0->bitvalue;
       }
       else if(!strcmp(str, "V"))
         {
-          dthreshold = 5e-6 / mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
+          dthreshold = 5e-6 / mainwindow->signalcomp[s]->edfparam_0->bitvalue;
         }
 
     mainwindow->signalcomp[s]->plif_ecg_filter = plif_ecg_create_subtract_filter(sf, plf, dthreshold);
