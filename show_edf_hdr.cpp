@@ -449,6 +449,7 @@ void UI_EDFhdrwindow::show_params(int row)
     ql = new QLineEdit(str);
     ql->setReadOnly(true);
     ql->setCursorPosition(0);
+    ql->setToolTip("Computed as: (physical maximum - physical minimum) / (digital maximum - digital minimum)");
     signallist->setCellWidget(i, 6, ql);
     ql = new QLineEdit(mainwindow->edfheaderlist[row]->edfparam[i].physdimension);
     ql->setReadOnly(true);
