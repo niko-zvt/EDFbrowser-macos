@@ -366,7 +366,7 @@ void UI_EDFhdrwindow::show_params(int row)
 
   signal_cnt = mainwindow->edfheaderlist[row]->edfsignals;
 
-  signallist->setColumnCount(10);
+  signallist->setColumnCount(11);
   signallist->setRowCount(signal_cnt);
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
   QStringList horizontallabels;
@@ -374,9 +374,10 @@ void UI_EDFhdrwindow::show_params(int row)
   horizontallabels += "Samplefrequency";
   horizontallabels += "Physical maximum";
   horizontallabels += "Physical minimum";
-  horizontallabels += "Physical dimension";
   horizontallabels += "Digital maximum";
   horizontallabels += "Digital minimum";
+  horizontallabels += "Resolution";
+  horizontallabels += "Physical dimension";
   horizontallabels += "Samples per record";
   horizontallabels += "Prefilter";
   horizontallabels += "Transducer";
@@ -424,15 +425,6 @@ void UI_EDFhdrwindow::show_params(int row)
       ql->setToolTip(str);
     }
     signallist->setCellWidget(i, 3, ql);
-    ql = new QLineEdit(mainwindow->edfheaderlist[row]->edfparam[i].physdimension);
-    ql->setReadOnly(true);
-    ql->setCursorPosition(0);
-    if(mainwindow->edf_debug)
-    {
-      snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 96) + (i * 8));
-      ql->setToolTip(str);
-    }
-    signallist->setCellWidget(i, 4, ql);
     snprintf(str, 512, "%+i", mainwindow->edfheaderlist[row]->edfparam[i].dig_max);
     ql = new QLineEdit(str);
     ql->setReadOnly(true);
@@ -442,7 +434,7 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 128) + (i * 8));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 5, ql);
+    signallist->setCellWidget(i, 4, ql);
     snprintf(str, 512, "%+i", mainwindow->edfheaderlist[row]->edfparam[i].dig_min);
     ql = new QLineEdit(str);
     ql->setReadOnly(true);
@@ -452,7 +444,21 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 120) + (i * 8));
       ql->setToolTip(str);
     }
+    signallist->setCellWidget(i, 5, ql);
+    snprintf(str, 512, "%e", mainwindow->edfheaderlist[row]->edfparam[i].bitvalue);
+    ql = new QLineEdit(str);
+    ql->setReadOnly(true);
+    ql->setCursorPosition(0);
     signallist->setCellWidget(i, 6, ql);
+    ql = new QLineEdit(mainwindow->edfheaderlist[row]->edfparam[i].physdimension);
+    ql->setReadOnly(true);
+    ql->setCursorPosition(0);
+    if(mainwindow->edf_debug)
+    {
+      snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 96) + (i * 8));
+      ql->setToolTip(str);
+    }
+    signallist->setCellWidget(i, 7, ql);
     snprintf(str, 512, "%i", mainwindow->edfheaderlist[row]->edfparam[i].smp_per_record);
     ql = new QLineEdit(str);
     ql->setReadOnly(true);
@@ -462,7 +468,7 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 216) + (i * 8));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 7, ql);
+    signallist->setCellWidget(i, 8, ql);
     ql = new QLineEdit(mainwindow->edfheaderlist[row]->edfparam[i].prefilter);
     ql->setReadOnly(true);
     ql->setCursorPosition(0);
@@ -471,7 +477,7 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 136) + (i * 80));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 8, ql);
+    signallist->setCellWidget(i, 9, ql);
     ql = new QLineEdit(mainwindow->edfheaderlist[row]->edfparam[i].transducer);
     ql->setReadOnly(true);
     ql->setCursorPosition(0);
@@ -480,7 +486,7 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 16) + (i * 80));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 9, ql);
+    signallist->setCellWidget(i, 10, ql);
   }
 
   signallist->resizeColumnsToContents();
