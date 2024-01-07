@@ -64,7 +64,7 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
   list->setToolTip("Only signals with a physical dimension V, mV or uV and\n"
                    "a samplerate of >= 240Hz and\n"
                    "an integer ratio to 50 or 60 Hz and\n"
-                   "a resolution better than or equal to 5 uV/bit will be listed here.");
+                   "a resolution better than or equal to 10 uV/bit will be listed here.");
 
   CancelButton = new QPushButton;
   CancelButton->setText("&Close");
@@ -108,7 +108,7 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
           dthreshold = 5e-6 / mainwindow->signalcomp[i]->edfparam_0->bitvalue;
         }
 
-    if(dthreshold < 0.999)  /* resolution must be better than or equal to 5 uV/bit */
+    if(dthreshold < 0.499)  /* resolution must be better than or equal to 10 uV/bit */
     {
       continue;
     }

@@ -83,7 +83,7 @@ plifecgfilt_t * plif_ecg_create_subtract_filter(int sf, int pwlf, double lt)
 
   if(sf % pwlf)  return NULL;  /* ratio between the samplefrequency and the powerline frequency must be an integer multiple */
 
-  if((lt < 0.999) || (lt > 100000))  return NULL;  /* range for the linear detection threshold */
+  if((lt < 0.499) || (lt > 100000))  return NULL;  /* range for the linear detection threshold */
 
   st = (plifecgfilt_t *) calloc(1, sizeof(plifecgfilt_t));
   if(st==NULL)  return NULL;
