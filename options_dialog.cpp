@@ -1262,8 +1262,10 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp->addStretch(1000);
   flayout4_1->addRow("Show EDF debug info", hlayout_tmp);
   QObject::connect(checkbox4_11, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_11Clicked(int)));
-  flayout4_1->labelForField(hlayout_tmp)->setToolTip("Show the file offset of objects like header fields, annotations, etc.");
-  checkbox4_11->setToolTip("Show the file offset of objects like header fields, annotations, etc.");
+  flayout4_1->labelForField(hlayout_tmp)->setToolTip("Show the file offset of objects like header fields, annotations, etc.\n"
+                                                     "Useful for developers");
+  checkbox4_11->setToolTip("Show the file offset of objects like header fields, annotations, etc.\n"
+                            "Useful for developers");
 
   checkbox4_15 = new QCheckBox;
   checkbox4_15->setTristate(false);
