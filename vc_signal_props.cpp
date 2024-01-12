@@ -56,7 +56,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   ScaleBox->setDecimals(8);
   ScaleBox->setMaximum(1e6);
   ScaleBox->setMinimum(1e-7);
-  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].bitvalue < 0.0)
+  if(mainwindow->signalcomp[signal_nr]->edfparam_0->bitvalue < 0.0)
   {
     ScaleBox->setValue(mainwindow->signalcomp[signal_nr]->voltpercm * -1.0);
   }
@@ -236,13 +236,13 @@ void ViewCurve::ECGdetectButton()
     return;
   }
 
-  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_f < 199.999)
+  if(mainwindow->signalcomp[signal_nr]->edfparam_0->sf_f < 199.999)
   {
     QMessageBox::critical(this, "Error", "Sample rate of selected signal is less than 200 Hz!");
     return;
   }
 
-  strlcpy(str, mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].physdimension, 32);
+  strlcpy(str, mainwindow->signalcomp[signal_nr]->edfparam_0->physdimension, 32);
   trim_spaces(str);
   if((!strcmp(str, "uV")) || (!strcmp(str, "ECG uV")) || (!strcmp(str, "EEG uV")))
   {
@@ -280,8 +280,8 @@ void ViewCurve::ECGdetectButton()
   }
 
   newsignalcomp->ecg_filter =
-    create_ecg_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
-                      newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
+    create_ecg_filter(newsignalcomp->edfparam_0->sf_f,
+                      newsignalcomp->edfparam_0->bitvalue,
                       sense);
 
   if(newsignalcomp->ecg_filter == NULL)
@@ -299,15 +299,15 @@ void ViewCurve::ECGdetectButton()
   newsignalcomp->alias[0] = 0;
   newsignalcomp->polarity = 1;
 
-  if(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue < 0.0)
+  if(newsignalcomp->edfparam_0->bitvalue < 0.0)
   {
-    newsignalcomp->sensitivity = newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue / -5.0 / mainwindow->y_pixelsizefactor;
+    newsignalcomp->sensitivity = newsignalcomp->edfparam_0->bitvalue / -5.0 / mainwindow->y_pixelsizefactor;
 
     newsignalcomp->voltpercm = -5.0;
   }
   else
   {
-    newsignalcomp->sensitivity = newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue / 5.0 / mainwindow->y_pixelsizefactor;
+    newsignalcomp->sensitivity = newsignalcomp->edfparam_0->bitvalue / 5.0 / mainwindow->y_pixelsizefactor;
 
     newsignalcomp->voltpercm = 5.0;
   }
@@ -329,13 +329,13 @@ void ViewCurve::QRSdetectButton()
     return;
   }
 
-  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_f < 199.999)
+  if(mainwindow->signalcomp[signal_nr]->edfparam_0->sf_f < 199.999)
   {
     QMessageBox::critical(this, "Error", "Sample rate of selected signal is less than 200 Hz!");
     return;
   }
 
-  strlcpy(str, mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].physdimension, 32);
+  strlcpy(str, mainwindow->signalcomp[signal_nr]->edfparam_0->physdimension, 32);
   trim_spaces(str);
   if((strcmp(str, "uV")) && (strcmp(str, "mV")) && (strcmp(str, "V")))
   {
@@ -452,7 +452,7 @@ void ViewCurve::cdsa_button()
     return;
   }
 
-  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_int < 30)
+  if(mainwindow->signalcomp[signal_nr]->edfparam_0->sf_int < 30)
   {
     QMessageBox::critical(this, "Error", "Samplefrequency must be at least 30Hz and must be an integer value.");
     return;
@@ -494,13 +494,13 @@ void ViewCurve::aeeg_button()
     return;
   }
 
-  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_int < 100)
+  if(mainwindow->signalcomp[signal_nr]->edfparam_0->sf_int < 100)
   {
     QMessageBox::critical(this, "Error", "Samplefrequency must be at least 100Hz and must be an integer value.");
     return;
   }
 
-  strlcpy(str, mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].physdimension, 32);
+  strlcpy(str, mainwindow->signalcomp[signal_nr]->edfparam_0->physdimension, 32);
   trim_spaces(str);
   if((strcmp(str, "uV")) && (strcmp(str, "mV")) && (strcmp(str, "V")))
   {
@@ -553,7 +553,7 @@ void ViewCurve::Z_scoringButton()
     return;
   }
 
-  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].sf_int < 100)
+  if(mainwindow->signalcomp[signal_nr]->edfparam_0->sf_int < 100)
   {
     QMessageBox::critical(this, "Error", "Samplerate must be an integer >= 100Hz");
     return;
@@ -661,12 +661,12 @@ void ViewCurve::ScaleBoxChanged(double value)
     return;
   }
 
-  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].bitvalue < 0.0)
+  if(mainwindow->signalcomp[signal_nr]->edfparam_0->bitvalue < 0.0)
   {
     value *= -1.0;
   }
 
-  mainwindow->signalcomp[signal_nr]->sensitivity = mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].bitvalue / value / mainwindow->y_pixelsizefactor;
+  mainwindow->signalcomp[signal_nr]->sensitivity = mainwindow->signalcomp[signal_nr]->edfparam_0->bitvalue / value / mainwindow->y_pixelsizefactor;
 
   original_value = mainwindow->signalcomp[signal_nr]->voltpercm;
 

@@ -283,7 +283,7 @@ void UI_ZScoreWindow::addTraceButtonClicked()
   signalcomp->zratio_filter = create_zratio_filter(hdr->edfparam[signalcomp->edfsignal[0]].smp_per_record,
                                                    hdr->long_data_record_duration,
                                                    crossoverSpinbox->value(),
-    signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue);
+                                                   signalcomp->edfparam_0->bitvalue);
 
   if(signalcomp->zratio_filter == NULL)
   {
@@ -302,15 +302,15 @@ void UI_ZScoreWindow::addTraceButtonClicked()
   strlcpy(signalcomp->physdimension, "", 9);
   signalcomp->polarity = -1;
 
-  if(dblcmp(signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue, 0.0) < 0)
+  if(dblcmp(signalcomp->edfparam_0->bitvalue, 0.0) < 0)
   {
-    signalcomp->sensitivity = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue / -1.0 / mainwindow->y_pixelsizefactor;
+    signalcomp->sensitivity = signalcomp->edfparam_0->bitvalue / -1.0 / mainwindow->y_pixelsizefactor;
 
     signalcomp->voltpercm = -1.0;
   }
   else
   {
-    signalcomp->sensitivity = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue / 1.0 / mainwindow->y_pixelsizefactor;
+    signalcomp->sensitivity = signalcomp->edfparam_0->bitvalue / 1.0 / mainwindow->y_pixelsizefactor;
 
     signalcomp->voltpercm = 1.0;
   }

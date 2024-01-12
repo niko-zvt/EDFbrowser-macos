@@ -562,9 +562,9 @@ void AdjustFilterSettings::update_filter()
 
     if(type < 3)
     {
-      if(frequency1 >= signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f / 2.0)
+      if(frequency1 >= signalcomp->edfparam_0->sf_f / 2.0)
       {
-        frequency1 = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f / 2.0;
+        frequency1 = signalcomp->edfparam_0->sf_f / 2.0;
 
         frequency1 -= freq1box->singleStep();
 
@@ -573,9 +573,9 @@ void AdjustFilterSettings::update_filter()
     }
     else
     {
-      if(frequency2 >= signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f / 2.0)
+      if(frequency2 >= signalcomp->edfparam_0->sf_f / 2.0)
       {
-        frequency2 = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f / 2.0;
+        frequency2 = signalcomp->edfparam_0->sf_f / 2.0;
 
         frequency2 -= freq2box->singleStep();
 
@@ -592,7 +592,7 @@ void AdjustFilterSettings::update_filter()
 
     if(type < 3)
     {
-      if(frequency1 >= signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f / 2.0)
+      if(frequency1 >= signalcomp->edfparam_0->sf_f / 2.0)
       {
         QMessageBox::critical(filtersettings_dialog, "Error", "The frequency must be less than: samplerate / 2", QMessageBox::Close);
         return;
@@ -600,7 +600,7 @@ void AdjustFilterSettings::update_filter()
     }
     else
     {
-      if(frequency2 >= signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f / 2.0)
+      if(frequency2 >= signalcomp->edfparam_0->sf_f / 2.0)
       {
         QMessageBox::critical(filtersettings_dialog, "Error", "The frequency must be less than: samplerate / 2", QMessageBox::Close);
         return;
@@ -695,7 +695,7 @@ void AdjustFilterSettings::update_filter()
     fid_run_freebuf(signalcomp->fidbuf[filter_nr]);
     fid_run_freebuf(signalcomp->fidbuf2[filter_nr]);
 
-    err = fid_parse(signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f, &filter_spec, &signalcomp->fidfilter[filter_nr]);
+    err = fid_parse(signalcomp->edfparam_0->sf_f, &filter_spec, &signalcomp->fidfilter[filter_nr]);
 
     if(err != NULL)
     {

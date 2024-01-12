@@ -78,7 +78,7 @@ UI_SpikeFilterDialog::UI_SpikeFilterDialog(QWidget *w_parent)
 
   for(i=0; i<mainwindow->signalcomps; i++)
   {
-    sf = ((long long)mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[0]].smp_per_record * TIME_FIXP_SCALING) /
+    sf = ((long long)mainwindow->signalcomp[i]->edfparam_0->smp_per_record * TIME_FIXP_SCALING) /
          mainwindow->signalcomp[i]->edfhdr->long_data_record_duration;
 
     if(sf < 4000)
@@ -190,13 +190,13 @@ void UI_SpikeFilterDialog::ApplyButtonClicked()
     s = item->data(Qt::UserRole).toInt();
 
     velocity = velocitySpinBox->value() /
-               mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].bitvalue;
+               mainwindow->signalcomp[s]->edfparam_0->bitvalue;
 
     if(velocity < 0) velocity *= -1;
 
     holdoff = holdOffSpinBox->value();
 
-    sf = ((long long)mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].smp_per_record * TIME_FIXP_SCALING) /
+    sf = ((long long)mainwindow->signalcomp[s]->edfparam_0->smp_per_record * TIME_FIXP_SCALING) /
          mainwindow->signalcomp[s]->edfhdr->long_data_record_duration;
 
     mainwindow->signalcomp[s]->spike_filter = create_spike_filter(sf, velocity, holdoff, NULL);

@@ -62,9 +62,9 @@ flt_blck_rd_t * create_flt_blck_rd(sigcompblck_t *i_signalcomp, int datarecord_o
 
   fbr->smpl_mode = mode;
 
-  fbr->samples_per_datrec = fbr->hdr->edfparam[fbr->signalcomp->edfsignal[0]].smp_per_record;
+  fbr->samples_per_datrec = fbr->signalcomp->edfparam_0->smp_per_record;
 
-  fbr->samples_in_file = fbr->hdr->edfparam[fbr->signalcomp->edfsignal[0]].smpls;
+  fbr->samples_in_file = fbr->signalcomp->edfparam_0->smpls;
 
   if(fbr->smpl_mode)
   {
@@ -118,7 +118,7 @@ flt_blck_rd_t * create_flt_blck_rd(sigcompblck_t *i_signalcomp, int datarecord_o
     return NULL;
   }
 
-  fbr->bitvalue = fbr->signalcomp->edfhdr->edfparam[fbr->signalcomp->edfsignal[0]].bitvalue;
+  fbr->bitvalue = fbr->signalcomp->edfparam_0->bitvalue;
 #ifdef FBR_DEBUG
   fbr->edf_hdl = -1;
 

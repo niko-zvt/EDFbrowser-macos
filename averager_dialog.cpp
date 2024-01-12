@@ -721,7 +721,7 @@ void UI_AveragerWindow::process_avg(sigcompblck_t *signalcomp)
       dig_value = run_ecg_filter(dig_value, signalcomp->ecg_filter);
     }
 
-    avgbuf[s] += (dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue);
+    avgbuf[s] += (dig_value * signalcomp->edfparam_0->bitvalue);
   }
 }
 

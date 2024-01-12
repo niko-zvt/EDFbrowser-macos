@@ -232,7 +232,7 @@ void UI_AverageCurveWindow::export_edf(void)
          frequency2;
 
 
-  smp_per_record = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
+  smp_per_record = signalcomp->edfparam_0->smp_per_record;
 
   datarecords = avg_samples_on_screen / smp_per_record;
 
@@ -397,9 +397,9 @@ void UI_AverageCurveWindow::export_edf(void)
     p += snprintf(str + p, 4096 - p, "FIR ");
   }
 
-  strlcat(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].prefilter, 4096);
+  strlcat(str, signalcomp->edfparam_0->prefilter, 4096);
   edf_set_prefilter(edf_hdl, 0, str);
-  edf_set_transducer(edf_hdl, 0, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].transducer);
+  edf_set_transducer(edf_hdl, 0, signalcomp->edfparam_0->transducer);
 
   if((signalcomp->edfhdr->edfplus) || (signalcomp->edfhdr->bdfplus))
   {

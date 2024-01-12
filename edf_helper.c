@@ -293,7 +293,7 @@ void run_filter_list(sigcompblck_t *sig_comp, unsigned long long s, double *val)
     {
       if((sig_comp->edfhdr->viewtime <= 0) && sig_comp->fidfilter_setup[k])
       {
-        runin_samples = sig_comp->edfhdr->edfparam[sig_comp->edfsignal[0]].sf_f / sig_comp->fidfilter_freq[k];
+        runin_samples = sig_comp->edfparam_0->sf_f / sig_comp->fidfilter_freq[k];
 
         runin_samples *= 26;
 

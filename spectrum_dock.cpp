@@ -738,7 +738,7 @@ void UI_SpectrumDockWindow::print_to_txt()
   fprintf(outputfile, "FFT resolution: %f Hz\n", freqstep);
   fprintf(outputfile, "Data Samples: %i\n", fft_data->sz_in);
   fprintf(outputfile, "Power Samples: %i\n", fft_data->sz_out);
-  fprintf(outputfile, "Samplefrequency: %f Hz\n", signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f);
+  fprintf(outputfile, "Samplefrequency: %f Hz\n", signalcomp->edfparam_0->sf_f);
 
   for(i=0; i<fft_data->sz_out; i++)
   {
@@ -1316,7 +1316,7 @@ void UI_SpectrumDockWindow::update_curve()
 
     if(s>=signalcomp->sample_start)
     {
-      buf1[samples++] = dig_value * signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue;
+      buf1[samples++] = dig_value * signalcomp->edfparam_0->bitvalue;
     }
   }
 
@@ -1331,7 +1331,7 @@ void UI_SpectrumDockWindow::update_curve()
 
   fft_inputbufsize = samples;
 
-  samplefreq = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f;
+  samplefreq = signalcomp->edfparam_0->sf_f;
 
   dftblocksize = dftsz_spinbox->value();
 

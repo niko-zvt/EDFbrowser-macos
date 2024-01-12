@@ -67,7 +67,7 @@ UI_PLIF_EEG_filter_dialog::UI_PLIF_EEG_filter_dialog(QWidget *w_parent)
 
   for(i=0; i<mainwindow->signalcomps; i++)
   {
-    sf = mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[0]].sf_int;
+    sf = mainwindow->signalcomp[i]->edfparam_0->sf_int;
 
     if(sf < 100)  /* don't list signals that have low samplerate */
     {

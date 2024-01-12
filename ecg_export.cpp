@@ -306,13 +306,13 @@ void UI_ECGExport::Export_RR_intervals()
         l_time = 0LL;
       }
 
-      datrecs = beat_onset_list[i] / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
+      datrecs = beat_onset_list[i] / signalcomp->edfparam_0->smp_per_record;
 
-      smpls_left = beat_onset_list[i] % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
+      smpls_left = beat_onset_list[i] % signalcomp->edfparam_0->smp_per_record;
 
       l_time += (datrecs * signalcomp->edfhdr->long_data_record_duration);
 
-      l_time += ((smpls_left * signalcomp->edfhdr->long_data_record_duration) / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record);
+      l_time += ((smpls_left * signalcomp->edfhdr->long_data_record_duration) / signalcomp->edfparam_0->smp_per_record);
 
       if(!whole_recording)
       {
@@ -421,13 +421,13 @@ void UI_ECGExport::Export_RR_intervals()
           l_time = 0LL;
         }
 
-        datrecs = beat_onset_list[i] / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
+        datrecs = beat_onset_list[i] / signalcomp->edfparam_0->smp_per_record;
 
-        smpls_left = beat_onset_list[i] % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
+        smpls_left = beat_onset_list[i] % signalcomp->edfparam_0->smp_per_record;
 
         l_time += (datrecs * signalcomp->edfhdr->long_data_record_duration);
 
-        l_time += ((smpls_left * signalcomp->edfhdr->long_data_record_duration) / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record);
+        l_time += ((smpls_left * signalcomp->edfhdr->long_data_record_duration) / signalcomp->edfparam_0->smp_per_record);
 
         if(!whole_recording)
         {

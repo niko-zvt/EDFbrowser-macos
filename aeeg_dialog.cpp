@@ -48,10 +48,10 @@ UI_aeeg_window::UI_aeeg_window(QWidget *w_parent, sigcompblck_t *signal_comp, in
 
   aeeg_instance_nr = numb;
 
-  sf = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_int;
+  sf = signalcomp->edfparam_0->sf_int;
   if(!sf)
   {
-    sf = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f + 0.5;
+    sf = signalcomp->edfparam_0->sf_f + 0.5;
   }
 
   if(no_dialog_params != NULL)
@@ -301,7 +301,7 @@ void UI_aeeg_window::start_button_clicked()
 
   smpls_in_segment = sf * segmentlen;
 
-  samples_in_file = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smpls;
+  samples_in_file = signalcomp->edfparam_0->smpls;
 
   segments_in_recording = samples_in_file / (long long)smpls_in_segment;
 

@@ -51,7 +51,7 @@ UI_Userdefined_amplitude_Dialog::UI_Userdefined_amplitude_Dialog(QWidget *w_pare
   ScaleBox->setDecimals(8);
   ScaleBox->setMaximum(1000000.0);
   ScaleBox->setMinimum(0.0000001);
-  if(mainwindow->signalcomp[signal_nr]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr]->edfsignal[0]].bitvalue < 0.0)
+  if(mainwindow->signalcomp[signal_nr]->edfparam_0->bitvalue < 0.0)
   {
     ScaleBox->setValue(mainwindow->signalcomp[signal_nr]->voltpercm * -1.0);
   }
@@ -112,12 +112,12 @@ void UI_Userdefined_amplitude_Dialog::okbutton_pressed()
   {
     value2 = ScaleBox->value();
 
-    if(mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[0]].bitvalue < 0.0)
+    if(mainwindow->signalcomp[i]->edfparam_0->bitvalue < 0.0)
     {
       value2 *= -1.0;
     }
 
-    mainwindow->signalcomp[i]->sensitivity = (mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[0]].bitvalue / value2) / mainwindow->y_pixelsizefactor;
+    mainwindow->signalcomp[i]->sensitivity = (mainwindow->signalcomp[i]->edfparam_0->bitvalue / value2) / mainwindow->y_pixelsizefactor;
 
     original_value = mainwindow->signalcomp[i]->voltpercm;
 
