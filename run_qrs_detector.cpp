@@ -73,10 +73,10 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, sigcompblck_t *signalcomp_)
     return;
   }
 
-  sf = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].sf_f;
+  sf = signalcomp->edfparam_0->sf_f;
   if(sf < 199.999)  return;
 
-  strlcpy(str, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].physdimension, 32);
+  strlcpy(str, signalcomp->edfparam_0->physdimension, 32);
   trim_spaces(str);
   if((!strcmp(str, "uV")) || (!strcmp(str, "ECG uV")) || (!strcmp(str, "EEG uV")))
   {
@@ -99,7 +99,7 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, sigcompblck_t *signalcomp_)
 
   ecg_filter_bu = signalcomp->ecg_filter;
 
-  signalcomp->ecg_filter = create_ecg_filter(sf, signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].bitvalue, sense);
+  signalcomp->ecg_filter = create_ecg_filter(sf, signalcomp->edfparam_0->bitvalue, sense);
   if(signalcomp->ecg_filter == NULL)
   {
     goto OUT_EXIT_RETURN;
@@ -178,13 +178,13 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, sigcompblck_t *signalcomp_)
 
   for(i=0; i<beat_cnt; i++)
   {
-    l_time2 = beat_onset_list[i] / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
+    l_time2 = beat_onset_list[i] / signalcomp->edfparam_0->smp_per_record;
 
-    smpls_left = beat_onset_list[i] % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record;
+    smpls_left = beat_onset_list[i] % signalcomp->edfparam_0->smp_per_record;
 
     l_time = (l_time2 * signalcomp->edfhdr->long_data_record_duration);
 
-    l_time += ((smpls_left * signalcomp->edfhdr->long_data_record_duration) / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].smp_per_record);
+    l_time += ((smpls_left * signalcomp->edfhdr->long_data_record_duration) / signalcomp->edfparam_0->smp_per_record);
 
     annotation.onset = l_time;
     annotation.edfhdr = mainwindow->edfheaderlist[filenum];

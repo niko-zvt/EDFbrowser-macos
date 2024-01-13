@@ -778,50 +778,28 @@ int UI_LoadMontagewindow::LoadButtonClicked()
         break;
       }
 
-      if(signals_read)
-      {
-        if(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].smp_per_record
-          != newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record)
-        {
-          free(newsignalcomp);
-          newsignalcomp = NULL;
-          skip = 1;
-          signalcomps_read++;
-          xml_go_up(xml_hdl);
-          xml_go_up(xml_hdl);
-          break;
-        }
-
-        if(dblcmp(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].bitvalue,
-                  newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue))
-        {
-          free(newsignalcomp);
-          newsignalcomp = NULL;
-          skip = 1;
-          signalcomps_read++;
-          xml_go_up(xml_hdl);
-          xml_go_up(xml_hdl);
-          break;
-        }
-
-        if(strcmp(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].physdimension,
-                  newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension))
-        {
-          free(newsignalcomp);
-          newsignalcomp = NULL;
-          skip = 1;
-          signalcomps_read++;
-          xml_go_up(xml_hdl);
-          xml_go_up(xml_hdl);
-          break;
-        }
-      }
-
       if(!signals_read)
       {
-        newsignalcomp->sensitivity = newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue / (newsignalcomp->voltpercm * mainwindow->y_pixelsizefactor);
+        newsignalcomp->edfparam_0 = &newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]];
+
+        newsignalcomp->sensitivity = newsignalcomp->edfparam_0->bitvalue / (newsignalcomp->voltpercm * mainwindow->y_pixelsizefactor);
 
         newsignalcomp->signallabel[0] = 0;
+      }
+      else
+      {
+        if((newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].smp_per_record != newsignalcomp->edfparam_0->smp_per_record) ||
+           (dblcmp(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].bitvalue, newsignalcomp->edfparam_0->bitvalue)) ||
+           (strcmp(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].physdimension, newsignalcomp->edfparam_0->physdimension)))
+        {
+          free(newsignalcomp);
+          newsignalcomp = NULL;
+          skip = 1;
+          signalcomps_read++;
+          xml_go_up(xml_hdl);
+          xml_go_up(xml_hdl);
+          break;
+        }
       }
 
       if(signal_cnt>1)
@@ -858,7 +836,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
     remove_trailing_spaces(newsignalcomp->signallabel);
     newsignalcomp->signallabellen = strlen(newsignalcomp->signallabel);
 
-    strlcpy(newsignalcomp->physdimension, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension, 9);
+    strlcpy(newsignalcomp->physdimension, newsignalcomp->edfparam_0->physdimension, 9);
     remove_trailing_spaces(newsignalcomp->physdimension);
 
     if(spike_filter_cnt)
@@ -893,8 +871,8 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       if(holdoff < 10)  holdoff = 10;
       if(holdoff > 1000)  holdoff = 1000;
 
-      newsignalcomp->spike_filter = create_spike_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
-        velocity / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
+      newsignalcomp->spike_filter = create_spike_filter(newsignalcomp->edfparam_0->sf_f,
+        velocity / newsignalcomp->edfparam_0->bitvalue,
         holdoff, NULL);
 
       if(newsignalcomp->spike_filter == NULL)
@@ -1039,7 +1017,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
         return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
       }
 
-      if(frequency >= newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f / 2.0)
+      if(frequency >= newsignalcomp->edfparam_0->sf_f / 2.0)
       {
         return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
       }
@@ -1056,7 +1034,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
       filter_spec_ptr = spec_str;
 
-      err_ptr = fid_parse(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
+      err_ptr = fid_parse(newsignalcomp->edfparam_0->sf_f,
                       &filter_spec_ptr,
                       &newsignalcomp->fidfilter[filters_read]);
 
@@ -1243,7 +1221,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
         return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
       }
 
-      if(frequency >= newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f / 2.0)
+      if(frequency >= newsignalcomp->edfparam_0->sf_f / 2.0)
       {
         if(mainwindow->rc_cmd_in_progress)
         {
@@ -1266,7 +1244,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
       if(type > 2)
       {
-        if(frequency2 >= newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f / 2.0)
+        if(frequency2 >= newsignalcomp->edfparam_0->sf_f / 2.0)
         {
           if(mainwindow->rc_cmd_in_progress)
           {
@@ -1406,7 +1384,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
       filter_spec_ptr = spec_str;
 
-      err_ptr = fid_parse(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
+      err_ptr = fid_parse(newsignalcomp->edfparam_0->sf_f,
                       &filter_spec_ptr,
                       &newsignalcomp->fidfilter[filters_read]);
 
@@ -1464,7 +1442,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
     {
       not_compatibel = 0;
 
-      sf = newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_int;
+      sf = newsignalcomp->edfparam_0->sf_int;
 
       if(!sf)
       {
@@ -1490,21 +1468,21 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
       if(sf % plif_powerlinefrequency)  not_compatibel = 1;
 
-      strlcpy(str, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension, 128);
+      strlcpy(str, newsignalcomp->edfparam_0->physdimension, 128);
 
       remove_trailing_spaces(str);
 
       if(!strcmp(str, "uV"))
       {
-        dthreshold = 10.0 / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue;
+        dthreshold = 10.0 / newsignalcomp->edfparam_0->bitvalue;
       }
       else if(!strcmp(str, "mV"))
         {
-          dthreshold = 1e-2 / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue;
+          dthreshold = 1e-2 / newsignalcomp->edfparam_0->bitvalue;
         }
         else if(!strcmp(str, "V"))
           {
-            dthreshold = 1e-5 / newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue;
+            dthreshold = 1e-5 / newsignalcomp->edfparam_0->bitvalue;
           }
           else
           {
@@ -1569,7 +1547,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
     {
       not_compatibel = 0;
 
-      sf = newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_int;
+      sf = newsignalcomp->edfparam_0->sf_int;
 
       if(!sf)
       {
@@ -1749,9 +1727,9 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
       if(type == 1)
       {
-        if(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f >= 199.999)
+        if(newsignalcomp->edfparam_0->sf_f >= 199.999)
         {
-          strlcpy(str2, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].physdimension, 32);
+          strlcpy(str2, newsignalcomp->edfparam_0->physdimension, 32);
           trim_spaces(str2);
           sense = 0;
           if((!strcmp(str2, "uV")) || (!strcmp(str2, "ECG uV")) || (!strcmp(str2, "EEG uV")))
@@ -1769,8 +1747,8 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
           if(sense > 0)
           {
-            newsignalcomp->ecg_filter = create_ecg_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
-                                                          newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue,
+            newsignalcomp->ecg_filter = create_ecg_filter(newsignalcomp->edfparam_0->sf_f,
+                                                          newsignalcomp->edfparam_0->bitvalue,
                                                           sense);
             if(newsignalcomp->ecg_filter == NULL)
             {
@@ -1840,10 +1818,10 @@ int UI_LoadMontagewindow::LoadButtonClicked()
             newsignalcomp->zratio_crossoverfreq = 7.5;
           }
 
-          newsignalcomp->zratio_filter = create_zratio_filter(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].smp_per_record,
+          newsignalcomp->zratio_filter = create_zratio_filter(newsignalcomp->edfparam_0->smp_per_record,
                                                               newsignalcomp->edfhdr->long_data_record_duration,
                                                               newsignalcomp->zratio_crossoverfreq,
-            newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue);
+                                                              newsignalcomp->edfparam_0->bitvalue);
 
           if(newsignalcomp->zratio_filter == NULL)
           {
@@ -1959,8 +1937,6 @@ int UI_LoadMontagewindow::LoadButtonClicked()
         xml_go_up(xml_hdl);
       }
     }
-
-    newsignalcomp->edfparam_0 = &newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]];
 
     mainwindow->signalcomp[mainwindow->signalcomps] = newsignalcomp;
 
@@ -2824,7 +2800,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
         continue;
       }
 
-      if(cdsa_param.signalcomp->edfhdr->edfparam[cdsa_param.signalcomp->edfsignal[0]].sf_int < 30)
+      if(cdsa_param.signalcomp->edfparam_0->sf_int < 30)
       {
         xml_go_up(xml_hdl);
         continue;
@@ -3053,7 +3029,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
         continue;
       }
 
-      if(aeeg_param.signalcomp->edfhdr->edfparam[aeeg_param.signalcomp->edfsignal[0]].sf_f < 99.999)
+      if(aeeg_param.signalcomp->edfparam_0->sf_f < 99.999)
       {
         xml_go_up(xml_hdl);
         continue;

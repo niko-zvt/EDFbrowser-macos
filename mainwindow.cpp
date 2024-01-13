@@ -1634,7 +1634,7 @@ void UI_Mainwindow::show_cdsa_dock()
       return;
     }
 
-    if(signalcomp[0]->edfhdr->edfparam[signalcomp[0]->edfsignal[0]].sf_int < 30)
+    if(signalcomp[0]->edfparam_0->sf_int < 30)
     {
       QMessageBox::critical(this, "Error", "Samplefrequency must be at least 30Hz and must be an integer value.");
       return;
@@ -1677,13 +1677,13 @@ void UI_Mainwindow::show_aeeg_dock()
       return;
     }
 
-    if(signalcomp[0]->edfhdr->edfparam[signalcomp[0]->edfsignal[0]].sf_int < 100)
+    if(signalcomp[0]->edfparam_0->sf_int < 100)
     {
       QMessageBox::critical(this, "Error", "Samplefrequency must be at least 100Hz and must be an integer value.");
       return;
     }
 
-    strlcpy(str, signalcomp[0]->edfhdr->edfparam[signalcomp[0]->edfsignal[0]].physdimension, 32);
+    strlcpy(str, signalcomp[0]->edfparam_0->physdimension, 32);
     trim_spaces(str);
     if((strcmp(str, "uV")) && (strcmp(str, "mV")) && (strcmp(str, "V")))
     {
@@ -3744,7 +3744,7 @@ void UI_Mainwindow::fit_signals_to_pane(int n)
     }
 
     signalcomp[i]->voltpercm =
-     signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue
+     signalcomp[i]->edfparam_0->bitvalue
      / (signalcomp[i]->sensitivity * y_pixelsizefactor);
 
     signalcomp[i]->screen_offset = ((signalcomp[i]->max_dig_value + signalcomp[i]->min_dig_value) / 2.0) * signalcomp[i]->sensitivity * signalcomp[i]->polarity;
@@ -3921,12 +3921,12 @@ void UI_Mainwindow::set_amplitude(QAction *action)
   {
     value2 = value;
 
-    if(signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue < 0.0)
+    if(signalcomp[i]->edfparam_0->bitvalue < 0.0)
     {
       value2 *= -1.0;
     }
 
-    signalcomp[i]->sensitivity = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue / value2) / y_pixelsizefactor;
+    signalcomp[i]->sensitivity = (signalcomp[i]->edfparam_0->bitvalue / value2) / y_pixelsizefactor;
 
     original_value = signalcomp[i]->voltpercm;
 
@@ -3976,7 +3976,7 @@ void UI_Mainwindow::set_amplitude_mult2()
       signalcomp[i]->screen_offset /= 2.5;
     }
 
-    signalcomp[i]->sensitivity = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue / signalcomp[i]->voltpercm) / y_pixelsizefactor;
+    signalcomp[i]->sensitivity = (signalcomp[i]->edfparam_0->bitvalue / signalcomp[i]->voltpercm) / y_pixelsizefactor;
   }
 
   if(amplitude_doubler == 10)
@@ -4036,7 +4036,7 @@ void UI_Mainwindow::set_amplitude_div2()
       signalcomp[i]->screen_offset *= 2.5;
     }
 
-    signalcomp[i]->sensitivity = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue / signalcomp[i]->voltpercm) / y_pixelsizefactor;
+    signalcomp[i]->sensitivity = (signalcomp[i]->edfparam_0->bitvalue / signalcomp[i]->voltpercm) / y_pixelsizefactor;
   }
 
   if(amplitude_doubler == 10)
@@ -4124,7 +4124,7 @@ void UI_Mainwindow::qrs_detector()
 
   if((signal_nr < 0) || (signal_nr >= signalcomps))  return;
 
-  sf = signalcomp[signal_nr]->edfhdr->edfparam[signalcomp[signal_nr]->edfsignal[0]].sf_f;
+  sf = signalcomp[signal_nr]->edfparam_0->sf_f;
   if(sf < 199.999)
   {
     snprintf(str, 2048, "Sample rate of selected signal is %.1f Hz."
@@ -4133,14 +4133,14 @@ void UI_Mainwindow::qrs_detector()
     return;
   }
 
-  strlcpy(str, signalcomp[signal_nr]->edfhdr->edfparam[signalcomp[signal_nr]->edfsignal[0]].physdimension, 2048);
+  strlcpy(str, signalcomp[signal_nr]->edfparam_0->physdimension, 2048);
   trim_spaces(str);
   if((strcmp(str, "uV")) && (strcmp(str, "ECG uV")) && (strcmp(str, "EEG uV")) &&
      (strcmp(str, "mV")) && (strcmp(str, "ECG mV")) && (strcmp(str, "EEG mV")) &&
      (strcmp(str, "V")) && (strcmp(str, "ECG V")) && (strcmp(str, "EEG V")))
   {
     snprintf(str, 2048, "Unknown unit (physical dimension): \"%s\", expected uV or mV or V",
-             signalcomp[signal_nr]->edfhdr->edfparam[signalcomp[signal_nr]->edfsignal[0]].physdimension);
+             signalcomp[signal_nr]->edfparam_0->physdimension);
     QMessageBox::critical(this, "Error", str);
     return;
   }
@@ -4894,9 +4894,7 @@ sigcompblck_t * UI_Mainwindow::create_signalcomp_copy(sigcompblck_t *original_si
 
     filter_spec = spec_str;
 
-    err = fid_parse(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].sf_f,
-                    &filter_spec,
-                    &newsignalcomp->fidfilter[i]);
+    err = fid_parse(newsignalcomp->edfparam_0->sf_f, &filter_spec, &newsignalcomp->fidfilter[i]);
 
     if(err != NULL)
     {
@@ -4916,8 +4914,6 @@ sigcompblck_t * UI_Mainwindow::create_signalcomp_copy(sigcompblck_t *original_si
 //    memcpy(newsignalcomp->fidbuf[i], original_signalcomp->fidbuf[i], fid_run_bufsize(original_signalcomp->fid_run[i]));
 //    memcpy(newsignalcomp->fidbuf2[i], original_signalcomp->fidbuf2[i], fid_run_bufsize(original_signalcomp->fid_run[i]));
   }
-
-  newsignalcomp->edfparam_0 = &newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]];
 
   signalcomp[signalcomps] = newsignalcomp;
 

@@ -980,12 +980,12 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
 
       for(i=0; i<signalcomps; i++)
       {
-        if(signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue < 0.0)
+        if(signalcomp[i]->edfparam_0->bitvalue < 0.0)
         {
           value2 *= -1.0;
         }
 
-        signalcomp[i]->sensitivity = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].bitvalue / value2) / y_pixelsizefactor;
+        signalcomp[i]->sensitivity = (signalcomp[i]->edfparam_0->bitvalue / value2) / y_pixelsizefactor;
 
         original_value = signalcomp[i]->voltpercm;
 
@@ -1016,12 +1016,12 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
       n = get_signalcomp_number(str1);
       if(n < 0)  return 207;
 
-      if(signalcomp[n]->edfhdr->edfparam[signalcomp[n]->edfsignal[0]].bitvalue < 0.0)
+      if(signalcomp[n]->edfparam_0->bitvalue < 0.0)
       {
         value2 *= -1.0;
       }
 
-      signalcomp[n]->sensitivity = (signalcomp[n]->edfhdr->edfparam[signalcomp[n]->edfsignal[0]].bitvalue / value2) / y_pixelsizefactor;
+      signalcomp[n]->sensitivity = (signalcomp[n]->edfparam_0->bitvalue / value2) / y_pixelsizefactor;
 
       original_value = signalcomp[n]->voltpercm;
 

@@ -215,7 +215,7 @@ void UI_SignalChooser::call_sidemenu(QListWidgetItem *)
       return;
     }
 
-    if(mainwindow->signalcomp[signal_nr2]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr2]->edfsignal[0]].sf_int < 30)
+    if(mainwindow->signalcomp[signal_nr2]->edfparam_0->sf_int < 30)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency must be at least 30Hz and must be an integer value.");
       messagewindow.exec();
@@ -252,7 +252,7 @@ void UI_SignalChooser::call_sidemenu(QListWidgetItem *)
       return;
     }
 
-    strlcpy(str, mainwindow->signalcomp[signal_nr2]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr2]->edfsignal[0]].physdimension, 32);
+    strlcpy(str, mainwindow->signalcomp[signal_nr2]->edfparam_0->physdimension, 32);
     trim_spaces(str);
     if((strcmp(str, "uV")) && (strcmp(str, "mV")) && (strcmp(str, "V")))
     {
@@ -261,7 +261,7 @@ void UI_SignalChooser::call_sidemenu(QListWidgetItem *)
       return;
     }
 
-    if(mainwindow->signalcomp[signal_nr2]->edfhdr->edfparam[mainwindow->signalcomp[signal_nr2]->edfsignal[0]].sf_int < 100)
+    if(mainwindow->signalcomp[signal_nr2]->edfparam_0->sf_int < 100)
     {
       QMessageBox::critical(signalchooser_dialog, "Error", "Samplefrequency must be at least 100Hz and must be an integer value.");
       signalchooser_dialog->close();
