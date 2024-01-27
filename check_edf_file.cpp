@@ -152,7 +152,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
     if((((unsigned char *)scratchpad)[i]<32)||(((unsigned char *)scratchpad)[i]>126))
     {
       snprintf(txt_string, txt_len, "Error, %ith character of local patient identification field is not a valid 7-bit ASCII character.\n"
-                          "Use the header editor to repair your file. Look at the manual for the details.",
+                          "You can repair the file with the header editor, have a look at the manual for the details.",
       i + 1);
       free(edf_hdr);
       free(edfhdr);
@@ -172,7 +172,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
     if((((unsigned char *)scratchpad)[i]<32)||(((unsigned char *)scratchpad)[i]>126))
     {
       snprintf(txt_string, txt_len, "Error, %ith character of local recording identification field is not a valid 7-bit ASCII character.\n"
-                          "Use the header editor to repair your file. Look at the manual for the details.",
+                          "You can repair the file with the header editor, have a look at the manual for the details.",
       i + 1);
       free(edf_hdr);
       free(edfhdr);
@@ -551,7 +551,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
   if(is_integer_number(scratchpad))
   {
     snprintf(txt_string, txt_len, "Error, number of datarecords field is invalid: \"%s\".\n"
-                        "You can repair the file with the header editor, check the manual for details.",
+                        "You can repair the file with the header editor, have a look at the manual for the details.",
            scratchpad);
     free(edf_hdr);
     free(edfhdr);
@@ -565,11 +565,11 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
     {
 #ifdef Q_OS_WIN32
       __mingw_snprintf(txt_string, txt_len, "Error, number of datarecords is %lli, expected >0.\n"
-                          "You can repair the file with the header editor, check the manual for details.",
+                          "You can repair the file with the header editor, have a look at the manual for the details.",
             edfhdr->datarecords);
 #else
       snprintf(txt_string, txt_len, "Error, number of datarecords is %lli, expected >0.\n"
-                          "You can repair the file with the header editor, check the manual for details.",
+                          "You can repair the file with the header editor, have a look at the manual for the details.",
             edfhdr->datarecords);
 #endif
       free(edf_hdr);
@@ -673,7 +673,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
       if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of label field of signal %i is not a valid 7-bit ASCII character.\n"
-                            "Use the header editor to repair your file. Look at the manual for the details.",
+                            "You can repair the file with the header editor, have a look at the manual for the details.",
         j + 1,
         i + 1);
         free(edf_hdr);
@@ -752,7 +752,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
       if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of transducer type field of signal %i is not a valid 7-bit ASCII character.\n"
-                            "Use the header editor to repair your file. Look at the manual for the details.",
+                            "You can repair the file with the header editor, have a look at the manual for the details.",
         j + 1,
         i + 1);
         free(edf_hdr);
@@ -773,7 +773,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
           if(edfhdr->edfparam[i].transducer[j]!=' ')
           {
             snprintf(txt_string, txt_len, "Error, transducer type field of EDF annotationchannel must be empty.\n"
-                                "Use the header editor to repair your file. Look at the manual for the details.");
+                                "You can repair the file with the header editor, have a look at the manual for the details.");
             free(edf_hdr);
             free(edfhdr->edfparam);
             free(edfhdr);
@@ -791,7 +791,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
           if(edfhdr->edfparam[i].transducer[j]!=' ')
           {
             snprintf(txt_string, txt_len, "Error, transducer type field of BDF annotationchannel must be empty."
-                                "Use the header editor to repair your file. Look at the manual for the details.");
+                                "You can repair the file with the header editor, have a look at the manual for the details.");
             free(edf_hdr);
             free(edfhdr->edfparam);
             free(edfhdr);
@@ -812,7 +812,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
       if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of physical dimension field of signal %i is not a valid 7-bit ASCII character.\n"
-                            "Use the header editor to repair your file. Look at the manual for the details.",
+                            "You can repair the file with the header editor, have a look at the manual for the details.",
         j + 1,
         i + 1);
         free(edf_hdr);
@@ -931,7 +931,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
     if(is_integer_number(scratchpad))
     {
       snprintf(txt_string, txt_len, "Error, digital minimum field of signal %i is invalid: \"%s\".\n"
-                          "You can repair the file with the header editor, Look at the manual for the details.",
+                          "You can repair the file with the header editor, have a look at the manual for the details.",
              i + 1,
              scratchpad);
       free(edf_hdr);
@@ -949,7 +949,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
         {
           snprintf(txt_string, txt_len, "Error, digital minimum of signal %i is wrong: %i,"
                               "\ndigital minimum of an EDF Annotations signal should be -32768\n"
-                              "You can repair the file with the header editor, Look at the manual for the details.",
+                              "You can repair the file with the header editor, have a look at the manual for the details.",
                 i + 1,
                 n);
           free(edf_hdr);
@@ -967,7 +967,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
         {
           snprintf(txt_string, txt_len, "Error, digital minimum of signal %i is wrong: %i,"
                               "\ndigital minimum of a BDF Annotations signal should be -8388608\n"
-                              "You can repair the file with the header editor, Look at the manual for the details.",
+                              "You can repair the file with the header editor, have a look at the manual for the details.",
                 i + 1,
                 n);
           free(edf_hdr);
@@ -1030,7 +1030,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
     if(is_integer_number(scratchpad))
     {
       snprintf(txt_string, txt_len, "Error, digital maximum field of signal %i is invalid: \"%s\".\n"
-                          "You can repair the file with the header editor, Look at the manual for the details.",
+                          "You can repair the file with the header editor, have a look at the manual for the details.",
              i + 1,
              scratchpad);
       free(edf_hdr);
@@ -1048,7 +1048,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
         {
           snprintf(txt_string, txt_len, "Error, digital maximum of signal %i is wrong: %i,"
                               "\ndigital maximum of an EDF Annotations signal should be 32767\n"
-                              "You can repair the file with the header editor, Look at the manual for the details.",
+                              "You can repair the file with the header editor, have a look at the manual for the details.",
                 i + 1,
                 n);
           free(edf_hdr);
@@ -1066,7 +1066,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
         {
           snprintf(txt_string, txt_len, "Error, digital maximum of signal %i is wrong: %i,"
                               "\ndigital maximum of a BDF Annotations signal should be 8388607\n"
-                              "You can repair the file with the header editor, Look at the manual for the details.",
+                              "You can repair the file with the header editor, have a look at the manual for the details.",
                 i + 1,
                 n);
           free(edf_hdr);
@@ -1106,7 +1106,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
     if(edfhdr->edfparam[i].dig_max<(edfhdr->edfparam[i].dig_min + 1))
     {
       snprintf(txt_string, txt_len, "Error, digital maximum of signal %i is less than or equal to digital minimum.\n"
-                          "You can repair the file with the header editor, Look at the manual for the details.",
+                          "You can repair the file with the header editor, have a look at the manual for the details.",
              i + 1);
       free(edf_hdr);
       free(edfhdr->edfparam);
@@ -1125,7 +1125,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
       if((scratchpad[j]<32)||(scratchpad[j]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of prefilter field of signal %i is not a valid 7-bit ASCII character.\n"
-                            "You can repair the file with the header editor, Look at the manual for the details.",
+                            "You can repair the file with the header editor, have a look at the manual for the details.",
         j + 1,
         i + 1);
         free(edf_hdr);
@@ -1146,7 +1146,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
           if(edfhdr->edfparam[i].prefilter[j]!=' ')
           {
             snprintf(txt_string, txt_len, "Error, prefilter field of EDF annotationchannel must be empty.\n"
-                                "You can repair the file with the header editor, Look at the manual for the details.");
+                                "You can repair the file with the header editor, have a look at the manual for the details.");
             free(edf_hdr);
             free(edfhdr->edfparam);
             free(edfhdr);
@@ -1164,7 +1164,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
           if(edfhdr->edfparam[i].prefilter[j]!=' ')
           {
             snprintf(txt_string, txt_len, "Error, prefilter field of BDF annotationchannel must be empty.\n"
-                                "You can repair the file with the header editor, Look at the manual for the details.");
+                                "You can repair the file with the header editor, have a look at the manual for the details.");
             free(edf_hdr);
             free(edfhdr->edfparam);
             free(edfhdr);
@@ -1302,7 +1302,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
       if(scratchpad[j] != ' ')
       {
         snprintf(txt_string, txt_len, "Error, %ith character of reserved field of signal %i is not a space.\n"
-                                      "Use the header editor to repair your file. Look at the manual for the details.",
+                                      "You can repair the file with the header editor, have a look at the manual for the details.",
         j + 1,
         i + 1);
         free(edf_hdr);
@@ -1749,12 +1749,12 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
 #ifdef Q_OS_WIN32
       __mingw_snprintf(txt_string, txt_len, "Error, filesize does not match with the calculated filesize based on the parameters\n"
                           "in the header. Filesize is %lli and filesize according to header is %lli.\n"
-                          "You can repair the file with the header editor, check the manual for details.",
+                          "You can repair the file with the header editor, have a look at the manual for the details.",
                           l_tmp2, l_tmp);
 #else
       snprintf(txt_string, txt_len, "Error, filesize does not match with the calculated filesize based on the parameters\n"
                           "in the header. Filesize is %lli and filesize according to header is %lli.\n"
-                          "You can repair the file with the header editor, check the manual for details.",
+                          "You can repair the file with the header editor, have a look at the manual for the details.",
                           l_tmp2, l_tmp);
 #endif
       free(edf_hdr);
