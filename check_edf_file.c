@@ -29,14 +29,16 @@
 #include "check_edf_file.h"
 
 
+static long long get_long_duration(char *);
 
-edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, int txt_len, int live_stream, int import_annots_active)
+
+edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, int live_stream, int import_annots_active)
 {
   int i, j, p, r=0, n,
       dotposition,
       error;
 
-  char *edf_hdr,
+  char *edf_hdr=NULL,
        scratchpad[128],
        scratchpad2[64];
 
@@ -44,6 +46,8 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
             l_tmp2;
 
   date_time_t date_time;
+
+  edfhdrblck_t *edfhdr=NULL;
 
 /***************** check header ******************************/
 
@@ -1784,165 +1788,7 @@ edfhdrblck_t * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_string, i
 }
 
 
-
-
-int EDFfileCheck::is_integer_number(char *str)
-{
-  int i=0, l, hasspace = 0, hassign=0, digit=0;
-
-  l = strlen(str);
-
-  if(!l)  return 1;
-
-  if((str[0]=='+')||(str[0]=='-'))
-  {
-    hassign++;
-    i++;
-  }
-
-  for(; i<l; i++)
-  {
-    if(str[i]==' ')
-    {
-      if(!digit)
-      {
-        return 1;
-      }
-      hasspace++;
-    }
-    else
-    {
-      if((str[i]<48)||(str[i]>57))
-      {
-        return 1;
-      }
-      else
-      {
-        if(hasspace)
-        {
-          return 1;
-        }
-        digit++;
-      }
-    }
-  }
-
-  if(digit)  return 0;
-  else  return 1;
-}
-
-
-
-int EDFfileCheck::is_number(char *str)
-{
-  int i=0, l, hasspace = 0, hassign=0, digit=0, hasdot=0, hasexp=0;
-
-  l = strlen(str);
-
-  if(!l)  return 1;
-
-  if((str[0]=='+')||(str[0]=='-'))
-  {
-    hassign++;
-    i++;
-  }
-
-  for(; i<l; i++)
-  {
-    if((str[i]=='e')||(str[i]=='E'))
-    {
-      if((!digit)||hasexp)
-      {
-        return 1;
-      }
-      hasexp++;
-      hassign = 0;
-      digit = 0;
-
-      break;
-    }
-
-    if(str[i]==' ')
-    {
-      if(!digit)
-      {
-        return 1;
-      }
-      hasspace++;
-    }
-    else
-    {
-      if(((str[i]<48)||(str[i]>57))&&str[i]!='.')
-      {
-        return 1;
-      }
-      else
-      {
-        if(hasspace)
-        {
-          return 1;
-        }
-        if(str[i]=='.')
-        {
-          if(hasdot)  return 1;
-          hasdot++;
-        }
-        else
-        {
-          digit++;
-        }
-      }
-    }
-  }
-
-  if(hasexp)
-  {
-    if(++i==l)
-    {
-      return 1;
-    }
-
-    if((str[i]=='+')||(str[i]=='-'))
-    {
-      hassign++;
-      i++;
-    }
-
-    for(; i<l; i++)
-    {
-      if(str[i]==' ')
-      {
-        if(!digit)
-        {
-          return 1;
-        }
-        hasspace++;
-      }
-      else
-      {
-        if((str[i]<48)||(str[i]>57))
-        {
-          return 1;
-        }
-        else
-        {
-          if(hasspace)
-          {
-            return 1;
-          }
-
-          digit++;
-        }
-      }
-    }
-  }
-
-  if(digit)  return 0;
-  else  return 1;
-}
-
-
-long long EDFfileCheck::get_long_duration(char *str)
+static long long get_long_duration(char *str)
 {
   int i, len=8, hasdot=0, dotposition=0;
 

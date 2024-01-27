@@ -1963,9 +1963,7 @@ void UI_Mainwindow::open_new_file()
 
     get_directory_from_path(recent_opendir, path, MAX_PATH_LENGTH);
 
-    EDFfileCheck EDFfilechecker;
-
-    edfhdr = EDFfilechecker.check_edf_file(newfile, str, 2048, live_stream_active, 0);
+    edfhdr = check_edf_file(newfile, str, 2048, live_stream_active, 0);
     if(edfhdr==NULL)
     {
       fclose(newfile);

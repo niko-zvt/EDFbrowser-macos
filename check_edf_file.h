@@ -25,14 +25,9 @@
 */
 
 
-
-
-
 #ifndef CHECK_EDF_FILE1_H
 #define CHECK_EDF_FILE1_H
 
-
-#include "qt_headers.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,26 +38,19 @@
 #include "utils.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class EDFfileCheck
-{
+edfhdrblck_t * check_edf_file(FILE *, char *, int, int, int);
 
-public:
-
-  edfhdrblck_t * check_edf_file(FILE *, char *, int, int, int);
-
-private:
-
-  edfhdrblck_t *edfhdr;
-
-  int is_integer_number(char *);
-  int is_number(char *);
-  long long get_long_duration(char *);
-
-};
-
-
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif // CHECK_EDF_FILE1_H
+
+
+
 
 

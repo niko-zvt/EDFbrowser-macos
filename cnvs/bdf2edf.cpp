@@ -332,9 +332,7 @@ void UI_BDF2EDFwindow::SelectFileButton()
 
 /***************** check if the file is valid ******************************/
 
-  EDFfileCheck EDFfilechecker;
-
-  edfhdr = EDFfilechecker.check_edf_file(inputfile, txt_string, 2048, 0, 0);
+  edfhdr = check_edf_file(inputfile, txt_string, 2048, 0, 0);
   if(edfhdr==NULL)
   {
     fclose(inputfile);
