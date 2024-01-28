@@ -1731,14 +1731,14 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
               viewbuf
               + signalcomp[i]->viewbufoffset
               + (signalcomp[i]->edfhdr->recordsize * (s2 / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record))
-              + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].buf_offset
+              + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].datrec_offset
               + ((s2 % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record) * 3)));
 
             var.four[2] = *((unsigned char *)(
               viewbuf
               + signalcomp[i]->viewbufoffset
               + (signalcomp[i]->edfhdr->recordsize * (s2 / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record))
-              + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].buf_offset
+              + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].datrec_offset
               + ((s2 % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record) * 3)
               + 2));
 
@@ -1773,7 +1773,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
               viewbuf
               + signalcomp[i]->viewbufoffset
               + (signalcomp[i]->edfhdr->recordsize * (s2 / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record))
-              + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].buf_offset))
+              + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].datrec_offset))
               + (s2 % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record));
 
             if(tmp > signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].dig_max)
@@ -2106,14 +2106,14 @@ void drawCurve_stage_1_thread::run()
             viewbuf
             + signalcomp->viewbufoffset
             + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
+            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].datrec_offset
             + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)));
 
           var.four[2] = *((unsigned char *)(
             viewbuf
             + signalcomp->viewbufoffset
             + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
+            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].datrec_offset
             + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)
             + 2));
 
@@ -2148,7 +2148,7 @@ void drawCurve_stage_1_thread::run()
             viewbuf
             + signalcomp->viewbufoffset
             + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset))
+            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].datrec_offset))
             + (s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record));
 
           if(tmp > signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].dig_max)

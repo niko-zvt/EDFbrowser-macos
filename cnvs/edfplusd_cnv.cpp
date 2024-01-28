@@ -195,7 +195,7 @@ void UI_EDFDwindow::SelectFileButton()
 
   annot_signal_nr = edfhdr->annot_ch[0];
 
-  offset = edfhdr->edfparam[annot_signal_nr].buf_offset;
+  offset = edfhdr->edfparam[annot_signal_nr].datrec_offset;
 
   if(edfhdr->edfplus)
   {
@@ -356,7 +356,7 @@ void UI_EDFDwindow::SelectFileButton()
       {
         annot_signal_nr_2 = edfhdr->annot_ch[i];
 
-        offset_2 = edfhdr->edfparam[annot_signal_nr_2].buf_offset;
+        offset_2 = edfhdr->edfparam[annot_signal_nr_2].datrec_offset;
 
         if(edfhdr->edfplus)
         {

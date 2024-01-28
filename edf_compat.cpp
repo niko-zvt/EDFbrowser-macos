@@ -256,8 +256,8 @@ void UI_EDFCompatwindow::CheckButtonClicked()
       {
         if(bdf)
         {
-          var.two[0] = *((unsigned short *)(cnv_buf + edfparam[j].buf_offset + (k * 3)));
-          var.four[2] = *(cnv_buf + edfparam[j].buf_offset + (k * 3) + 2);
+          var.two[0] = *((unsigned short *)(cnv_buf + edfparam[j].datrec_offset + (k * 3)));
+          var.four[2] = *(cnv_buf + edfparam[j].datrec_offset + (k * 3) + 2);
 
           if(var.four[2]&0x80)
           {
@@ -272,7 +272,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
         }
         else
         {
-          temp = *((signed short *)(cnv_buf + edfparam[j].buf_offset + (k * 2)));
+          temp = *((signed short *)(cnv_buf + edfparam[j].datrec_offset + (k * 2)));
         }
 
         if(temp > edfparam[j].dig_max)
@@ -286,7 +286,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
                  k + 1,
                  edfparam[j].dig_max,
                  temp,
-                 (i * recordsize) + edfparam[j].buf_offset + (k * samplesize) + (edfsignals * 256) + 256);
+                 (i * recordsize) + edfparam[j].datrec_offset + (k * samplesize) + (edfsignals * 256) + 256);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
           messagewindow.exec();
           free(scratchpad);
@@ -306,7 +306,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
                  k + 1,
                  edfparam[j].dig_min,
                  temp,
-                 (i * recordsize) + edfparam[j].buf_offset + (k * samplesize) + (edfsignals * 256) + 256);
+                 (i * recordsize) + edfparam[j].datrec_offset + (k * samplesize) + (edfsignals * 256) + 256);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
           messagewindow.exec();
           free(cnv_buf);
@@ -332,7 +332,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
       annots_in_tal = 0;
       annots_in_record = 0;
 
-      p = edfparam[annot_ch[r]].buf_offset;
+      p = edfparam[annot_ch[r]].datrec_offset;
       max = edfparam[annot_ch[r]].smp_per_record * samplesize;
 
 /************** process one annotation signal ****************/
@@ -603,7 +603,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
                  i + 1);
         }
         len = strlen(txt_string);
-        p = (i * recordsize) + (edfsignals * 256) + 256 + (edfparam[annot_ch[r]].buf_offset);
+        p = (i * recordsize) + (edfsignals * 256) + 256 + (edfparam[annot_ch[r]].datrec_offset);
         snprintf(txt_string + len, 348, "Offset from start of file: 0x%X\n\n"
                 "Stopped at the first error, additional errors may be present.",
                p);

@@ -202,7 +202,7 @@ typedef struct
   int    smp_per_record;
   char   reserved[33];
   double offset;
-  int    buf_offset;
+  int    datrec_offset;
   double bitvalue;
   int    annotation;
   int    sf_int;

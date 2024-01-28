@@ -762,7 +762,7 @@ void UI_BDF2EDFwindow::StartConversion()
     {
       if(annotlist[i])
       {
-        if(fwrite(readbuf + edfhdr->edfparam[signalslist[i]].buf_offset, edfhdr->edfparam[signalslist[i]].smp_per_record * 3, 1, outputfile)!=1)
+        if(fwrite(readbuf + edfhdr->edfparam[signalslist[i]].datrec_offset, edfhdr->edfparam[signalslist[i]].smp_per_record * 3, 1, outputfile)!=1)
         {
           progress.reset();
           QMessageBox::critical(myobjectDialog, "Error", "Write error (2).");
@@ -783,9 +783,9 @@ void UI_BDF2EDFwindow::StartConversion()
       {
         for(j=0; j<edfhdr->edfparam[signalslist[i]].smp_per_record; j++)
         {
-          var.two[0] = *((unsigned short *)(readbuf + edfhdr->edfparam[signalslist[i]].buf_offset + (j * 3)));
+          var.two[0] = *((unsigned short *)(readbuf + edfhdr->edfparam[signalslist[i]].datrec_offset + (j * 3)));
 
-          var.four[2] = *((unsigned char *)(readbuf + edfhdr->edfparam[signalslist[i]].buf_offset + (j * 3) + 2));
+          var.four[2] = *((unsigned char *)(readbuf + edfhdr->edfparam[signalslist[i]].datrec_offset + (j * 3) + 2));
 
           if(var.four[2]&0x80)
           {

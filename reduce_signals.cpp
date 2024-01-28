@@ -1168,7 +1168,7 @@ void UI_ReduceSignalsWindow::StartConversion()
 
           for(j=0; j<smplrt; j++)
           {
-            val = *(((signed short *)(readbuf + edfhdr->edfparam[signalslist[i]].buf_offset)) + j);
+            val = *(((signed short *)(readbuf + edfhdr->edfparam[signalslist[i]].datrec_offset)) + j);
 
             if(val > edfhdr->edfparam[signalslist[i]].dig_max)
             {
@@ -1198,7 +1198,7 @@ void UI_ReduceSignalsWindow::StartConversion()
 
             for(k=0; k<dividerlist[i]; k++)
             {
-              val = *(((signed short *)(readbuf + edfhdr->edfparam[signalslist[i]].buf_offset)) + (dividerlist[i] * j) + k);
+              val = *(((signed short *)(readbuf + edfhdr->edfparam[signalslist[i]].datrec_offset)) + (dividerlist[i] * j) + k);
 
               if(val > edfhdr->edfparam[signalslist[i]].dig_max)
               {
@@ -1240,8 +1240,8 @@ void UI_ReduceSignalsWindow::StartConversion()
 
           for(j=0; j<smplrt; j++)
           {
-            var.two[0] = *((unsigned short *)(readbuf + edfhdr->edfparam[signalslist[i]].buf_offset + (j * 3)));
-            var.four[2] = *((unsigned char *)(readbuf + edfhdr->edfparam[signalslist[i]].buf_offset + (j * 3) + 2));
+            var.two[0] = *((unsigned short *)(readbuf + edfhdr->edfparam[signalslist[i]].datrec_offset + (j * 3)));
+            var.four[2] = *((unsigned char *)(readbuf + edfhdr->edfparam[signalslist[i]].datrec_offset + (j * 3) + 2));
 
             if(var.four[2]&0x80)
             {
@@ -1281,8 +1281,8 @@ void UI_ReduceSignalsWindow::StartConversion()
 
             for(k=0; k<dividerlist[i]; k++)
             {
-              var.two[0] = *((unsigned short *)(readbuf + edfhdr->edfparam[signalslist[i]].buf_offset + (dividerlist[i] * j * 3) + (k * 3)));
-              var.four[2] = *((unsigned char *)(readbuf + edfhdr->edfparam[signalslist[i]].buf_offset + (dividerlist[i] * j * 3) + (k * 3) + 2));
+              var.two[0] = *((unsigned short *)(readbuf + edfhdr->edfparam[signalslist[i]].datrec_offset + (dividerlist[i] * j * 3) + (k * 3)));
+              var.four[2] = *((unsigned char *)(readbuf + edfhdr->edfparam[signalslist[i]].datrec_offset + (dividerlist[i] * j * 3) + (k * 3) + 2));
 
               if(var.four[2]&0x80)
               {

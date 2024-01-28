@@ -854,14 +854,14 @@ void UI_FreqSpectrumWindow::run()
             viewbuf
             + signalcomp->viewbufoffset
             + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
+            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].datrec_offset
             + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)));
 
           var.four[2] = *((unsigned char *)(
             viewbuf
             + signalcomp->viewbufoffset
             + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset
+            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].datrec_offset
             + ((s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record) * 3)
             + 2));
 
@@ -892,7 +892,7 @@ void UI_FreqSpectrumWindow::run()
             viewbuf
             + signalcomp->viewbufoffset
             + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
-            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].buf_offset))
+            + signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].datrec_offset))
             + (s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record));
 
           if(tmp > signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].dig_max)

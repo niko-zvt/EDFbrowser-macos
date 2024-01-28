@@ -1901,7 +1901,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
 
   recsize = signalcomp->edfhdr->recordsize;
 
-  bufoffset = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].buf_offset;
+  bufoffset = signalcomp->edfhdr->edfparam[signalcomp->edfsignal[0]].datrec_offset;
 
   time_per_sample = signalcomp->edfhdr->long_data_record_duration / smpls_per_datrec;
 

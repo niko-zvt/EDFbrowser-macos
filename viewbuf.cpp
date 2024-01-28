@@ -399,14 +399,14 @@ void UI_Mainwindow::setup_viewbuf()
               viewbuf
               + signalcomp[i]->viewbufoffset
               + (signalcomp[i]->edfhdr->recordsize * (s / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].smp_per_record))
-              + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].buf_offset
+              + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].datrec_offset
               + ((s % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].smp_per_record) * 3)));
 
             var.four[2] = *((unsigned char *)(
               viewbuf
               + signalcomp[i]->viewbufoffset
               + (signalcomp[i]->edfhdr->recordsize * (s / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].smp_per_record))
-              + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].buf_offset
+              + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].datrec_offset
               + ((s % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].smp_per_record) * 3)
               + 2));
 
@@ -428,7 +428,7 @@ void UI_Mainwindow::setup_viewbuf()
             viewbuf
             + signalcomp[i]->viewbufoffset
             + (signalcomp[i]->edfhdr->recordsize * (s / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].smp_per_record))
-            + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].buf_offset))
+            + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].datrec_offset))
             + (s % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[k]].smp_per_record));
           }
 
@@ -1066,7 +1066,7 @@ void UI_Mainwindow::setup_viewbuf()
 //            n,
 //            signalcomp[n]->filenum, signalcomp[n]->edfsignal[0],
 //            signalcomp[n]->viewbufoffset,
-//            signalcomp[n]->edfhdr->edfparam[signalcomp[n]->edfsignal[0]].buf_offset);
+//            signalcomp[n]->edfhdr->edfparam[signalcomp[n]->edfsignal[0]].datrec_offset);
 //   }
 }
 

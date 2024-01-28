@@ -1086,7 +1086,7 @@ void print_screen_to_edf(UI_Mainwindow *mainwindow)
                   viewbuf
                   + signalcomp[i]->viewbufoffset
                   + (signalcomp[i]->edfhdr->recordsize * (s2 / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record))
-                  + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].buf_offset))
+                  + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].datrec_offset))
                   + (s2 % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record));
 
                 if(tmp > signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].dig_max)

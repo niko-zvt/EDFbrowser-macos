@@ -1772,7 +1772,7 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
-    edfhdr->edfparam[i].buf_offset = n;
+    edfhdr->edfparam[i].datrec_offset = n;
     if(edfhdr->bdf)  n += edfhdr->edfparam[i].smp_per_record * 3;
     else  n += edfhdr->edfparam[i].smp_per_record * 2;
 

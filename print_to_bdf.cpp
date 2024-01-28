@@ -1092,14 +1092,14 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
                   viewbuf
                   + signalcomp[i]->viewbufoffset
                   + (signalcomp[i]->edfhdr->recordsize * (s2 / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record))
-                  + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].buf_offset
+                  + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].datrec_offset
                   + ((s2 % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record) * 3)));
 
                 var.four[2] = *((unsigned char *)(
                   viewbuf
                   + signalcomp[i]->viewbufoffset
                   + (signalcomp[i]->edfhdr->recordsize * (s2 / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record))
-                  + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].buf_offset
+                  + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].datrec_offset
                   + ((s2 % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record) * 3)
                   + 2));
 
@@ -1130,7 +1130,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
                   viewbuf
                   + signalcomp[i]->viewbufoffset
                   + (signalcomp[i]->edfhdr->recordsize * (s2 / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record))
-                  + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].buf_offset))
+                  + signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].datrec_offset))
                   + (s2 % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record));
 
                 if(tmp > signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].dig_max)

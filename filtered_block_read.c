@@ -297,13 +297,13 @@ int run_flt_blck_rd(flt_blck_rd_t *fbr, int datarecord_or_sample_start)
         var.two[0] = *((unsigned short *)(
           fbr->readbuf
           + (fbr->signalcomp->edfhdr->recordsize * (s / fbr->samples_per_datrec))
-          + fbr->signalcomp->edfhdr->edfparam[fbr->signalcomp->edfsignal[j]].buf_offset
+          + fbr->signalcomp->edfhdr->edfparam[fbr->signalcomp->edfsignal[j]].datrec_offset
           + ((s % fbr->samples_per_datrec) * 3LL)));
 
         var.four[2] = *((unsigned char *)(
           fbr->readbuf
           + (fbr->signalcomp->edfhdr->recordsize * (s / fbr->samples_per_datrec))
-          + fbr->signalcomp->edfhdr->edfparam[fbr->signalcomp->edfsignal[j]].buf_offset
+          + fbr->signalcomp->edfhdr->edfparam[fbr->signalcomp->edfsignal[j]].datrec_offset
           + ((s % fbr->samples_per_datrec) * 3LL)
           + 2LL));
 
@@ -333,7 +333,7 @@ int run_flt_blck_rd(flt_blck_rd_t *fbr, int datarecord_or_sample_start)
         tmp = *(((short *)(
           fbr->readbuf
           + (fbr->signalcomp->edfhdr->recordsize * (s / fbr->samples_per_datrec))
-          + fbr->signalcomp->edfhdr->edfparam[fbr->signalcomp->edfsignal[j]].buf_offset))
+          + fbr->signalcomp->edfhdr->edfparam[fbr->signalcomp->edfsignal[j]].datrec_offset))
           + (s % fbr->samples_per_datrec));
 
           if(tmp > fbr->signalcomp->edfhdr->edfparam[fbr->signalcomp->edfsignal[j]].dig_max)

@@ -447,8 +447,8 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
       {
         for(j=0; j<hdr->edfparam[signalslist[i]].smp_per_record; j++)
         {
-          fputc(*((unsigned char *)(readbuf + hdr->edfparam[signalslist[i]].buf_offset + (j * 2))), outputfile);
-          fputc(*((unsigned char *)(readbuf + hdr->edfparam[signalslist[i]].buf_offset + (j * 2) + 1)), outputfile);
+          fputc(*((unsigned char *)(readbuf + hdr->edfparam[signalslist[i]].datrec_offset + (j * 2))), outputfile);
+          fputc(*((unsigned char *)(readbuf + hdr->edfparam[signalslist[i]].datrec_offset + (j * 2) + 1)), outputfile);
         }
       }
     }
@@ -458,9 +458,9 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
       {
         for(j=0; j<hdr->edfparam[signalslist[i]].smp_per_record; j++)
         {
-          fputc(*((unsigned char *)(readbuf + hdr->edfparam[signalslist[i]].buf_offset + (j * 3))), outputfile);
-          fputc(*((unsigned char *)(readbuf + hdr->edfparam[signalslist[i]].buf_offset + (j * 3) + 1)), outputfile);
-          fputc(*((unsigned char *)(readbuf + hdr->edfparam[signalslist[i]].buf_offset + (j * 3) + 2)), outputfile);
+          fputc(*((unsigned char *)(readbuf + hdr->edfparam[signalslist[i]].datrec_offset + (j * 3))), outputfile);
+          fputc(*((unsigned char *)(readbuf + hdr->edfparam[signalslist[i]].datrec_offset + (j * 3) + 1)), outputfile);
+          fputc(*((unsigned char *)(readbuf + hdr->edfparam[signalslist[i]].datrec_offset + (j * 3) + 2)), outputfile);
         }
       }
     }

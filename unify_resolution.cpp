@@ -401,7 +401,7 @@ void UI_unify_resolution::SaveButtonClicked()
 
         d_offset = edfhdr->edfparam[i].offset;
 
-        ptr16 = (short *)(buf_in + edfhdr->edfparam[i].buf_offset);
+        ptr16 = (short *)(buf_in + edfhdr->edfparam[i].datrec_offset);
 
         for(j=0; j<edfhdr->edfparam[i].smp_per_record; j++)
         {
@@ -431,7 +431,7 @@ void UI_unify_resolution::SaveButtonClicked()
 
         d_offset = edfhdr->edfparam[i].offset;
 
-        ptr8 = buf_in + edfhdr->edfparam[i].buf_offset;
+        ptr8 = buf_in + edfhdr->edfparam[i].datrec_offset;
 
         for(j=0; j<edfhdr->edfparam[i].smp_per_record; j++)
         {

@@ -147,7 +147,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
             {
               nk_triggers_channel = i;
 
-              nk_triggers_bufoffset = edfparam[nk_triggers_channel].buf_offset;
+              nk_triggers_bufoffset = edfparam[nk_triggers_channel].datrec_offset;
 
               nk_triggers_smpls = edfparam[nk_triggers_channel].smp_per_record;
 
@@ -301,7 +301,7 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
       annots_in_record = 0;
       annot_offset = 0;
 
-      p = edfparam[annot_ch[r]].buf_offset;
+      p = edfparam[annot_ch[r]].datrec_offset;
       max = edfparam[annot_ch[r]].smp_per_record * samplesize;
 
 /************** process one annotation signal ****************/
