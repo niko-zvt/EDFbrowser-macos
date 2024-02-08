@@ -39,13 +39,14 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "utils.h"
-#include "filtered_block_read.h"
 #include "aeeg_dock.h"
+#include "filtered_block_read.h"
 #include "third_party/fidlib/fidlib.h"
 
 
 class UI_Mainwindow;
 
+typedef struct aeeg_dock_param_struct aeeg_dock_param_t;
 
 
 class UI_aeeg_window : public QObject
@@ -53,7 +54,7 @@ class UI_aeeg_window : public QObject
   Q_OBJECT
 
 public:
-  UI_aeeg_window(QWidget *, sigcompblck_t *, int, struct aeeg_dock_param_struct *p_par=NULL);
+  UI_aeeg_window(QWidget *, sigcompblck_t *, int, aeeg_dock_param_t *p_par=NULL);
 
   UI_Mainwindow  *mainwindow;
 
@@ -63,7 +64,7 @@ private:
 
   sigcompblck_t *signalcomp;
 
-  struct aeeg_dock_param_struct *no_dialog_params;
+  aeeg_dock_param_t *no_dialog_params;
 
   QDialog       *myobjectDialog;
 

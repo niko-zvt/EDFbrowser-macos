@@ -34,7 +34,7 @@
 
 
 
-UI_aeeg_window::UI_aeeg_window(QWidget *w_parent, sigcompblck_t *signal_comp, int numb, struct aeeg_dock_param_struct *p_par)
+UI_aeeg_window::UI_aeeg_window(QWidget *w_parent, sigcompblck_t *signal_comp, int numb, aeeg_dock_param_t *p_par)
 {
   char str[1024]="";
 
@@ -234,9 +234,9 @@ void UI_aeeg_window::start_button_clicked()
        *filt_spec_ptr_lp=NULL,
        *fid_err_lp=NULL;
 
-  struct aeeg_dock_param_struct dock_param;
+  aeeg_dock_param_t dock_param;
 
-  memset(&dock_param, 0, sizeof(struct aeeg_dock_param_struct));
+  memset(&dock_param, 0, sizeof(aeeg_dock_param_t));
 
   strlcpy(str, signalcomp->physdimension, 32);
   trim_spaces(str);
