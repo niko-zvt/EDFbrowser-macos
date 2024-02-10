@@ -593,13 +593,26 @@ void UI_Mainwindow::setup_viewbuf()
 
     if(signalcomp[i]->edfhdr->viewtime>=0)
     {
-      signalcomp[i]->sample_timeoffset_part = ((double)(signalcomp[i]->edfhdr->viewtime % signalcomp[i]->edfhdr->long_data_record_duration) / (double)signalcomp[i]->edfhdr->long_data_record_duration) * (double)signalcomp[i]->edfparam_0->smp_per_record;
+      signalcomp[i]->sample_timeoffset_part = ((double)(signalcomp[i]->edfhdr->viewtime % signalcomp[i]->edfhdr->long_data_record_duration) /
+                                               (double)signalcomp[i]->edfhdr->long_data_record_duration) * (double)signalcomp[i]->edfparam_0->smp_per_record;
+
       signalcomp[i]->sample_timeoffset = (int)(signalcomp[i]->sample_timeoffset_part);
+
       signalcomp[i]->sample_timeoffset_part -= signalcomp[i]->sample_timeoffset;
     }
     else
     {
-      signalcomp[i]->sample_timeoffset_part = 0.0;
+      signalcomp[i]->sample_timeoffset_part = ((double)(-signalcomp[i]->edfhdr->viewtime % signalcomp[i]->edfhdr->long_data_record_duration) /
+                                               (double)signalcomp[i]->edfhdr->long_data_record_duration) * (double)signalcomp[i]->edfparam_0->smp_per_record;
+
+      signalcomp[i]->sample_timeoffset = (int)(signalcomp[i]->sample_timeoffset_part);
+
+      signalcomp[i]->sample_timeoffset_part -= signalcomp[i]->sample_timeoffset;
+
+      if(signalcomp[i]->sample_timeoffset_part >= 0.5)  signalcomp[i]->sample_timeoffset_part -= 1;
+
+      signalcomp[i]->sample_timeoffset_part = -signalcomp[i]->sample_timeoffset_part;
+
       signalcomp[i]->sample_timeoffset = 0;
     }
 

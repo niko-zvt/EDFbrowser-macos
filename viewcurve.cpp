@@ -1633,6 +1633,14 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
     printing = 0;
   }
 
+  if((w <8)||(h<8))  /* sanity check */
+  {
+    free(graphicBuf);
+    graphicBuf = NULL;
+    update();
+    return;
+  }
+
   for(i=0; i<signalcomps; i++)
   {
     signalcomp[i]->sample_pixel_ratio = (signalcomp[i]->edfparam_0->sf_f * ((double)mainwindow->pagetime / (double)TIME_FIXP_SCALING)) / (double)w;
