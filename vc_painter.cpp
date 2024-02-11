@@ -340,7 +340,51 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   ruler_pen->setWidth(print_linewidth);
 
-  if(m_pagetime<=20)
+  if(m_pagetime<=1)
+  {
+    time_ppixel = (mainwindow->pagetime * (TIME_FIXP_SCALING_HR / TIME_FIXP_SCALING)) / w;
+
+    ll_elapsed_time *= (TIME_FIXP_SCALING_HR / TIME_FIXP_SCALING);
+
+    ruler_pen->setColor(small_ruler_color);
+    painter->setPen(*ruler_pen);
+
+    for(x_pix=0; x_pix<w; x_pix++)
+    {
+      if((ll_elapsed_time / (TIME_FIXP_SCALING_HR / 10))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING_HR / 10)))
+      {
+        painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling * printsize_y_factor);
+      }
+
+      if(((ll_elapsed_time / TIME_FIXP_SCALING_HR)!=((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING_HR)) ||
+        ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
+      {
+        if(x_pix)
+        {
+          ruler_pen->setColor(big_ruler_color);
+          painter->setPen(*ruler_pen);
+          painter->drawLine(x_pix, 0, x_pix, h);
+          if(ll_elapsed_time < 0LL)
+          {
+            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / TIME_FIXP_SCALING_HR)) % 60);
+          }
+          else
+          {
+            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING_HR)) % 60);
+          }
+          painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
+          ruler_pen->setColor(small_ruler_color);
+          painter->setPen(*ruler_pen);
+        }
+
+        painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling * printsize_y_factor);
+      }
+
+      ll_elapsed_time += time_ppixel;
+    }
+  }
+
+  if((m_pagetime>1)&&(m_pagetime<=20))
   {
     ruler_pen->setColor(small_ruler_color);
     painter->setPen(*ruler_pen);
