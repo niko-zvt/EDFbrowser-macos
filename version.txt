@@ -1,4 +1,18 @@
 
+ version 2.07      to be defined
+ --------------
+
+ - File -> Info -> Signals: show also the resolution of the signals.
+
+ - ECG powerline interference subtraction filter: make clear that the ECG signal must have
+   a resolution better than or equal to 10 uV/bit. Do not list signals with worse resolution
+   in the list of the dialog.
+
+ - Fix timing offset error of horizontal graticule at small timescales (e.g. milliseconds).
+
+ - Plotting: fixed a small timing offset error at low samplerates and small timescale.
+
+
  version 2.06      January 2, 2024
  --------------
 
