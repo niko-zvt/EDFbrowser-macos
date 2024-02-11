@@ -340,7 +340,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   ruler_pen->setWidth(print_linewidth);
 
-  if(m_pagetime<=1)
+  if(m_pagetime<=1)  // timescale less than 1 second
   {
     time_ppixel = (mainwindow->pagetime * (TIME_FIXP_SCALING_HR / TIME_FIXP_SCALING)) / w;
 
@@ -383,8 +383,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       ll_elapsed_time += time_ppixel;
     }
   }
-
-  if((m_pagetime>1)&&(m_pagetime<=20))
+  else if(m_pagetime<=20)  // timescale less than or equal to 20 seconds
   {
     ruler_pen->setColor(small_ruler_color);
     painter->setPen(*ruler_pen);
@@ -423,8 +422,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       ll_elapsed_time += time_ppixel;
     }
   }
-
-  if((m_pagetime>20)&&(m_pagetime<100))
+  else if(m_pagetime<100)  // timescale less than 100 seconds (00:01:40)
   {
     ruler_pen->setColor(small_ruler_color);
     painter->setPen(*ruler_pen);
@@ -472,8 +470,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       ll_elapsed_time += time_ppixel;
     }
   }
-
-  if((m_pagetime>=100)&&(m_pagetime<1000))
+  else if(m_pagetime<1000)  // timescale less than 1000 seconds (00:16:40)
   {
     ruler_pen->setColor(small_ruler_color);
     painter->setPen(*ruler_pen);
@@ -521,8 +518,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       ll_elapsed_time += time_ppixel;
     }
   }
-
-  if((m_pagetime>=1000)&&(m_pagetime<5000))
+  else if(m_pagetime<5000)  // timescale less than 5000 seconds (01:23:20)
   {
     ruler_pen->setColor(small_ruler_color);
     painter->setPen(*ruler_pen);
@@ -565,8 +561,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       ll_elapsed_time += time_ppixel;
     }
   }
-
-  if((m_pagetime>=5000)&&(m_pagetime<173000))
+  else if(m_pagetime<173000)  // timescale less than 173000 seconds (48:03:20)
   {
     ruler_pen->setColor(small_ruler_color);
     painter->setPen(*ruler_pen);
@@ -609,8 +604,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       ll_elapsed_time += time_ppixel;
     }
   }
-
-  if((m_pagetime>=173000)&&(m_pagetime<3000000))
+  else if(m_pagetime<3000000)  // timescale less than 3000000 seconds (34 days and 17:20:00)
   {
     ruler_pen->setColor(small_ruler_color);
     painter->setPen(*ruler_pen);
