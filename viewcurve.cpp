@@ -312,8 +312,6 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
 {
   int i;
 
-  long long l_tmp, trshld=100LL;
-
   if(mainwindow->mousewheelsens < 1)  return;
 
   if(mainwindow->files_open == 0)  return;
@@ -326,153 +324,12 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
     if(wheel_event->delta() > 0)
 #endif
     {
-      if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
-      {
-        for(i=0; i<mainwindow->files_open; i++)
-        {
-          if(mainwindow->timescale_doubler == 50)
-          {
-            mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime * 0.3);
-          }
-          else
-          {
-            mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime / 4);
-          }
-
-          l_tmp = mainwindow->edfheaderlist[i]->viewtime % TIME_FIXP_SCALING;
-
-          if(l_tmp < trshld)
-          {
-            mainwindow->edfheaderlist[i]->viewtime -= l_tmp;
-          }
-
-          if(l_tmp > (TIME_FIXP_SCALING - trshld))
-          {
-            mainwindow->edfheaderlist[i]->viewtime += (TIME_FIXP_SCALING - l_tmp);
-          }
-        }
-      }
-
-      if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
-      {
-        if(mainwindow->timescale_doubler == 50)
-        {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime * 0.3);
-        }
-        else
-        {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime / 4);
-        }
-
-        l_tmp = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_FIXP_SCALING;
-
-        if(l_tmp < trshld)
-        {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= l_tmp;
-        }
-
-        if(l_tmp > (TIME_FIXP_SCALING - trshld))
-        {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (TIME_FIXP_SCALING - l_tmp);
-        }
-      }
-
-      if(mainwindow->timescale_doubler == 10)
-      {
-        mainwindow->timescale_doubler = 50;
-
-        mainwindow->pagetime /= 2;
-      }
-      else
-      {
-        if(mainwindow->timescale_doubler == 50)
-        {
-          mainwindow->timescale_doubler = 20;
-
-          mainwindow->pagetime /= 2.5;
-        }
-        else
-        {
-          mainwindow->timescale_doubler = 10;
-
-          mainwindow->pagetime /= 2;
-        }
-      }
+      mainwindow->set_page_div2();
     }
     else
     {
-      if((mainwindow->viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(mainwindow->viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(mainwindow->viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
-      {
-        for(i=0; i<mainwindow->files_open; i++)
-        {
-          if(mainwindow->timescale_doubler == 20)
-          {
-            mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime * 0.75);
-          }
-          else
-          {
-            mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime / 2);
-          }
+      mainwindow->set_page_mult2();
 
-          l_tmp = mainwindow->edfheaderlist[i]->viewtime % TIME_FIXP_SCALING;
-
-          if(l_tmp < trshld)
-          {
-            mainwindow->edfheaderlist[i]->viewtime -= l_tmp;
-          }
-
-          if(l_tmp > (TIME_FIXP_SCALING - trshld))
-          {
-            mainwindow->edfheaderlist[i]->viewtime += (TIME_FIXP_SCALING - l_tmp);
-          }
-        }
-      }
-
-      if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
-      {
-        if(mainwindow->timescale_doubler == 20)
-        {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime * 0.75);
-        }
-        else
-        {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime / 2);
-        }
-
-        l_tmp = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime % TIME_FIXP_SCALING;
-
-        if(l_tmp < trshld)
-        {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= l_tmp;
-        }
-
-        if(l_tmp > (TIME_FIXP_SCALING - trshld))
-        {
-          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (TIME_FIXP_SCALING - l_tmp);
-        }
-      }
-
-      if(mainwindow->timescale_doubler == 10)
-      {
-        mainwindow->timescale_doubler = 20;
-
-        mainwindow->pagetime *= 2;
-      }
-      else
-      {
-        if(mainwindow->timescale_doubler == 20)
-        {
-          mainwindow->timescale_doubler = 50;
-
-          mainwindow->pagetime *= 2.5;
-        }
-        else
-        {
-          mainwindow->timescale_doubler = 10;
-
-          mainwindow->pagetime *= 2;
-        }
-      }
     }
   }
   else

@@ -12,6 +12,8 @@
 
  - Plotting: fixed a small timing offset error at low samplerates and small timescale.
 
+ - Plotting: add/improve the graticule when using timescales less than one second.
+
 
  version 2.06      January 2, 2024
  --------------

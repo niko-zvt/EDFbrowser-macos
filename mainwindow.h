@@ -710,6 +710,8 @@ public slots:
   void shift_vert_scrollbar_up_act_triggered();
   void shift_vert_scrollbar_down_act_triggered();
   void open_manual(const char *);
+  void set_page_div2();
+  void set_page_mult2();
 
 private slots:
   void open_new_file();
@@ -722,8 +724,6 @@ private slots:
   void add_signals_dialog();
   void show_about_dialog();
   void set_display_time(QAction *);
-  void set_page_div2();
-  void set_page_mult2();
   void set_display_time_whole_rec();
   void set_amplitude(QAction *);
   void set_amplitude_div2();
