@@ -287,6 +287,7 @@ private:
 
   void backup_colors_for_printing(void);
   void restore_colors_after_printing(void);
+  void draw_hr_graticule(QPainter *painter, long long, int, int);
 
 protected slots:
 
