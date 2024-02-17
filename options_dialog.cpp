@@ -3447,6 +3447,8 @@ void UI_OptionsDialog::update_interface(void)
 
   Crh2ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->crosshair_2.color);
 
+  annotlistdock_edited_txt_color_button->setColor(mainwindow->annot_list_edited_txt_color);
+
   if(mainwindow->maincurve->crosshair_1.has_hor_line)
   {
     checkbox6->setCheckState(Qt::Checked);
