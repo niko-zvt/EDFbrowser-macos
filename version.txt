@@ -14,6 +14,9 @@
 
  - Plotting: add/improve the graticule when using timescales less than one second.
 
+ - Plotting: added an "ECG view mode" option which provides the typical ECG grid (red on white)
+   with 40 millisecond and 0.1 mV per grid box.
+
 
  version 2.06      January 2, 2024
  --------------

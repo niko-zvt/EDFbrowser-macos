@@ -437,9 +437,11 @@ void UI_Signalswindow::DisplayButtonClicked()
 {
   int i, n, s, old_scomps;
 
-  sigcompblck_t *newsignalcomp;
+  char str1[32]={""};
 
-  QListWidgetItem *item;
+  sigcompblck_t *newsignalcomp=NULL;
+
+  QListWidgetItem *item=NULL;
 
   QList<QListWidgetItem *> selectedlist = signallist->selectedItems();
 
@@ -472,19 +474,42 @@ void UI_Signalswindow::DisplayButtonClicked()
     s = item->data(Qt::UserRole).toInt();
     newsignalcomp->edfsignal[0] = s;
     newsignalcomp->factor[0] = 1;
-    if(mainwindow->default_amplitude_use_physmax_div)
+    if(mainwindow->ecg_view_mode)
     {
-      newsignalcomp->voltpercm = (newsignalcomp->edfhdr->edfparam[s].phys_max - newsignalcomp->edfhdr->edfparam[s].phys_min)
-                                   / (mainwindow->default_amplitude_physmax_div * 2);
+      strlcpy(str1, newsignalcomp->edfhdr->edfparam[s].physdimension, 32);
+      trim_spaces(str1);
+      if((!strcmp(str1, "uV")) || (!strcmp(str1, "ECG uV")) || (!strcmp(str1, "EEG uV")))
+      {
+        newsignalcomp->voltpercm = 500.0;
+      }
+      else if((!strcmp(str1, "mV")) || (!strcmp(str1, "ECG mV")) || (!strcmp(str1, "EEG mV")))
+        {
+          newsignalcomp->voltpercm = 0.5;
+        }
+        else if((!strcmp(str1, "V")) || (!strcmp(str1, "ECG V")) || (!strcmp(str1, "EEG V")))
+          {
+            newsignalcomp->voltpercm = 0.0005;
+          }
+          else
+          {
+            newsignalcomp->voltpercm = mainwindow->default_amplitude;
+          }
     }
-    else
-    {
-      newsignalcomp->voltpercm = mainwindow->default_amplitude;
-    }
+    else if(mainwindow->default_amplitude_use_physmax_div)
+      {
+        newsignalcomp->voltpercm = (newsignalcomp->edfhdr->edfparam[s].phys_max - newsignalcomp->edfhdr->edfparam[s].phys_min)
+                                     / (mainwindow->default_amplitude_physmax_div * 2);
+      }
+      else
+      {
+        newsignalcomp->voltpercm = mainwindow->default_amplitude;
+      }
+
     if(newsignalcomp->voltpercm < 0.0)
     {
       newsignalcomp->voltpercm = -newsignalcomp->voltpercm;
     }
+
     if(mainwindow->use_diverse_signal_colors && (!color_selected))
     {
       newsignalcomp->color = default_color_list[default_color_idx++];
