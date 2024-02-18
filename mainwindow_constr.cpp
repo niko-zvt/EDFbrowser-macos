@@ -376,6 +376,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   default_fit_signals_to_pane = 0;
 
+  ecg_view_mode = 0;
+
   session_start_video = 0;
 
   session_video_starttime = 0;

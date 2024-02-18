@@ -328,6 +328,9 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   colorSchema_Blue_on_Gray_Button = new QPushButton;
   colorSchema_Blue_on_Gray_Button->setText("\"Blue on gray\"");
 
+  colorSchema_ECG_Button = new QPushButton;
+  colorSchema_ECG_Button->setText("\"ECG\"");
+
   saveColorSchemaButton = new QPushButton;
   saveColorSchemaButton->setText("Save");
 
@@ -339,6 +342,8 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   vlayout1_4->addWidget(colorSchema_Dark_Button);
   vlayout1_4->addWidget(colorSchema_NK_Button);
   vlayout1_4->addWidget(colorSchema_Blue_on_Gray_Button);
+  vlayout1_4->addWidget(colorSchema_ECG_Button);
+  vlayout1_4->addSpacing(30 * mainwindow->h_scaling);
   vlayout1_4->addWidget(saveColorSchemaButton);
   vlayout1_4->addWidget(loadColorSchemaButton);
   vlayout1_4->addStretch(100);
@@ -408,6 +413,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QObject::connect(colorSchema_Blue_on_Gray_Button, SIGNAL(clicked()),        this, SLOT(loadColorSchema_blue_gray()));
   QObject::connect(colorSchema_NK_Button,   SIGNAL(clicked()),                this, SLOT(loadColorSchema_NK()));
   QObject::connect(colorSchema_Dark_Button, SIGNAL(clicked()),                this, SLOT(loadColorSchema_Dark()));
+  QObject::connect(colorSchema_ECG_Button,  SIGNAL(clicked()),                this, SLOT(loadColorSchema_ECG()));
   for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
   {
     QObject::connect(AnnotDurationPredefinedLineEdit[i], SIGNAL(textChanged(QString)), this, SLOT(AnnotDurationPredefinedLineEdit_changed()));
@@ -3150,6 +3156,9 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
   fprintf(colorfile, " <clip_to_pane>%i</clip_to_pane>\n",
                   mainwindow->clip_to_pane);
 
+  fprintf(colorfile, " <ecg_view_mode>%i</ecg_view_mode>\n",
+                  mainwindow->ecg_view_mode);
+
   fprintf(colorfile, "</" PROGRAM_NAME "_colorschema>\n");
 
   fclose(colorfile);
@@ -3306,6 +3315,18 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
   mainwindow->clip_to_pane = atoi(result);
 
   xml_go_up(xml_hdl);
+
+  if(!xml_goto_nth_element_inside(xml_hdl, "ecg_view_mode", 0))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+    mainwindow->ecg_view_mode = atoi(result);
+
+    xml_go_up(xml_hdl);
+  }
 
   if(xml_goto_nth_element_inside(xml_hdl, "crosshair_1_color", 0))
   {
@@ -3638,6 +3659,8 @@ void UI_OptionsDialog::loadColorSchema_NK()
   mainwindow->mc_annot_ov_color_predefined[6] = QColor(64, 0, 192, 32);
   mainwindow->mc_annot_ov_color_predefined[7] = QColor(0, 255, 255, 32);
 
+  mainwindow->ecg_view_mode = 0;
+
   update_interface();
 }
 
@@ -3723,6 +3746,8 @@ void UI_OptionsDialog::loadColorSchema_Dark()
   mainwindow->mc_annot_ov_color_predefined[6] = QColor(64, 0, 192, 32);
   mainwindow->mc_annot_ov_color_predefined[7] = QColor(0, 255, 255, 32);
 
+  mainwindow->ecg_view_mode = 0;
+
   update_interface();
 }
 
@@ -3791,6 +3816,97 @@ void UI_OptionsDialog::loadColorSchema_blue_gray()
   mainwindow->mc_annot_ov_color_predefined[5] = QColor(128, 192, 64, 32);
   mainwindow->mc_annot_ov_color_predefined[6] = QColor(64, 0, 192, 32);
   mainwindow->mc_annot_ov_color_predefined[7] = QColor(0, 255, 255, 32);
+
+  mainwindow->ecg_view_mode = 0;
+
+  update_interface();
+}
+
+
+void UI_OptionsDialog::loadColorSchema_ECG()
+{
+  mainwindow->maincurve->backgroundcolor.setRed(255);
+  mainwindow->maincurve->backgroundcolor.setGreen(255);
+  mainwindow->maincurve->backgroundcolor.setBlue(255);
+
+  mainwindow->maincurve->small_ruler_color.setRed(0xfe);
+  mainwindow->maincurve->small_ruler_color.setGreen(0xe6);
+  mainwindow->maincurve->small_ruler_color.setBlue(0xe6);
+
+  mainwindow->maincurve->big_ruler_color.setRed(255);
+  mainwindow->maincurve->big_ruler_color.setGreen(0);
+  mainwindow->maincurve->big_ruler_color.setBlue(0);
+
+  mainwindow->maincurve->mouse_rect_color.setRed(0);
+  mainwindow->maincurve->mouse_rect_color.setGreen(0);
+  mainwindow->maincurve->mouse_rect_color.setBlue(0);
+
+  mainwindow->maincurve->text_color.setRed(0);
+  mainwindow->maincurve->text_color.setGreen(0);
+  mainwindow->maincurve->text_color.setBlue(0);
+
+  mainwindow->maincurve->baseline_color.setRed(255);
+  mainwindow->maincurve->baseline_color.setGreen(0);
+  mainwindow->maincurve->baseline_color.setBlue(0);
+
+  mainwindow->maincurve->annot_marker_color.setRed(0);
+  mainwindow->maincurve->annot_marker_color.setGreen(0);
+  mainwindow->maincurve->annot_marker_color.setBlue(0);
+
+  mainwindow->maincurve->annot_marker_selected_color.setRed(128);
+  mainwindow->maincurve->annot_marker_selected_color.setGreen(0);
+  mainwindow->maincurve->annot_marker_selected_color.setBlue(128);
+
+  mainwindow->maincurve->annot_duration_color.setRed(0);
+  mainwindow->maincurve->annot_duration_color.setGreen(127);
+  mainwindow->maincurve->annot_duration_color.setBlue(127);
+  mainwindow->maincurve->annot_duration_color.setAlpha(32);
+
+  mainwindow->maincurve->annot_duration_color_selected.setRed(127);
+  mainwindow->maincurve->annot_duration_color_selected.setGreen(0);
+  mainwindow->maincurve->annot_duration_color_selected.setBlue(127);
+  mainwindow->maincurve->annot_duration_color_selected.setAlpha(32);
+
+  mainwindow->maincurve->signal_color = Qt::black;
+
+  mainwindow->maincurve->floating_ruler_color = Qt::black;
+
+  mainwindow->maincurve->blackwhite_printing = 1;
+
+  mainwindow->show_annot_markers = 1;
+
+  mainwindow->show_baselines = 1;
+
+  mainwindow->maincurve->crosshair_1.color = Qt::magenta;
+
+  mainwindow->maincurve->crosshair_2.color = Qt::blue;
+
+  mainwindow->annot_list_edited_txt_color = Qt::red;
+
+  mainwindow->clip_to_pane = 0;
+
+  mainwindow->use_diverse_signal_colors = 0;
+
+  mainwindow->maincurve->crosshair_1.dot_sz = 4;
+  mainwindow->maincurve->crosshair_2.dot_sz = 4;
+
+  mainwindow->maincurve->crosshair_1.has_hor_line = 0;
+  mainwindow->maincurve->crosshair_2.has_hor_line = 0;
+
+  mainwindow->maincurve->crosshair_1.has_hor_line = 0;
+
+  mainwindow->maincurve->crosshair_1.dot_sz = 4;
+
+  mainwindow->mc_annot_ov_color_predefined[0] = QColor(255, 0, 0, 32);
+  mainwindow->mc_annot_ov_color_predefined[1] = QColor(0, 0, 128, 32);
+  mainwindow->mc_annot_ov_color_predefined[2] = QColor(128, 128, 0, 32);
+  mainwindow->mc_annot_ov_color_predefined[3] = QColor(255, 85, 255, 32);
+  mainwindow->mc_annot_ov_color_predefined[4] = QColor(255, 192, 0, 32);
+  mainwindow->mc_annot_ov_color_predefined[5] = QColor(128, 192, 64, 32);
+  mainwindow->mc_annot_ov_color_predefined[6] = QColor(64, 0, 192, 32);
+  mainwindow->mc_annot_ov_color_predefined[7] = QColor(0, 255, 255, 32);
+
+  mainwindow->ecg_view_mode = 1;
 
   update_interface();
 }

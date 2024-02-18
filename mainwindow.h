@@ -298,7 +298,8 @@ public:
       mc_v_scrollarea_max_signals,
       default_invert_eeg_signals,
       default_time_scale,
-      default_fit_signals_to_pane;
+      default_fit_signals_to_pane,
+      ecg_view_mode;
 
 volatile int rc_cmd_in_progress;
 

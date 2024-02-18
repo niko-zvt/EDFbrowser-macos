@@ -64,6 +64,7 @@ QDialog        *optionsdialog;
 QPushButton    *CloseButton,
                *colorSchema_Blue_on_Gray_Button,
                *colorSchema_NK_Button,
+               *colorSchema_ECG_Button,
                *colorSchema_Dark_Button,
                *ApplyButton,
                *DefaultButton2,
@@ -263,6 +264,7 @@ void loadColorSchemaButtonClicked();
 void loadColorSchema_NK();
 void loadColorSchema_Dark();
 void loadColorSchema_blue_gray();
+void loadColorSchema_ECG();
 void dspinbox4_4ValueChanged(double);
 void lineedit4_1_changed(const QString);
 void spinBox5_1ValueChanged(int);

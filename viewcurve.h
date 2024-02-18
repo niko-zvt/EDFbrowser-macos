@@ -287,7 +287,9 @@ private:
 
   void backup_colors_for_printing(void);
   void restore_colors_after_printing(void);
-  void draw_hr_graticule(QPainter *painter, long long, int, int);
+  void draw_hr_graticule(QPainter *, long long, int, int);
+  void draw_default_horizontal_graticule(QPainter *, int);
+  void draw_ecg_horizontal_graticule(QPainter *, int);
 
 protected slots:
 

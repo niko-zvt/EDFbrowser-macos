@@ -28,33 +28,51 @@
 #include "viewcurve.h"
 
 
-void ViewCurve::draw_hr_graticule(QPainter *painter, long long ll_elapsed_time, int scale, int range)
-{
-  int x_pix;
 
-  long long time_ppixel;
+// The ECG waves are recorded on special graph paper that is divided into 1 mm2 grid-like boxes. The ECG paper speed is ordinarily 25 mm/sec.
+// As a result, each 1 mm (small) horizontal box corresponds to 0.04 sec (40 ms), with heavier lines forming larger boxes that include five
+// small boxes and hence represent 0.20 sec (200 ms) intervals. On occasion, the paper speed is increased to 50 mm/sec to better define waveforms.
+// In this situation, there are only six leads per sheet of paper. Each large box is therefore only 0.10 sec and each small box is only 0.02 sec.
+// In addition, the heart rate appears to be one-half of what is recorded at 25 mm/sec paper speed, and all of the ECG intervals are twice as
+// long as normal. Other paper speeds are occasionally used.
+//
+// Vertically, the ECG graph measures the height (amplitude) of a given wave or deflection. The standard calibration is 10 mm (10 small boxes),
+// equal to 1 mV. On occasion, particularly when the waveforms are small, double standard is used (20 mm equals 1 mv). When the wave forms are
+// very large, half standard may be used (5 mm equals 1 mv). Paper speed and voltage are usually printed on the bottom of the ECG for reference.
+
+void ViewCurve::draw_ecg_horizontal_graticule(QPainter *painter, int print_linewidth)
+{
+  int x_pix=0;
+
+  long long time_ppixel,
+            ll_elapsed_time;
 
   char str4[1024]="";
 
-  if(scale < 1)  return;
+  time_ppixel = mainwindow->pagetime / w;
 
-  time_ppixel = (mainwindow->pagetime * ((TIME_FIXP_SCALING_HR * scale) / TIME_FIXP_SCALING)) / w;
+  if(mainwindow->files_open&&mainwindow->signalcomps)
+  {
+    ll_elapsed_time = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime;
+  }
+  else
+  {
+    ll_elapsed_time = 0;
+  }
 
-  ll_elapsed_time %= TIME_FIXP_SCALING;
-
-  ll_elapsed_time *= ((TIME_FIXP_SCALING_HR * scale) / TIME_FIXP_SCALING);
+  ruler_pen->setWidth(print_linewidth);
 
   ruler_pen->setColor(small_ruler_color);
   painter->setPen(*ruler_pen);
 
   for(x_pix=0; x_pix<w; x_pix++)
   {
-    if((ll_elapsed_time / (TIME_FIXP_SCALING_HR / 100))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING_HR / 100)))
+    if((ll_elapsed_time / (TIME_FIXP_SCALING / 25))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 25)))
     {
-      painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling * printsize_y_factor);
+      painter->drawLine(x_pix, 0, x_pix, h);
     }
 
-    if(((ll_elapsed_time / (TIME_FIXP_SCALING_HR / 10))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING_HR / 10))) ||
+    if(((ll_elapsed_time / (TIME_FIXP_SCALING / 5))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 5))) ||
       ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
     {
       if(x_pix)
@@ -62,321 +80,45 @@ void ViewCurve::draw_hr_graticule(QPainter *painter, long long ll_elapsed_time, 
         ruler_pen->setColor(big_ruler_color);
         painter->setPen(*ruler_pen);
         painter->drawLine(x_pix, 0, x_pix, h);
+        ruler_pen->setColor(small_ruler_color);
+        painter->setPen(*ruler_pen);
+      }
+    }
+
+    if(((ll_elapsed_time / TIME_FIXP_SCALING)!=((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) ||
+      ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
+    {
+      if(x_pix)
+      {
+        ruler_pen->setColor(big_ruler_color);
+        painter->setPen(*ruler_pen);
         if(ll_elapsed_time < 0LL)
         {
-          snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / (TIME_FIXP_SCALING_HR / range))) % 1000);
+          snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / TIME_FIXP_SCALING)) % 60);
         }
         else
         {
-          snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING_HR / range))) % 1000);
+          snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) % 60);
         }
         painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
         ruler_pen->setColor(small_ruler_color);
         painter->setPen(*ruler_pen);
       }
-
-      painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling * printsize_y_factor);
     }
 
     ll_elapsed_time += time_ppixel;
   }
 }
 
-void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, int print_linewidth, int print_format)
+void ViewCurve::draw_default_horizontal_graticule(QPainter *painter, int print_linewidth)
 {
-  int i, j, k, n, p, x_pix=0, x_tmp,
-      signalcomps=0,
-      baseline=0,
-      p_decimals=0,
-      m_pagetime=10,
-      vert_ruler_offset,
-      marker_x,
-      marker_x2,
-      former_marker_x,
-      annot_list_sz=0,
-      annot_text_stack_idx=0,
-      viewtimestr_end_x=0,
-      pagetimestr_start_x=0,
-      precision=3,
-      prec_scale=10000,
-      file_idx=0,
-      annot_idx=0;
-
-  static int old_w=100;
-
-  double mono_font_pixel_height=20,
-         mono_font_pixel_width=12,
-         vertical_distance=1,
-         dtmp=0;
-
-  char *viewbuf=NULL,
-       str1[600]="",
-       str4[1024]="",
-       str5[128]="",
-       annot_description_str[256]={""},
-       annot_onset_str[256]={""},
-       annot_duration_str[256]={""},
-       *chp=NULL;
+  int x_pix=0,
+      m_pagetime;
 
   long long time_ppixel,
-            ll_elapsed_time,
-            l_time,
-            l_tmp,
-            l_tmp2=0LL;
+            ll_elapsed_time;
 
-  sigcompblck_t **signalcomp=NULL;
-
-  annotlist_t *annot_list=NULL;
-
-  annotblck_t *annot=NULL;
-
-  if(mainwindow->exit_in_progress || (painter == NULL))
-  {
-    return;
-  }
-
-  signalcomps = mainwindow->signalcomps;
-  signalcomp = mainwindow->signalcomp;
-  viewbuf = mainwindow->viewbuf;
-
-  painter_pixelsizefactor = 1.0 / mainwindow->y_pixelsizefactor;
-
-  if(w_width && w_height && (print_format != PRINT_FORMAT_NONE))  /* printing */
-  {
-    w = w_width;
-    h = w_height;
-
-    printsize_x_factor = ((double)w_width) / ((double)width());
-    printsize_y_factor = ((double)w_height) / ((double)height());
-
-    painter_pixelsizefactor *= printsize_y_factor;
-
-    mono_font_pixel_width = mainwindow->mono_font_pixel_width * printsize_x_factor;
-    mono_font_pixel_height = mainwindow->mono_font_pixel_height * printsize_y_factor;
-
-    *printfont = *mainwindow->monofont;
-    printfont->setPixelSize(mono_font_pixel_width * 1.6 + 0.5);
-    painter->setFont(*printfont);
-
-    scroll_h_offset = h * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
-
-    if((print_format == PRINT_FORMAT_PDF_A3) || (print_format == PRINT_FORMAT_PDF_A4) || (print_format == PRINT_FORMAT_PDF_LETTER) || (print_format == PRINT_FORMAT_PRINTER))
-    {
-      painter->setPen(QPen(QBrush(Qt::black), PRINT_LINE_WIDTH));
-      painter->drawRect(-PRINT_LINE_WIDTH, -PRINT_LINE_WIDTH, w + PRINT_LINE_WIDTH, h + PRINT_LINE_WIDTH);
-    }
-
-    painter->setClipping(true);
-    painter->setClipRect(0, 0, w, h);
-
-    printing = 1;
-  }
-  else  /* not printing */
-  {
-    w = width();
-    h = height();
-
-    printsize_x_factor = 1;
-    printsize_y_factor = 1;
-
-    scroll_h_offset = h * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
-
-    mono_font_pixel_width = mainwindow->mono_font_pixel_width;
-    mono_font_pixel_height = mainwindow->mono_font_pixel_height;
-
-    painter->setFont(*mainwindow->monofont);
-
-    painter->setClipping(false);
-
-    printing = 0;
-  }
-
-  for(i=0; i<signalcomps; i++)
-  {
-    signalcomp[i]->sample_pixel_ratio = (double)signalcomp[i]->samples_on_screen / (double)w;
-
-    signalcomp[i]->draw_rectangle_sum_y = 0;
-
-    signalcomp[i]->draw_rectangle_sum_cnt = 0;
-  }
-
-  vertical_distance = ((double)h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1.0);
-
-  painter->fillRect(0, 0, w, h, backgroundcolor);
-
-  if(mainwindow->annot_editor_highres)
-  {
-    precision = 6;
-    prec_scale = 10;
-  }
-  else
-  {
-    precision = 3;
-    prec_scale = 10000;
-  }
-
-  if(mainwindow->show_annot_markers)
-  {
-    for(file_idx=0; file_idx<mainwindow->files_open; file_idx++)
-    {
-      annot_list = &mainwindow->edfheaderlist[file_idx]->annot_list;
-
-      annot_list_sz = edfplus_annotation_size(annot_list);
-
-      for(annot_idx=0; annot_idx<annot_list_sz; annot_idx++)
-      {
-        annot = edfplus_annotation_get_item(annot_list, annot_idx);
-
-        if(annot->long_duration > 0LL)
-        {
-          l_tmp = annot->onset;
-
-          if(l_tmp > (long long)(mainwindow->edfheaderlist[file_idx]->viewtime + mainwindow->pagetime))
-          {
-            break;
-          }
-
-          if(((l_tmp + annot->long_duration) > (mainwindow->edfheaderlist[file_idx]->viewtime - TIME_FIXP_SCALING)) && (!annot->hidden || mainwindow->annot_filter->hide_in_list_only))
-          {
-            l_tmp -= mainwindow->edfheaderlist[file_idx]->viewtime;
-
-            marker_x = (int)((((double)w) / mainwindow->pagetime) * l_tmp);
-
-            marker_x2 = (int)((((double)w) / mainwindow->pagetime) * annot->long_duration);
-
-            if(marker_x < 0)
-            {
-              marker_x2 += marker_x;
-
-              marker_x = 0;
-            }
-
-            if((marker_x + marker_x2) > w)
-            {
-              x_tmp = marker_x + marker_x2 - w;
-
-              marker_x2 -= x_tmp;
-            }
-
-            if((marker_x < w) && (marker_x2 > 0))
-            {
-              chp = NULL;
-
-              if((signalcomps > 1) && (mainwindow->channel_linked_annotations))
-              {
-                strlcpy(str4, annot->description, MAX_ANNOTATION_LEN);
-                chp = strstr(str4, "@@");
-                if(chp != NULL)
-                {
-                  if(strlen(chp) > 2)
-                  {
-                    chp += 2;
-                    if(mainwindow->strip_label_types)
-                    {
-                      strip_types_from_label(chp);
-                    }
-                    trim_spaces(chp);
-
-                    for(k=0; k<signalcomps; k++)
-                    {
-                      if(!strcmp(chp, signalcomp[k]->signallabel))
-                      {
-                        baseline = (vertical_distance * (k + 1)) + signalcomp[k]->screen_offset;
-
-                        if(annot->selected_in_dock)
-                        {
-                          painter->fillRect(marker_x, baseline - (vertical_distance / 2) - scroll_h_offset, marker_x2, vertical_distance, annot_duration_color_selected);
-                        }
-                        else
-                        {
-                          painter->fillRect(marker_x, baseline - (vertical_distance / 2) - scroll_h_offset, marker_x2, vertical_distance, annot_duration_color);
-                        }
-
-                        break;
-                      }
-                    }
-                    if(k == signalcomps)
-                    {
-                      chp = NULL;
-                    }
-                  }
-                  else
-                  {
-                    chp = NULL;
-                  }
-                }
-              }
-
-              if(chp == NULL)
-              {
-                if(annot->selected_in_dock)
-                {
-                  if(mainwindow->annotations_duration_background_type == 0)
-                  {
-                    painter->fillRect(marker_x, 0, marker_x2, h, annot_duration_color_selected);
-                  }
-                  else
-                  {
-                    if(file_idx % 2)
-                    {
-                      painter->fillRect(marker_x, 0, marker_x2, 4 * mono_font_pixel_height, annot_duration_color_selected);
-                    }
-                    else
-                    {
-                      painter->fillRect(marker_x, h - (4 * mono_font_pixel_height), marker_x2, 4 * mono_font_pixel_height, annot_duration_color_selected);
-                    }
-                  }
-                }
-                else
-                {
-                  for(p=0; p<MAX_MC_ANNOT_OV_COLORS; p++)
-                  {
-                    if(!strcmp(annot->description, mainwindow->mc_annot_ov_name_predefined[p]))
-                    {
-                      if(mainwindow->annotations_duration_background_type == 0)
-                      {
-                        painter->fillRect(marker_x, 0, marker_x2, h, mainwindow->mc_annot_ov_color_predefined[p]);
-                      }
-                      else
-                      {
-                        if(file_idx % 2)
-                        {
-                          painter->fillRect(marker_x, 0, marker_x2, 4 * mono_font_pixel_height, mainwindow->mc_annot_ov_color_predefined[p]);
-                        }
-                        else
-                        {
-                          painter->fillRect(marker_x, h - (4 * mono_font_pixel_height), marker_x2, 4 * mono_font_pixel_height, mainwindow->mc_annot_ov_color_predefined[p]);
-                        }
-                      }
-                      break;
-                    }
-                  }
-                  if(p == MAX_MC_ANNOT_OV_COLORS)
-                  {
-                    if(mainwindow->annotations_duration_background_type == 0)
-                    {
-                      painter->fillRect(marker_x, 0, marker_x2, h, annot_duration_color);
-                    }
-                    else
-                    {
-                      if(file_idx % 2)
-                      {
-                        painter->fillRect(marker_x, 0, marker_x2, 4 * mono_font_pixel_height, annot_duration_color);
-                      }
-                      else
-                      {
-                        painter->fillRect(marker_x, h - (4 * mono_font_pixel_height), marker_x2, 4 * mono_font_pixel_height, annot_duration_color);
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+  char str4[1024]="";
 
   m_pagetime = (int)(mainwindow->pagetime / TIME_FIXP_SCALING);
 
@@ -668,6 +410,367 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       ll_elapsed_time += time_ppixel;
     }
   }
+}
+
+
+void ViewCurve::draw_hr_graticule(QPainter *painter, long long ll_elapsed_time, int scale, int range)
+{
+  int x_pix;
+
+  long long time_ppixel;
+
+  char str4[1024]="";
+
+  if(scale < 1)  return;
+
+  time_ppixel = (mainwindow->pagetime * ((TIME_FIXP_SCALING_HR * scale) / TIME_FIXP_SCALING)) / w;
+
+  ll_elapsed_time %= TIME_FIXP_SCALING;
+
+  ll_elapsed_time *= ((TIME_FIXP_SCALING_HR * scale) / TIME_FIXP_SCALING);
+
+  ruler_pen->setColor(small_ruler_color);
+  painter->setPen(*ruler_pen);
+
+  for(x_pix=0; x_pix<w; x_pix++)
+  {
+    if((ll_elapsed_time / (TIME_FIXP_SCALING_HR / 100))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING_HR / 100)))
+    {
+      painter->drawLine(x_pix, 0, x_pix, 4 * h_scaling * printsize_y_factor);
+    }
+
+    if(((ll_elapsed_time / (TIME_FIXP_SCALING_HR / 10))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING_HR / 10))) ||
+      ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
+    {
+      if(x_pix)
+      {
+        ruler_pen->setColor(big_ruler_color);
+        painter->setPen(*ruler_pen);
+        painter->drawLine(x_pix, 0, x_pix, h);
+        if(ll_elapsed_time < 0LL)
+        {
+          snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / (TIME_FIXP_SCALING_HR / range))) % 1000);
+        }
+        else
+        {
+          snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING_HR / range))) % 1000);
+        }
+        painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
+        ruler_pen->setColor(small_ruler_color);
+        painter->setPen(*ruler_pen);
+      }
+
+      painter->drawLine(x_pix, 0, x_pix, 8 * h_scaling * printsize_y_factor);
+    }
+
+    ll_elapsed_time += time_ppixel;
+  }
+}
+
+void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, int print_linewidth, int print_format)
+{
+  int i, j, k, n, p, x_tmp,
+      signalcomps=0,
+      baseline=0,
+      p_decimals=0,
+      vert_ruler_offset,
+      marker_x,
+      marker_x2,
+      former_marker_x,
+      annot_list_sz=0,
+      annot_text_stack_idx=0,
+      viewtimestr_end_x=0,
+      pagetimestr_start_x=0,
+      precision=3,
+      prec_scale=10000,
+      file_idx=0,
+      annot_idx=0;
+
+  static int old_w=100;
+
+  double mono_font_pixel_height=20,
+         mono_font_pixel_width=12,
+         vertical_distance=1,
+         dtmp=0,
+         sense=0.5;
+
+  char *viewbuf=NULL,
+       str1[600]="",
+       str4[1024]="",
+       str5[128]="",
+       annot_description_str[256]={""},
+       annot_onset_str[256]={""},
+       annot_duration_str[256]={""},
+       *chp=NULL;
+
+  long long l_time,
+            l_tmp,
+            l_tmp2=0LL;
+
+  sigcompblck_t **signalcomp=NULL;
+
+  annotlist_t *annot_list=NULL;
+
+  annotblck_t *annot=NULL;
+
+  if(mainwindow->exit_in_progress || (painter == NULL))
+  {
+    return;
+  }
+
+  signalcomps = mainwindow->signalcomps;
+  signalcomp = mainwindow->signalcomp;
+  viewbuf = mainwindow->viewbuf;
+
+/* painter_pixelsizefactor: number of pixels per cm vertical */
+  painter_pixelsizefactor = 1.0 / mainwindow->y_pixelsizefactor;
+
+  if(w_width && w_height && (print_format != PRINT_FORMAT_NONE))  /* printing */
+  {
+    w = w_width;
+    h = w_height;
+
+    printsize_x_factor = ((double)w_width) / ((double)width());
+    printsize_y_factor = ((double)w_height) / ((double)height());
+
+    painter_pixelsizefactor *= printsize_y_factor;
+
+    mono_font_pixel_width = mainwindow->mono_font_pixel_width * printsize_x_factor;
+    mono_font_pixel_height = mainwindow->mono_font_pixel_height * printsize_y_factor;
+
+    *printfont = *mainwindow->monofont;
+    printfont->setPixelSize(mono_font_pixel_width * 1.6 + 0.5);
+    painter->setFont(*printfont);
+
+    scroll_h_offset = h * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
+
+    if((print_format == PRINT_FORMAT_PDF_A3) || (print_format == PRINT_FORMAT_PDF_A4) || (print_format == PRINT_FORMAT_PDF_LETTER) || (print_format == PRINT_FORMAT_PRINTER))
+    {
+      painter->setPen(QPen(QBrush(Qt::black), PRINT_LINE_WIDTH));
+      painter->drawRect(-PRINT_LINE_WIDTH, -PRINT_LINE_WIDTH, w + PRINT_LINE_WIDTH, h + PRINT_LINE_WIDTH);
+    }
+
+    painter->setClipping(true);
+    painter->setClipRect(0, 0, w, h);
+
+    printing = 1;
+  }
+  else  /* not printing */
+  {
+    w = width();
+    h = height();
+
+    printsize_x_factor = 1;
+    printsize_y_factor = 1;
+
+    scroll_h_offset = h * (mainwindow->mc_v_scrollarea_ratio - 1) * (scrollbar_h_value / 100000.0);
+
+    mono_font_pixel_width = mainwindow->mono_font_pixel_width;
+    mono_font_pixel_height = mainwindow->mono_font_pixel_height;
+
+    painter->setFont(*mainwindow->monofont);
+
+    painter->setClipping(false);
+
+    printing = 0;
+  }
+
+  for(i=0; i<signalcomps; i++)
+  {
+    signalcomp[i]->sample_pixel_ratio = (double)signalcomp[i]->samples_on_screen / (double)w;
+
+    signalcomp[i]->draw_rectangle_sum_y = 0;
+
+    signalcomp[i]->draw_rectangle_sum_cnt = 0;
+  }
+
+  vertical_distance = ((double)h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1.0);
+
+  painter->fillRect(0, 0, w, h, backgroundcolor);
+
+  if(mainwindow->annot_editor_highres)
+  {
+    precision = 6;
+    prec_scale = 10;
+  }
+  else
+  {
+    precision = 3;
+    prec_scale = 10000;
+  }
+
+  if(mainwindow->show_annot_markers)
+  {
+    for(file_idx=0; file_idx<mainwindow->files_open; file_idx++)
+    {
+      annot_list = &mainwindow->edfheaderlist[file_idx]->annot_list;
+
+      annot_list_sz = edfplus_annotation_size(annot_list);
+
+      for(annot_idx=0; annot_idx<annot_list_sz; annot_idx++)
+      {
+        annot = edfplus_annotation_get_item(annot_list, annot_idx);
+
+        if(annot->long_duration > 0LL)
+        {
+          l_tmp = annot->onset;
+
+          if(l_tmp > (long long)(mainwindow->edfheaderlist[file_idx]->viewtime + mainwindow->pagetime))
+          {
+            break;
+          }
+
+          if(((l_tmp + annot->long_duration) > (mainwindow->edfheaderlist[file_idx]->viewtime - TIME_FIXP_SCALING)) && (!annot->hidden || mainwindow->annot_filter->hide_in_list_only))
+          {
+            l_tmp -= mainwindow->edfheaderlist[file_idx]->viewtime;
+
+            marker_x = (int)((((double)w) / mainwindow->pagetime) * l_tmp);
+
+            marker_x2 = (int)((((double)w) / mainwindow->pagetime) * annot->long_duration);
+
+            if(marker_x < 0)
+            {
+              marker_x2 += marker_x;
+
+              marker_x = 0;
+            }
+
+            if((marker_x + marker_x2) > w)
+            {
+              x_tmp = marker_x + marker_x2 - w;
+
+              marker_x2 -= x_tmp;
+            }
+
+            if((marker_x < w) && (marker_x2 > 0))
+            {
+              chp = NULL;
+
+              if((signalcomps > 1) && (mainwindow->channel_linked_annotations))
+              {
+                strlcpy(str4, annot->description, MAX_ANNOTATION_LEN);
+                chp = strstr(str4, "@@");
+                if(chp != NULL)
+                {
+                  if(strlen(chp) > 2)
+                  {
+                    chp += 2;
+                    if(mainwindow->strip_label_types)
+                    {
+                      strip_types_from_label(chp);
+                    }
+                    trim_spaces(chp);
+
+                    for(k=0; k<signalcomps; k++)
+                    {
+                      if(!strcmp(chp, signalcomp[k]->signallabel))
+                      {
+                        baseline = (vertical_distance * (k + 1)) + signalcomp[k]->screen_offset;
+
+                        if(annot->selected_in_dock)
+                        {
+                          painter->fillRect(marker_x, baseline - (vertical_distance / 2) - scroll_h_offset, marker_x2, vertical_distance, annot_duration_color_selected);
+                        }
+                        else
+                        {
+                          painter->fillRect(marker_x, baseline - (vertical_distance / 2) - scroll_h_offset, marker_x2, vertical_distance, annot_duration_color);
+                        }
+
+                        break;
+                      }
+                    }
+                    if(k == signalcomps)
+                    {
+                      chp = NULL;
+                    }
+                  }
+                  else
+                  {
+                    chp = NULL;
+                  }
+                }
+              }
+
+              if(chp == NULL)
+              {
+                if(annot->selected_in_dock)
+                {
+                  if(mainwindow->annotations_duration_background_type == 0)
+                  {
+                    painter->fillRect(marker_x, 0, marker_x2, h, annot_duration_color_selected);
+                  }
+                  else
+                  {
+                    if(file_idx % 2)
+                    {
+                      painter->fillRect(marker_x, 0, marker_x2, 4 * mono_font_pixel_height, annot_duration_color_selected);
+                    }
+                    else
+                    {
+                      painter->fillRect(marker_x, h - (4 * mono_font_pixel_height), marker_x2, 4 * mono_font_pixel_height, annot_duration_color_selected);
+                    }
+                  }
+                }
+                else
+                {
+                  for(p=0; p<MAX_MC_ANNOT_OV_COLORS; p++)
+                  {
+                    if(!strcmp(annot->description, mainwindow->mc_annot_ov_name_predefined[p]))
+                    {
+                      if(mainwindow->annotations_duration_background_type == 0)
+                      {
+                        painter->fillRect(marker_x, 0, marker_x2, h, mainwindow->mc_annot_ov_color_predefined[p]);
+                      }
+                      else
+                      {
+                        if(file_idx % 2)
+                        {
+                          painter->fillRect(marker_x, 0, marker_x2, 4 * mono_font_pixel_height, mainwindow->mc_annot_ov_color_predefined[p]);
+                        }
+                        else
+                        {
+                          painter->fillRect(marker_x, h - (4 * mono_font_pixel_height), marker_x2, 4 * mono_font_pixel_height, mainwindow->mc_annot_ov_color_predefined[p]);
+                        }
+                      }
+                      break;
+                    }
+                  }
+                  if(p == MAX_MC_ANNOT_OV_COLORS)
+                  {
+                    if(mainwindow->annotations_duration_background_type == 0)
+                    {
+                      painter->fillRect(marker_x, 0, marker_x2, h, annot_duration_color);
+                    }
+                    else
+                    {
+                      if(file_idx % 2)
+                      {
+                        painter->fillRect(marker_x, 0, marker_x2, 4 * mono_font_pixel_height, annot_duration_color);
+                      }
+                      else
+                      {
+                        painter->fillRect(marker_x, h - (4 * mono_font_pixel_height), marker_x2, 4 * mono_font_pixel_height, annot_duration_color);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if(mainwindow->ecg_view_mode)
+  {
+    draw_ecg_horizontal_graticule(painter, print_linewidth);
+  }
+  else
+  {
+    draw_default_horizontal_graticule(painter, print_linewidth);
+  }
+
 
   if(mainwindow->show_baselines)
   {
@@ -708,43 +811,130 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                 p_decimals = 0;
               }
 
-      for(j=1; j<24; j++)
-      {
-        vert_ruler_offset = j * painter_pixelsizefactor;
 
-        if(signalcomps!=1)
+      if(mainwindow->ecg_view_mode)
+      {
+        strlcpy(str1, signalcomp[i]->physdimension, 32);
+        trim_spaces(str1);
+        if((!strcmp(str1, "uV")) || (!strcmp(str1, "ECG uV")) || (!strcmp(str1, "EEG uV")))
         {
-          if(vert_ruler_offset>((vertical_distance / 2) - 8))
+          sense = 500.0;
+        }
+        else if((!strcmp(str1, "mV")) || (!strcmp(str1, "ECG mV")) || (!strcmp(str1, "EEG mV")))
+          {
+            sense = 0.5;
+          }
+          else if((!strcmp(str1, "V")) || (!strcmp(str1, "ECG V")) || (!strcmp(str1, "EEG V")))
+            {
+              sense = 0.0005;
+            }
+            else
+            {
+              sense = 0.5;
+            }
+
+        for(j=1; j<120; j++)
+        {
+          vert_ruler_offset = j * 0.2 * painter_pixelsizefactor * (sense / signalcomp[i]->voltpercm);
+
+          if(j==1)
+          {
+            if(vert_ruler_offset < 3)  break;
+          }
+
+          if(signalcomps!=1)
+          {
+            if(vert_ruler_offset>((vertical_distance / 2) - 8))
+            {
+              break;
+            }
+          }
+
+          if((baseline + vert_ruler_offset) > ((h * mainwindow->mc_v_scrollarea_ratio) - (15 * printsize_y_factor)))
           {
             break;
           }
-        }
 
-        if((baseline + vert_ruler_offset) > ((h * mainwindow->mc_v_scrollarea_ratio) - (15 * printsize_y_factor)))
+          if((baseline - vert_ruler_offset) < (15 * printsize_y_factor))
+          {
+            break;
+          }
+
+          painter->setPen(small_ruler_color);
+
+          if(!(j%5))
+          {
+            painter->setPen(baseline_color);
+
+            painter->drawLine(0, baseline - vert_ruler_offset - scroll_h_offset, w, baseline - vert_ruler_offset - scroll_h_offset);
+
+            if(!(j%10))
+            {
+              snprintf(str1, 128, "%+.*f %s", p_decimals,
+                ((sense * j / 5) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor))) * (double)signalcomp[i]->polarity,
+                signalcomp[i]->physdimension);
+
+              painter->drawText(5 * printsize_x_factor, baseline - vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1);
+
+              snprintf(str1, 128, "%+.*f %s", p_decimals,
+                (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor)) - (sense * j / 5)) * (double)signalcomp[i]->polarity,
+                signalcomp[i]->physdimension);
+
+              painter->drawText(5 * printsize_x_factor, baseline + vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1);
+            }
+
+            painter->drawLine(0, baseline + vert_ruler_offset - scroll_h_offset, w, baseline + vert_ruler_offset - scroll_h_offset);
+
+            painter->setPen(small_ruler_color);
+          }
+          else
+          {
+            painter->drawLine(0, baseline - vert_ruler_offset - scroll_h_offset, w, baseline - vert_ruler_offset - scroll_h_offset);
+
+            painter->drawLine(0, baseline + vert_ruler_offset - scroll_h_offset, w, baseline + vert_ruler_offset - scroll_h_offset);
+          }
+        }
+      }
+      else  /* default viewmode (non ECG) */
+      {
+        for(j=1; j<24; j++)
         {
-          break;
+          vert_ruler_offset = j * painter_pixelsizefactor;
+
+          if(signalcomps!=1)
+          {
+            if(vert_ruler_offset>((vertical_distance / 2) - 8))
+            {
+              break;
+            }
+          }
+
+          if((baseline + vert_ruler_offset) > ((h * mainwindow->mc_v_scrollarea_ratio) - (15 * printsize_y_factor)))
+          {
+            break;
+          }
+
+          if((baseline - vert_ruler_offset) < (15 * printsize_y_factor))
+          {
+            break;
+          }
+
+          painter->drawLine(0, baseline - vert_ruler_offset - scroll_h_offset, w, baseline - vert_ruler_offset - scroll_h_offset);
+
+          snprintf(str1, 128, "%+.*f %s", p_decimals,
+            ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor))) * (double)signalcomp[i]->polarity,
+            signalcomp[i]->physdimension);
+
+          painter->drawText(5 * printsize_x_factor, baseline - vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1);
+
+          painter->drawLine(0, baseline + vert_ruler_offset - scroll_h_offset, w, baseline + vert_ruler_offset - scroll_h_offset);
+
+          snprintf(str1, 128, "%+.*f %s", p_decimals,
+            (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor)) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity,
+            signalcomp[i]->physdimension);
+
+          painter->drawText(5 * printsize_x_factor, baseline + vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1);
         }
-
-        if((baseline - vert_ruler_offset) < (15 * printsize_y_factor))
-        {
-          break;
-        }
-
-        painter->drawLine(0, baseline - vert_ruler_offset - scroll_h_offset, w, baseline - vert_ruler_offset - scroll_h_offset);
-
-        snprintf(str1, 128, "%+.*f %s", p_decimals,
-          ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor))) * (double)signalcomp[i]->polarity,
-          signalcomp[i]->physdimension);
-
-        painter->drawText(5 * printsize_x_factor, baseline - vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1);
-
-        painter->drawLine(0, baseline + vert_ruler_offset - scroll_h_offset, w, baseline + vert_ruler_offset - scroll_h_offset);
-
-        snprintf(str1, 128, "%+.*f %s", p_decimals,
-          (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor)) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity,
-          signalcomp[i]->physdimension);
-
-        painter->drawText(5 * printsize_x_factor, baseline + vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1);
       }
     }
   }
