@@ -776,11 +776,11 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   {
     vertical_distance = ((double)h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1.0);
 
-    painter->setPen(baseline_color);
-
     for(i=0; i<signalcomps; i++)
     {
       baseline = vertical_distance * (i + 1);
+
+      painter->setPen(baseline_color);
 
       painter->drawLine(0, baseline - scroll_h_offset, w, baseline - scroll_h_offset);
 
@@ -816,15 +816,15 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
       {
         strlcpy(str1, signalcomp[i]->physdimension, 32);
         trim_spaces(str1);
-        if((!strcmp(str1, "uV")) || (!strcmp(str1, "ECG uV")) || (!strcmp(str1, "EEG uV")))
+        if(!strcmp(str1, "uV"))
         {
           sense = 500.0;
         }
-        else if((!strcmp(str1, "mV")) || (!strcmp(str1, "ECG mV")) || (!strcmp(str1, "EEG mV")))
+        else if(!strcmp(str1, "mV"))
           {
             sense = 0.5;
           }
-          else if((!strcmp(str1, "V")) || (!strcmp(str1, "ECG V")) || (!strcmp(str1, "EEG V")))
+          else if(!strcmp(str1, "V"))
             {
               sense = 0.0005;
             }
@@ -860,13 +860,50 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             break;
           }
 
-          painter->setPen(small_ruler_color);
+          if(j%5)
+          {
+            painter->setPen(small_ruler_color);
+
+            painter->drawLine(0, baseline - vert_ruler_offset - scroll_h_offset, w, baseline - vert_ruler_offset - scroll_h_offset);
+
+            painter->drawLine(0, baseline + vert_ruler_offset - scroll_h_offset, w, baseline + vert_ruler_offset - scroll_h_offset);
+          }
+        }
+
+        for(j=1; j<120; j++)
+        {
+          vert_ruler_offset = j * 0.2 * painter_pixelsizefactor * (sense / signalcomp[i]->voltpercm);
+
+          if(j==1)
+          {
+            if(vert_ruler_offset < 3)  break;
+          }
+
+          if(signalcomps!=1)
+          {
+            if(vert_ruler_offset>((vertical_distance / 2) - 8))
+            {
+              break;
+            }
+          }
+
+          if((baseline + vert_ruler_offset) > ((h * mainwindow->mc_v_scrollarea_ratio) - (15 * printsize_y_factor)))
+          {
+            break;
+          }
+
+          if((baseline - vert_ruler_offset) < (15 * printsize_y_factor))
+          {
+            break;
+          }
 
           if(!(j%5))
           {
             painter->setPen(baseline_color);
 
             painter->drawLine(0, baseline - vert_ruler_offset - scroll_h_offset, w, baseline - vert_ruler_offset - scroll_h_offset);
+
+            painter->drawLine(0, baseline + vert_ruler_offset - scroll_h_offset, w, baseline + vert_ruler_offset - scroll_h_offset);
 
             if(!(j%10))
             {
@@ -882,16 +919,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
               painter->drawText(5 * printsize_x_factor, baseline + vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1);
             }
-
-            painter->drawLine(0, baseline + vert_ruler_offset - scroll_h_offset, w, baseline + vert_ruler_offset - scroll_h_offset);
-
-            painter->setPen(small_ruler_color);
-          }
-          else
-          {
-            painter->drawLine(0, baseline - vert_ruler_offset - scroll_h_offset, w, baseline - vert_ruler_offset - scroll_h_offset);
-
-            painter->drawLine(0, baseline + vert_ruler_offset - scroll_h_offset, w, baseline + vert_ruler_offset - scroll_h_offset);
           }
         }
       }
