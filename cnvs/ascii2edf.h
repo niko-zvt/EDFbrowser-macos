@@ -119,6 +119,7 @@ void setallbuttonpressed();
 void setallcheckedbuttonpressed();
 void setalluncheckedbuttonpressed();
 void autoPhysicalMaximumCheckboxChanged(int);
+void signalCheckboxChanged(int);
 };
 
 

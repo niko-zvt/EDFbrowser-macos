@@ -234,6 +234,31 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(QWidget *w_parent, char *recent_dir, char *save
 }
 
 
+void UI_ASCII2EDFapp::signalCheckboxChanged(int)
+{
+  int i, rows;
+
+  rows = SignalsTablewidget->rowCount();
+
+  for(i=0; i<rows; i++)
+  {
+    if(((QCheckBox *)SignalsTablewidget->cellWidget(i, 0))->checkState() == Qt::Checked)
+    {
+      ((QLineEdit *)SignalsTablewidget->cellWidget(i, 1))->setEnabled(true);
+      ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setEnabled(true);
+      ((QLineEdit *)SignalsTablewidget->cellWidget(i, 3))->setEnabled(true);
+      ((QDoubleSpinBox *)SignalsTablewidget->cellWidget(i, 4))->setEnabled(true);
+    }
+    else
+    {
+      ((QLineEdit *)SignalsTablewidget->cellWidget(i, 1))->setEnabled(false);
+      ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setEnabled(false);
+      ((QLineEdit *)SignalsTablewidget->cellWidget(i, 3))->setEnabled(false);
+      ((QDoubleSpinBox *)SignalsTablewidget->cellWidget(i, 4))->setEnabled(false);
+    }
+  }
+}
+
 
 void UI_ASCII2EDFapp::autoPhysicalMaximumCheckboxChanged(int state)
 {
@@ -243,7 +268,7 @@ void UI_ASCII2EDFapp::autoPhysicalMaximumCheckboxChanged(int state)
   {
     autoPhysicalMaximum = 1;
 
-    for(i=0; i< columns; i++)
+    for(i=0; i<columns; i++)
     {
       ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setEnabled(false);
     }
@@ -252,7 +277,7 @@ void UI_ASCII2EDFapp::autoPhysicalMaximumCheckboxChanged(int state)
   {
     autoPhysicalMaximum = 0;
 
-    for(i=0; i< columns; i++)
+    for(i=0; i<columns; i++)
     {
       ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setEnabled(true);
     }
@@ -275,6 +300,7 @@ void UI_ASCII2EDFapp::numofcolumnschanged(int cnt)
     {
       SignalsTablewidget->setCellWidget(i, 0, new QCheckBox);
       ((QCheckBox *)SignalsTablewidget->cellWidget(i, 0))->setCheckState(Qt::Checked);
+      connect(SignalsTablewidget->cellWidget(i, 0), SIGNAL(stateChanged(int)), this, SLOT(signalCheckboxChanged(int)));
       SignalsTablewidget->setCellWidget(i, 1, new QLineEdit);
       ((QLineEdit *)SignalsTablewidget->cellWidget(i, 1))->setMaxLength(16);
       snprintf(str, 256, "chan. %i", i + 1);
