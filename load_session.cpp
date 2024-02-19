@@ -259,6 +259,21 @@ int UI_Mainwindow::read_session_file(const char *path_session)
   }
   xml_go_up(xml_hdl);
 
+
+  if(!xml_goto_nth_element_inside(xml_hdl, "ecg_view_mode", 0))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      return session_format_error(__FILE__, __LINE__, NULL, xml_hdl);
+    }
+    ecg_view_mode = atoi(result);
+    if(ecg_view_mode != 1)
+    {
+      ecg_view_mode = 0;
+    }
+    xml_go_up(xml_hdl);
+  }
+
   while(1)
   {
     skip = 0;

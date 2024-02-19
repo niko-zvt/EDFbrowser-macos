@@ -376,6 +376,8 @@ void UI_SaveMontagewindow::SaveButtonClicked()
   fprintf(mtgfile, "  <pagetime>%lli</pagetime>\n", mainwindow->pagetime);
 #endif
 
+  fprintf(mtgfile, "  <ecg_view_mode>%i</ecg_view_mode>\n", mainwindow->ecg_view_mode);
+
   struct spectrumdocksettings settings;
 
   for(i=0; i<MAXSPECTRUMDOCKS; i++)

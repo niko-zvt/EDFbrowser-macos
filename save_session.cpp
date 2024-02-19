@@ -128,6 +128,8 @@ void UI_Mainwindow::save_session()
   fprintf(pro_file, "  <pagetime>%lli</pagetime>\n", pagetime);
 #endif
 
+  fprintf(pro_file, "  <ecg_view_mode>%i</ecg_view_mode>\n", ecg_view_mode);
+
   for(i=0; i<signalcomps; i++)
   {
     fprintf(pro_file, "  <signalcomposition>\n");
