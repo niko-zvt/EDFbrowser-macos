@@ -707,6 +707,7 @@ UI_Mainwindow::UI_Mainwindow()
   timescale_mmsec_menu->addAction(" 30 mm/sec", this, SLOT(page_30mmsec()));
   timescale_mmsec_menu->addAction(" 50 mm/sec", this, SLOT(page_50mmsec()));
   timescale_mmsec_menu->addAction(" 60 mm/sec", this, SLOT(page_60mmsec()));
+  timescale_mmsec_menu->addAction("100 mm/sec", this, SLOT(page_100mmsec()));
   timescale_mmsec_menu->addAction("120 mm/sec", this, SLOT(page_120mmsec()));
   timescale_mmsec_menu->addAction("250 mm/sec", this, SLOT(page_250mmsec()));
   timescale_mmsec_menu->addAction("500 mm/sec", this, SLOT(page_500mmsec()));

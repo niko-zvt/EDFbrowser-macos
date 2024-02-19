@@ -3256,6 +3256,14 @@ void UI_Mainwindow::page_60mmsec()
 }
 
 
+void UI_Mainwindow::page_100mmsec()
+{
+  pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING / 10.0;
+
+  setup_viewbuf();
+}
+
+
 void UI_Mainwindow::page_120mmsec()
 {
   pagetime = maincurve->width() * x_pixelsizefactor * TIME_FIXP_SCALING / 12.0;

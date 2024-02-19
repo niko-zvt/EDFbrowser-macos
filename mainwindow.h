@@ -822,6 +822,7 @@ private slots:
   void page_30mmsec();
   void page_50mmsec();
   void page_60mmsec();
+  void page_100mmsec();
   void page_120mmsec();
   void page_250mmsec();
   void page_500mmsec();
