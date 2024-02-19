@@ -42,7 +42,7 @@
 
 void ViewCurve::draw_ecg_horizontal_graticule(QPainter *painter, int print_linewidth)
 {
-  int x_pix=0;
+  int x_pix=0, hires=1;
 
   long long time_ppixel,
             ll_elapsed_time;
@@ -60,6 +60,17 @@ void ViewCurve::draw_ecg_horizontal_graticule(QPainter *painter, int print_linew
     ll_elapsed_time = 0;
   }
 
+  if(mainwindow->pagetime <= TIME_FIXP_SCALING)
+  {
+    hires = TIME_FIXP_SCALING_HR / TIME_FIXP_SCALING;
+
+    ll_elapsed_time %= TIME_FIXP_SCALING;
+
+    ll_elapsed_time *= TIME_FIXP_SCALING_HR / TIME_FIXP_SCALING;
+
+    time_ppixel = (mainwindow->pagetime * (TIME_FIXP_SCALING_HR / TIME_FIXP_SCALING)) / w;
+  }
+
   ruler_pen->setWidth(print_linewidth);
 
   ruler_pen->setColor(small_ruler_color);
@@ -67,12 +78,12 @@ void ViewCurve::draw_ecg_horizontal_graticule(QPainter *painter, int print_linew
 
   for(x_pix=0; x_pix<w; x_pix++)
   {
-    if((ll_elapsed_time / (TIME_FIXP_SCALING / 25))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 25)))
+    if((ll_elapsed_time / ((TIME_FIXP_SCALING * hires) / 25))!=((ll_elapsed_time + time_ppixel) / ((TIME_FIXP_SCALING * hires) / 25)))
     {
       painter->drawLine(x_pix, 0, x_pix, h);
     }
 
-    if(((ll_elapsed_time / (TIME_FIXP_SCALING / 5))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 5))) ||
+    if(((ll_elapsed_time / ((TIME_FIXP_SCALING * hires) / 5))!=((ll_elapsed_time + time_ppixel) / ((TIME_FIXP_SCALING * hires) / 5))) ||
       ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
     {
       if(x_pix)
@@ -85,24 +96,27 @@ void ViewCurve::draw_ecg_horizontal_graticule(QPainter *painter, int print_linew
       }
     }
 
-    if(((ll_elapsed_time / TIME_FIXP_SCALING)!=((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) ||
-      ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
+    if(hires == 1)
     {
-      if(x_pix)
+      if(((ll_elapsed_time / (TIME_FIXP_SCALING * hires))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * hires))) ||
+        ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
       {
-        ruler_pen->setColor(big_ruler_color);
-        painter->setPen(*ruler_pen);
-        if(ll_elapsed_time < 0LL)
+        if(x_pix)
         {
-          snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / TIME_FIXP_SCALING)) % 60);
+          ruler_pen->setColor(big_ruler_color);
+          painter->setPen(*ruler_pen);
+          if(ll_elapsed_time < 0LL)
+          {
+            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / (TIME_FIXP_SCALING * hires))) % 60);
+          }
+          else
+          {
+            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * hires))) % 60);
+          }
+          painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
+          ruler_pen->setColor(small_ruler_color);
+          painter->setPen(*ruler_pen);
         }
-        else
-        {
-          snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) % 60);
-        }
-        painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
-        ruler_pen->setColor(small_ruler_color);
-        painter->setPen(*ruler_pen);
       }
     }
 
