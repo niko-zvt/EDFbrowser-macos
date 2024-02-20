@@ -36,6 +36,7 @@
   <li><a href="#Amplitudemenu">Amplitudemenu</a></li>
   <li><a href="#Signallabel">Signallabel</a></li>
   <li><a href="#Alias">Alias</a></li>
+  <li><a href="#ECG_view_mode">ECG view mode</a></li>
   <li><a href="#Signaldialog">Signaldialog</a></li>
   <li><a href="#Signalproperties">Signalproperties</a></li>
   <li><a href="#Adjusting_the_position_and_size_of_the_signals">Adjusting the position and size of the signals</a></li>
@@ -247,6 +248,35 @@
 
 <p>  The alias, if used, is an alternative signallabel which is printed on the screen at the start of the trace.<br>
   Aliases can be created in the <a href="#Signalproperties">Signalproperties dialog</a> and will be stored in your <a href="#Montages">montage</a>.
+</p>
+
+<p><br></p>
+
+<p><a href="#Table_of_Contents">Table of Contents</a></p>
+
+<p><br><br></p>
+
+<h3><a name="ECG_view_mode">ECG view mode</a></h3>
+
+<p>
+  This mode activates a colorschema and grid boxes typical for plotting ECG waveforms.<br>
+<br><i>
+  The ECG waves are recorded on special graph paper that is divided into 1 mm2 grid-like boxes. The ECG paper speed is ordinarily 25 mm/sec.<br>
+  As a result, each 1 mm (small) horizontal box corresponds to 0.04 sec (40 ms), with heavier lines forming larger boxes that include five<br>
+  small boxes and hence represent 0.20 sec (200 ms) intervals. On occasion, the paper speed is increased to 50 mm/sec to better define waveforms.<br>
+  Each large box is therefore only 0.10 sec and each small box is only 0.02 sec.<br>
+<br>
+  Vertically, the standard calibration is 10 mm (10 small boxes), equal to 1 mV. On occasion, particularly when the waveforms are small,<br>
+  double standard is used (20 mm equals 1 mv). When the wave forms are very large, half standard may be used (5 mm equals 1 mv).<br>
+<br></i>
+  The ECG view mode can be activated by going to Settings -> Options. In the Colors tab, in the Colorschema section, click on the "ECG" button.<br>
+  It is advised to enable the vertical scrollbar (in the menubar go to View -> Vertical scrollbar) and set the number of traces to 4 in<br>
+  Settings -> Options in tab Other (look for the setting with the text "Enable a vertical scrollbar and show max.").<br>
+<br>
+  Set the timescale to 50 mm/sec. and the amplitude to 500 uV (0.5 mV).<br>
+<br>
+  In order for the gridboxes to be calibrated, it is necessary that the physical dimension (unit) of the ECG waveform is expressed in either<br>
+  uV, mV or V. If this is not the case, the gridboxes are uncalibrated and they cannot be drawn correctly.
 </p>
 
 <p><br></p>
