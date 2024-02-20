@@ -42,7 +42,8 @@
 
 void ViewCurve::draw_ecg_horizontal_graticule(QPainter *painter, int print_linewidth)
 {
-  int x_pix=0, hires=1, m_pagetime;
+  int x_pix=0,
+      m_pagetime;
 
   long long time_ppixel,
             ll_elapsed_time;
@@ -63,56 +64,44 @@ void ViewCurve::draw_ecg_horizontal_graticule(QPainter *painter, int print_linew
   }
 
   ruler_pen->setWidth(print_linewidth);
-
-  // if((mainwindow->pagetime / (TIME_FIXP_SCALING / 100000)) <=1)  // timescale less than or equal to 10 microsecond
-  // {
-  //   draw_ecg_horizontal_hr_graticule(painter, ll_elapsed_time, 100000, 10);
-  // }
-  // else if((mainwindow->pagetime / (TIME_FIXP_SCALING / 10000)) <=1)  // timescale less than or equal to 100 microsecond
-  // {
-  //   draw_ecg_horizontal_hr_graticule(painter, ll_elapsed_time, 10000, 100);
-  // }
-  // else if((mainwindow->pagetime / (TIME_FIXP_SCALING / 1000)) <=1)  // timescale less than or equal to 1 millisecond
-  // {
-  //   draw_ecg_horizontal_hr_graticule(painter, ll_elapsed_time, 1000, 1000);
-  // }
-  // else if((mainwindow->pagetime / (TIME_FIXP_SCALING / 100)) <=1)  // timescale less than or equal to 10 millisecond
-  // {
-  //   draw_ecg_horizontal_hr_graticule(painter, ll_elapsed_time, 100, 10);
-  // }
-  // else if((mainwindow->pagetime / (TIME_FIXP_SCALING / 10)) <=1)  // timescale less than or equal to 100 millisecond
-  // {
-  //   draw_ecg_horizontal_hr_graticule(painter, ll_elapsed_time, 10, 100);
-  // }
-  // else if(m_pagetime<=1)  // timescale less than or equal to 1 second
-  // {
-  //   draw_ecg_horizontal_hr_graticule(painter, ll_elapsed_time, 1, 1000);
-  // }
-  //
-  // if(m_pagetime<=1)  return;  // timescale less than or equal to 1 second
-
-  if(mainwindow->pagetime <= TIME_FIXP_SCALING)
-  {
-    hires = TIME_FIXP_SCALING_HR / TIME_FIXP_SCALING;
-
-    ll_elapsed_time %= TIME_FIXP_SCALING;
-
-    ll_elapsed_time *= TIME_FIXP_SCALING_HR / TIME_FIXP_SCALING;
-
-    time_ppixel = (mainwindow->pagetime * (TIME_FIXP_SCALING_HR / TIME_FIXP_SCALING)) / w;
-  }
-
   ruler_pen->setColor(small_ruler_color);
   painter->setPen(*ruler_pen);
 
+  if((mainwindow->pagetime / (TIME_FIXP_SCALING / 100000)) <=1)  // timescale less than or equal to 10 microsecond
+  {
+    draw_ecg_horizontal_hr_graticule(painter, ll_elapsed_time, 100000, 10);
+  }
+  else if((mainwindow->pagetime / (TIME_FIXP_SCALING / 10000)) <=1)  // timescale less than or equal to 100 microsecond
+  {
+    draw_ecg_horizontal_hr_graticule(painter, ll_elapsed_time, 10000, 100);
+  }
+  else if((mainwindow->pagetime / (TIME_FIXP_SCALING / 1000)) <=1)  // timescale less than or equal to 1 millisecond
+  {
+    draw_ecg_horizontal_hr_graticule(painter, ll_elapsed_time, 1000, 1000);
+  }
+  else if((mainwindow->pagetime / (TIME_FIXP_SCALING / 100)) <=1)  // timescale less than or equal to 10 millisecond
+  {
+    draw_ecg_horizontal_hr_graticule(painter, ll_elapsed_time, 100, 10);
+  }
+  else if((mainwindow->pagetime / (TIME_FIXP_SCALING / 10)) <=1)  // timescale less than or equal to 100 millisecond
+  {
+    draw_ecg_horizontal_hr_graticule(painter, ll_elapsed_time, 10, 100);
+  }
+  else if(m_pagetime<=1)  // timescale less than or equal to 1 second
+  {
+    draw_ecg_horizontal_hr_graticule(painter, ll_elapsed_time, 1, 1000);
+  }
+
+  if(m_pagetime<=1)  return;  // timescale less than or equal to 1 second
+
   for(x_pix=0; x_pix<w; x_pix++)
   {
-    if((ll_elapsed_time / ((TIME_FIXP_SCALING * hires) / 25))!=((ll_elapsed_time + time_ppixel) / ((TIME_FIXP_SCALING * hires) / 25)))
+    if((ll_elapsed_time / (TIME_FIXP_SCALING / 25))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 25)))
     {
       painter->drawLine(x_pix, 0, x_pix, h);
     }
 
-    if(((ll_elapsed_time / ((TIME_FIXP_SCALING * hires) / 5))!=((ll_elapsed_time + time_ppixel) / ((TIME_FIXP_SCALING * hires) / 5))) ||
+    if(((ll_elapsed_time / (TIME_FIXP_SCALING / 5))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 5))) ||
       ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
     {
       if(x_pix)
@@ -125,27 +114,24 @@ void ViewCurve::draw_ecg_horizontal_graticule(QPainter *painter, int print_linew
       }
     }
 
-    if(hires == 1)
+    if(((ll_elapsed_time / TIME_FIXP_SCALING)!=((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) ||
+      ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
     {
-      if(((ll_elapsed_time / (TIME_FIXP_SCALING * hires))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * hires))) ||
-        ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
+      if(x_pix)
       {
-        if(x_pix)
+        ruler_pen->setColor(big_ruler_color);
+        painter->setPen(*ruler_pen);
+        if(ll_elapsed_time < 0LL)
         {
-          ruler_pen->setColor(big_ruler_color);
-          painter->setPen(*ruler_pen);
-          if(ll_elapsed_time < 0LL)
-          {
-            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / (TIME_FIXP_SCALING * hires))) % 60);
-          }
-          else
-          {
-            snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * hires))) % 60);
-          }
-          painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
-          ruler_pen->setColor(small_ruler_color);
-          painter->setPen(*ruler_pen);
+          snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / TIME_FIXP_SCALING)) % 60);
         }
+        else
+        {
+          snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / TIME_FIXP_SCALING)) % 60);
+        }
+        painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
+        ruler_pen->setColor(small_ruler_color);
+        painter->setPen(*ruler_pen);
       }
     }
 
@@ -177,6 +163,8 @@ void ViewCurve::draw_default_horizontal_graticule(QPainter *painter, int print_l
   }
 
   ruler_pen->setWidth(print_linewidth);
+  ruler_pen->setColor(small_ruler_color);
+  painter->setPen(*ruler_pen);
 
   if((mainwindow->pagetime / (TIME_FIXP_SCALING / 100000)) <=1)  // timescale less than or equal to 10 microsecond
   {
@@ -204,9 +192,6 @@ void ViewCurve::draw_default_horizontal_graticule(QPainter *painter, int print_l
   }
   else if(m_pagetime<=20)  // timescale less than or equal to 20 seconds
   {
-    ruler_pen->setColor(small_ruler_color);
-    painter->setPen(*ruler_pen);
-
     for(x_pix=0; x_pix<w; x_pix++)
     {
       if((ll_elapsed_time / (TIME_FIXP_SCALING / 10))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 10)))
@@ -243,9 +228,6 @@ void ViewCurve::draw_default_horizontal_graticule(QPainter *painter, int print_l
   }
   else if(m_pagetime<100)  // timescale less than 100 seconds (00:01:40)
   {
-    ruler_pen->setColor(small_ruler_color);
-    painter->setPen(*ruler_pen);
-
     for(x_pix=0; x_pix<w; x_pix++)
     {
       if((ll_elapsed_time / (TIME_FIXP_SCALING / 5))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 5)))
@@ -291,9 +273,6 @@ void ViewCurve::draw_default_horizontal_graticule(QPainter *painter, int print_l
   }
   else if(m_pagetime<1000)  // timescale less than 1000 seconds (00:16:40)
   {
-    ruler_pen->setColor(small_ruler_color);
-    painter->setPen(*ruler_pen);
-
     for(x_pix=0; x_pix<w; x_pix++)
     {
       if((ll_elapsed_time / 33333333LL)!=((ll_elapsed_time + time_ppixel) / 33333333LL))
@@ -339,9 +318,6 @@ void ViewCurve::draw_default_horizontal_graticule(QPainter *painter, int print_l
   }
   else if(m_pagetime<5000)  // timescale less than 5000 seconds (01:23:20)
   {
-    ruler_pen->setColor(small_ruler_color);
-    painter->setPen(*ruler_pen);
-
     for(x_pix=0; x_pix<w; x_pix++)
     {
       if((ll_elapsed_time / (TIME_FIXP_SCALING * 10))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 10)))
@@ -382,9 +358,6 @@ void ViewCurve::draw_default_horizontal_graticule(QPainter *painter, int print_l
   }
   else if(m_pagetime<173000)  // timescale less than 173000 seconds (48:03:20)
   {
-    ruler_pen->setColor(small_ruler_color);
-    painter->setPen(*ruler_pen);
-
     for(x_pix=0; x_pix<w; x_pix++)
     {
       if((ll_elapsed_time / (TIME_FIXP_SCALING * 600))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 600)))
@@ -425,9 +398,6 @@ void ViewCurve::draw_default_horizontal_graticule(QPainter *painter, int print_l
   }
   else if(m_pagetime<3000000)  // timescale less than 3000000 seconds (34 days and 17:20:00)
   {
-    ruler_pen->setColor(small_ruler_color);
-    painter->setPen(*ruler_pen);
-
     for(x_pix=0; x_pix<w; x_pix++)
     {
       if((ll_elapsed_time / (TIME_FIXP_SCALING * 3600))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING * 3600)))
@@ -475,7 +445,39 @@ void ViewCurve::draw_ecg_horizontal_hr_graticule(QPainter *painter, long long ll
   ruler_pen->setColor(small_ruler_color);
   painter->setPen(*ruler_pen);
 
+  for(x_pix=0; x_pix<w; x_pix++)
+  {
+    if((ll_elapsed_time / (TIME_FIXP_SCALING_HR / 25))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING_HR / 25)))
+    {
+      painter->drawLine(x_pix, 0, x_pix, h);
+    }
 
+    if(((ll_elapsed_time / (TIME_FIXP_SCALING_HR / 5))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING_HR / 5))) ||
+      ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time > -time_ppixel)))
+    {
+      if(x_pix)
+      {
+        ruler_pen->setColor(big_ruler_color);
+        painter->setPen(*ruler_pen);
+        painter->drawLine(x_pix, 0, x_pix, h);
+
+        if(ll_elapsed_time < 0LL)
+        {
+          snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time - time_ppixel) / (TIME_FIXP_SCALING_HR / range))) % 1000);
+        }
+        else
+        {
+          snprintf(str4, 1024, "%i", ((int)((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING_HR / range))) % 1000);
+        }
+        painter->drawText(x_pix + (2 * printsize_y_factor), 20 * h_scaling * printsize_x_factor, str4);
+
+        ruler_pen->setColor(small_ruler_color);
+        painter->setPen(*ruler_pen);
+      }
+    }
+
+    ll_elapsed_time += time_ppixel;
+  }
 }
 
 
