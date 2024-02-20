@@ -219,16 +219,17 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(QWidget *w_parent, char *recent_dir, char *save
 
   edfsignals = 1;
 
-  QObject::connect(NumcolumnsSpinbox,           SIGNAL(valueChanged(int)), this,            SLOT(numofcolumnschanged(int)));
-  QObject::connect(GoButton,                    SIGNAL(clicked()),         this,            SLOT(gobuttonpressed()));
-  QObject::connect(CloseButton,                 SIGNAL(clicked()),         ascii2edfDialog, SLOT(close()));
-  QObject::connect(SaveButton,                  SIGNAL(clicked()),         this,            SLOT(savebuttonpressed()));
-  QObject::connect(LoadButton,                  SIGNAL(clicked()),         this,            SLOT(loadbuttonpressed()));
-  QObject::connect(helpButton,                  SIGNAL(clicked()),         this,            SLOT(helpbuttonpressed()));
-  QObject::connect(setAllButton,                SIGNAL(clicked()),         this,            SLOT(setallbuttonpressed()));
-  QObject::connect(setAllCheckedButton,         SIGNAL(clicked()),         this,            SLOT(setallcheckedbuttonpressed()));
-  QObject::connect(setAllUncheckedButton,       SIGNAL(clicked()),         this,            SLOT(setalluncheckedbuttonpressed()));
-  QObject::connect(autoPhysicalMaximumCheckbox, SIGNAL(stateChanged(int)), this,            SLOT(autoPhysicalMaximumCheckboxChanged(int)));
+  connect(SignalsTablewidget->cellWidget(0, 0), SIGNAL(stateChanged(int)), this, SLOT(signalCheckboxChanged(int)));
+  connect(NumcolumnsSpinbox,           SIGNAL(valueChanged(int)), this,            SLOT(numofcolumnschanged(int)));
+  connect(GoButton,                    SIGNAL(clicked()),         this,            SLOT(gobuttonpressed()));
+  connect(CloseButton,                 SIGNAL(clicked()),         ascii2edfDialog, SLOT(close()));
+  connect(SaveButton,                  SIGNAL(clicked()),         this,            SLOT(savebuttonpressed()));
+  connect(LoadButton,                  SIGNAL(clicked()),         this,            SLOT(loadbuttonpressed()));
+  connect(helpButton,                  SIGNAL(clicked()),         this,            SLOT(helpbuttonpressed()));
+  connect(setAllButton,                SIGNAL(clicked()),         this,            SLOT(setallbuttonpressed()));
+  connect(setAllCheckedButton,         SIGNAL(clicked()),         this,            SLOT(setallcheckedbuttonpressed()));
+  connect(setAllUncheckedButton,       SIGNAL(clicked()),         this,            SLOT(setalluncheckedbuttonpressed()));
+  connect(autoPhysicalMaximumCheckbox, SIGNAL(stateChanged(int)), this,            SLOT(autoPhysicalMaximumCheckboxChanged(int)));
 
   ascii2edfDialog->exec();
 }
@@ -1696,6 +1697,8 @@ void UI_ASCII2EDFapp::loadbuttonpressed()
   }
 
   xml_close(xml_hdl);
+
+  signalCheckboxChanged(0);
 }
 
 
