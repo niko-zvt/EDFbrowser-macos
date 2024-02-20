@@ -310,6 +310,21 @@ void UI_ViewSessionwindow::SelectButtonClicked()
   parentItem->appendRow(new QStandardItem(str2));
   xml_go_up(xml_hdl);
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "ecg_view_mode", 0)))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      view_session_format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    if(!strcmp(result, "1"))
+    {
+      parentItem->appendRow(new QStandardItem("ECG view mode: enabled"));
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
   if(xml_goto_nth_element_inside(xml_hdl, "edf_files", 0))
   {
     view_session_format_error(__FILE__, __LINE__, xml_hdl);

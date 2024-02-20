@@ -445,6 +445,11 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
   remove_trailing_zeros(txtbuf);
   parentItem->appendRow(new QStandardItem(txtbuf));
 
+  if(mainwindow->ecg_view_mode)
+  {
+    parentItem->appendRow(new QStandardItem("ECG view mode: enabled"));
+  }
+
   tree->setModel(t_model);
 
 //  tree->expandAll();

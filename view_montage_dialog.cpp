@@ -1224,6 +1224,23 @@ void UI_ViewMontagewindow::SelectButtonClicked()
                          ((int)(timescale % TIME_FIXP_SCALING)) / 1000);
     remove_trailing_zeros(composition_txt);
     parentItem->appendRow(new QStandardItem(composition_txt));
+
+    xml_go_up(xml_hdl);
+  }
+
+  if(!(xml_goto_nth_element_inside(xml_hdl, "ecg_view_mode", 0)))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      format_error(__FILE__, __LINE__, xml_hdl);
+      return;
+    }
+    if(!strcmp(result, "1"))
+    {
+      parentItem->appendRow(new QStandardItem("ECG view mode: enabled"));
+    }
+
+    xml_go_up(xml_hdl);
   }
 
   xml_goto_root(xml_hdl);
