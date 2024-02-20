@@ -1732,15 +1732,15 @@ int UI_LoadMontagewindow::LoadButtonClicked()
           strlcpy(str2, newsignalcomp->edfparam_0->physdimension, 32);
           trim_spaces(str2);
           sense = 0;
-          if((!strcmp(str2, "uV")) || (!strcmp(str2, "ECG uV")) || (!strcmp(str2, "EEG uV")))
+          if(!strcmp(str2, "uV"))
           {
             sense = 1;
           }
-          else if((!strcmp(str2, "mV")) || (!strcmp(str2, "ECG mV")) || (!strcmp(str2, "EEG mV")))
+          else if(!strcmp(str2, "mV"))
             {
               sense = 1000;
             }
-            else if((!strcmp(str2, "V")) || (!strcmp(str2, "ECG V")) || (!strcmp(str2, "EEG V")))
+            else if(!strcmp(str2, "V"))
               {
                 sense = 1000000;
               }

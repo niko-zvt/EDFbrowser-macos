@@ -478,15 +478,15 @@ void UI_Signalswindow::DisplayButtonClicked()
     {
       strlcpy(str1, newsignalcomp->edfhdr->edfparam[s].physdimension, 32);
       trim_spaces(str1);
-      if((!strcmp(str1, "uV")) || (!strcmp(str1, "ECG uV")) || (!strcmp(str1, "EEG uV")))
+      if(!strcmp(str1, "uV"))
       {
         newsignalcomp->voltpercm = 500.0;
       }
-      else if((!strcmp(str1, "mV")) || (!strcmp(str1, "ECG mV")) || (!strcmp(str1, "EEG mV")))
+      else if(!strcmp(str1, "mV"))
         {
           newsignalcomp->voltpercm = 0.5;
         }
-        else if((!strcmp(str1, "V")) || (!strcmp(str1, "ECG V")) || (!strcmp(str1, "EEG V")))
+        else if(!strcmp(str1, "V"))
           {
             newsignalcomp->voltpercm = 0.0005;
           }

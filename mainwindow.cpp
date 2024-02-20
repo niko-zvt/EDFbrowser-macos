@@ -4147,9 +4147,7 @@ void UI_Mainwindow::qrs_detector()
 
   strlcpy(str, signalcomp[signal_nr]->edfparam_0->physdimension, 2048);
   trim_spaces(str);
-  if((strcmp(str, "uV")) && (strcmp(str, "ECG uV")) && (strcmp(str, "EEG uV")) &&
-     (strcmp(str, "mV")) && (strcmp(str, "ECG mV")) && (strcmp(str, "EEG mV")) &&
-     (strcmp(str, "V")) && (strcmp(str, "ECG V")) && (strcmp(str, "EEG V")))
+  if(strcmp(str, "uV") && strcmp(str, "mV") && strcmp(str, "V"))
   {
     snprintf(str, 2048, "Unknown unit (physical dimension): \"%s\", expected uV or mV or V",
              signalcomp[signal_nr]->edfparam_0->physdimension);

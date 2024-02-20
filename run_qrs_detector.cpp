@@ -78,15 +78,15 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, sigcompblck_t *signalcomp_)
 
   strlcpy(str, signalcomp->edfparam_0->physdimension, 32);
   trim_spaces(str);
-  if((!strcmp(str, "uV")) || (!strcmp(str, "ECG uV")) || (!strcmp(str, "EEG uV")))
+  if(!strcmp(str, "uV"))
   {
     sense = 1;
   }
-  else if((!strcmp(str, "mV")) || (!strcmp(str, "ECG mV")) || (!strcmp(str, "EEG mV")))
+  else if(!strcmp(str, "mV"))
     {
       sense = 1000;
     }
-    else if((!strcmp(str, "V")) || (!strcmp(str, "ECG V")) || (!strcmp(str, "EEG V")))
+    else if(!strcmp(str, "V"))
       {
         sense = 1000000;
       }
