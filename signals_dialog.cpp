@@ -575,6 +575,22 @@ void UI_Signalswindow::DisplayButtonClicked()
   SignalsDialog->close();
 
   mainwindow->setup_viewbuf();
+
+  if(mainwindow->ecg_view_mode)
+  {
+    for(i=0; i<mainwindow->signalcomps; i++)
+    {
+      if(strcmp(mainwindow->signalcomp[i]->physdimension, "uV") &&
+         strcmp(mainwindow->signalcomp[i]->physdimension, "mV") &&
+         strcmp(mainwindow->signalcomp[i]->physdimension, "V"))
+      {
+        QMessageBox::warning(SignalsDialog, "Warning",
+                             "The physical dimension (unit) of one or more signals on the screen does not equal to uV, mV or V.\n"
+                             "As a result, the grid's dimensions for these signals cannot be calculated correctly.");
+        break;
+      }
+    }
+  }
 }
 
 

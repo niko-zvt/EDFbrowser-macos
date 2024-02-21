@@ -3825,6 +3825,21 @@ void UI_OptionsDialog::loadColorSchema_blue_gray()
 
 void UI_OptionsDialog::loadColorSchema_ECG()
 {
+  int i;
+
+  for(i=0; i<mainwindow->signalcomps; i++)
+  {
+    if(strcmp(mainwindow->signalcomp[i]->physdimension, "uV") &&
+       strcmp(mainwindow->signalcomp[i]->physdimension, "mV") &&
+       strcmp(mainwindow->signalcomp[i]->physdimension, "V"))
+    {
+      QMessageBox::warning(optionsdialog, "Warning",
+                           "The physical dimension (unit) of one or more signals on the screen does not equal to uV, mV or V.\n"
+                           "As a result, the grid's dimensions for these signals cannot be calculated correctly.");
+      break;
+    }
+  }
+
   mainwindow->maincurve->backgroundcolor.setRed(255);
   mainwindow->maincurve->backgroundcolor.setGreen(255);
   mainwindow->maincurve->backgroundcolor.setBlue(255);
@@ -3877,7 +3892,7 @@ void UI_OptionsDialog::loadColorSchema_ECG()
 
   mainwindow->show_baselines = 1;
 
-  mainwindow->maincurve->crosshair_1.color = Qt::magenta;
+  mainwindow->maincurve->crosshair_1.color = Qt::darkGreen;
 
   mainwindow->maincurve->crosshair_2.color = Qt::blue;
 
