@@ -2677,6 +2677,8 @@ void UI_OptionsDialog::BgColorButtonClicked(SpecialButton *)
       if(mainwindow->annotations_dock[i])
       {
         mainwindow->annotations_dock[i]->list->setPalette(palette);
+        mainwindow->annotations_dock[i]->list->update();
+        mainwindow->annotations_dock[i]->updateList(0);
       }
     }
 
@@ -2764,6 +2766,8 @@ void UI_OptionsDialog::TxtColorButtonClicked(SpecialButton *)
       if(edfplus_annotation_size(&mainwindow->edfheaderlist[i]->annot_list) > 0)
       {
         mainwindow->annotations_dock[i]->list->setPalette(palette);
+        mainwindow->annotations_dock[i]->list->update();
+        mainwindow->annotations_dock[i]->updateList(0);
       }
     }
 
