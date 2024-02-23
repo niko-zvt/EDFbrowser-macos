@@ -3790,140 +3790,139 @@ void UI_Mainwindow::set_amplitude(QAction *action)
 {
   int i;
 
-  double value=100.0, original_value, value2=100.0;
-
+  double value=100;
 
   if(action==amp_00001)
   {
     value = 0.0001;
     amplitude_doubler = 10;
   }
-  if(action==amp_00002)
+  else if(action==amp_00002)
   {
     value = 0.0002;
     amplitude_doubler = 20;
   }
-  if(action==amp_00005)
+  else if(action==amp_00005)
   {
     value = 0.0005;
     amplitude_doubler = 50;
   }
-  if(action==amp_0001)
+  else if(action==amp_0001)
   {
     value = 0.001;
     amplitude_doubler = 10;
   }
-  if(action==amp_0002)
+  else if(action==amp_0002)
   {
     value = 0.002;
     amplitude_doubler = 20;
   }
-  if(action==amp_0005)
+  else if(action==amp_0005)
   {
     value = 0.005;
     amplitude_doubler = 50;
   }
-  if(action==amp_001)
+  else if(action==amp_001)
   {
     value = 0.01;
     amplitude_doubler = 10;
   }
-  if(action==amp_002)
+  else if(action==amp_002)
   {
     value = 0.02;
     amplitude_doubler = 20;
   }
-  if(action==amp_005)
+  else if(action==amp_005)
   {
     value = 0.05;
     amplitude_doubler = 50;
   }
-  if(action==amp_01)
+  else if(action==amp_01)
   {
     value = 0.1;
     amplitude_doubler = 10;
   }
-  if(action==amp_02)
+  else if(action==amp_02)
   {
     value = 0.2;
     amplitude_doubler = 20;
   }
-  if(action==amp_05)
+  else if(action==amp_05)
   {
     value = 0.5;
     amplitude_doubler = 50;
   }
-  if(action==amp_1)
+  else if(action==amp_1)
   {
     value = 1.0;
     amplitude_doubler = 10;
   }
-  if(action==amp_2)
+  else if(action==amp_2)
   {
     value = 2.0;
     amplitude_doubler = 20;
   }
-  if(action==amp_5)
+  else if(action==amp_5)
   {
     value = 5.0;
     amplitude_doubler = 50;
   }
-  if(action==amp_10)
+  else if(action==amp_10)
   {
     value = 10.0;
     amplitude_doubler = 10;
   }
-  if(action==amp_20)
+  else if(action==amp_20)
   {
     value = 20.0;
     amplitude_doubler = 20;
   }
-  if(action==amp_50)
+  else if(action==amp_50)
   {
     value = 50.0;
     amplitude_doubler = 50;
   }
-  if(action==amp_100)
+  else if(action==amp_100)
   {
     value = 100.0;
     amplitude_doubler = 10;
   }
-  if(action==amp_200)
+  else if(action==amp_200)
   {
     value = 200.0;
     amplitude_doubler = 20;
   }
-  if(action==amp_500)
+  else if(action==amp_500)
   {
     value = 500.0;
     amplitude_doubler = 50;
   }
-  if(action==amp_1000)
+  else if(action==amp_1000)
   {
     value = 1000.0;
     amplitude_doubler = 10;
   }
-  if(action==amp_2000)
+  else if(action==amp_2000)
   {
     value = 2000.0;
     amplitude_doubler = 20;
   }
-  if(action==amp_5000)
+  else if(action==amp_5000)
   {
     value = 5000.0;
     amplitude_doubler = 50;
   }
-  if(action==amp_10000)
+  else if(action==amp_10000)
   {
     value = 10000.0;
     amplitude_doubler = 10;
   }
-  if(action==amp_20000)
+  else if(action==amp_20000)
   {
     value = 20000.0;
     amplitude_doubler = 20;
   }
-  if(action==amp_50000)
+  else if(action==amp_50000)
   {
     value = 50000.0;
     amplitude_doubler = 50;
@@ -3931,20 +3930,16 @@ void UI_Mainwindow::set_amplitude(QAction *action)
 
   for(i=0; i<signalcomps; i++)
   {
-    value2 = value;
-
     if(signalcomp[i]->edfparam_0->bitvalue < 0.0)
     {
-      value2 *= -1.0;
+      value *= -1.0;
     }
 
-    signalcomp[i]->sensitivity = (signalcomp[i]->edfparam_0->bitvalue / value2) / y_pixelsizefactor;
+    signalcomp[i]->sensitivity = (signalcomp[i]->edfparam_0->bitvalue / value) / y_pixelsizefactor;
 
-    original_value = signalcomp[i]->voltpercm;
+    signalcomp[i]->screen_offset *= (signalcomp[i]->voltpercm / value);
 
-    signalcomp[i]->voltpercm = value2;
-
-    signalcomp[i]->screen_offset *= (original_value / value2);
+    signalcomp[i]->voltpercm = value;
   }
 
   maincurve->drawCurve_stage_1();

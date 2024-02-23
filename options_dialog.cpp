@@ -3436,6 +3436,8 @@ void UI_OptionsDialog::update_interface(void)
       default_color_idx=0,
       default_color_list[DEFAULT_COLOR_LIST_SZ];
 
+  double value = 500;
+
   QPalette palette;
 
   default_color_list[0] = Qt::yellow;
@@ -3576,7 +3578,47 @@ void UI_OptionsDialog::update_interface(void)
     checkbox6->setCheckState(Qt::Unchecked);
   }
 
-  mainwindow->maincurve->update();
+  if(mainwindow->ecg_view_mode)
+  {
+    for(i=0; i<mainwindow->signalcomps; i++)
+    {
+      if(!strcmp(mainwindow->signalcomp[i]->physdimension, "uV"))
+      {
+        value = 500.0;
+      }
+      else if(!strcmp(mainwindow->signalcomp[i]->physdimension, "mV"))
+        {
+          value = 0.5;
+        }
+        else if(!strcmp(mainwindow->signalcomp[i]->physdimension, "V"))
+          {
+            value = 0.0005;
+          }
+          else
+          {
+            value = 500.0;
+          }
+
+      if(mainwindow->signalcomp[i]->edfparam_0->bitvalue < 0.0)
+      {
+        value *= -1.0;
+      }
+
+      mainwindow->signalcomp[i]->sensitivity = (mainwindow->signalcomp[i]->edfparam_0->bitvalue / value) / mainwindow->y_pixelsizefactor;
+
+      mainwindow->signalcomp[i]->screen_offset *= (mainwindow->signalcomp[i]->voltpercm / value);
+
+      mainwindow->signalcomp[i]->voltpercm = value;
+    }
+
+    mainwindow->pagetime = mainwindow->maincurve->width() * mainwindow->x_pixelsizefactor * TIME_FIXP_SCALING / 5.0;
+
+    mainwindow->setup_viewbuf();
+  }
+  else
+  {
+    mainwindow->maincurve->update();
+  }
 }
 
 
