@@ -567,7 +567,7 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
   {
     if(edfhdr->datarecords<1)
     {
-#ifdef Q_OS_WIN32
+#ifdef __MINGW32__
       __mingw_snprintf(txt_string, txt_len, "Error, number of datarecords is %lli, expected >0.\n"
                           "You can repair the file with the header editor, have a look at the manual for the details.",
             edfhdr->datarecords);
@@ -1750,7 +1750,7 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
     if(l_tmp != l_tmp2)
     {
-#ifdef Q_OS_WIN32
+#ifdef __MINGW32__
       __mingw_snprintf(txt_string, txt_len, "Error, filesize does not match with the calculated filesize based on the parameters\n"
                           "in the header. Filesize is %lli and filesize according to header is %lli.\n"
                           "You can repair the file with the header editor, have a look at the manual for the details.",
