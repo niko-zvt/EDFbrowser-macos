@@ -91,19 +91,22 @@ void ViewCurve::draw_ecg_horizontal_graticule(QPainter *painter, int print_linew
   {
     draw_ecg_horizontal_hr_graticule(painter, ll_elapsed_time, 1, 1000);
   }
-  else if(m_pagetime<100)  // timescale less than 100 seconds (00:01:40)
+  else if(m_pagetime<60)  // timescale less than 100 seconds (00:01:00)
   {
     for(x_pix=0; x_pix<w; x_pix++)
     {
-      if((ll_elapsed_time / (TIME_FIXP_SCALING / 25))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 25)))
+      if(m_pagetime <= 33)
       {
-        painter->drawLine(x_pix, 0, x_pix, h);
+        if((ll_elapsed_time / (TIME_FIXP_SCALING / 25))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 25)))
+        {
+          painter->drawLine(x_pix, 0, x_pix, h);
+        }
       }
 
       if(((ll_elapsed_time / (TIME_FIXP_SCALING / 5))!=((ll_elapsed_time + time_ppixel) / (TIME_FIXP_SCALING / 5))) ||
         ((ll_elapsed_time < time_ppixel) && (ll_elapsed_time >= 0)))
       {
-        if(m_pagetime <= 33)  ruler_pen->setColor(big_ruler_color);
+        ruler_pen->setColor(big_ruler_color);
         painter->setPen(*ruler_pen);
         painter->drawLine(x_pix, 0, x_pix, h);
         ruler_pen->setColor(small_ruler_color);
@@ -133,23 +136,17 @@ void ViewCurve::draw_ecg_horizontal_graticule(QPainter *painter, int print_linew
   }
   else
   {
-    draw_default_horizontal_graticule(painter, print_linewidth);
+    draw_generic_horizontal_graticule(painter, m_pagetime);
   }
 }
 
 void ViewCurve::draw_default_horizontal_graticule(QPainter *painter, int print_linewidth)
 {
-  int x_pix=0,
-      m_pagetime;
+  int m_pagetime;
 
-  long long time_ppixel,
-            ll_elapsed_time;
-
-  char str4[1024]="";
+  long long ll_elapsed_time;
 
   m_pagetime = (int)(mainwindow->pagetime / TIME_FIXP_SCALING);
-
-  time_ppixel = mainwindow->pagetime / w;
 
   if(mainwindow->files_open&&mainwindow->signalcomps)
   {
@@ -188,7 +185,33 @@ void ViewCurve::draw_default_horizontal_graticule(QPainter *painter, int print_l
   {
     draw_default_horizontal_hr_graticule(painter, ll_elapsed_time, 1, 1000);
   }
-  else if(m_pagetime<=20)  // timescale less than or equal to 20 seconds
+  else
+  {
+    draw_generic_horizontal_graticule(painter, m_pagetime);
+  }
+}
+
+void ViewCurve::draw_generic_horizontal_graticule(QPainter *painter, int m_pagetime)
+{
+  int x_pix=0;
+
+  long long time_ppixel,
+            ll_elapsed_time;
+
+  char str4[1024]="";
+
+  time_ppixel = mainwindow->pagetime / w;
+
+  if(mainwindow->files_open&&mainwindow->signalcomps)
+  {
+    ll_elapsed_time = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime;
+  }
+  else
+  {
+    ll_elapsed_time = 0;
+  }
+
+  if(m_pagetime<=20)  // timescale less than or equal to 20 seconds
   {
     for(x_pix=0; x_pix<w; x_pix++)
     {

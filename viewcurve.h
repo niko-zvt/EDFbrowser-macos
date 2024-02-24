@@ -291,6 +291,7 @@ private:
   void draw_ecg_horizontal_hr_graticule(QPainter *, long long, int, int);
   void draw_default_horizontal_graticule(QPainter *, int);
   void draw_ecg_horizontal_graticule(QPainter *, int);
+  void draw_generic_horizontal_graticule(QPainter *painter, int);
 
 protected slots:
 
