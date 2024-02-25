@@ -1,5 +1,5 @@
 
- version 2.07      to be defined
+ version 2.07      February 25, 2024
  --------------
 
  - File -> Info -> Signals: show also the resolution of the signals.

@@ -330,7 +330,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   colorSchema_ECG_Button = new QPushButton;
   colorSchema_ECG_Button->setText("\"ECG\"");
-  colorSchema_ECG_Button->setToolTip("The ECG schema will activate the ECG grid which is ment to be used exclusively for real ECG signals\n"
+  colorSchema_ECG_Button->setToolTip("The ECG schema will activate the ECG grid which is intended to be used exclusively for ECG signals\n"
                                      " where the physical dimension (unit) of the signals are expressed in either uV, mV or V.");
 
   saveColorSchemaButton = new QPushButton;
@@ -342,10 +342,10 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   loadColorSchemaButton->setToolTip("Load your customized color schema");
 
   grid_normal_radiobutton = new QRadioButton("Normal");
-  grid_normal_radiobutton->setToolTip("The ECG grid is ment to be used exclusively for real ECG signals where the\n"
+  grid_normal_radiobutton->setToolTip("The ECG grid is intended to be used exclusively for ECG signals where the\n"
                                       "physical dimension (unit) of the signals are expressed in either uV, mV or V.");
   grid_ecg_radiobutton = new QRadioButton("ECG");
-  grid_ecg_radiobutton->setToolTip("The ECG grid is ment to be used exclusively for real ECG signals where the\n"
+  grid_ecg_radiobutton->setToolTip("The ECG grid is intended to be used exclusively for ECG signals where the\n"
                                    "physical dimension (unit) of the signals are expressed in either uV, mV or V.");
   if(mainwindow->ecg_view_mode)
   {
