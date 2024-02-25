@@ -2244,7 +2244,7 @@ void UI_Mainwindow::setMainwindowTitle(edfhdrblck_t *edfhdr)
 {
   int i, len;
 
-  char str[MAX_PATH_LENGTH + 64]={""};
+  char str[MAX_PATH_LENGTH + 128]={""};
 
   date_time_t date_time;
 
@@ -2291,19 +2291,19 @@ void UI_Mainwindow::setMainwindowTitle(edfhdrblck_t *edfhdr)
 
   if(mainwindow_title_type == 1)
   {
-    get_filename_from_path(str, edfhdr->filename, MAX_PATH_LENGTH);
+    get_filename_from_path(str, QString::fromLocal8Bit(edfhdr->filename).toUtf8().data(), MAX_PATH_LENGTH);
 
-    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 64);
+    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128);
   }
 
   if(mainwindow_title_type == 2)
   {
-    strlcpy(str, edfhdr->filename, MAX_PATH_LENGTH + 64);
+    strlcpy(str, QString::fromLocal8Bit(edfhdr->filename).toUtf8().data(), MAX_PATH_LENGTH + 128);
 
-    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 64);
+    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128);
   }
 
-  setWindowTitle(str);
+  setWindowTitle(QString::fromUtf8(str));
 }
 
 
