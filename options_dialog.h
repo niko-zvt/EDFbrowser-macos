@@ -157,16 +157,19 @@ QCheckBox      *checkbox1,
 QTableWidget   *colorBarTable,
                *annot_sidemenu_table;
 
-QRadioButton   *radiobutton1,
-               *radiobutton2,
-               *radiobutton3;
+QRadioButton   *radiobutton5_1,
+               *radiobutton5_2,
+               *radiobutton5_3,
+               *grid_normal_radiobutton,
+               *grid_ecg_radiobutton;
 
 QLineEdit      *lineEdit3_1,
                *lineedit4_1,
                *lineedit7_1[8],
                *AnnotDurationPredefinedLineEdit[MAX_MC_ANNOT_OV_COLORS];
 
-QGroupBox      *groupbox1;
+QGroupBox      *groupbox1,
+               *groupbox2;
 
 QTextEdit      *textEdit5_1,
                *textEdit5_2;
@@ -181,12 +184,15 @@ QWidget        *tab1,
                *tab6,
                *tab7;
 
-QButtonGroup   *def_amp_radio_group;
+QButtonGroup   *def_amp_radio_group,
+               *grid_radio_group;
 
 void update_interface(void);
 
 private slots:
 
+void grid_radio_group_clicked(int);
+void grid_radio_group_clicked(QAbstractButton *);
 void def_amp_radio_group_clicked(int);
 void def_amp_radio_group_clicked(QAbstractButton *);
 void BgColorButtonClicked(SpecialButton *);
@@ -244,7 +250,7 @@ void colorBarButtonClicked(SpecialButton *);
 void DefaultButton2Clicked();
 void checkBoxChanged(int);
 void ApplyButton2Clicked();
-void radioButtonToggled(bool);
+void radioButton5Toggled(bool);
 void spinBox1_1ValueChanged(int);
 void spinBoxValueChanged(double);
 void dspinBox3_2ValueChanged(double);

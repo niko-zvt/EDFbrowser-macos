@@ -330,12 +330,39 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   colorSchema_ECG_Button = new QPushButton;
   colorSchema_ECG_Button->setText("\"ECG\"");
+  colorSchema_ECG_Button->setToolTip("The ECG schema will activate the ECG grid which is ment to be used exclusively for real ECG signals\n"
+                                     " where the physical dimension (unit) of the signals are expressed in either uV, mV or V.");
 
   saveColorSchemaButton = new QPushButton;
   saveColorSchemaButton->setText("Save");
+  saveColorSchemaButton->setToolTip("Save your customized color schema");
 
   loadColorSchemaButton = new QPushButton;
   loadColorSchemaButton->setText("Load");
+  loadColorSchemaButton->setToolTip("Load your customized color schema");
+
+  grid_normal_radiobutton = new QRadioButton("Normal");
+  grid_normal_radiobutton->setToolTip("The ECG grid is ment to be used exclusively for real ECG signals where the\n"
+                                      "physical dimension (unit) of the signals are expressed in either uV, mV or V.");
+  grid_ecg_radiobutton = new QRadioButton("ECG");
+  grid_ecg_radiobutton->setToolTip("The ECG grid is ment to be used exclusively for real ECG signals where the\n"
+                                   "physical dimension (unit) of the signals are expressed in either uV, mV or V.");
+  if(mainwindow->ecg_view_mode)
+  {
+    grid_ecg_radiobutton->setChecked(true);
+  }
+  else
+  {
+    grid_normal_radiobutton->setChecked(true);
+  }
+  grid_radio_group = new QButtonGroup(this);
+  grid_radio_group->addButton(grid_normal_radiobutton, 0);
+  grid_radio_group->addButton(grid_ecg_radiobutton, 1);
+#if QT_VERSION < 0x060000
+  QObject::connect(grid_radio_group, SIGNAL(buttonClicked(int)), this, SLOT(grid_radio_group_clicked(int)));
+#else
+  QObject::connect(grid_radio_group, SIGNAL(buttonClicked(QAbstractButton *)), this, SLOT(grid_radio_group_clicked(QAbstractButton *)));
+#endif
 
   QVBoxLayout *vlayout1_4 = new QVBoxLayout;
   vlayout1_4->addStretch(100);
@@ -348,13 +375,27 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   vlayout1_4->addWidget(loadColorSchemaButton);
   vlayout1_4->addStretch(100);
 
+  QVBoxLayout *vlayout1_5 = new QVBoxLayout;
+  vlayout1_5->addStretch(100);
+  vlayout1_5->addWidget(grid_normal_radiobutton);
+  vlayout1_5->addWidget(grid_ecg_radiobutton);
+  vlayout1_5->addStretch(100);
+
   QHBoxLayout *hlayout1_2 = new QHBoxLayout;
   hlayout1_2->addStretch(100);
   hlayout1_2->addLayout(vlayout1_4);
   hlayout1_2->addStretch(100);
 
+  QHBoxLayout *hlayout1_3 = new QHBoxLayout;
+  hlayout1_3->addStretch(100);
+  hlayout1_3->addLayout(vlayout1_5);
+  hlayout1_3->addStretch(100);
+
   groupbox1 = new QGroupBox("Colorschema");
   groupbox1->setLayout(hlayout1_2);
+
+  groupbox2 = new QGroupBox("Grid");
+  groupbox2->setLayout(hlayout1_3);
 
   QVBoxLayout *vlayout1_1 = new QVBoxLayout;
   vlayout1_1->addLayout(flayout1_1);
@@ -367,6 +408,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QVBoxLayout *vlayout1_3 = new QVBoxLayout;
   vlayout1_3->addStretch(200);
   vlayout1_3->addWidget(groupbox1);
+  vlayout1_3->addWidget(groupbox2);
   vlayout1_3->addStretch(1000);
 
   QHBoxLayout *hlayout1_1 = new QHBoxLayout;
@@ -979,25 +1021,25 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   QLabel *label3_2 = new QLabel("Height of colorbars are relative to the");
 
-  radiobutton1 = new QRadioButton;
-  radiobutton1->setText("sum");
+  radiobutton5_1 = new QRadioButton;
+  radiobutton5_1->setText("sum");
   if(mainwindow->spectrum_colorbar->method == 0)
   {
-    radiobutton1->setChecked(true);  // sum
+    radiobutton5_1->setChecked(true);  // sum
   }
 
-  radiobutton2 = new QRadioButton;
-  radiobutton2->setText("peak");
+  radiobutton5_2 = new QRadioButton;
+  radiobutton5_2->setText("peak");
   if(mainwindow->spectrum_colorbar->method == 1)
   {
-    radiobutton2->setChecked(true);  // peak
+    radiobutton5_2->setChecked(true);  // peak
   }
 
-  radiobutton3 = new QRadioButton;
-  radiobutton3->setText("average");
+  radiobutton5_3 = new QRadioButton;
+  radiobutton5_3->setText("average");
   if(mainwindow->spectrum_colorbar->method == 2)
   {
-    radiobutton3->setChecked(true);  // average
+    radiobutton5_3->setChecked(true);  // average
   }
 
   QLabel *label3_3 = new QLabel("of the power in the colorbar region.");
@@ -1034,15 +1076,15 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout3_3->addStretch(1000);
 
   QHBoxLayout *hlayout3_4 = new QHBoxLayout;
-  hlayout3_4->addWidget(radiobutton1);
+  hlayout3_4->addWidget(radiobutton5_1);
   hlayout3_4->addStretch(1000);
 
   QHBoxLayout *hlayout3_5 = new QHBoxLayout;
-  hlayout3_5->addWidget(radiobutton2);
+  hlayout3_5->addWidget(radiobutton5_2);
   hlayout3_5->addStretch(1000);
 
   QHBoxLayout *hlayout3_6 = new QHBoxLayout;
-  hlayout3_6->addWidget(radiobutton3);
+  hlayout3_6->addWidget(radiobutton5_3);
   hlayout3_6->addStretch(1000);
 
   QHBoxLayout *hlayout3_7 = new QHBoxLayout;
@@ -1086,9 +1128,9 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   tab3->setLayout(hlayout3_1);
 
-  QObject::connect(radiobutton1,   SIGNAL(toggled(bool)),        this, SLOT(radioButtonToggled(bool)));
-  QObject::connect(radiobutton2,   SIGNAL(toggled(bool)),        this, SLOT(radioButtonToggled(bool)));
-  QObject::connect(radiobutton3,   SIGNAL(toggled(bool)),        this, SLOT(radioButtonToggled(bool)));
+  QObject::connect(radiobutton5_1, SIGNAL(toggled(bool)),        this, SLOT(radioButton5Toggled(bool)));
+  QObject::connect(radiobutton5_2, SIGNAL(toggled(bool)),        this, SLOT(radioButton5Toggled(bool)));
+  QObject::connect(radiobutton5_3, SIGNAL(toggled(bool)),        this, SLOT(radioButton5Toggled(bool)));
   QObject::connect(dspinbox3_2,    SIGNAL(valueChanged(double)), this, SLOT(dspinBox3_2ValueChanged(double)));
   QObject::connect(ApplyButton2,   SIGNAL(clicked()),            this, SLOT(ApplyButton2Clicked()));
   QObject::connect(DefaultButton2, SIGNAL(clicked()),            this, SLOT(DefaultButton2Clicked()));
@@ -1884,7 +1926,7 @@ void UI_OptionsDialog::dspinBox3_2ValueChanged(double)
 }
 
 
-void UI_OptionsDialog::radioButtonToggled(bool)
+void UI_OptionsDialog::radioButton5Toggled(bool)
 {
   ApplyButton2->setEnabled(true);
 }
@@ -1945,17 +1987,17 @@ void UI_OptionsDialog::ApplyButton2Clicked()
     mainwindow->spectrum_colorbar->color[row] = ((SpecialButton *)(colorBarTable->cellWidget(row, 2)))->globalColor();
   }
 
-  if(radiobutton1->isChecked()) // sum
+  if(radiobutton5_1->isChecked()) // sum
   {
     mainwindow->spectrum_colorbar->method = 0;
   }
   else
-    if(radiobutton2->isChecked()) // peak
+    if(radiobutton5_2->isChecked()) // peak
     {
       mainwindow->spectrum_colorbar->method = 1;
     }
     else
-      if(radiobutton3->isChecked()) // average
+      if(radiobutton5_3->isChecked()) // average
       {
         mainwindow->spectrum_colorbar->method = 2;
       }
@@ -2072,7 +2114,7 @@ void UI_OptionsDialog::DefaultButton2Clicked()
     ((QLineEdit *)(colorBarTable->cellWidget(i, 3)))->clear();
   }
 
-  radiobutton1->setChecked(true);
+  radiobutton5_1->setChecked(true);
 
   ApplyButton2->setEnabled(true);
 }
@@ -3328,8 +3370,16 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
       return;
     }
     mainwindow->ecg_view_mode = atoi(result);
+    if(mainwindow->ecg_view_mode != 1)
+    {
+      mainwindow->ecg_view_mode = 0;
+    }
 
     xml_go_up(xml_hdl);
+  }
+  else
+  {
+    mainwindow->ecg_view_mode = 0;
   }
 
   if(xml_goto_nth_element_inside(xml_hdl, "crosshair_1_color", 0))
@@ -3577,6 +3627,19 @@ void UI_OptionsDialog::update_interface(void)
   {
     checkbox6->setCheckState(Qt::Unchecked);
   }
+
+  grid_radio_group->blockSignals(true);
+  if(mainwindow->ecg_view_mode)
+  {
+    grid_ecg_radiobutton->setChecked(true);
+    grid_normal_radiobutton->setChecked(false);
+  }
+  else
+  {
+    grid_normal_radiobutton->setChecked(true);
+    grid_ecg_radiobutton->setChecked(false);
+  }
+  grid_radio_group->blockSignals(false);
 
   if(mainwindow->ecg_view_mode)
   {
@@ -4145,6 +4208,62 @@ void UI_OptionsDialog::tab7_settings_changed()
       mainwindow->annotationEditDock->annot_by_rect_draw_menu->addAction(QString::fromUtf8(mainwindow->annot_by_rect_draw_description[7]), mainwindow->annotationEditDock, SLOT(annot_by_rect_draw_side_menu_7_clicked()));
     }
   }
+}
+
+
+void UI_OptionsDialog::grid_radio_group_clicked(int id)
+{
+  if(id == 0)
+  {
+    mainwindow->ecg_view_mode = 0;
+  }
+  else
+  {
+    mainwindow->ecg_view_mode = 1;
+
+    for(int i=0; i<mainwindow->signalcomps; i++)
+    {
+      if(strcmp(mainwindow->signalcomp[i]->physdimension, "uV") &&
+         strcmp(mainwindow->signalcomp[i]->physdimension, "mV") &&
+         strcmp(mainwindow->signalcomp[i]->physdimension, "V"))
+      {
+        QMessageBox::warning(optionsdialog, "Warning",
+                             "The physical dimension (unit) of one or more signals on the screen does not equal to uV, mV or V.\n"
+                             "As a result, the grid's dimensions for these signals cannot be calculated correctly.");
+        break;
+      }
+    }
+  }
+
+  mainwindow->maincurve->drawCurve_stage_1();
+}
+
+
+void UI_OptionsDialog::grid_radio_group_clicked(QAbstractButton *b)
+{
+  if(grid_radio_group->id(b) == 0)
+  {
+    mainwindow->ecg_view_mode = 0;
+  }
+  else
+  {
+    mainwindow->ecg_view_mode = 1;
+
+    for(int i=0; i<mainwindow->signalcomps; i++)
+    {
+      if(strcmp(mainwindow->signalcomp[i]->physdimension, "uV") &&
+         strcmp(mainwindow->signalcomp[i]->physdimension, "mV") &&
+         strcmp(mainwindow->signalcomp[i]->physdimension, "V"))
+      {
+        QMessageBox::warning(optionsdialog, "Warning",
+                             "The physical dimension (unit) of one or more signals on the screen does not equal to uV, mV or V.\n"
+                             "As a result, the grid's dimensions for these signals cannot be calculated correctly.");
+        break;
+      }
+    }
+  }
+
+  mainwindow->maincurve->drawCurve_stage_1();
 }
 
 
