@@ -1747,9 +1747,10 @@ void UI_Mainwindow::open_new_file()
 {
   FILE *newfile=NULL;
 
-  int i, len, present, position, button_nr=0, err=0;
+  int i, tmp, len, present, position, button_nr=0, err=0;
 
-  char str[2048]="";
+  char str1[2048]="",
+       str2[2048]="";
 
   QAction *act=NULL;
 
@@ -1932,9 +1933,9 @@ void UI_Mainwindow::open_new_file()
       }
       else
       {
-        snprintf(str, 2048, "File has an unknown extension:\n \n%s", path);
+        snprintf(str1, 2048, "File has an unknown extension:\n \n%s", path);
 
-        QMessageBox::critical(this, "Error", QString::fromLocal8Bit(str));
+        QMessageBox::critical(this, "Error", QString::fromLocal8Bit(str1));
       }
       rc_file_open_requested = 0;
       drop_path[0] = 0;
@@ -1951,9 +1952,9 @@ void UI_Mainwindow::open_new_file()
       }
       else
       {
-        snprintf(str, 2048, "Cannot open file for reading:\n \n%s\n \n"
-                            "Check if you have the right permissions.", path);
-        QMessageBox::critical(this, "Error", QString::fromLocal8Bit(str));
+        snprintf(str1, 2048, "Cannot open file for reading:\n \n%s\n \n"
+                             "Check if you have the right permissions.", path);
+        QMessageBox::critical(this, "Error", QString::fromLocal8Bit(str1));
       }
       rc_file_open_requested = 0;
       drop_path[0] = 0;
@@ -1963,7 +1964,7 @@ void UI_Mainwindow::open_new_file()
 
     get_directory_from_path(recent_opendir, path, MAX_PATH_LENGTH);
 
-    edfhdr = check_edf_file(newfile, str, 2048, live_stream_active, 0);
+    edfhdr = check_edf_file(newfile, str1, 2048, live_stream_active, 0);
     if(edfhdr==NULL)
     {
       fclose(newfile);
@@ -1976,11 +1977,40 @@ void UI_Mainwindow::open_new_file()
       }
       else
       {
-        if(strstr(str, "If you want to import annotations from this file") == NULL)
+        if(strstr(str1, "If you want to import annotations from this file") != NULL)
         {
-          strlcat(str, "\n File is not a valid EDF or BDF file.", 2048);
+          QMessageBox::critical(this, "Error", str1);
         }
-        QMessageBox::critical(this, "Error", str);
+        else
+        {
+          QMessageBox msgbox;
+          msgbox.setWindowTitle("Error");
+          msgbox.setInformativeText("File is not a valid EDF or BDF file.");
+          msgbox.setDetailedText(str1);
+          QTextEdit *txted = msgbox.findChild<QTextEdit *>("");
+          if(txted == NULL)
+          {
+            tmp = 600 * w_scaling;
+          }
+          else
+          {
+            txted->setLineWrapMode(QTextEdit::NoWrap);
+            tmp = txted->document()->idealWidth() +
+                  txted->document()->documentMargin() +
+                  txted->verticalScrollBar()->width();
+          }
+          snprintf(str2, 2048, "QLabel{min-width: %ipx;}", tmp);
+          msgbox.setStyleSheet(str2);
+          foreach(QAbstractButton *button, msgbox.buttons())
+          {
+            if(msgbox.buttonRole(button) == QMessageBox::ActionRole)
+            {
+              button->click();
+              break;
+            }
+          }
+          msgbox.exec();
+        }
       }
       rc_file_open_requested = 0;
       drop_path[0] = 0;
