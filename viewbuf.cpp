@@ -253,6 +253,7 @@ void UI_Mainwindow::setup_viewbuf()
       QMessageBox::critical(this, "Error", "Somehow you hit the memory limit...\n"
                                            "Decrease the timescale and/or number of traces and try again.");
       remove_all_signals();
+      pagetime = TIME_FIXP_SCALING;
       return;
     }
 #else
@@ -263,6 +264,7 @@ void UI_Mainwindow::setup_viewbuf()
                                            "Decrease the timescale and/or number of traces and try again.\n"
                                            "Consider switching to the 64-bit version.");
       remove_all_signals();
+      pagetime = TIME_FIXP_SCALING;
       return;
     }
 #endif
@@ -273,6 +275,7 @@ void UI_Mainwindow::setup_viewbuf()
       QMessageBox::critical(this, "Error", "Internal error: Memory allocation error:\n\"prefilterbuf\"");
       remove_all_signals();
       totalviewbufsize_bytes = 0;
+      pagetime = TIME_FIXP_SCALING;
       return;
     }
     totalviewbufsize_bytes = totalsize;
@@ -663,6 +666,7 @@ void UI_Mainwindow::setup_viewbuf()
       QMessageBox::critical(this, "Error", "Somehow you hit the memory limit...\n"
                                            "Decrease the timescale and/or number of traces and try again.");
       remove_all_signals();
+      pagetime = TIME_FIXP_SCALING;
       return;
     }
 #else
@@ -673,6 +677,7 @@ void UI_Mainwindow::setup_viewbuf()
                                            "Decrease the timescale and/or number of traces and try again.\n"
                                            "Consider switching to the 64-bit version.");
       remove_all_signals();
+      pagetime = TIME_FIXP_SCALING;
       return;
     }
 #endif
@@ -684,6 +689,7 @@ void UI_Mainwindow::setup_viewbuf()
                                            "Decrease the timescale and try again.");
       remove_all_signals();
       totalviewbufsize_bytes = 0;
+      pagetime = TIME_FIXP_SCALING;
       return;
     }
     totalviewbufsize_bytes = totalsize;

@@ -898,6 +898,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
             mainwindow->zoomhistory->history_size_head = 0;
 
             mainwindow->setup_viewbuf();
+            signalcomps = mainwindow->signalcomps;
           }
           else
           {
