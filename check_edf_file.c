@@ -1301,18 +1301,22 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
   for(i=0; i<edfhdr->edfsignals; i++)
   {
     strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 224) + (i * 32), 32);
-    for(j=0; j<32; j++)
+    scratchpad[32] = 0;
+    if(strcmp(scratchpad, "Reserved                        "))
     {
-      if(scratchpad[j] != ' ')
+      for(j=0; j<32; j++)
       {
-        snprintf(txt_string, txt_len, "Error, %ith character of reserved field of signal %i is not a space.\n"
-                                      "You can repair the file with the header editor, have a look at the manual for the details.",
-        j + 1,
-        i + 1);
-        free(edf_hdr);
-        free(edfhdr->edfparam);
-        free(edfhdr);
-        return NULL;
+        if(scratchpad[j] != ' ')
+        {
+          snprintf(txt_string, txt_len, "Error, %ith character of reserved field of signal %i is not a space.\n"
+                                        "You can repair the file with the header editor, have a look at the manual for the details.",
+          j + 1,
+          i + 1);
+          free(edf_hdr);
+          free(edfhdr->edfparam);
+          free(edfhdr);
+          return NULL;
+        }
       }
     }
     strncpy(edfhdr->edfparam[i].reserved, edf_hdr + 256 + (edfhdr->edfsignals * 224) + (i * 32), 32);

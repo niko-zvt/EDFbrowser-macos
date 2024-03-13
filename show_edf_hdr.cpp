@@ -366,7 +366,7 @@ void UI_EDFhdrwindow::show_params(int row)
 
   signal_cnt = mainwindow->edfheaderlist[row]->edfsignals;
 
-  signallist->setColumnCount(11);
+  signallist->setColumnCount(12);
   signallist->setRowCount(signal_cnt);
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
   QStringList horizontallabels;
@@ -381,6 +381,7 @@ void UI_EDFhdrwindow::show_params(int row)
   horizontallabels += "Samples per record";
   horizontallabels += "Prefilter";
   horizontallabels += "Transducer";
+  horizontallabels += "Reserved";
   signallist->setHorizontalHeaderLabels(horizontallabels);
 
   QLineEdit *ql;
@@ -488,6 +489,15 @@ void UI_EDFhdrwindow::show_params(int row)
       ql->setToolTip(str);
     }
     signallist->setCellWidget(i, 10, ql);
+    ql = new QLineEdit(mainwindow->edfheaderlist[row]->edfparam[i].reserved);
+    ql->setReadOnly(true);
+    ql->setCursorPosition(0);
+    if(mainwindow->edf_debug)
+    {
+      snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 224) + (i * 32));
+      ql->setToolTip(str);
+    }
+    signallist->setCellWidget(i, 11, ql);
   }
 
   signallist->resizeColumnsToContents();
