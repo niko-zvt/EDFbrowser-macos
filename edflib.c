@@ -2158,15 +2158,19 @@ static edfhdrblock_t * edflib_check_edf_file(FILE *inputfile, int *edf_error)
   for(i=0; i<edfhdr->edfsignals; i++)
   {
     strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 224) + (i * 32), 32);
-    for(j=0; j<32; j++)
+    scratchpad[32] = 0;
+    if(strcmp(scratchpad, "Reserved                        "))
     {
-      if(scratchpad[j] != ' ')
+      for(j=0; j<32; j++)
       {
-        *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS;
-        free(edf_hdr);
-        free(edfhdr->edfparam);
-        free(edfhdr);
-        return NULL;
+        if(scratchpad[j] != ' ')
+        {
+          *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS;
+          free(edf_hdr);
+          free(edfhdr->edfparam);
+          free(edfhdr);
+          return NULL;
+        }
       }
     }
     strncpy(edfhdr->edfparam[i].reserved, edf_hdr + 256 + (edfhdr->edfsignals * 224) + (i * 32), 32);
@@ -6496,6 +6500,15 @@ static int edflib_snprint_number_nonlocalized(char *dest, double val, int sz)
   double var;
 
   if(sz < 1)  return 0;
+
+  if(val < 0.0)
+  {
+    val -= 1e-12;
+  }
+  else
+  {
+    val += 1e-12;
+  }
 
   q = (int)val;
 
