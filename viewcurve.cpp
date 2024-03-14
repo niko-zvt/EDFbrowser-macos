@@ -703,6 +703,25 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
   sigcompblck_t **signalcomp;
 
+  struct
+  {
+    int x1;
+    int x2;
+    int y1;
+    int y2;
+    int w;
+    int h;
+  }
+  sig_rect_select=
+  {
+    .x1=0,
+    .x2=0,
+    .y1=0,
+    .y2=0,
+    .w=0,
+    .h=0
+  };
+
   if(!mainwindow->files_open)  return;
   if(!mainwindow->signalcomps)  return;
 
@@ -790,8 +809,33 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
     {
       draw_zoom_rectangle = 0;
 
-      if((m_x >= (mouse_press_coordinate_x + 15)) && (m_y >= (mouse_press_coordinate_y + 15)))
+      if((abs(m_x - mouse_press_coordinate_x) >= 15) && (abs(m_y - mouse_press_coordinate_y) >= 15))
       {
+        if(m_x > mouse_press_coordinate_x)
+        {
+          sig_rect_select.x1 = mouse_press_coordinate_x;
+          sig_rect_select.x2 = m_x;
+        }
+        else
+        {
+          sig_rect_select.x1 = m_x;
+          sig_rect_select.x2 = mouse_press_coordinate_x;
+        }
+
+        if(m_y > mouse_press_coordinate_y)
+        {
+          sig_rect_select.y1 = mouse_press_coordinate_y;
+          sig_rect_select.y2 = m_y;
+        }
+        else
+        {
+          sig_rect_select.y1 = m_y;
+          sig_rect_select.y2 = mouse_press_coordinate_y;
+        }
+
+        sig_rect_select.w = sig_rect_select.x2 - sig_rect_select.x1;
+        sig_rect_select.h = sig_rect_select.y2 - sig_rect_select.y1;
+
         if((QApplication::keyboardModifiers() == Qt::ControlModifier) ||
            (QApplication::keyboardModifiers() == Qt::ShiftModifier))
         {
@@ -818,7 +862,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
                   baseline = signalcomp[i]->draw_rectangle_sum_y / signalcomp[i]->draw_rectangle_sum_cnt;
 
-                  dist2 = baseline - ((mouse_press_coordinate_y + m_y) / 2) - scroll_h_offset;
+                  dist2 = baseline - ((sig_rect_select.y1 + sig_rect_select.y2) / 2) - scroll_h_offset;
                   if(dist2 < 0)
                   {
                     dist2 *= -1;
@@ -838,9 +882,9 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
                 mainwindow->annot_created_by_rect_draw_numchan = -1;
               }
 
-            mainwindow->annot_created_by_rect_draw_onset = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime + (long long)(((double)mainwindow->pagetime / (double)w) * (double)mouse_press_coordinate_x);
+            mainwindow->annot_created_by_rect_draw_onset = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime + (long long)(((double)mainwindow->pagetime / (double)w) * (double)sig_rect_select.x1);
 
-            mainwindow->annot_created_by_rect_draw_duration = (long long)((double)mainwindow->pagetime / ((double)w / (double)(m_x - mouse_press_coordinate_x)));
+            mainwindow->annot_created_by_rect_draw_duration = (long long)((double)mainwindow->pagetime / ((double)w / (double)sig_rect_select.w));
 
             mainwindow->annot_created_by_rect_draw_active = 1;
 
@@ -849,7 +893,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
           update();
         }
-        else if((m_x >= (mouse_press_coordinate_x + 25)) && (m_y >= (mouse_press_coordinate_y + 25)))
+        else if((sig_rect_select.w >= 25) && (sig_rect_select.h >= 25))
           {
             for(i=0; i<mainwindow->files_open; i++)
             {
@@ -867,12 +911,12 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
             for(i=0; i<mainwindow->files_open; i++)
             {
-              mainwindow->edfheaderlist[i]->viewtime += (long long)(((double)mainwindow->pagetime / (double)w) * (double)mouse_press_coordinate_x);
+              mainwindow->edfheaderlist[i]->viewtime += (long long)(((double)mainwindow->pagetime / (double)w) * (double)sig_rect_select.x1);
             }
-            mainwindow->pagetime = (long long)((double)mainwindow->pagetime / ((double)w / (double)(m_x - mouse_press_coordinate_x)));
+            mainwindow->pagetime = (long long)((double)mainwindow->pagetime / ((double)w / (double)sig_rect_select.w));
             if(mainwindow->pagetime<1)  mainwindow->pagetime = 1;
 
-            v_zoomfactor = h / ((double)(m_y - mouse_press_coordinate_y));
+            v_zoomfactor = h / ((double)sig_rect_select.h);
 
 //             printf("m_y: %i\n"
 //                    "mouse_press_coordinate_y: %i\n"
@@ -889,7 +933,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
             {
               mainwindow->signalcomp[i]->screen_offset *= v_zoomfactor;
               mainwindow->signalcomp[i]->screen_offset += ((h * mainwindow->mc_v_scrollarea_ratio * (v_zoomfactor - 1) * (double)(i + 1)) / (signalcomps + 1));
-              mainwindow->signalcomp[i]->screen_offset -= (mouse_press_coordinate_y * v_zoomfactor) + (scroll_h_offset * (v_zoomfactor - 1));
+              mainwindow->signalcomp[i]->screen_offset -= (sig_rect_select.y1 * v_zoomfactor) + (scroll_h_offset * (v_zoomfactor - 1));
               mainwindow->signalcomp[i]->voltpercm /= v_zoomfactor;
               mainwindow->signalcomp[i]->sensitivity *= v_zoomfactor;
             }
@@ -936,7 +980,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
         signallabel_strlen = strlen(signalcomp[i]->signallabel);
       }
 
-      if((m_y<(baseline-(2*h_scaling)))&&(m_y>(baseline-(17*h_scaling)))&&(m_x>(2*w_scaling))&&(m_x<(((signallabel_strlen * 8) + 2) * w_scaling)))
+      if((sig_rect_select.y2<(baseline-(2*h_scaling)))&&(sig_rect_select.y2>(baseline-(17*h_scaling)))&&(sig_rect_select.x2>(2*w_scaling))&&(sig_rect_select.x2<(((signallabel_strlen * 8) + 2) * w_scaling)))
       {
         if(pressed_on_label == (i + 1))
         {

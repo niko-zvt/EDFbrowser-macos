@@ -1394,8 +1394,13 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
       if(draw_zoom_rectangle && use_move_events)
       {
-        if((graphicBuf[j].graphic_line[i].x1 >= mouse_press_coordinate_x) &&
-           (graphicBuf[j].graphic_line[i].x1 <= mouse_x))
+        if(((mouse_x >= mouse_press_coordinate_x) &&
+            (graphicBuf[j].graphic_line[i].x1 >= mouse_press_coordinate_x) &&
+            (graphicBuf[j].graphic_line[i].x1 <= mouse_x))
+           ||
+           ((mouse_x < mouse_press_coordinate_x) &&
+            (graphicBuf[j].graphic_line[i].x1 <= mouse_press_coordinate_x) &&
+            (graphicBuf[j].graphic_line[i].x1 >= mouse_x)))
         {
           signalcomp[i]->draw_rectangle_sum_y += graphicBuf[j].graphic_line[i].y1;
 

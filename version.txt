@@ -1,4 +1,14 @@
 
+ version 2.08      to be defined
+ --------------
+
+ - Fix regression bug releated to BDF files created by Biosemi that caused the file invalid because of
+   the text "Reserved" in the reserved fields of the signals.
+
+ - Draw rectangle with the mouse (zoom-in or creating a channel linked annotation) accepts now
+   also rectangles drawn in any direction (before it accepted only rectangles drawn from up-left to down-right).
+
+
  version 2.07      February 25, 2024
  --------------
 
