@@ -1233,7 +1233,7 @@ UI_Mainwindow::UI_Mainwindow()
   windowmenu = new QMenu(this);
   windowmenu->setTitle("&Window");
   windowmenu->addAction("Annotations", this, SLOT(show_annotations()));
-  windowmenu->addAction("Annotation editor", this, SLOT(annotation_editor()));
+  windowmenu->addAction("Annotation editor", this, SLOT(annotation_editor()), QKeySequence(Qt::CTRL + Qt::Key_E));
   windowmenu->addAction("Power Spectrum", this, SLOT(show_spectrum_dock()));
   windowmenu->addAction("Color Density Spectral Array", this, SLOT(show_cdsa_dock()));
   windowmenu->addAction("amplitude EEG", this, SLOT(show_aeeg_dock()));

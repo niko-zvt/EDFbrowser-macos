@@ -1522,6 +1522,13 @@ void UI_Mainwindow::annotation_editor()
 
 //  stop_playback();
 
+  if(annotationEditDock)
+  {
+    delete annotationEditDock;
+    annotationEditDock = NULL;
+    return;
+  }
+
   if(playback_realtime_active)
   {
     playback_realtime_timer->stop();
@@ -4578,20 +4585,20 @@ void UI_Mainwindow::show_kb_shortcuts()
    "Keyboard shortcuts",
    "PgDn\t\tnext page\n"
    "PgUp\t\tformer page\n"
-   "Right Arrow\tshift right one tenth of pagetime\n"
-   "Left Arrow\t\tshift left one tenth of pagetime\n"
+   "Right Arrow\t\tshift right one tenth of page\n"
+   "Left Arrow\t\tshift left one tenth of page\n"
    "Plus\t\tincrease amplitude\n"
    "Minus\t\tdecrease amplitude\n"
    "Up Arrow\t\tshift traces up\n"
-   "Down Arrow\tshift traces down\n"
-   "Shift+Up Arrow\tmove vertical scrollbar (if enabled)\n"
-   "Shift+Down Arrow\tmove vertical scrollbar (if enabled)\n"
-   "Ctrl-Home\t\tgo to start of file\n"
-   "Ctrl-End\t\tgo to end of file\n"
+   "Down Arrow\t\tshift traces down\n"
+   "Shift+Up Arrow\tmove vertical scrollbar\n"
+   "Shift+Down Arrow\tmove vertical scrollbar\n"
+   "Ctrl+Home\t\tgo to start of file\n"
+   "Ctrl+End\t\tgo to end of file\n"
    "Ctrl++\t\tzoom in horizontally\n"
    "Ctrl+-\t\tzoom out horizontally\n"
    "F1 - F8\t\tload predefined montage\n"
-   "Alt+Shift+C\tcrosshair (repeat for second crosshair)\n"
+   "Alt+Shift+C\t\tcrosshair (repeat for second crosshair)\n"
    "Esc\t\tremove crosshairs or floating ruler\n"
    "Ctrl+M\t\ttoggle annotation markers\n"
 
@@ -4600,7 +4607,7 @@ void UI_Mainwindow::show_kb_shortcuts()
    "Insert\t\tzoom in\n"
 #ifdef Q_OS_WIN32
    "\nCtrl+O\t\tOpen a file\n"
-   "Ctrl+Shift+O\tOpen a stream\n"
+   "Ctrl+Shift+O\t\tOpen a stream\n"
    "Ctrl+F4\tClose all files\n"
    "Alt+F4\tExit program\n"
 #else
@@ -4609,15 +4616,15 @@ void UI_Mainwindow::show_kb_shortcuts()
    "Ctrl+W\t\tClose all files\n"
    "Ctrl+Q\t\tExit program\n"
 #endif
-   "\nMousewheel\tshift left or right\n"
+   "\nMousewheel\t\tshift left or right\n"
    "Ctrl+Mousewheel\tzoom in or out horizontally\n"
    "Keep middle mousebutton pressed to drag horizontally\n"
 
-   "\nCtrl+Space\tToggle Playback or Pause\n"
-   "Ctrl+Shift+V\tToggle Playback with video\n"
+   "\nCtrl+Space\t\tToggle Playback or Pause\n"
+   "Ctrl+Shift+V\t\tToggle Playback with video\n"
 
-   "\nAnnotation editor:\n"
-   "user buttons: press 1, 2, 3, etc.\n"
+   "\nCtrl+E\t\tToggle annotation editor:\n"
+   "user buttons\t\tpress 1, 2, 3, etc.\n"
    "Shift+draw rectangle\tcreate annotation\n"
    "Ctrl+draw rectangle\tcreate signal linked annotation\n"
    "A+crosshair(s) active\tcreate annotation,\n \tuse Ctrl to print amplitude difference\n",

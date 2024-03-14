@@ -8,6 +8,8 @@
  - Draw rectangle with the mouse (zoom-in or creating a channel linked annotation) accepts now
    also rectangles drawn in any direction (before it accepted only rectangles drawn from up-left to down-right).
 
+ - Added keyboard shortcut Ctrl+E in order to toggle the annotation editor.
+
 
  version 2.07      February 25, 2024
  --------------
