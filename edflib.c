@@ -6514,15 +6514,6 @@ static int edflib_snprint_number_nonlocalized(char *dest, double val, int sz)
 
   if(sz < 1)  return 0;
 
-  if(val < 0.0)
-  {
-    val -= 1e-12;
-  }
-  else
-  {
-    val += 1e-12;
-  }
-
   q = (int)val;
 
   var = val - q;
