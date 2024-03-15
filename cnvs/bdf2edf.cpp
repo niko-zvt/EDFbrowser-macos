@@ -70,6 +70,7 @@ UI_BDF2EDFwindow::UI_BDF2EDFwindow(QWidget *w_parent)
   spinBox2->setDecimals(3);
   spinBox2->setRange(1.0, 256.0);
   spinBox2->setValue(1.0);
+  spinBox2->setToolTip("Increasing the divider lowers the amplitude resolution but increases the amplitude range (physical maximum and minimum)");
 
   pushButton1 = new QPushButton;
   pushButton1->setText("Select File");
@@ -92,13 +93,16 @@ UI_BDF2EDFwindow::UI_BDF2EDFwindow(QWidget *w_parent)
   HPFcheckBox = new QCheckBox;
   HPFcheckBox->setTristate(false);
   HPFcheckBox->setChecked(true);
+  HPFcheckBox->setToolTip("The highpass filter is usually necessary in order to remove the DC-offset");
 
   QFormLayout *flayout = new QFormLayout;
   flayout->addRow("Enable HPF:", HPFcheckBox);
+  flayout->labelForField(HPFcheckBox)->setToolTip("The highpass filter is usually necessary in order to remove the DC-offset");
   flayout->addRow(" ", (QWidget *)NULL);
   flayout->addRow("Highpass filter:", spinBox1);
   flayout->addRow(" ", (QWidget *)NULL);
   flayout->addRow("Divider:", spinBox2);
+  flayout->labelForField(spinBox2)->setToolTip("Increasing the divider lowers the amplitude resolution but increases the amplitude range (physical maximum and minimum)");
 
   QHBoxLayout *hlayout3 = new QHBoxLayout;
   hlayout3->addWidget(pushButton4);
