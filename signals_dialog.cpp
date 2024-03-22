@@ -675,7 +675,7 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
         messagewindow.exec();
         messagewindow.setIcon(QMessageBox::Information);
         messagewindow.setWindowTitle("Help");
-        messagewindow.setText("In this case the problem is that the resolution of the signals selected for the derivation,"
+        messagewindow.setText("In this case the problem is that the amplitude resolution of the signals selected for the derivation,"
                               "have different values. You can correct this with the tool \"Unify resolution\" in the tools menu."
                               "Have a look at the manual for the details.");
         messagewindow.exec();
