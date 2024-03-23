@@ -1,5 +1,5 @@
 
- version 2.08      to be defined
+ version 2.08      March 23, 2024
  --------------
 
  - Fix regression bug releated to BDF files created by Biosemi that caused the file invalid because of
