@@ -406,16 +406,25 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   vlayout1_2->addStretch(1000);
 
   QVBoxLayout *vlayout1_3 = new QVBoxLayout;
-  vlayout1_3->addStretch(200);
   vlayout1_3->addWidget(groupbox1);
   vlayout1_3->addWidget(groupbox2);
   vlayout1_3->addStretch(1000);
 
+  QFrame *frame1 = new QFrame;
+  frame1->setFrameStyle(QFrame::VLine | QFrame::Plain);
+
+  QFrame *frame2 = new QFrame;
+  frame2->setFrameStyle(QFrame::VLine | QFrame::Plain);
+
   QHBoxLayout *hlayout1_1 = new QHBoxLayout;
   hlayout1_1->addLayout(vlayout1_1);
-  hlayout1_1->addSpacing(40);
+  hlayout1_1->addSpacing(20);
+  hlayout1_1->addWidget(frame1);
+  hlayout1_1->addSpacing(20);
   hlayout1_1->addLayout(vlayout1_2);
-  hlayout1_1->addStretch(500);
+  hlayout1_1->addSpacing(20);
+  hlayout1_1->addWidget(frame2);
+  hlayout1_1->addSpacing(20);
   hlayout1_1->addLayout(vlayout1_3);
   hlayout1_1->addStretch(500);
 
@@ -1703,11 +1712,15 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   flayout4_2->labelForField(hlayout_tmp)->setToolTip("If enabled annotationlist will scroll to items visible on the page when browsing");
   QObject::connect(checkbox4_17, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_17Clicked(int)));
 
+  QFrame *frame3 = new QFrame;
+  frame3->setFrameStyle(QFrame::VLine | QFrame::Plain);
+
   hlayout_tmp = new QHBoxLayout;
   hlayout_tmp->setAlignment(Qt::AlignCenter);
   hlayout_tmp->addLayout(flayout4_1);
   hlayout_tmp->addSpacing(20);
-  hlayout_tmp->addStretch(300);
+  hlayout_tmp->addWidget(frame3);
+  hlayout_tmp->addSpacing(20);
   hlayout_tmp->addLayout(flayout4_2);
   hlayout_tmp->addStretch(1000);
 
@@ -1724,7 +1737,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   tab5 = new QWidget;
 
   QFormLayout *flayout5_1 = new QFormLayout;
-  flayout5_1->setSpacing(20);
+  flayout5_1->setSpacing(40);
 
   spinbox5_1 = new QSpinBox;
   spinbox5_1->setRange(8, 24);
@@ -1778,10 +1791,11 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp->addStretch(1000);
 
   vlayout_tmp = new QVBoxLayout;
-  vlayout_tmp->addStretch(1000);
+  vlayout_tmp->addSpacing(40);
   vlayout_tmp->addLayout(flayout5_1);
-  vlayout_tmp->addStretch(1000);
+  vlayout_tmp->addSpacing(40);
   vlayout_tmp->addLayout(hlayout_tmp);
+  vlayout_tmp->addStretch(1000);
 
   tab5->setLayout(vlayout_tmp);
 
