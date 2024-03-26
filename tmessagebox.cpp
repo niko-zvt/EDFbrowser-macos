@@ -52,10 +52,10 @@ tmessagebox::tmessagebox(QMessageBox::Icon icon, const char *title_txt, const ch
   double h_scaling = fm.height() / 18.0;
   double w_scaling = fm.tightBoundingRect("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789").width() / 260.0;
 
-  dlg->setMinimumSize(400 * w_scaling, 200 * h_scaling);
+  dlg->setMinimumSize(400 * w_scaling, 300 * h_scaling);
 
-  int pxmap_h = 50 * w_scaling,
-      pxmap_w = 50 * w_scaling;
+  int pxmap_h = 40 * w_scaling,
+      pxmap_w = 40 * w_scaling;
 
   QLabel *info_txt_label = new QLabel;
   info_txt_label->setText(info_txt);
@@ -84,12 +84,21 @@ tmessagebox::tmessagebox(QMessageBox::Icon icon, const char *title_txt, const ch
   text_edit->append(detailed_txt);
   int w = text_edit->document()->idealWidth() +
           text_edit->document()->documentMargin() +
-          text_edit->verticalScrollBar()->width();
+          text_edit->verticalScrollBar()->width() + 10;
   if(w > 900) w = 900;
   text_edit->setMinimumWidth(w);
+  if((w + 40) > (400 * w_scaling))
+  {
+    dlg->setMinimumWidth(w + 40);
+  }
   int h = text_edit->document()->lineCount() * 25;
   if(h > 700)  h = 700;
-  text_edit->setMinimumHeight(h);
+  if(h > (200 * h_scaling))
+  {
+    dlg->setMinimumHeight(h);
+  }
+  text_edit->moveCursor(QTextCursor::Start);
+  text_edit->verticalScrollBar()->setValue(text_edit->verticalScrollBar()->minimum());
 
   QPushButton *close_button = new QPushButton;
   close_button->setText("Close");
