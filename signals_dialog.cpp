@@ -616,7 +616,8 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
 {
   int i, j, k, n, s, row, duplicate;
 
-  char str[256];
+  char str1[256]={""},
+       str2[4096]={""};
 
   QListWidgetItem *item;
 
@@ -643,8 +644,7 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
     {
       if(smp_per_record!=mainwindow->edfheaderlist[row]->edfparam[s].smp_per_record)
       {
-        QMessageBox messagewindow(QMessageBox::Warning, "Warning", derivation_err_str);
-        messagewindow.exec();
+        tmessagebox(QMessageBox::Warning, "Warning", "Cannot make derivation", derivation_err_str, SignalsDialog);
         continue;
       }
     }
@@ -657,8 +657,7 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
     {
       if(strcmp(physdimension, mainwindow->edfheaderlist[row]->edfparam[s].physdimension))
       {
-        QMessageBox messagewindow(QMessageBox::Warning, "Warning", derivation_err_str);
-        messagewindow.exec();
+        tmessagebox(QMessageBox::Warning, "Warning", "Cannot make derivation", derivation_err_str, SignalsDialog);
         continue;
       }
     }
@@ -671,14 +670,11 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
     {
       if(dblcmp(bitvalue, mainwindow->edfheaderlist[row]->edfparam[s].bitvalue))
       {
-        QMessageBox messagewindow(QMessageBox::Warning, "Warning", derivation_err_str);
-        messagewindow.exec();
-        messagewindow.setIcon(QMessageBox::Information);
-        messagewindow.setWindowTitle("Help");
-        messagewindow.setText("In this case the problem is that the amplitude resolution of the signals selected for the derivation,"
-                              "have different values. You can correct this with the tool \"Unify resolution\" in the tools menu."
-                              "Have a look at the manual for the details.");
-        messagewindow.exec();
+        strlcpy(str2, derivation_err_str, 4096);
+        strlcat(str2, "\n\nIn this case the problem is that the amplitude resolution of the signals selected for the derivation,\n"
+                      "have different values. You can correct this with the tool \"Unify resolution\" in the tools menu.\n"
+                      "Have a look at the manual for the details.", 4096);
+        tmessagebox(QMessageBox::Warning, "Warning", "Cannot make derivation", str2, SignalsDialog);
         continue;
       }
     }
@@ -692,9 +688,9 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
     k = compositionlist->rowCount();
     for(j=0; j<k; j++)
     {
-      strlcpy(str, ((QLabel *)(compositionlist->cellWidget(j, 0)))->text().toLatin1().data(), 256);
+      strlcpy(str1, ((QLabel *)(compositionlist->cellWidget(j, 0)))->text().toLatin1().data(), 256);
 
-      if((s + 1) == atoi(str))
+      if((s + 1) == atoi(str1))
       {
         duplicate = 1;
         break;
@@ -714,8 +710,8 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
     else
     {
       compositionlist->insertRow(k);
-      snprintf(str, 200, "%i", s + 1);
-      compositionlist->setCellWidget(k, 0, new QLabel(str));
+      snprintf(str1, 200, "%i", s + 1);
+      compositionlist->setCellWidget(k, 0, new QLabel(str1));
       ((QLabel *)(compositionlist->cellWidget(k, 0)))->setAlignment(Qt::AlignCenter);
       compositionlist->setCellWidget(k, 1, new QLabel(mainwindow->edfheaderlist[row]->edfparam[s].label));
       ((QLabel *)(compositionlist->cellWidget(k, 1)))->setAlignment(Qt::AlignCenter);
@@ -734,10 +730,10 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
         ((QDoubleSpinBox *)(compositionlist->cellWidget(k, 2)))->setValue(1);
       }
 
-      convert_to_metric_suffix(str, mainwindow->edfheaderlist[row]->edfparam[s].sf_f, 3, 256);
-      remove_trailing_zeros(str);
-      strlcat(str, "Hz", 256);
-      compositionlist->setCellWidget(k, 3, new QLabel(str));
+      convert_to_metric_suffix(str1, mainwindow->edfheaderlist[row]->edfparam[s].sf_f, 3, 256);
+      remove_trailing_zeros(str1);
+      strlcat(str1, "Hz", 256);
+      compositionlist->setCellWidget(k, 3, new QLabel(str1));
       ((QLabel *)(compositionlist->cellWidget(k, 3)))->setAlignment(Qt::AlignCenter);
     }
   }

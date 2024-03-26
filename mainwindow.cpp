@@ -1754,10 +1754,9 @@ void UI_Mainwindow::open_new_file()
 {
   FILE *newfile=NULL;
 
-  int i, tmp, len, present, position, button_nr=0, err=0;
+  int i, len, present, position, button_nr=0, err=0;
 
-  char str1[2048]="",
-       str2[2048]="";
+  char str1[2048]="";
 
   QAction *act=NULL;
 
@@ -1990,33 +1989,7 @@ void UI_Mainwindow::open_new_file()
         }
         else
         {
-          QMessageBox msgbox;
-          msgbox.setWindowTitle("Error");
-          msgbox.setInformativeText("File is not a valid EDF or BDF file.");
-          msgbox.setDetailedText(str1);
-          QTextEdit *txted = msgbox.findChild<QTextEdit *>("");
-          if(txted == NULL)
-          {
-            tmp = 600 * w_scaling;
-          }
-          else
-          {
-            txted->setLineWrapMode(QTextEdit::NoWrap);
-            tmp = txted->document()->idealWidth() +
-                  txted->document()->documentMargin() +
-                  txted->verticalScrollBar()->width();
-          }
-          snprintf(str2, 2048, "QLabel{min-width: %ipx;}", tmp);
-          msgbox.setStyleSheet(str2);
-          foreach(QAbstractButton *button, msgbox.buttons())
-          {
-            if(msgbox.buttonRole(button) == QMessageBox::ActionRole)
-            {
-              button->click();
-              break;
-            }
-          }
-          msgbox.exec();
+          tmessagebox(QMessageBox::Critical, "Error", "File is not a valid EDF or BDF file.", str1, this);
         }
       }
       rc_file_open_requested = 0;
