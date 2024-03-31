@@ -567,7 +567,11 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   slabel2_3->setMaximumSize(355, 10);
   slabel2_3->setColor(Qt::black);
 
-  QLabel *label2_2 = new QLabel("Measure the length of the black\nrectangles and enter the values.");
+  label2_2 = new QLabel("Measure the length of the black\nrectangles and enter the values.");
+  if(mainwindow->auto_dpi)
+  {
+    label2_2->setEnabled(false);
+  }
 
   spinbox2_1 = new QSpinBox;
   spinbox2_1->setSuffix(" mm");
@@ -1895,6 +1899,7 @@ void UI_OptionsDialog::calibrate_checkbox_stateChanged(int state)
     spinbox2_2->setEnabled(true);
     ApplyButton->setEnabled(true);
     mainwindow->auto_dpi = 0;
+    label2_2->setEnabled(true);
   }
   else
   {
@@ -1904,6 +1909,7 @@ void UI_OptionsDialog::calibrate_checkbox_stateChanged(int state)
     mainwindow->auto_dpi = 1;
     mainwindow->y_pixelsizefactor = 2.54 / mainwindow->dpiy;
     mainwindow->x_pixelsizefactor = 2.54 / mainwindow->dpix;
+    label2_2->setEnabled(false);
 
     mainwindow->maincurve->drawCurve_stage_1();
   }

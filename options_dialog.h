@@ -93,7 +93,8 @@ SpecialButton  *BgColorButton,
                *slabel2_3,
                *annotlistdock_edited_txt_color_button;
 
-QLabel         *label_4_1;
+QLabel         *label_4_1,
+               *label2_2;
 
 QSpinBox       *spinbox1_1,
                *spinbox2_1,
