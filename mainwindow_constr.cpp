@@ -1233,7 +1233,11 @@ UI_Mainwindow::UI_Mainwindow()
   windowmenu = new QMenu(this);
   windowmenu->setTitle("&Window");
   windowmenu->addAction("Annotations", this, SLOT(show_annotations()));
+#if QT_VERSION < 0x060000
   windowmenu->addAction("Annotation editor", this, SLOT(annotation_editor()), QKeySequence(Qt::CTRL + Qt::Key_E));
+#else
+  windowmenu->addAction("Annotation editor", QKeySequence(Qt::CTRL | Qt::Key_E), this, SLOT(annotation_editor()));
+#endif
   windowmenu->addAction("Power Spectrum", this, SLOT(show_spectrum_dock()));
   windowmenu->addAction("Color Density Spectral Array", this, SLOT(show_cdsa_dock()));
   windowmenu->addAction("amplitude EEG", this, SLOT(show_aeeg_dock()));
@@ -1242,11 +1246,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   helpmenu = new QMenu(this);
   helpmenu->setTitle("&Help");
-#ifdef Q_OS_LINUX
-  helpmenu->addAction("Manual",  this, SLOT(show_help()));
-#endif
-#ifdef Q_OS_WIN32
-  helpmenu->addAction("Manual",  this, SLOT(show_help()));
+#if defined(Q_OS_LINUX) || defined(Q_OS_WIN32)
+  helpmenu->addAction("Manual", this, SLOT(show_help()));
 #endif
   helpmenu->addAction("Keyboard shortcuts", this, SLOT(show_kb_shortcuts()));
   helpmenu->addAction("About EDFbrowser", this, SLOT(show_about_dialog()));
