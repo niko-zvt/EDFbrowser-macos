@@ -980,7 +980,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
         signallabel_strlen = strlen(signalcomp[i]->signallabel);
       }
 
-      if((sig_rect_select.y2<(baseline-(2*h_scaling)))&&(sig_rect_select.y2>(baseline-(17*h_scaling)))&&(sig_rect_select.x2>(2*w_scaling))&&(sig_rect_select.x2<(((signallabel_strlen * 8) + 2) * w_scaling)))
+      if((m_y<(baseline-(2*h_scaling)))&&(m_y>( baseline-(2*h_scaling)-mainwindow->mono_font_pixel_height))&&(m_x>(2*w_scaling))&&(m_x<((signallabel_strlen * mainwindow->mono_font_pixel_width) + (5 * w_scaling))))
       {
         if(pressed_on_label == (i + 1))
         {

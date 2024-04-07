@@ -1,4 +1,11 @@
 
+ version 2.09      To be defined
+ --------------
+
+ -  Fixed a regression bug that prevented the signal properties dialog from being
+    opened when clicking on the signallabel in the plotting window.
+
+
  version 2.08      March 23, 2024
  --------------
 
