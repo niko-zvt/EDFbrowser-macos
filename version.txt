@@ -1,5 +1,5 @@
 
- version 2.09      To be defined
+ version 2.09      April 7, 2024
  --------------
 
  -  Fixed a regression bug that prevented the signal properties dialog from being
