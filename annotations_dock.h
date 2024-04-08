@@ -114,7 +114,9 @@ private:
           *remove_duplicates_act,
           *rename_all_act,
           *delete_annots_act,
-          *delete_all_annots_act;
+          *delete_all_annots_act,
+          *jump_to_previous_annot_act,
+          *jump_to_next_annot_act;
 
   QTimer *delayed_list_filter_update_timer;
 
@@ -146,6 +148,8 @@ private slots:
   void delete_annots();
   void delete_all_annots();
   void file_pos_changed(long long);
+  void jump_to_next_annot(bool);
+  void jump_to_previous_annot(bool);
 };
 
 

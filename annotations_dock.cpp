@@ -113,6 +113,7 @@ UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_paren
   rename_all_act = new QAction("Rename", list);
   delete_annots_act = new QAction("Delete", list);
   delete_all_annots_act = new QAction("Delete all", list);
+  delete_annots_act = new QAction("Delete", list);
 
   list->setContextMenuPolicy(Qt::ActionsContextMenu);
   list->insertAction(NULL, show_between_act);
@@ -134,6 +135,20 @@ UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_paren
   list->insertAction(NULL, rename_all_act);
   list->insertAction(NULL, delete_annots_act);
   list->insertAction(NULL, delete_all_annots_act);
+
+  jump_to_next_annot_act = new QAction("Next annotation", list);
+  jump_to_previous_annot_act = new QAction("Previous annotation", list);
+#if QT_VERSION < 0x060000
+  jump_to_next_annot_act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
+  jump_to_previous_annot_act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));
+#else
+  jump_to_next_annot_act->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_N));
+  jump_to_previous_annot_act->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_B));
+#endif
+
+  dialog1->setContextMenuPolicy(Qt::PreventContextMenu);
+  dialog1->addAction(jump_to_next_annot_act);
+  dialog1->addAction(jump_to_previous_annot_act);
 
   QHBoxLayout *h_layout = new QHBoxLayout;
   h_layout->addWidget(relative_checkbox);
@@ -188,6 +203,9 @@ UI_Annotationswindow::UI_Annotationswindow(edfhdrblck_t *e_hdr, QWidget *w_paren
   QObject::connect(delayed_list_filter_update_timer, SIGNAL(timeout()),                  this, SLOT(delayed_list_filter_update()));
 
   QObject::connect(mainwindow,                 SIGNAL(file_position_changed(long long)), this, SLOT(file_pos_changed(long long)));
+
+  QObject::connect(jump_to_next_annot_act,     SIGNAL(triggered(bool)),                  this, SLOT(jump_to_next_annot(bool)));
+  QObject::connect(jump_to_previous_annot_act, SIGNAL(triggered(bool)),                  this, SLOT(jump_to_previous_annot(bool)));
 }
 
 
@@ -443,6 +461,66 @@ void UI_Annotationswindow::rename_all()
 void UI_Annotationswindow::more_button_clicked(bool)
 {
   QMessageBox::information(mainwindow,  "Info", "Right-click on an annotation for more options.");
+}
+
+
+void UI_Annotationswindow::jump_to_next_annot(bool)
+{
+  int count, row, centered=1;
+
+  if(mainwindow->live_stream_active       ||
+     mainwindow->playback_realtime_active ||
+     mainwindow->signal_averaging_active)
+  {
+    return;
+  }
+
+  count = list->count();
+  if(count < 2)  return;
+
+  row = list->currentRow();
+  if(row >= (count - 1))  return;
+
+  row++;
+
+  list->setCurrentRow(row);
+
+  if(mainwindow->annot_onset_at_start_of_page_on_jump)
+  {
+    centered = 0;
+  }
+
+  annotation_selected(list->item(row), centered);
+}
+
+
+void UI_Annotationswindow::jump_to_previous_annot(bool)
+{
+  int count, row, centered=1;
+
+  if(mainwindow->live_stream_active       ||
+     mainwindow->playback_realtime_active ||
+     mainwindow->signal_averaging_active)
+  {
+    return;
+  }
+
+  count = list->count();
+  if(count < 2)  return;
+
+  row = list->currentRow();
+  if(row < 1)  return;
+
+  row--;
+
+  list->setCurrentRow(row);
+
+  if(mainwindow->annot_onset_at_start_of_page_on_jump)
+  {
+    centered = 0;
+  }
+
+  annotation_selected(list->item(row), centered);
 }
 
 
