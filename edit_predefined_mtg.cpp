@@ -57,7 +57,7 @@ UI_edit_predefined_mtg_window::UI_edit_predefined_mtg_window(QWidget *w_parent)
       strlcat(str, &(mainwindow->predefined_mtg_path[i][0]), 1200);
     }
 
-    new QListWidgetItem(str, mtg_path_list);
+    new QListWidgetItem(QString::fromLocal8Bit(str), mtg_path_list);
   }
 
   CloseButton = new QPushButton;

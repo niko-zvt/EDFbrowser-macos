@@ -1,4 +1,12 @@
 
+ version 2.10      To be defined
+ --------------
+
+ - Added keyboard shortcuts for jumping to next and previous annotation.
+
+ - Predefined montage dialog: take care of locale for filename & path.
+
+
  version 2.09      April 7, 2024
  --------------
 
