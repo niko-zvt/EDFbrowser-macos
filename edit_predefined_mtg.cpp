@@ -137,7 +137,7 @@ void UI_edit_predefined_mtg_window::adEntry()
   snprintf(str, 1200, "F%i : ", row + 1);
   strlcat(str, path, 1200);
 
-  listItem->setText(str);
+  listItem->setText(QString::fromLocal8Bit(str));
 }
 
 
