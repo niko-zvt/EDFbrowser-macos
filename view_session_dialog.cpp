@@ -211,7 +211,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
     return;
   }
 
-  ViewSessionDialog->setWindowTitle(session_path);
+  ViewSessionDialog->setWindowTitle(QString::fromLocal8Bit(session_path));
 
   t_model->clear();
 

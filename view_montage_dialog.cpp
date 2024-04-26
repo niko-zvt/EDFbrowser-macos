@@ -198,7 +198,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
     return;
   }
 
-  ViewMontageDialog->setWindowTitle(mtg_path);
+  ViewMontageDialog->setWindowTitle(QString::fromLocal8Bit(mtg_path));
 
   t_model->clear();
 

@@ -39,7 +39,7 @@ UI_edit_predefined_mtg_window::UI_edit_predefined_mtg_window(QWidget *w_parent)
   mainwindow = (UI_Mainwindow *)w_parent;
 
   edit_predefined_mtg_Dialog = new QDialog;
-  edit_predefined_mtg_Dialog->setMinimumSize(800 * mainwindow->w_scaling, 265 * mainwindow->h_scaling);
+  edit_predefined_mtg_Dialog->setMinimumSize(800 * mainwindow->w_scaling, 370 * mainwindow->h_scaling);
   edit_predefined_mtg_Dialog->setWindowTitle("Edit key-bindings for montages");
   edit_predefined_mtg_Dialog->setModal(true);
   edit_predefined_mtg_Dialog->setAttribute(Qt::WA_DeleteOnClose, true);
