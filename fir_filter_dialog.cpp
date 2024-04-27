@@ -1171,7 +1171,7 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
     {
       for(i=0, idx=0; i<thrd->rz_params.tap_num; i++)
       {
-        idx += snprintf(str + idx, 128, "%.24f\n", thrd->rz_params.f_taps[i]);
+        idx += snprintf(str + idx, 128, "%+.24f\n", thrd->rz_params.f_taps[i]);
 
         if(idx >= (buf_sz - 128))
         {
@@ -1357,7 +1357,7 @@ void UI_FIRFilterDialog::sinc_design_button_pressed()
 
   for(i=0, idx=0; i<sinc_n_taps; i++)
   {
-    idx += snprintf(str + idx, 128, "%.24f\n", sinc_taps[i]);
+    idx += snprintf(str + idx, 128, "%+.24f\n", sinc_taps[i]);
 
     if(idx >= (buf_sz - 128))
     {
