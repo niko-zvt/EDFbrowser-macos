@@ -2119,7 +2119,7 @@ void UI_Mainwindow::open_new_file()
 
       if(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)
       {
-        edfheaderlist[files_open]->viewtime = edfheaderlist[sel_viewtime]->utc_starttime_hr - edfheaderlist[files_open]->utc_starttime_hr;
+        edfheaderlist[files_open]->viewtime = edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->utc_starttime_hr - edfheaderlist[files_open]->utc_starttime_hr;
       }
 
       if(viewtime_sync==VIEWTIME_USER_DEF_SYNCED)

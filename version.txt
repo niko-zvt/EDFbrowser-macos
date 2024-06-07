@@ -6,6 +6,9 @@
 
  - Predefined montage dialog: take care of locale for filename & path.
 
+ - Fixed a bug that caused the timesync to be initially wrong when opening
+   multiple files and timesync was set to absolute (default).
+
 
  version 2.09      April 7, 2024
  --------------
