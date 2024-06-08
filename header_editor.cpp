@@ -1441,6 +1441,10 @@ void UI_headerEditorWindow::save_hdr()
       }
       latin1_to_ascii(scratchpad, 16);
       scratchpad[16] = 0;
+      if((!strcmp(scratchpad, "EDF Annotations ")) || (!strcmp(scratchpad, "BDF Annotations ")))
+      {
+        scratchpad[3] = '_';
+      }
       fseeko(file, (long long)(256 + (i * 16)), SEEK_SET);
       fprintf(file, "%s", scratchpad);
 
