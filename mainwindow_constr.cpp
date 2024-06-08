@@ -1600,7 +1600,7 @@ UI_Mainwindow::UI_Mainwindow()
     messagewindow.exec();
   }
 
-  if(edflib_version() != 125)
+  if(edflib_version() != 126)
   {
     cmdlineargument = 0;
 

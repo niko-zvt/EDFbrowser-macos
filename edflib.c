@@ -35,7 +35,7 @@
 
 #include "edflib.h"
 
-#define EDFLIB_VERSION  (125)
+#define EDFLIB_VERSION  (126)
 #define EDFLIB_MAXFILES  (64)
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__HAIKU__) || defined(__ANDROID__)
