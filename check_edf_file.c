@@ -686,22 +686,30 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
         return NULL;
       }
     }
-    if(edfhdr->edfplus)
+    if(!strncmp(scratchpad, "EDF Annotations ", 16))
     {
-      if(!strncmp(scratchpad, "EDF Annotations ", 16))
+      if(edfhdr->edfplus)
       {
         edfhdr->annot_ch[edfhdr->nr_annot_chns] = i;
         edfhdr->nr_annot_chns++;
         edfhdr->edfparam[i].annotation = 1;
       }
+      else
+      {
+        scratchpad[3] = '_';
+      }
     }
-    if(edfhdr->bdfplus)
+    if(!strncmp(scratchpad, "BDF Annotations ", 16))
     {
-      if(!strncmp(scratchpad, "BDF Annotations ", 16))
+      if(edfhdr->bdfplus)
       {
         edfhdr->annot_ch[edfhdr->nr_annot_chns] = i;
         edfhdr->nr_annot_chns++;
         edfhdr->edfparam[i].annotation = 1;
+      }
+      else
+      {
+        scratchpad[3] = '_';
       }
     }
     strncpy(edfhdr->edfparam[i].label, edf_hdr + 256 + (i * 16), 16);

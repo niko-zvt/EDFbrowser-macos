@@ -9,6 +9,10 @@
  - Fixed a bug that caused the timesync to be initially wrong when opening
    multiple files and timesync was set to absolute (default).
 
+ - When opening a file, in case a signal label is named "EDF Annotations " and
+   the file is not EDF+, change the label to "EDF_Annotations " (in memory)
+   in order to avoid a possible conflict when exporting the file to EDF+.
+
 
  version 2.09      April 7, 2024
  --------------
