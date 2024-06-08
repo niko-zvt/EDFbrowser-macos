@@ -712,7 +712,7 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
         scratchpad[3] = '_';
       }
     }
-    strncpy(edfhdr->edfparam[i].label, edf_hdr + 256 + (i * 16), 16);
+    memcpy(edfhdr->edfparam[i].label, scratchpad, 16);
     edfhdr->edfparam[i].label[16] = 0;
   }
   if(edfhdr->edfplus&&(!edfhdr->nr_annot_chns))
