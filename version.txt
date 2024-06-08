@@ -1,5 +1,5 @@
 
- version 2.10      To be defined
+ version 2.10      June 8, 2024
  --------------
 
  - Added keyboard shortcuts for jumping to next and previous annotation.
@@ -12,6 +12,8 @@
  - When opening a file, in case a signal label is named "EDF Annotations " and
    the file is not EDF+, change the label to "EDF_Annotations " (in memory)
    in order to avoid a possible conflict when exporting the file to EDF+.
+
+ - Update EDFlib.
 
 
  version 2.09      April 7, 2024
