@@ -297,6 +297,14 @@ void UI_Signalswindow::DisplayCompButtonClicked()
     return;
   }
 
+  if(mainwindow->signalcomps >= MAXSIGNALS)
+  {
+    snprintf(str, 512, "Cannot display more than %i traces.", MAXSIGNALS);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    messagewindow.exec();
+    return;
+  }
+
   for(i=0; i<n; i++)
   {
     if((((QDoubleSpinBox *)(compositionlist->cellWidget(i, 2)))->value() < 0.001) &&
@@ -437,7 +445,7 @@ void UI_Signalswindow::DisplayButtonClicked()
 {
   int i, n, s, old_scomps;
 
-  char str1[32]={""};
+  char str1[512]={""};
 
   sigcompblck_t *newsignalcomp=NULL;
 
@@ -450,6 +458,14 @@ void UI_Signalswindow::DisplayButtonClicked()
   if(!n)
   {
     SignalsDialog->close();
+    return;
+  }
+
+  if(mainwindow->signalcomps + n > MAXSIGNALS)
+  {
+    snprintf(str1, 512, "Cannot display more than %i traces.", MAXSIGNALS);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str1);
+    messagewindow.exec();
     return;
   }
 

@@ -1028,7 +1028,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
 /////////////////////////////////////////////////////////////////////
 
-  for(i=0; i<MAXSIGNALS; i++)  smpls_written[i] = 0;
+  memset(smpls_written, 0, sizeof(unsigned long long[MAXSIGNALS]));
 
   mainwindow->print_to_edf_active = 1;
 

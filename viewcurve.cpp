@@ -1464,10 +1464,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
     return;
   }
 
-  for(i=0; i<MAXSIGNALS; i++)
-  {
-    screensamples[i] = 0;
-  }
+  memset(screensamples, 0, sizeof(int[MAXSIGNALS]));
 
   signalcomps = mainwindow->signalcomps;
   signalcomp = mainwindow->signalcomp;

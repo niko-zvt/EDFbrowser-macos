@@ -69,7 +69,7 @@
 #define MINIMUM_QT5_VERSION           (0x050C06)
 #define MINIMUM_QT6_VERSION           (0x060402)
 #define MAXFILES                            (32)
-#define MAXSIGNALS                         (640)
+#define MAXSIGNALS                        (4096)
 #define MAXFILTERS                          (16)
 #define MAXMATHFUNCS                        (16)
 #define TIME_FIXP_SCALING           (10000000LL)

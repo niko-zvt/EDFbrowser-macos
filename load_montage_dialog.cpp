@@ -452,6 +452,15 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       break;
     }
 
+    if(mainwindow->signalcomps >= MAXSIGNALS)
+    {
+      snprintf(str2, 512, "Cannot display more than %i traces.", MAXSIGNALS);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      return 0;
+    }
+
     newsignalcomp = (sigcompblck_t *)calloc(1, sizeof(sigcompblck_t));
     if(newsignalcomp==NULL)
     {

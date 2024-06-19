@@ -35,7 +35,7 @@
 
 #include "edflib.h"
 
-#define EDFLIB_VERSION  (126)
+#define EDFLIB_VERSION  (127)
 #define EDFLIB_MAXFILES  (64)
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__HAIKU__) || defined(__ANDROID__)
@@ -5030,7 +5030,7 @@ static int edflib_write_edf_header(edfhdrblock_t *hdr)
   fputc(' ', file);
   p++;
 
-  rest = 42;
+  rest = 52;
 
   len = strlen(hdr->plus_admincode);
   if(len && rest)
@@ -5054,20 +5054,11 @@ static int edflib_write_edf_header(edfhdrblock_t *hdr)
         str[i] = '_';
       }
     }
-    p += fprintf(file, "%s", str);
+    p += fprintf(file, "%s ", str);
   }
   else
   {
-    p += fprintf(file, "X");
-  }
-
-  if(rest)
-  {
-    fputc(' ', file);
-
-    p++;
-
-    rest--;
+    p += fprintf(file, "X ");
   }
 
   len = strlen(hdr->plus_technician);
@@ -5092,20 +5083,11 @@ static int edflib_write_edf_header(edfhdrblock_t *hdr)
         str[i] = '_';
       }
     }
-    p += fprintf(file, "%s", str);
+    p += fprintf(file, "%s ", str);
   }
   else
   {
-    p += fprintf(file, "X");
-  }
-
-  if(rest)
-  {
-    fputc(' ', file);
-
-    p++;
-
-    rest--;
+    p += fprintf(file, "X ");
   }
 
   len = strlen(hdr->plus_equipment);
@@ -5130,20 +5112,11 @@ static int edflib_write_edf_header(edfhdrblock_t *hdr)
         str[i] = '_';
       }
     }
-    p += fprintf(file, "%s", str);
+    p += fprintf(file, "%s ", str);
   }
   else
   {
-    p += fprintf(file, "X");
-  }
-
-  if(rest)
-  {
-    fputc(' ', file);
-
-    p++;
-
-    rest--;
+    p += fprintf(file, "X ");
   }
 
   len = strlen(hdr->plus_recording_additional);

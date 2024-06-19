@@ -287,6 +287,14 @@ int UI_Mainwindow::read_session_file(const char *path_session)
       break;
     }
 
+    if(signalcomps >= MAXSIGNALS)
+    {
+      snprintf(str2, 512, "Cannot display more than %i traces.", MAXSIGNALS);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+      messagewindow.exec();
+      return session_format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
+    }
+
     newsignalcomp = (sigcompblck_t *)calloc(1, sizeof(sigcompblck_t));
     if(newsignalcomp==NULL)
     {

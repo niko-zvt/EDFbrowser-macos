@@ -161,7 +161,7 @@
 
 
 #define EDFLIB_TIME_DIMENSION     (10000000LL)
-#define EDFLIB_MAXSIGNALS                (640)
+#define EDFLIB_MAXSIGNALS               (4096)
 #define EDFLIB_MAX_ANNOTATION_LEN        (512)
 
 #define EDFSEEK_SET  (0)
