@@ -109,6 +109,7 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
   signallist->setFont(*mainwindow->monofont);
   signallist->setSelectionBehavior(QAbstractItemView::SelectRows);
   signallist->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  signallist->setUniformItemSizes(true);
 
   CloseButton = new QPushButton;
   CloseButton->setText("&Close");
