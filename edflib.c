@@ -3616,12 +3616,7 @@ EDFLIB_API int edfopen_file_writeonly(const char *path, int filetype, int number
     }
   }
 
-  if(number_of_signals<0)
-  {
-    return EDFLIB_NUMBER_OF_SIGNALS_INVALID;
-  }
-
-  if(number_of_signals>EDFLIB_MAXSIGNALS)
+  if((number_of_signals<0) || (number_of_signals>=EDFLIB_MAXSIGNALS))
   {
     return EDFLIB_NUMBER_OF_SIGNALS_INVALID;
   }
