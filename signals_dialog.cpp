@@ -771,13 +771,11 @@ void UI_Signalswindow::show_signals(int row)
 
   date_time_t date_time;
 
-
   if(row<0)  return;
 
-  while(signallist->count())
-  {
-    delete signallist->item(0);
-  }
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  signallist->clear();
 
   compositionlist->setRowCount(0);
 
@@ -886,6 +884,11 @@ void UI_Signalswindow::show_signals(int row)
 
   for(i=0, idx=1; i<signal_cnt; i++)
   {
+    if(!(i % 100))
+    {
+      qApp->processEvents();
+    }
+
     if(mainwindow->edfheaderlist[row]->edfplus || mainwindow->edfheaderlist[row]->bdfplus)
     {
       for(j=0; j<mainwindow->edfheaderlist[row]->nr_annot_chns; j++)
@@ -923,6 +926,8 @@ void UI_Signalswindow::show_signals(int row)
   }
 
   SelectAllButtonClicked();
+
+  QApplication::restoreOverrideCursor();
 }
 
 
@@ -932,13 +937,22 @@ void UI_Signalswindow::SelectAllButtonClicked()
 
   QListWidgetItem *item;
 
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
   row = signallist->count();
 
   for(i=0; i<row; i++)
   {
+    if(!(i % 100))
+    {
+      qApp->processEvents();
+    }
+
     item = signallist->item(i);
     item->setSelected(true);
   }
+
+  QApplication::restoreOverrideCursor();
 }
 
 
