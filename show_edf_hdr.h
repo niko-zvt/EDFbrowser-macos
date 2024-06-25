@@ -59,6 +59,10 @@ public:
 
 private:
 
+int signalslist_page,
+    signalslist_num_pages,
+    file_row_selected;
+
 QDialog      *EDFhdrDialog;
 
 QWidget      *tab1,
@@ -68,7 +72,9 @@ QListWidget  *filelist;
 
 QTableWidget *signallist;
 
-QPushButton  *pushButton1;
+QPushButton  *closeButton,
+             *prevPageButton,
+             *nextPageButton;
 
 QStackedWidget *stackwidget;
 
@@ -102,6 +108,9 @@ QLineEdit *line_edit1,
 private slots:
 
 void show_params(int);
+void load_signal_params(int, int);
+void prevPageButtonClicked();
+void nextPageButtonClicked();
 
 };
 

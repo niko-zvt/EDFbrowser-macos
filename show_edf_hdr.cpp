@@ -34,6 +34,8 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
 {
   int i;
 
+  signalslist_page = 0;
+
   mainwindow = (UI_Mainwindow *)w_parent;
 
   EDFhdrDialog = new QDialog;
@@ -54,8 +56,8 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
   signallist->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-  pushButton1 = new QPushButton;
-  pushButton1->setText("Close");
+  closeButton = new QPushButton;
+  closeButton->setText("Close");
 
   line_edit1 = new QLineEdit;
   line_edit1->setReadOnly(true);
@@ -160,12 +162,36 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
 
   QTabWidget *tabholder = new QTabWidget;
 
+  prevPageButton = new QPushButton;
+  prevPageButton->setText("Previous");
+  prevPageButton->setEnabled(false);
+  nextPageButton = new QPushButton;
+  nextPageButton->setText("Next");
+  nextPageButton->setEnabled(false);
+
+  QHBoxLayout *hlayout2 = new QHBoxLayout;
+  hlayout2->addStretch(1000);
+  hlayout2->addWidget(prevPageButton);
+  hlayout2->addWidget(nextPageButton);
+  hlayout2->addStretch(1000);
+
+  QVBoxLayout *vlayout4 = new QVBoxLayout;
+  vlayout4->addWidget(signallist, 100);
+  vlayout4->addLayout(hlayout2);
+
+  QFrame *frame = new QFrame;
+  frame->setFrameStyle(QFrame::NoFrame);
+  frame->setLineWidth(0);
+  frame->setMidLineWidth(0);
+  frame->setContentsMargins(0, 0, 0, 0);
+  frame->setLayout(vlayout4);
+
   tabholder->addTab(stackwidget, "General");
-  tabholder->addTab(signallist, "Signals");
+  tabholder->addTab(frame, "Signals");
 
   QHBoxLayout *hlayout1 = new QHBoxLayout;
   hlayout1->addStretch(1000);
-  hlayout1->addWidget(pushButton1);
+  hlayout1->addWidget(closeButton);
 
   QVBoxLayout *vlayout1 = new QVBoxLayout;
   vlayout1->addWidget(filelist);
@@ -176,8 +202,10 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
 
   EDFhdrDialog->setLayout(vlayout1);
 
-  QObject::connect(pushButton1, SIGNAL(clicked()),              EDFhdrDialog, SLOT(close()));
-  QObject::connect(filelist,    SIGNAL(currentRowChanged(int)), this,         SLOT(show_params(int)));
+  QObject::connect(closeButton,    SIGNAL(clicked()),              EDFhdrDialog, SLOT(close()));
+  QObject::connect(filelist,       SIGNAL(currentRowChanged(int)), this,         SLOT(show_params(int)));
+  QObject::connect(prevPageButton, SIGNAL(clicked()),              this,         SLOT(prevPageButtonClicked()));
+  QObject::connect(nextPageButton, SIGNAL(clicked()),              this,         SLOT(nextPageButtonClicked()));
 
   filelist->setCurrentRow(mainwindow->files_open - 1);
 
@@ -187,8 +215,7 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
 
 void UI_EDFhdrwindow::show_params(int row)
 {
-  int i,
-      signal_cnt;
+  int signal_cnt=0;
 
   char str[512]={""};
 
@@ -196,8 +223,35 @@ void UI_EDFhdrwindow::show_params(int row)
 
   date_time_t date_time;
 
-
   if(row<0)  return;
+
+  signalslist_page = 0;
+
+  file_row_selected = row;
+
+  signal_cnt = mainwindow->edfheaderlist[row]->edfsignals;
+
+  signalslist_num_pages = signal_cnt / 512;
+  if(signal_cnt % 512)  signalslist_num_pages++;
+
+  prevPageButton->setEnabled(false);
+  nextPageButton->setEnabled(false);
+
+  if(signal_cnt <= 512)
+  {
+    prevPageButton->setVisible(false);
+    nextPageButton->setVisible(false);
+  }
+  else
+  {
+    prevPageButton->setVisible(true);
+    nextPageButton->setVisible(true);
+  }
+
+  if(signalslist_page < signalslist_num_pages - 1)  nextPageButton->setEnabled(true);
+
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
 
   if(mainwindow->edfheaderlist[row]->edfplus || mainwindow->edfheaderlist[row]->bdfplus)
   {
@@ -364,12 +418,42 @@ void UI_EDFhdrwindow::show_params(int row)
   line_edit21a->setText(mainwindow->edfheaderlist[row]->version);
   if(mainwindow->edf_debug)  line_edit21a->setToolTip("0x00");
 
+  load_signal_params(row, signalslist_page);
+
+  QApplication::restoreOverrideCursor();
+}
+
+
+void UI_EDFhdrwindow::load_signal_params(int row, int page)
+{
+  int i,
+      signal_cnt=0,
+      signal_start=0,
+      signal_end=0;
+
+  char str[512]={""};
+
+  QLineEdit *ql=NULL;
+
   signal_cnt = mainwindow->edfheaderlist[row]->edfsignals;
 
-  signallist->setColumnCount(12);
-  signallist->setRowCount(signal_cnt);
+  signalslist_num_pages = signal_cnt / 512;
+  if(signal_cnt % 512)  signalslist_num_pages++;
+
+  signal_start = page * 512;
+  if(signal_start >= signal_cnt)  return;
+  signal_end = signal_start + 512;
+  if(signal_end > signal_cnt)  signal_end = signal_cnt;
+
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  signallist->clear();
+  signallist->setColumnCount(13);
+  signallist->setRowCount(signal_end - signal_start);
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
+  signallist->verticalHeader()->setVisible(false);
   QStringList horizontallabels;
+  horizontallabels += "Index";
   horizontallabels += "Label";
   horizontallabels += "Samplefrequency";
   horizontallabels += "Physical maximum";
@@ -384,10 +468,19 @@ void UI_EDFhdrwindow::show_params(int row)
   horizontallabels += "Reserved";
   signallist->setHorizontalHeaderLabels(horizontallabels);
 
-  QLineEdit *ql;
-
-  for(i=0; i<signal_cnt; i++)
+  for(i=signal_start; i<signal_end; i++)
   {
+    if(!(i % 100))
+    {
+      qApp->processEvents();
+    }
+
+    snprintf(str, 512, "%i", i + 1);
+    ql = new QLineEdit(str);
+    ql->setReadOnly(true);
+    ql->setCursorPosition(0);
+    signallist->setCellWidget(i%512, 0, ql);
+
     ql = new QLineEdit(mainwindow->edfheaderlist[row]->edfparam[i].label);
     ql->setReadOnly(true);
     ql->setCursorPosition(0);
@@ -396,14 +489,14 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (i * 16));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 0, ql);
+    signallist->setCellWidget(i%512, 1, ql);
     convert_to_metric_suffix(str, mainwindow->edfheaderlist[row]->edfparam[i].sf_f, 3, 512);
     strlcat(str, "Hz", 512);
     remove_trailing_zeros(str);
     ql = new QLineEdit(str);
     ql->setReadOnly(true);
     ql->setCursorPosition(0);
-    signallist->setCellWidget(i, 1, ql);
+    signallist->setCellWidget(i%512, 2, ql);
     snprintf(str, 512, "%+f", mainwindow->edfheaderlist[row]->edfparam[i].phys_max);
     remove_trailing_zeros(str);
     ql = new QLineEdit(str);
@@ -414,7 +507,7 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 112) + (i * 8));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 2, ql);
+    signallist->setCellWidget(i%512, 3, ql);
     snprintf(str, 512, "%+f", mainwindow->edfheaderlist[row]->edfparam[i].phys_min);
     remove_trailing_zeros(str);
     ql = new QLineEdit(str);
@@ -425,7 +518,7 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 104) + (i * 8));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 3, ql);
+    signallist->setCellWidget(i%512, 4, ql);
     snprintf(str, 512, "%+i", mainwindow->edfheaderlist[row]->edfparam[i].dig_max);
     ql = new QLineEdit(str);
     ql->setReadOnly(true);
@@ -435,7 +528,7 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 128) + (i * 8));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 4, ql);
+    signallist->setCellWidget(i%512, 5, ql);
     snprintf(str, 512, "%+i", mainwindow->edfheaderlist[row]->edfparam[i].dig_min);
     ql = new QLineEdit(str);
     ql->setReadOnly(true);
@@ -445,13 +538,13 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 120) + (i * 8));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 5, ql);
+    signallist->setCellWidget(i%512, 6, ql);
     snprintf(str, 512, "%e", mainwindow->edfheaderlist[row]->edfparam[i].bitvalue);
     ql = new QLineEdit(str);
     ql->setReadOnly(true);
     ql->setCursorPosition(0);
     ql->setToolTip("Computed as: (physical maximum - physical minimum) / (digital maximum - digital minimum)");
-    signallist->setCellWidget(i, 6, ql);
+    signallist->setCellWidget(i%512, 7, ql);
     ql = new QLineEdit(mainwindow->edfheaderlist[row]->edfparam[i].physdimension);
     ql->setReadOnly(true);
     ql->setCursorPosition(0);
@@ -460,7 +553,7 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 96) + (i * 8));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 7, ql);
+    signallist->setCellWidget(i%512, 8, ql);
     snprintf(str, 512, "%i", mainwindow->edfheaderlist[row]->edfparam[i].smp_per_record);
     ql = new QLineEdit(str);
     ql->setReadOnly(true);
@@ -470,7 +563,7 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 216) + (i * 8));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 8, ql);
+    signallist->setCellWidget(i%512, 9, ql);
     ql = new QLineEdit(mainwindow->edfheaderlist[row]->edfparam[i].prefilter);
     ql->setReadOnly(true);
     ql->setCursorPosition(0);
@@ -479,7 +572,7 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 136) + (i * 80));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 9, ql);
+    signallist->setCellWidget(i%512, 10, ql);
     ql = new QLineEdit(mainwindow->edfheaderlist[row]->edfparam[i].transducer);
     ql->setReadOnly(true);
     ql->setCursorPosition(0);
@@ -488,7 +581,7 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 16) + (i * 80));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 10, ql);
+    signallist->setCellWidget(i%512, 11, ql);
     ql = new QLineEdit(mainwindow->edfheaderlist[row]->edfparam[i].reserved);
     ql->setReadOnly(true);
     ql->setCursorPosition(0);
@@ -497,15 +590,43 @@ void UI_EDFhdrwindow::show_params(int row)
       snprintf(str, 512, "0x%02x", 256 + (signal_cnt * 224) + (i * 32));
       ql->setToolTip(str);
     }
-    signallist->setCellWidget(i, 11, ql);
+    signallist->setCellWidget(i%512, 12, ql);
   }
 
   signallist->resizeColumnsToContents();
+
+  signallist->setColumnWidth(0, 40 * mainwindow->w_scaling);
+
+  QApplication::restoreOverrideCursor();
 }
 
 
+void UI_EDFhdrwindow::prevPageButtonClicked()
+{
+  if(signalslist_page <= 0)  return;
+
+  signalslist_page--;
+
+  if(signalslist_page == 0)  prevPageButton->setEnabled(false);
+
+  if(signalslist_page < signalslist_num_pages - 1)  nextPageButton->setEnabled(true);
+
+  load_signal_params(file_row_selected, signalslist_page);
+}
 
 
+void UI_EDFhdrwindow::nextPageButtonClicked()
+{
+  if(signalslist_page >= signalslist_num_pages - 1)  return;
+
+  signalslist_page++;
+
+  if(signalslist_page == signalslist_num_pages - 1)  nextPageButton->setEnabled(false);
+
+  if(signalslist_page)  prevPageButton->setEnabled(true);
+
+  load_signal_params(file_row_selected, signalslist_page);
+}
 
 
 
