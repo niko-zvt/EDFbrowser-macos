@@ -211,9 +211,11 @@ UI_headerEditorWindow::UI_headerEditorWindow(QWidget *w_parent)
   signallist = new QTableWidget;
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
   signallist->setEditTriggers(QAbstractItemView::NoEditTriggers);
-  signallist->setColumnCount(9);
+  signallist->setColumnCount(10);
+  signallist->verticalHeader()->setVisible(false);
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
   QStringList horizontallabels;
+  horizontallabels += "Index";
   horizontallabels += "Label";
   horizontallabels += "Physical dimension";
   horizontallabels += "Prefilter";
@@ -330,7 +332,6 @@ UI_headerEditorWindow::~UI_headerEditorWindow()
 void UI_headerEditorWindow::open_file()
 {
   long long filesize;
-
 
   if(file != NULL)
   {
@@ -479,7 +480,7 @@ void UI_headerEditorWindow::open_file()
 
 void UI_headerEditorWindow::read_header()
 {
-  int i, j, p, r;
+  int i, j, p, r, sig_idx=1;
 
   char scratchpad[256]={""},
        str[256]={""};
@@ -513,6 +514,8 @@ void UI_headerEditorWindow::read_header()
     file = NULL;
     return;
   }
+
+  QApplication::setOverrideCursor(Qt::WaitCursor);
 
   hdr[256 * (edfsignals + 1)] = 0;
 
@@ -913,43 +916,53 @@ void UI_headerEditorWindow::read_header()
 
   for(i=0; i<edfsignals; i++)
   {
+    if(!(i % 100))
+    {
+      qApp->processEvents();
+    }
+
+    //if(mainwindow->edfheaderlist[row]->edfparam[i].annotation)
+    if(0)
+    {
+      snprintf(scratchpad, 16, " *");
+    }
+    else
+    {
+      snprintf(scratchpad, 16, "%i", sig_idx++);
+    }
+    signallist->setCellWidget(i, 0, new QLineEdit(scratchpad));
+    ((QLineEdit *)(signallist->cellWidget(i, 0)))->setMaxLength(6);
+    ((QLineEdit *)(signallist->cellWidget(i, 0)))->setEnabled(false);
+
     memcpy(scratchpad, hdr + 256 + (i * 16), 16);
     scratchpad[16] = 0;
     remove_trailing_spaces(scratchpad);
-    signallist->setCellWidget(i, 0, new QLineEdit(scratchpad));
-    ((QLineEdit *)(signallist->cellWidget(i, 0)))->setMaxLength(16);
-    ((QLineEdit *)(signallist->cellWidget(i, 0)))->setText(scratchpad);
+    signallist->setCellWidget(i, 1, new QLineEdit(scratchpad));
+    ((QLineEdit *)(signallist->cellWidget(i, 1)))->setMaxLength(16);
+    ((QLineEdit *)(signallist->cellWidget(i, 1)))->setText(scratchpad);
 
     memcpy(scratchpad, hdr + 256 + (edfsignals * 96) + (i * 8), 8);
     scratchpad[8] = 0;
     remove_trailing_spaces(scratchpad);
-    signallist->setCellWidget(i, 1, new QLineEdit(scratchpad));
-    ((QLineEdit *)(signallist->cellWidget(i, 1)))->setMaxLength(8);
-    ((QLineEdit *)(signallist->cellWidget(i, 1)))->setText(scratchpad);
-
-    memcpy(scratchpad, hdr + 256 + (edfsignals * 136) + (i * 80), 80);
-    scratchpad[80] = 0;
-    remove_trailing_spaces(scratchpad);
     signallist->setCellWidget(i, 2, new QLineEdit(scratchpad));
-    ((QLineEdit *)(signallist->cellWidget(i, 2)))->setMaxLength(80);
+    ((QLineEdit *)(signallist->cellWidget(i, 2)))->setMaxLength(8);
     ((QLineEdit *)(signallist->cellWidget(i, 2)))->setText(scratchpad);
 
-    memcpy(scratchpad, hdr + 256 + (edfsignals * 16) + (i * 80), 80);
+    memcpy(scratchpad, hdr + 256 + (edfsignals * 136) + (i * 80), 80);
     scratchpad[80] = 0;
     remove_trailing_spaces(scratchpad);
     signallist->setCellWidget(i, 3, new QLineEdit(scratchpad));
     ((QLineEdit *)(signallist->cellWidget(i, 3)))->setMaxLength(80);
     ((QLineEdit *)(signallist->cellWidget(i, 3)))->setText(scratchpad);
 
-    memcpy(scratchpad, hdr + 256 + (edfsignals * 112) + (i * 8), 8);
-    scratchpad[8] = 0;
+    memcpy(scratchpad, hdr + 256 + (edfsignals * 16) + (i * 80), 80);
+    scratchpad[80] = 0;
     remove_trailing_spaces(scratchpad);
     signallist->setCellWidget(i, 4, new QLineEdit(scratchpad));
     ((QLineEdit *)(signallist->cellWidget(i, 4)))->setMaxLength(80);
     ((QLineEdit *)(signallist->cellWidget(i, 4)))->setText(scratchpad);
-    ((QLineEdit *)(signallist->cellWidget(i, 4)))->setEnabled(false);
 
-    memcpy(scratchpad, hdr + 256 + (edfsignals * 104) + (i * 8), 8);
+    memcpy(scratchpad, hdr + 256 + (edfsignals * 112) + (i * 8), 8);
     scratchpad[8] = 0;
     remove_trailing_spaces(scratchpad);
     signallist->setCellWidget(i, 5, new QLineEdit(scratchpad));
@@ -957,7 +970,7 @@ void UI_headerEditorWindow::read_header()
     ((QLineEdit *)(signallist->cellWidget(i, 5)))->setText(scratchpad);
     ((QLineEdit *)(signallist->cellWidget(i, 5)))->setEnabled(false);
 
-    memcpy(scratchpad, hdr + 256 + (edfsignals * 128) + (i * 8), 8);
+    memcpy(scratchpad, hdr + 256 + (edfsignals * 104) + (i * 8), 8);
     scratchpad[8] = 0;
     remove_trailing_spaces(scratchpad);
     signallist->setCellWidget(i, 6, new QLineEdit(scratchpad));
@@ -965,7 +978,7 @@ void UI_headerEditorWindow::read_header()
     ((QLineEdit *)(signallist->cellWidget(i, 6)))->setText(scratchpad);
     ((QLineEdit *)(signallist->cellWidget(i, 6)))->setEnabled(false);
 
-    memcpy(scratchpad, hdr + 256 + (edfsignals * 120) + (i * 8), 8);
+    memcpy(scratchpad, hdr + 256 + (edfsignals * 128) + (i * 8), 8);
     scratchpad[8] = 0;
     remove_trailing_spaces(scratchpad);
     signallist->setCellWidget(i, 7, new QLineEdit(scratchpad));
@@ -973,7 +986,7 @@ void UI_headerEditorWindow::read_header()
     ((QLineEdit *)(signallist->cellWidget(i, 7)))->setText(scratchpad);
     ((QLineEdit *)(signallist->cellWidget(i, 7)))->setEnabled(false);
 
-    memcpy(scratchpad, hdr + 256 + (edfsignals * 216) + (i * 8), 8);
+    memcpy(scratchpad, hdr + 256 + (edfsignals * 120) + (i * 8), 8);
     scratchpad[8] = 0;
     remove_trailing_spaces(scratchpad);
     signallist->setCellWidget(i, 8, new QLineEdit(scratchpad));
@@ -983,8 +996,17 @@ void UI_headerEditorWindow::read_header()
 
     memcpy(scratchpad, hdr + 256 + (edfsignals * 216) + (i * 8), 8);
     scratchpad[8] = 0;
+    remove_trailing_spaces(scratchpad);
+    signallist->setCellWidget(i, 9, new QLineEdit(scratchpad));
+    ((QLineEdit *)(signallist->cellWidget(i, 9)))->setMaxLength(80);
+    ((QLineEdit *)(signallist->cellWidget(i, 9)))->setText(scratchpad);
+    ((QLineEdit *)(signallist->cellWidget(i, 9)))->setEnabled(false);
+
+    memcpy(scratchpad, hdr + 256 + (edfsignals * 216) + (i * 8), 8);
+    scratchpad[8] = 0;
     if(atoi(scratchpad) < 1)
     {
+      QApplication::restoreOverrideCursor();
       snprintf(str, 256, "Samples per record of signal %i is less than 1.\n"
                    "Cannot fix this file.", i + 1);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
@@ -1004,31 +1026,38 @@ void UI_headerEditorWindow::read_header()
 
     if(edfplus)
     {
-      if(!(strncmp(((QLineEdit *)(signallist->cellWidget(i, 0)))->text().toLatin1().data(), "EDF Annotations", 15)))
+      if(!(strncmp(((QLineEdit *)(signallist->cellWidget(i, 1)))->text().toLatin1().data(), "EDF Annotations", 15)))
       {
-        ((QLineEdit *)(signallist->cellWidget(i, 0)))->setEnabled(false);
+        ((QLineEdit *)(signallist->cellWidget(i, 0)))->setText(" *");
         ((QLineEdit *)(signallist->cellWidget(i, 1)))->setEnabled(false);
         ((QLineEdit *)(signallist->cellWidget(i, 2)))->setEnabled(false);
         ((QLineEdit *)(signallist->cellWidget(i, 3)))->setEnabled(false);
+        ((QLineEdit *)(signallist->cellWidget(i, 4)))->setEnabled(false);
+        sig_idx--;
       }
     }
 
     if(bdfplus)
     {
-      if(!(strncmp(((QLineEdit *)(signallist->cellWidget(i, 0)))->text().toLatin1().data(), "BDF Annotations", 15)))
+      if(!(strncmp(((QLineEdit *)(signallist->cellWidget(i, 1)))->text().toLatin1().data(), "BDF Annotations", 15)))
       {
-        ((QLineEdit *)(signallist->cellWidget(i, 0)))->setEnabled(false);
+        ((QLineEdit *)(signallist->cellWidget(i, 0)))->setText(" *");
         ((QLineEdit *)(signallist->cellWidget(i, 1)))->setEnabled(false);
         ((QLineEdit *)(signallist->cellWidget(i, 2)))->setEnabled(false);
         ((QLineEdit *)(signallist->cellWidget(i, 3)))->setEnabled(false);
+        ((QLineEdit *)(signallist->cellWidget(i, 4)))->setEnabled(false);
+        sig_idx--;
       }
     }
   }
 
   signallist->resizeColumnsToContents();
 
+  signallist->setColumnWidth(0, 40 * mainwindow->w_scaling);
+
   if(recordsize < 1)
   {
+    QApplication::restoreOverrideCursor();
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Recordsize is less than 1.\n"
                                                               "Cannot fix this file.");
     messagewindow.exec();
@@ -1036,6 +1065,8 @@ void UI_headerEditorWindow::read_header()
     file = NULL;
     return;
   }
+
+  QApplication::restoreOverrideCursor();
 }
 
 
