@@ -427,6 +427,7 @@ void UI_EDFhdrwindow::show_params(int row)
 void UI_EDFhdrwindow::load_signal_params(int row, int page)
 {
   int i,
+      sig_idx=1,
       signal_cnt=0,
       signal_start=0,
       signal_end=0;
@@ -445,6 +446,8 @@ void UI_EDFhdrwindow::load_signal_params(int row, int page)
   signal_end = signal_start + 512;
   if(signal_end > signal_cnt)  signal_end = signal_cnt;
 
+  sig_idx = signal_start + 1;
+
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
   signallist->clear();
@@ -452,6 +455,7 @@ void UI_EDFhdrwindow::load_signal_params(int row, int page)
   signallist->setRowCount(signal_end - signal_start);
   signallist->setSelectionMode(QAbstractItemView::NoSelection);
   signallist->verticalHeader()->setVisible(false);
+  signallist->scrollToTop();
   QStringList horizontallabels;
   horizontallabels += "Index";
   horizontallabels += "Label";
@@ -475,8 +479,15 @@ void UI_EDFhdrwindow::load_signal_params(int row, int page)
       qApp->processEvents();
     }
 
-    snprintf(str, 512, "%i", i + 1);
-    ql = new QLineEdit(str);
+    if(mainwindow->edfheaderlist[row]->edfparam[i].annotation)
+    {
+      ql = new QLineEdit(" *");
+    }
+    else
+    {
+      snprintf(str, 512, "%i", sig_idx++);
+      ql = new QLineEdit(str);
+    }
     ql->setReadOnly(true);
     ql->setCursorPosition(0);
     signallist->setCellWidget(i%512, 0, ql);
