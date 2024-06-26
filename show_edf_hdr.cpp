@@ -448,6 +448,14 @@ void UI_EDFhdrwindow::load_signal_params(int row, int page)
 
   sig_idx = signal_start + 1;
 
+  for(i=0; i<mainwindow->edfheaderlist[row]->nr_annot_chns; i++)
+  {
+    if(mainwindow->edfheaderlist[row]->annot_ch[i] < sig_idx - 1)
+    {
+      sig_idx--;
+    }
+  }
+
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
   signallist->clear();
