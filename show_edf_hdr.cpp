@@ -450,7 +450,7 @@ void UI_EDFhdrwindow::load_signal_params(int row, int page)
 
   for(i=0; i<mainwindow->edfheaderlist[row]->nr_annot_chns; i++)
   {
-    if(mainwindow->edfheaderlist[row]->annot_ch[i] < sig_idx - 1)
+    if(mainwindow->edfheaderlist[row]->annot_ch[i] < signal_start)
     {
       sig_idx--;
     }
