@@ -2378,7 +2378,9 @@ void UI_Mainwindow::show_file_info()
 void UI_Mainwindow::remove_all_filters()
 {
   int i, j,
-      update_scr=0;
+      update_scr=0,
+      remove_list[512],
+      remove_cnt=0;
 
   if(!files_open)  return;
 
@@ -2432,6 +2434,14 @@ void UI_Mainwindow::remove_all_filters()
       strlcpy(signalcomp[i]->signallabel, signalcomp[i]->signallabel_bu, 512);
       signalcomp[i]->signallabellen = signalcomp[i]->signallabellen_bu;
       strlcpy(signalcomp[i]->physdimension, signalcomp[i]->physdimension_bu, 9);
+
+      if(remove_cnt < 512)
+      {
+        remove_list[remove_cnt] = i;
+        remove_cnt++;
+      }
+
+      update_scr = 1;
     }
 
     if(signalcomp[i]->zratio_filter != NULL)
@@ -2443,6 +2453,14 @@ void UI_Mainwindow::remove_all_filters()
       strlcpy(signalcomp[i]->signallabel, signalcomp[i]->signallabel_bu, 512);
       signalcomp[i]->signallabellen = signalcomp[i]->signallabellen_bu;
       strlcpy(signalcomp[i]->physdimension, signalcomp[i]->physdimension_bu, 9);
+    }
+  }
+
+  if(remove_cnt)
+  {
+    for(i=0; i<remove_cnt; i++)
+    {
+      remove_signalcomp(remove_list[i]);
     }
   }
 
