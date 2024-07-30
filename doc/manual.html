@@ -611,6 +611,10 @@
   The output of the five FFT's are averaged.<br>
   In case you set the FFT blocksize equal to timescale x samplefrequency, exactly one FFT will be performed.<br>
 <br>
+  Note 1: You can freely customize the block size up to 1000 samples. Above that, only selected (optimized)<br>
+  values can be choosen.<br>
+  Note 2: The maximum block size possible equals the number of samples actually on the screen.<br>
+<br>
   It's possible to let the FFT blocks overlap each other.<br>
 <br>
   This powerspectrum is static and will not update when you change the fileposition (pressing PgUp/PgDn etc.).<br>
