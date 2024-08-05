@@ -33,19 +33,19 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
 {
   char str[1024]={""};
 
-  strlcpy(str, " QT version at runtime is ", 512);
-  strlcat(str, qVersion(), 512);
-  strlcat(str, "\n QT version at compile time is ", 512);
-  strlcat(str, QT_VERSION_STR, 512);
-  strlcat(str, "\n Compiled on " __DATE__ " " __TIME__, 512);
-  snprintf(str + strlen(str), 512, "\n CPU-cores detected on this system: %i", mainwindow->maincurve->cpu_cnt);
+  strlcpy(str, " QT version at runtime is ", 1024);
+  strlcat(str, qVersion(), 1024 - strlen(str));
+  strlcat(str, "\n QT version at compile time is ", 1024 - strlen(str));
+  strlcat(str, QT_VERSION_STR, 1024 - strlen(str));
+  strlcat(str, "\n Compiled on " __DATE__ " " __TIME__, 1024 - strlen(str));
+  snprintf(str + strlen(str), 1024 - strlen(str), "\n CPU-cores detected on this system: %i", mainwindow->maincurve->cpu_cnt);
   if(mainwindow->use_threads == 1)
   {
-    strlcat(str, "\n Multi-Threading is enabled.", 1024);
+    strlcat(str, "\n Multi-Threading is enabled.", 1024 - strlen(str));
   }
   else
   {
-    strlcat(str, "\n Multi-Threading is disabled.", 1024);
+    strlcat(str, "\n Multi-Threading is disabled.", 1024 - strlen(str));
   }
 
   AboutDialog = new QDialog;

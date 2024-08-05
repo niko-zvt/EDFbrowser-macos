@@ -114,14 +114,14 @@ void UI_Mainwindow::read_color_settings()
 
 #ifdef Q_OS_WIN32
   strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "\\", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
-  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH);
+  strlcat(cfg_path, "\\", MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH - strlen(cfg_path));
 #else
   strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/.", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH);
+  strlcat(cfg_path, "/.", MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH - strlen(cfg_path));
 #endif
 
   xml_hdl = xml_get_handle(cfg_path);
@@ -414,14 +414,14 @@ void UI_Mainwindow::read_recent_file_settings()
 
 #ifdef Q_OS_WIN32
   strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "\\", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
-  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH);
+  strlcat(cfg_path, "\\", MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH - strlen(cfg_path));
 #else
-  strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/.", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH);
+  strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, "/.", MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH - strlen(cfg_path));
 #endif
 
   xml_hdl = xml_get_handle(cfg_path);
@@ -670,14 +670,14 @@ void UI_Mainwindow::read_general_settings()
 
 #ifdef Q_OS_WIN32
   strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "\\", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
-  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH);
+  strlcat(cfg_path, "\\", MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH - strlen(cfg_path));
 #else
   strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/.", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH);
+  strlcat(cfg_path, "/.", MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH - strlen(cfg_path));
 #endif
 
   xml_hdl = xml_get_handle(cfg_path);
@@ -1937,7 +1937,7 @@ void UI_Mainwindow::read_general_settings()
           return;
         }
 
-        strlcpy(annot_edit_user_button_name[i], result, 64);
+        strlcpy(annot_edit_user_button_name[i], result, 32);
 
         xml_go_up(xml_hdl);
       }
@@ -3254,25 +3254,23 @@ void UI_Mainwindow::write_settings()
 {
   int i;
 
-  char cfg_path[MAX_PATH_LENGTH],
-       str[1024];
+  char cfg_path[MAX_PATH_LENGTH]={""},
+       str[1024]={""};
 
-  FILE *cfgfile;
-
-  cfg_path[0] = 0;
+  FILE *cfgfile=NULL;
 
 #ifdef Q_OS_WIN32
   strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "\\", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
+  strlcat(cfg_path, "\\", MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH - strlen(cfg_path));
   mkdir(cfg_path);
-  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH);
+  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH - strlen(cfg_path));
 #else
   strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/.", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
+  strlcat(cfg_path, "/.", MAX_PATH_LENGTH - strlen(cfg_path));
+  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH - strlen(cfg_path));
   mkdir(cfg_path,  S_IRWXU);
-  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH);
+  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH - strlen(cfg_path));
 #endif
 
   cfgfile = fopeno(cfg_path, "wb");

@@ -304,8 +304,6 @@ long long UI_Mainwindow::check_edf_file_datarecords(edfhdrblck_t *hdr)
 
 void UI_Mainwindow::save_file()
 {
-  int len;
-
   char f_path[MAX_PATH_LENGTH];
 
   edfhdrblck_t *hdr;
@@ -323,9 +321,8 @@ void UI_Mainwindow::save_file()
   hdr = edfheaderlist[0];
 
   strlcpy(f_path, recent_savedir, MAX_PATH_LENGTH);
-  strlcat(f_path, "/", MAX_PATH_LENGTH);
-  len = strlen(f_path);
-  get_filename_from_path(f_path + len, hdr->filename, MAX_PATH_LENGTH - len);
+  strlcat(f_path, "/", MAX_PATH_LENGTH - strlen(f_path));
+  get_filename_from_path(f_path + strlen(f_path), hdr->filename, MAX_PATH_LENGTH - strlen(f_path));
   remove_extension_from_filename(f_path);
   if(hdr->edf)
   {
@@ -2311,7 +2308,7 @@ void UI_Mainwindow::setMainwindowTitle(edfhdrblck_t *edfhdr)
   {
     strlcpy(str, QString::fromLocal8Bit(edfhdr->filename).toUtf8().data(), MAX_PATH_LENGTH + 128);
 
-    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128);
+    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128 - strlen(str));
   }
 
   setWindowTitle(QString::fromUtf8(str));
@@ -2701,7 +2698,7 @@ void UI_Mainwindow::close_file_action_func(QAction *action)
       file_n,
       inst_num=0;
 
-  char f_path[MAX_PATH_LENGTH];
+  char f_path[MAX_PATH_LENGTH]={""};
 
   if(files_open < 2)
   {
@@ -5509,9 +5506,9 @@ void UI_Mainwindow::open_manual(const char *sect)
 #ifdef Q_OS_WIN32
   char p_path[MAX_PATH_LENGTH]={""};
   strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
-  strlcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
-  strlcat(p_path, "\\EDFbrowser\\manual.html", MAX_PATH_LENGTH);
-  strlcat(p_path, sect, MAX_PATH_LENGTH);
+  strlcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH - strlen(p_path));
+  strlcat(p_path, "\\EDFbrowser\\manual.html", MAX_PATH_LENGTH - strlen(p_path));
+  strlcat(p_path, sect, MAX_PATH_LENGTH - strlen(p_path));
   QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }
