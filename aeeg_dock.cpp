@@ -31,7 +31,7 @@
 
 UI_aeeg_dock::UI_aeeg_dock(QWidget *w_parent, aeeg_dock_param_t par)
 {
-  char str[1024]={""};
+  char str_1024[1024]={""};
 
   QFrame *frame;
 
@@ -50,7 +50,7 @@ UI_aeeg_dock::UI_aeeg_dock(QWidget *w_parent, aeeg_dock_param_t par)
 
   sigcomp_uid = param.signalcomp->uid;
 
-  snprintf(str, 1024, " aEEG   %s", param.signalcomp->signallabel);
+  snprintf(str_1024, 1024, " aEEG   %s", param.signalcomp->signallabel);
 
   frame = new QFrame;
   frame->setFrameStyle(QFrame::NoFrame);
@@ -89,7 +89,7 @@ UI_aeeg_dock::UI_aeeg_dock(QWidget *w_parent, aeeg_dock_param_t par)
   grid_layout->addWidget(srl_indic2, 0, 2);
   grid_layout->setColumnStretch(1, 100);
 
-  aeeg_dock = new QToolBar(str, mainwindow);
+  aeeg_dock = new QToolBar(str_1024, mainwindow);
   aeeg_dock->setOrientation(Qt::Horizontal);
   aeeg_dock->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
   aeeg_dock->setAttribute(Qt::WA_DeleteOnClose);
@@ -186,13 +186,13 @@ void UI_aeeg_dock::show_context_menu(QPoint)
 
 void UI_aeeg_dock::show_settings(bool)
 {
-  char str[4096]={"aEEG "};
+  char str_4096[4096]={"aEEG "};
 
-  strlcat(str, param.signalcomp->signallabel, 4096);
+  strlcat(str_4096, param.signalcomp->signallabel, 4096);
 
   QDialog *settings_dialog = new QDialog;
   settings_dialog->setMinimumSize(300, 350);
-  settings_dialog->setWindowTitle(str);
+  settings_dialog->setWindowTitle(str_4096);
   settings_dialog->setModal(true);
   settings_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
@@ -218,7 +218,7 @@ void UI_aeeg_dock::show_settings(bool)
   QPushButton *pushButton1 = new QPushButton;
   pushButton1->setText("Close");
 
-  snprintf(str, 4096,
+  snprintf(str_4096, 4096,
          " \n"
          "Segment length: %i sec\n"
          " \n"
@@ -231,7 +231,7 @@ void UI_aeeg_dock::show_settings(bool)
          param.bp_max_hz,
          param.lp_hz);
 
-  label->setText(str);
+  label->setText(str_4096);
 
   QHBoxLayout *hlayout1 = new QHBoxLayout;
   hlayout1->addStretch(1000);
@@ -346,7 +346,7 @@ void log_vruler_indicator::paintEvent(QPaintEvent *)
 {
   int i, w, h, tmp;
 
-  char str[128]={""};
+  char str_128[128]={""};
 
   double pixel_per_unit;
 
@@ -392,23 +392,23 @@ void log_vruler_indicator::paintEvent(QPaintEvent *)
     switch(i)
     {
       case 0: tmp = 0;
-              snprintf(str, 128, "%i", 0);
+              snprintf(str_128, 128, "%i", 0);
               break;
 //          case 1: tmp = 35;
       case 1: tmp = 25;  // linear/log threshold hack
-              snprintf(str, 128, "%i", (int)(max_val * 0.05 + 0.5));
+              snprintf(str_128, 128, "%i", (int)(max_val * 0.05 + 0.5));
               break;
       case 2: tmp = 50;
-              snprintf(str, 128, "%i", (int)(max_val * 0.1 + 0.5));
+              snprintf(str_128, 128, "%i", (int)(max_val * 0.1 + 0.5));
               break;
       case 3: tmp = 70;
-              snprintf(str, 128, "%i", (int)(max_val * 0.25 + 0.5));
+              snprintf(str_128, 128, "%i", (int)(max_val * 0.25 + 0.5));
               break;
       case 4: tmp = 85;
-              snprintf(str, 128, "%i", (int)(max_val * 0.5 + 0.5));
+              snprintf(str_128, 128, "%i", (int)(max_val * 0.5 + 0.5));
               break;
       case 5: tmp = 100;
-              snprintf(str, 128, "%i", (int)(max_val + 0.5));
+              snprintf(str_128, 128, "%i", (int)(max_val + 0.5));
               break;
     }
 
@@ -418,13 +418,13 @@ void log_vruler_indicator::paintEvent(QPaintEvent *)
     {
       painter.drawLine(w - 4, h - tmp, w - 13, h - tmp);
 
-      painter.drawText(QRectF(w - (35 * w_scaling), h - (int)(tmp + 0.5 + (9 * h_scaling)), 20 * w_scaling, 20 * h_scaling), Qt::AlignRight | Qt::AlignVCenter, str);
+      painter.drawText(QRectF(w - (35 * w_scaling), h - (int)(tmp + 0.5 + (9 * h_scaling)), 20 * w_scaling, 20 * h_scaling), Qt::AlignRight | Qt::AlignVCenter, str_128);
     }
     else
     {
       painter.drawLine(4, h - tmp, 13, h - tmp);
 
-      painter.drawText(QRectF(13 * w_scaling, h - (int)(tmp + 0.5 + (9 * h_scaling)), 20 * w_scaling, 20 * h_scaling), Qt::AlignLeft | Qt::AlignVCenter, str);
+      painter.drawText(QRectF(13 * w_scaling, h - (int)(tmp + 0.5 + (9 * h_scaling)), 20 * w_scaling, 20 * h_scaling), Qt::AlignLeft | Qt::AlignVCenter, str_128);
     }
   }
 
@@ -572,7 +572,7 @@ void aeeg_curve_widget::paintEvent(QPaintEvent *)
          h_step_second,
          v_sense;
 
-  char str[64]={""};
+  char str_64[64]={""};
 
   w = width();
   h = height();
@@ -676,10 +676,10 @@ void aeeg_curve_widget::paintEvent(QPaintEvent *)
   }
 
   /* draw the signal label */
-  strlcpy(str, "aEEG ", 64);
-  strlcat(str, param.signalcomp->signallabel, 64);
-  painter.drawText(30 * mainwindow->w_scaling, h * 0.7, str);
-  painter.drawText(w - (120 * mainwindow->w_scaling), h * 0.7, str);
+  strlcpy(str_64, "aEEG ", 64);
+  strlcat(str_64, param.signalcomp->signallabel, 64 - strlen(str_64));
+  painter.drawText(30 * mainwindow->w_scaling, h * 0.7, str_64);
+  painter.drawText(w - (120 * mainwindow->w_scaling), h * 0.7, str_64);
 
   if(x_offset)
   {

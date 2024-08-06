@@ -108,17 +108,16 @@ void UI_AsciiExportwindow::ExportButtonClicked()
       duration,
       zero,
       max_tal_ln,
-      len,
       progress_steps;
 
   char path[MAX_PATH_LENGTH],
        ascii_path[MAX_PATH_LENGTH],
-       *edf_hdr,
-       *scratchpad,
-       *cnv_buf,
-       *time_in_txt,
-       *duration_in_txt,
-       str[1024];
+       *edf_hdr=NULL,
+       *scratchpad=NULL,
+       *cnv_buf=NULL,
+       *time_in_txt=NULL,
+       *duration_in_txt=NULL,
+       str1_1024[1024]={""};
 
   union {
           unsigned int one;
@@ -128,9 +127,9 @@ void UI_AsciiExportwindow::ExportButtonClicked()
           unsigned char four[4];
         } var;
 
-  FILE *inputfile,
-       *outputfile,
-       *annotationfile;
+  FILE *inputfile=NULL,
+       *outputfile=NULL,
+       *annotationfile=NULL;
 
   long long data_record_duration,
             elapsedtime,
@@ -167,12 +166,11 @@ void UI_AsciiExportwindow::ExportButtonClicked()
   if(mainwindow->recent_savedir[0]!=0)
   {
     strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
-    strlcat(path, "/", MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH - strlen(path));
   }
-  len = strlen(path);
-  get_filename_from_path(path + len, mainwindow->edfheaderlist[n]->filename, MAX_PATH_LENGTH - len);
+  get_filename_from_path(path + strlen(path), mainwindow->edfheaderlist[n]->filename, MAX_PATH_LENGTH - strlen(path));
   remove_extension_from_filename(path);
-  strlcat(path, "_data.txt", MAX_PATH_LENGTH);
+  strlcat(path, "_data.txt", MAX_PATH_LENGTH - strlen(path));
 
   strlcpy(path, QFileDialog::getSaveFileName(0, "Export to ASCII", QString::fromLocal8Bit(path), "Text files (*.txt *.TXT)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
@@ -450,7 +448,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
   strlcpy(ascii_path, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(ascii_path);
-  strlcat(ascii_path, "_signals.txt", MAX_PATH_LENGTH);
+  strlcat(ascii_path, "_signals.txt", MAX_PATH_LENGTH - strlen(path));
   outputfile = fopeno(ascii_path, "wb");
   if(outputfile==NULL)
   {
@@ -501,7 +499,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
   strlcpy(ascii_path, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(ascii_path);
-  strlcat(ascii_path, "_annotations.txt", MAX_PATH_LENGTH);
+  strlcat(ascii_path, "_annotations.txt", MAX_PATH_LENGTH - strlen(ascii_path));
   annotationfile = fopeno(ascii_path, "wb");
   if(annotationfile==NULL)
   {
@@ -523,7 +521,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
   strlcpy(ascii_path, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(ascii_path);
-  strlcat(ascii_path, "_data.txt", MAX_PATH_LENGTH);
+  strlcat(ascii_path, "_data.txt", MAX_PATH_LENGTH - strlen(ascii_path));
   outputfile = fopeno(ascii_path, "wb");
   if(outputfile==NULL)
   {
@@ -638,8 +636,8 @@ void UI_AsciiExportwindow::ExportButtonClicked()
         if(k>max_tal_ln)
         {
           progress.reset();
-          snprintf(str, 256, "Error, TAL in record %i exceeds my buffer.", datarecordswritten + 1);
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+          snprintf(str1_1024, 256, "Error, TAL in record %i exceeds my buffer.", datarecordswritten + 1);
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_1024);
           messagewindow.exec();
           fclose(annotationfile);
           fclose(outputfile);
@@ -677,8 +675,8 @@ void UI_AsciiExportwindow::ExportButtonClicked()
           if(k>max_tal_ln)
           {
             progress.reset();
-            snprintf(str, 256, "Error, TAL in record %i exceeds my buffer.", datarecordswritten + 1);
-            QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+            snprintf(str1_1024, 256, "Error, TAL in record %i exceeds my buffer.", datarecordswritten + 1);
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_1024);
             messagewindow.exec();
             fclose(annotationfile);
             fclose(outputfile);
@@ -777,8 +775,8 @@ void UI_AsciiExportwindow::ExportButtonClicked()
           if(++n>max_tal_ln)
           {
             progress.reset();
-            snprintf(str, 256, "Error, TAL in record %i exceeds my buffer.", datarecordswritten + 1);
-            QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+            snprintf(str1_1024, 256, "Error, TAL in record %i exceeds my buffer.", datarecordswritten + 1);
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_1024);
             messagewindow.exec();
             fclose(annotationfile);
             fclose(outputfile);

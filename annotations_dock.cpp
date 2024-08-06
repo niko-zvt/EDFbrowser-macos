@@ -1250,8 +1250,8 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
       len=0,
       visible_item_idx=0;
 
-  char str[MAX_ANNOTATION_LEN + 32]="",
-       str2[1024]="";
+  char str1[MAX_ANNOTATION_LEN + 32]="",
+       str2_1024[1024]="";
 
   QListWidgetItem *listitem;
 
@@ -1311,7 +1311,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
       {
         if(annot->onset < 0LL)
         {
-          snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "  -%2i:%02i:%02i.%06i",
+          snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "  -%2i:%02i:%02i.%06i",
                   (int)((-annot->onset / TIME_FIXP_SCALING)/ 3600),
                   (int)(((-annot->onset / TIME_FIXP_SCALING) % 3600) / 60),
                   (int)((-annot->onset / TIME_FIXP_SCALING) % 60),
@@ -1319,7 +1319,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
         }
         else
         {
-          snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "  %3i:%02i:%02i.%06i",
+          snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "  %3i:%02i:%02i.%06i",
                   (int)((annot->onset / TIME_FIXP_SCALING)/ 3600),
                   (int)(((annot->onset / TIME_FIXP_SCALING) % 3600) / 60),
                   (int)((annot->onset / TIME_FIXP_SCALING) % 60),
@@ -1328,7 +1328,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
       }
       else
       {
-        snprintf(str, MAX_ANNOTATION_LEN + 32, "  %3i:%02i:%02i.%06i",
+        snprintf(str1, MAX_ANNOTATION_LEN + 32, "  %3i:%02i:%02i.%06i",
                 (int)((((annot->onset + edf_hdr->starttime_hr) / TIME_FIXP_SCALING)/ 3600) % 24),
                 (int)((((annot->onset + edf_hdr->starttime_hr) / TIME_FIXP_SCALING) % 3600) / 60),
                 (int)(((annot->onset + edf_hdr->starttime_hr) / TIME_FIXP_SCALING) % 60),
@@ -1341,7 +1341,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
       {
         if(annot->onset < 0LL)
         {
-          snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "  -%2i:%02i:%02i.%03i",
+          snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "  -%2i:%02i:%02i.%03i",
                   (int)((-annot->onset / TIME_FIXP_SCALING)/ 3600),
                   (int)(((-annot->onset / TIME_FIXP_SCALING) % 3600) / 60),
                   (int)((-annot->onset / TIME_FIXP_SCALING) % 60),
@@ -1349,7 +1349,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
         }
         else
         {
-          snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "  %3i:%02i:%02i.%03i",
+          snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "  %3i:%02i:%02i.%03i",
                   (int)((annot->onset / TIME_FIXP_SCALING)/ 3600),
                   (int)(((annot->onset / TIME_FIXP_SCALING) % 3600) / 60),
                   (int)((annot->onset / TIME_FIXP_SCALING) % 60),
@@ -1358,7 +1358,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
       }
       else
       {
-        snprintf(str, MAX_ANNOTATION_LEN + 32, "  %3i:%02i:%02i.%03i",
+        snprintf(str1, MAX_ANNOTATION_LEN + 32, "  %3i:%02i:%02i.%03i",
                 (int)((((annot->onset + edf_hdr->starttime_hr) / TIME_FIXP_SCALING)/ 3600) % 24),
                 (int)((((annot->onset + edf_hdr->starttime_hr) / TIME_FIXP_SCALING) % 3600) / 60),
                 (int)(((annot->onset + edf_hdr->starttime_hr) / TIME_FIXP_SCALING) % 60),
@@ -1366,9 +1366,9 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
       }
     }
 
-    str[MAX_ANNOTATION_LEN + 31] = 0;
+    str1[MAX_ANNOTATION_LEN + 31] = 0;
 
-    remove_trailing_zeros(str);
+    remove_trailing_zeros(str1);
 
     string = QString::fromUtf8(annot->description);
 
@@ -1377,7 +1377,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
       string = string.leftJustified(20, ' ');
     }
 
-    string.append(QString::fromLatin1(str));
+    string.append(QString::fromLatin1(str1));
 
     listitem = new QListWidgetItem(string, list);
 
@@ -1398,7 +1398,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
 
     if(annot->onset < 0LL)
     {
-      len = snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "onset: -%i:%02i:%02i.%06i",
+      len = snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "onset: -%i:%02i:%02i.%06i",
               (int)((-annot->onset / TIME_FIXP_SCALING)/ 3600),
               (int)(((-annot->onset / TIME_FIXP_SCALING) % 3600) / 60),
               (int)((-annot->onset / TIME_FIXP_SCALING) % 60),
@@ -1406,7 +1406,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
     }
     else
     {
-      len = snprintf(str, (MAX_ANNOTATION_LEN + 32) / 2, "onset: %2i:%02i:%02i.%06i",
+      len = snprintf(str1, (MAX_ANNOTATION_LEN + 32) / 2, "onset: %2i:%02i:%02i.%06i",
               (int)((annot->onset / TIME_FIXP_SCALING)/ 3600),
               (int)(((annot->onset / TIME_FIXP_SCALING) % 3600) / 60),
               (int)((annot->onset / TIME_FIXP_SCALING) % 60),
@@ -1415,26 +1415,26 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
 
     if(annot->duration[0]!=0)
     {
-      len += snprintf(str + len, MAX_ANNOTATION_LEN + 32 - len, "\nduration: %s",annot->duration);
+      len += snprintf(str1 + len, MAX_ANNOTATION_LEN + 32 - len, "\nduration: %s",annot->duration);
     }
 
-    remove_trailing_zeros(str);
+    remove_trailing_zeros(str1);
 
-    strlcat(str, "\n", MAX_ANNOTATION_LEN + 32);
+    strlcat(str1, "\n", MAX_ANNOTATION_LEN + 32 - strlen(str1));
 
-    strlcat(str, annot->description, MAX_ANNOTATION_LEN + 32);
+    strlcat(str1, annot->description, MAX_ANNOTATION_LEN + 32 - strlen(str1));
 
     if(mainwindow->edf_debug && (!mainwindow->annot_editor_active) && (!mainwindow->annotations_edited))
     {
-      len = strlen(str);
+      len = strlen(str1);
 #ifdef Q_OS_WIN32
       __mingw_snprintf(str + len, MAX_ANNOTATION_LEN + 32 - len, "\ndatarecord: %i\nfile offset: 0x%02llx", annot->datrec, annot->file_offset);
 #else
-      snprintf(str + len, MAX_ANNOTATION_LEN + 32 - len, "\ndatarecord: %i\nfile offset: 0x%02llx", annot->datrec, annot->file_offset);
+      snprintf(str1 + len, MAX_ANNOTATION_LEN + 32 - len, "\ndatarecord: %i\nfile offset: 0x%02llx", annot->datrec, annot->file_offset);
 #endif
     }
 
-    listitem->setToolTip(QString::fromUtf8(str));
+    listitem->setToolTip(QString::fromUtf8(str1));
 
     if(annot->grabbed)
     {
@@ -1484,9 +1484,9 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
 
   mainwindow->annot_dock_updated();
 
-  snprintf(str2, 1024, "Annotations      (%i)", list->count());
+  snprintf(str2_1024, 1024, "Annotations      (%i)", list->count());
 
-  docklist->setWindowTitle(str2);
+  docklist->setWindowTitle(str2_1024);
 }
 
 

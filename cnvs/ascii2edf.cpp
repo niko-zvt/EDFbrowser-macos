@@ -370,15 +370,14 @@ void UI_ASCII2EDFapp::gobuttonpressed()
 
   char path[MAX_PATH_LENGTH]="",
        txt_string[ASCII_MAX_LINE_LEN]="",
-       str[256]="",
+       str1_256[256]="",
        line[ASCII_MAX_LINE_LEN]="",
        *buf=NULL,
-       scratchpad[128]="",
+       scratchpad_128[128]="",
        outputfilename[MAX_PATH_LENGTH]="";
 
   FILE *inputfile=NULL,
        *outputfile=NULL;
-
 
 
   ascii2edfDialog->setEnabled(false);
@@ -734,20 +733,20 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   if(recent_savedir[0]!=0)
   {
     strlcpy(outputfilename, recent_savedir, MAX_PATH_LENGTH);
-    strlcat(outputfilename, "/", MAX_PATH_LENGTH);
+    strlcat(outputfilename, "/", MAX_PATH_LENGTH - strlen(outputfilename));
   }
   len = strlen(outputfilename);
   get_filename_from_path(outputfilename + len, path, MAX_PATH_LENGTH - len);
   remove_extension_from_filename(outputfilename);
   if(edf_format)
   {
-    strlcat(outputfilename, ".edf", MAX_PATH_LENGTH);
+    strlcat(outputfilename, ".edf", MAX_PATH_LENGTH - strlen(outputfilename));
 
     strlcpy(outputfilename, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(outputfilename), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
   else
   {
-    strlcat(outputfilename, ".bdf", MAX_PATH_LENGTH);
+    strlcat(outputfilename, ".bdf", MAX_PATH_LENGTH - strlen(outputfilename));
 
     strlcpy(outputfilename, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(outputfilename), "BDF files (*.bdf *.BDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
@@ -781,23 +780,23 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     fprintf(outputfile, "\xff" "BIOSEMI");
   }
 
-  p = snprintf(scratchpad, 128, "%s", PatientnameLineEdit->text().toLatin1().data());
+  p = snprintf(scratchpad_128, 128, "%s", PatientnameLineEdit->text().toLatin1().data());
   for( ; p<80; p++)
   {
-    scratchpad[p] = ' ';
+    scratchpad_128[p] = ' ';
   }
-  latin1_to_ascii(scratchpad, 80);
-  scratchpad[80] = 0;
-  fprintf(outputfile, "%s", scratchpad);
+  latin1_to_ascii(scratchpad_128, 80);
+  scratchpad_128[80] = 0;
+  fprintf(outputfile, "%s", scratchpad_128);
 
-  p = snprintf(scratchpad, 128, "%s", RecordingLineEdit->text().toLatin1().data());
+  p = snprintf(scratchpad_128, 128, "%s", RecordingLineEdit->text().toLatin1().data());
   for( ; p<80; p++)
   {
-    scratchpad[p] = ' ';
+    scratchpad_128[p] = ' ';
   }
-  latin1_to_ascii(scratchpad, 80);
-  scratchpad[80] = 0;
-  fprintf(outputfile, "%s", scratchpad);
+  latin1_to_ascii(scratchpad_128, 80);
+  scratchpad_128[80] = 0;
+  fprintf(outputfile, "%s", scratchpad_128);
 
   fprintf(outputfile,
           "%02i.%02i.%02i%02i.%02i.%02i",
@@ -813,8 +812,8 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   if(dblcmp(samplefrequency, 1) < 0)
   {
     datrecduration = 1.0 / samplefrequency;
-    snprintf(str, 256, "%.8f", datrecduration);
-    if(fwrite(str, 8, 1, outputfile)!=1)
+    snprintf(str1_256, 256, "%.8f", datrecduration);
+    if(fwrite(str1_256, 8, 1, outputfile)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "A write error occurred.");
       messagewindow.exec();
@@ -876,10 +875,10 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     {
       if(autoPhysicalMaximum)
       {
-        snprintf(str, 256, "%.8f", physmax[edf_signal++] * -1.0);
-        strlcat(str, "        ", 256);
-        str[8] = 0;
-        fprintf(outputfile, "%s", str);
+        snprintf(str1_256, 256, "%.8f", physmax[edf_signal++] * -1.0);
+        strlcat(str1_256, "        ", 256 - strlen(str1_256));
+        str1_256[8] = 0;
+        fprintf(outputfile, "%s", str1_256);
       }
       else
       {
@@ -901,10 +900,10 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     {
       if(autoPhysicalMaximum)
       {
-        snprintf(str, 256, "%.8f", physmax[edf_signal++]);
-        strlcat(str, "        ", 256);
-        str[8] = 0;
-        fprintf(outputfile, "%s", str);
+        snprintf(str1_256, 256, "%.8f", physmax[edf_signal++]);
+        strlcat(str1_256, "        ", 256 - strlen(str1_256));
+        str1_256[8] = 0;
+        fprintf(outputfile, "%s", str1_256);
       }
       else
       {
@@ -1276,10 +1275,10 @@ void UI_ASCII2EDFapp::savebuttonpressed()
 {
   int i;
 
-  char path[MAX_PATH_LENGTH],
-       str[128];
+  char path[MAX_PATH_LENGTH]={""},
+       str1_128[128]={""};
 
-  FILE *outputfile;
+  FILE *outputfile=NULL;
 
 
   ascii2edfDialog->setEnabled(false);
@@ -1294,9 +1293,9 @@ void UI_ASCII2EDFapp::savebuttonpressed()
   if(recent_savedir[0]!=0)
   {
     strlcpy(path, recent_savedir, MAX_PATH_LENGTH);
-    strlcat(path, "/", MAX_PATH_LENGTH);
+    strlcat(path, "/", MAX_PATH_LENGTH - strlen(path));
   }
-  strlcat(path, "ascii_to_edf.template", MAX_PATH_LENGTH);
+  strlcat(path, "ascii_to_edf.template", MAX_PATH_LENGTH - strlen(path));
 
   strlcpy(path, QFileDialog::getSaveFileName(0, "Save parameters", QString::fromLocal8Bit(path), "Template files (*.template *.TEMPLATE)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
@@ -1351,23 +1350,23 @@ void UI_ASCII2EDFapp::savebuttonpressed()
       fprintf(outputfile, "    <checked>0</checked>\n");
     }
 
-    strlcpy(str, ((QLineEdit *)SignalsTablewidget->cellWidget(i, 1))->text().toLatin1().data(), 128);
+    strlcpy(str1_128, ((QLineEdit *)SignalsTablewidget->cellWidget(i, 1))->text().toLatin1().data(), 128);
 
-    remove_trailing_spaces(str);
+    remove_trailing_spaces(str1_128);
 
-    fprintf(outputfile, "    <label>%s</label>\n", str);
+    fprintf(outputfile, "    <label>%s</label>\n", str1_128);
 
-    strlcpy(str, ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->text().toLatin1().data(), 128);
+    strlcpy(str1_128, ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->text().toLatin1().data(), 128);
 
-    remove_trailing_spaces(str);
+    remove_trailing_spaces(str1_128);
 
-    fprintf(outputfile, "    <physical_maximum>%s</physical_maximum>\n", str);
+    fprintf(outputfile, "    <physical_maximum>%s</physical_maximum>\n", str1_128);
 
-    strlcpy(str, ((QLineEdit *)SignalsTablewidget->cellWidget(i, 3))->text().toLatin1().data(), 128);
+    strlcpy(str1_128, ((QLineEdit *)SignalsTablewidget->cellWidget(i, 3))->text().toLatin1().data(), 128);
 
-    remove_trailing_spaces(str);
+    remove_trailing_spaces(str1_128);
 
-    fprintf(outputfile, "    <physical_dimension>%s</physical_dimension>\n", str);
+    fprintf(outputfile, "    <physical_dimension>%s</physical_dimension>\n", str1_128);
 
     fprintf(outputfile, "    <multiplier>%f</multiplier>\n", ((QDoubleSpinBox *)SignalsTablewidget->cellWidget(i, 4))->value());
 
@@ -1387,12 +1386,12 @@ void UI_ASCII2EDFapp::loadbuttonpressed()
   int i,
       temp;
 
-  char path[MAX_PATH_LENGTH],
-       result[XML_STRBUFLEN];
+  char path[MAX_PATH_LENGTH]={""},
+       result[XML_STRBUFLEN]={""};
 
   double f_temp;
 
-  xml_hdl_t *xml_hdl;
+  xml_hdl_t *xml_hdl=NULL;
 
   strlcpy(path, QFileDialog::getOpenFileName(0, "Load parameters", QString::fromLocal8Bit(recent_opendir), "Template files (*.template *.TEMPLATE);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
@@ -1708,21 +1707,21 @@ int UI_ASCII2EDFapp::check_input(void)
       len,
       dot;
 
-  char str[128],
-       big_str[ASCII_MAX_LINE_LEN];
+  char str1_128[128]={""},
+       big_str[ASCII_MAX_LINE_LEN]={""};
 
   const char *columnname[]={"", "Label", "Physical maximum", "Physical dimension"};
 
 
-  strlcpy(str, SeparatorLineEdit->text().toLatin1().data(), 128);
+  strlcpy(str1_128, SeparatorLineEdit->text().toLatin1().data(), 128);
 
-  if(!strcmp(str, "tab"))
+  if(!strcmp(str1_128, "tab"))
   {
     separator = '\t';
   }
   else
   {
-    if(strlen(str)!=1)
+    if(strlen(str1_128)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator must be one character or tab.");
       messagewindow.exec();
@@ -1730,7 +1729,7 @@ int UI_ASCII2EDFapp::check_input(void)
       return 1;
     }
 
-    if((str[0]<32)||(str[0]>126))
+    if((str1_128[0]<32)||(str1_128[0]>126))
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character is not a valid ASCII character.");
       messagewindow.exec();
@@ -1738,7 +1737,7 @@ int UI_ASCII2EDFapp::check_input(void)
       return 1;
     }
 
-    if(str[0]=='.')
+    if(str1_128[0]=='.')
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character cannot be a dot.");
       messagewindow.exec();
@@ -1746,7 +1745,7 @@ int UI_ASCII2EDFapp::check_input(void)
       return 1;
     }
 
-    if((str[0]>47)&&(str[0]<58))
+    if((str1_128[0]>47)&&(str1_128[0]<58))
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character cannot be a number.");
       messagewindow.exec();
@@ -1754,7 +1753,7 @@ int UI_ASCII2EDFapp::check_input(void)
       return 1;
     }
 
-    separator = str[0];
+    separator = str1_128[0];
   }
 
   startline = DatastartSpinbox->value();
@@ -1787,9 +1786,9 @@ int UI_ASCII2EDFapp::check_input(void)
 
         dot = 0;
 
-        strlcpy(str, ((QLineEdit *)SignalsTablewidget->cellWidget(i, j))->text().toLatin1().data(), 128);
+        strlcpy(str1_128, ((QLineEdit *)SignalsTablewidget->cellWidget(i, j))->text().toLatin1().data(), 128);
 
-        len = strlen(str);
+        len = strlen(str1_128);
 
         if(!len)
         {
@@ -1803,7 +1802,7 @@ int UI_ASCII2EDFapp::check_input(void)
 
         for(k=0; k<len; k++)
         {
-          if((str[k]<32)||(str[k]>126))
+          if((str1_128[k]<32)||(str1_128[k]>126))
           {
             snprintf(big_str, ASCII_MAX_LINE_LEN,
             "Character %i in %s field of row %i is not a valid ASCII character.",
@@ -1815,7 +1814,7 @@ int UI_ASCII2EDFapp::check_input(void)
             return 1;
           }
 
-          if(str[k]==' ')
+          if(str1_128[k]==' ')
           {
             if(k==0)
             {
@@ -1832,7 +1831,7 @@ int UI_ASCII2EDFapp::check_input(void)
 
           if(j==2)
           {
-            if(str[len-1]=='.')
+            if(str1_128[len-1]=='.')
             {
               snprintf(big_str, ASCII_MAX_LINE_LEN,
               "Text in %s field of row %i is not valid.\n"
@@ -1845,9 +1844,9 @@ int UI_ASCII2EDFapp::check_input(void)
               return 1;
             }
 
-            if((str[k]<48)||(str[k]>57))
+            if((str1_128[k]<48)||(str1_128[k]>57))
             {
-              if(str[k]=='.')
+              if(str1_128[k]=='.')
               {
                 if(dot)
                 {
@@ -1897,7 +1896,7 @@ int UI_ASCII2EDFapp::check_input(void)
 
         if(j==2)
         {
-          if(atof(str)<1.0)
+          if(atof(str1_128)<1.0)
           {
             snprintf(big_str, ASCII_MAX_LINE_LEN,
             "Value in %s field of row %i is not valid.\n"

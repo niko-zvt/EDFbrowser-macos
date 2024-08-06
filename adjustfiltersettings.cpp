@@ -68,7 +68,7 @@ model:
 
 AdjustFilterSettings::AdjustFilterSettings(sigcompblck_t *signal_comp, QWidget *w_parent)
 {
-  char txtbuf[2048];
+  char txtbuf[2048]={""};
 
   signalcomp = signal_comp;
 
@@ -82,11 +82,11 @@ AdjustFilterSettings::AdjustFilterSettings(sigcompblck_t *signal_comp, QWidget *
   strlcpy(txtbuf, "Filter settings ", 2048);
   if(signalcomp->alias[0] != 0)
   {
-    strlcat(txtbuf, signalcomp->alias, 2048);
+    strlcat(txtbuf, signalcomp->alias, 2048 - strlen(txtbuf));
   }
   else
   {
-    strlcat(txtbuf, signalcomp->signallabel, 2048);
+    strlcat(txtbuf, signalcomp->signallabel, 2048 - strlen(txtbuf));
   }
   filtersettings_dialog->setWindowTitle(txtbuf);
   filtersettings_dialog->setModal(true);
@@ -281,7 +281,7 @@ void AdjustFilterSettings::loadFilterSettings(void)
       snprintf(txtbuf + strlen(txtbuf), 2048, " - %f", frequency2);
     }
 
-    strlcat(txtbuf, " Hz", 2048);
+    strlcat(txtbuf, " Hz", 2048 - strlen(txtbuf));
 
     remove_trailing_zeros(txtbuf);
 
@@ -537,9 +537,9 @@ void AdjustFilterSettings::removeButtonClicked()
 
 void AdjustFilterSettings::update_filter()
 {
-  char *filter_spec,
-      spec_str_1[256],
-      spec_str_2[256],
+  char *filter_spec=NULL,
+      spec_str_1_256[256],
+      spec_str_2_256[256],
       *err=NULL;
 
 
@@ -607,23 +607,23 @@ void AdjustFilterSettings::update_filter()
       }
     }
 
-    spec_str_1[0] = 0;
+    spec_str_1_256[0] = 0;
 
     if(type == FILTERTYPE_HIGHPASS)
     {
       if(model == FILTERMODEL_BUTTERWORTH)
       {
-        snprintf(spec_str_1, 256, "HpBu%i/%f", order, frequency1);
+        snprintf(spec_str_1_256, 256, "HpBu%i/%f", order, frequency1);
       }
 
       if(model == FILTERMODEL_CHEBYSHEV)
       {
-        snprintf(spec_str_1, 256, "HpCh%i/%f/%f", order, ripple, frequency1);
+        snprintf(spec_str_1_256, 256, "HpCh%i/%f/%f", order, ripple, frequency1);
       }
 
       if(model == FILTERMODEL_BESSEL)
       {
-        snprintf(spec_str_1, 256, "HpBe%i/%f", order, frequency1);
+        snprintf(spec_str_1_256, 256, "HpBe%i/%f", order, frequency1);
       }
     }
 
@@ -631,40 +631,40 @@ void AdjustFilterSettings::update_filter()
     {
       if(model == FILTERMODEL_BUTTERWORTH)
       {
-        snprintf(spec_str_1, 256, "LpBu%i/%f", order, frequency1);
+        snprintf(spec_str_1_256, 256, "LpBu%i/%f", order, frequency1);
       }
 
       if(model == FILTERMODEL_CHEBYSHEV)
       {
-        snprintf(spec_str_1, 256, "LpCh%i/%f/%f", order, ripple, frequency1);
+        snprintf(spec_str_1_256, 256, "LpCh%i/%f/%f", order, ripple, frequency1);
       }
 
       if(model == FILTERMODEL_BESSEL)
       {
-        snprintf(spec_str_1, 256, "LpBe%i/%f", order, frequency1);
+        snprintf(spec_str_1_256, 256, "LpBe%i/%f", order, frequency1);
       }
     }
 
     if(type == FILTERTYPE_NOTCH)
     {
-      snprintf(spec_str_1, 256, "BsRe/%i/%f", order, frequency1);
+      snprintf(spec_str_1_256, 256, "BsRe/%i/%f", order, frequency1);
     }
 
     if(type == FILTERTYPE_BANDPASS)
     {
       if(model == FILTERMODEL_BUTTERWORTH)
       {
-        snprintf(spec_str_1, 256, "BpBu%i/%f-%f", order, frequency1, frequency2);
+        snprintf(spec_str_1_256, 256, "BpBu%i/%f-%f", order, frequency1, frequency2);
       }
 
       if(model == FILTERMODEL_CHEBYSHEV)
       {
-        snprintf(spec_str_1, 256, "BpCh%i/%f/%f-%f", order, ripple, frequency1, frequency2);
+        snprintf(spec_str_1_256, 256, "BpCh%i/%f/%f-%f", order, ripple, frequency1, frequency2);
       }
 
       if(model == FILTERMODEL_BESSEL)
       {
-        snprintf(spec_str_1, 256, "BpBe%i/%f-%f", order, frequency1, frequency2);
+        snprintf(spec_str_1_256, 256, "BpBe%i/%f-%f", order, frequency1, frequency2);
       }
     }
 
@@ -672,23 +672,23 @@ void AdjustFilterSettings::update_filter()
     {
       if(model == FILTERMODEL_BUTTERWORTH)
       {
-        snprintf(spec_str_1, 256, "BsBu%i/%f-%f", order, frequency1, frequency2);
+        snprintf(spec_str_1_256, 256, "BsBu%i/%f-%f", order, frequency1, frequency2);
       }
 
       if(model == FILTERMODEL_CHEBYSHEV)
       {
-        snprintf(spec_str_1, 256, "BsCh%i/%f/%f-%f", order, ripple, frequency1, frequency2);
+        snprintf(spec_str_1_256, 256, "BsCh%i/%f/%f-%f", order, ripple, frequency1, frequency2);
       }
 
       if(model == FILTERMODEL_BESSEL)
       {
-        snprintf(spec_str_1, 256, "BsBe%i/%f-%f", order, frequency1, frequency2);
+        snprintf(spec_str_1_256, 256, "BsBe%i/%f-%f", order, frequency1, frequency2);
       }
     }
 
-    strlcpy(spec_str_2, spec_str_1, 256);
+    strlcpy(spec_str_2_256, spec_str_1_256, 256);
 
-    filter_spec = spec_str_2;
+    filter_spec = spec_str_2_256;
 
     free(signalcomp->fidfilter[filter_nr]);
     fid_run_free(signalcomp->fid_run[filter_nr]);
