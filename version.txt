@@ -1,4 +1,14 @@
 
+ version 2.11      to be defined
+ --------------
+
+ - Increased the maximum number of channels from 640 to 4096.
+   (Before, EDFbrowser refused to open files that contained more than 640 channels.)
+
+ - Fix possible random aborts (crash-alike) caused by false positives when
+   compile option "fortify source" was enabled in the Qt makespecs by some distributions.
+
+
  version 2.10      June 8, 2024
  --------------
 
