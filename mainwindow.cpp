@@ -2301,7 +2301,7 @@ void UI_Mainwindow::setMainwindowTitle(edfhdrblck_t *edfhdr)
   {
     get_filename_from_path(str, QString::fromLocal8Bit(edfhdr->filename).toUtf8().data(), MAX_PATH_LENGTH);
 
-    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128);
+    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128 - strlen(str));
   }
 
   if(mainwindow_title_type == 2)
@@ -3134,9 +3134,9 @@ void UI_Mainwindow::close_all_files()
 
   amplitude_doubler = 10;
 
-  viewtime_string[0] = 0;
+  viewtime_string_128[0] = 0;
 
-  pagetime_string[0] = 0;
+  pagetime_string_128[0] = 0;
 
   zoomhistory->idx = 0;
   zoomhistory->history_size_tail = 0;
@@ -4991,14 +4991,14 @@ void UI_Mainwindow::enable_hrv_stats_toolbar(const char *annotation, annotlist_t
   {
     if(use_signallabel_in_annot_descr)
     {
-      strlcat(annot_descr, " ", MAX_ANNOTATION_LEN);
+      strlcat(annot_descr, " ", MAX_ANNOTATION_LEN - strlen(annot_descr));
       if(strlen(sigcomp->alias))
       {
-        strlcat(annot_descr, sigcomp->alias, MAX_ANNOTATION_LEN);
+        strlcat(annot_descr, sigcomp->alias, MAX_ANNOTATION_LEN - strlen(annot_descr));
       }
       else
       {
-        strlcat(annot_descr, sigcomp->signallabel, MAX_ANNOTATION_LEN);
+        strlcat(annot_descr, sigcomp->signallabel, MAX_ANNOTATION_LEN - strlen(annot_descr));
       }
     }
   }

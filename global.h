@@ -52,6 +52,10 @@
 #define THIS_APP_BITS_W   "32-bit"
 #endif
 
+#if defined(_FORTIFY_SOURCE)
+#error "configuration error"
+#endif
+
 #include <stdio.h>
 
 #if defined(__APPLE__) || defined(__MACH__) || defined(__APPLE_CC__) || defined(__HAIKU__)

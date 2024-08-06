@@ -222,7 +222,8 @@ UI_Mainwindow::UI_Mainwindow()
   recent_opendir[0] = 0;
   recent_video_opendir[0] = 0;
   recent_colordir[0] = 0;
-  cfg_app_version[0] = 0;
+
+  cfg_app_version_str_17[0] = 0;
 
   for(i=0; i<MAXSPECTRUMDIALOGS; i++)
   {
@@ -1377,8 +1378,8 @@ UI_Mainwindow::UI_Mainwindow()
   sel_viewtime = 0;
   viewtime_sync = VIEWTIME_SYNCED_ABSOLUT;
   pagetime = 10 * TIME_FIXP_SCALING;
-  viewtime_string[0] = 0;
-  pagetime_string[0] = 0;
+  viewtime_string_128[0] = 0;
+  pagetime_string_128[0] = 0;
   totalviewbufsize_bytes = 0LL;
   print_to_edf_active = 0;
   annot_editor_active = 0;

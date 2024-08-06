@@ -700,7 +700,7 @@ void UI_Mainwindow::read_general_settings()
       return;
     }
 
-    strlcpy(cfg_app_version, result, 17);
+    strlcpy(cfg_app_version_str_17, result, 17);
 
     xml_go_up(xml_hdl);
   }
