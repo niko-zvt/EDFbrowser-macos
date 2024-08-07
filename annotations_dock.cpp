@@ -1420,9 +1420,9 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
 
     remove_trailing_zeros(str1);
 
-    strlcat(str1, "\n", MAX_ANNOTATION_LEN + 32 - strlen(str1));
+    strlcat(str1, "\n", MAX_ANNOTATION_LEN + 32);
 
-    strlcat(str1, annot->description, MAX_ANNOTATION_LEN + 32 - strlen(str1));
+    strlcat(str1, annot->description, MAX_ANNOTATION_LEN + 32);
 
     if(mainwindow->edf_debug && (!mainwindow->annot_editor_active) && (!mainwindow->annotations_edited))
     {

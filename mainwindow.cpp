@@ -321,7 +321,7 @@ void UI_Mainwindow::save_file()
   hdr = edfheaderlist[0];
 
   strlcpy(f_path, recent_savedir, MAX_PATH_LENGTH);
-  strlcat(f_path, "/", MAX_PATH_LENGTH - strlen(f_path));
+  strlcat(f_path, "/", MAX_PATH_LENGTH);
   get_filename_from_path(f_path + strlen(f_path), hdr->filename, MAX_PATH_LENGTH - strlen(f_path));
   remove_extension_from_filename(f_path);
   if(hdr->edf)
@@ -2301,14 +2301,14 @@ void UI_Mainwindow::setMainwindowTitle(edfhdrblck_t *edfhdr)
   {
     get_filename_from_path(str, QString::fromLocal8Bit(edfhdr->filename).toUtf8().data(), MAX_PATH_LENGTH);
 
-    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128 - strlen(str));
+    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128);
   }
 
   if(mainwindow_title_type == 2)
   {
     strlcpy(str, QString::fromLocal8Bit(edfhdr->filename).toUtf8().data(), MAX_PATH_LENGTH + 128);
 
-    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128 - strlen(str));
+    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128);
   }
 
   setWindowTitle(QString::fromUtf8(str));
@@ -4991,14 +4991,14 @@ void UI_Mainwindow::enable_hrv_stats_toolbar(const char *annotation, annotlist_t
   {
     if(use_signallabel_in_annot_descr)
     {
-      strlcat(annot_descr, " ", MAX_ANNOTATION_LEN - strlen(annot_descr));
+      strlcat(annot_descr, " ", MAX_ANNOTATION_LEN);
       if(strlen(sigcomp->alias))
       {
-        strlcat(annot_descr, sigcomp->alias, MAX_ANNOTATION_LEN - strlen(annot_descr));
+        strlcat(annot_descr, sigcomp->alias, MAX_ANNOTATION_LEN);
       }
       else
       {
-        strlcat(annot_descr, sigcomp->signallabel, MAX_ANNOTATION_LEN - strlen(annot_descr));
+        strlcat(annot_descr, sigcomp->signallabel, MAX_ANNOTATION_LEN);
       }
     }
   }
@@ -5506,9 +5506,9 @@ void UI_Mainwindow::open_manual(const char *sect)
 #ifdef Q_OS_WIN32
   char p_path[MAX_PATH_LENGTH]={""};
   strlcpy(p_path, "file:///", MAX_PATH_LENGTH);
-  strlcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH - strlen(p_path));
-  strlcat(p_path, "\\EDFbrowser\\manual.html", MAX_PATH_LENGTH - strlen(p_path));
-  strlcat(p_path, sect, MAX_PATH_LENGTH - strlen(p_path));
+  strlcat(p_path, specialFolder(CSIDL_PROGRAM_FILES).toLocal8Bit().data(), MAX_PATH_LENGTH);
+  strlcat(p_path, "\\EDFbrowser\\manual.html", MAX_PATH_LENGTH);
+  strlcat(p_path, sect, MAX_PATH_LENGTH);
   QDesktopServices::openUrl(QUrl(p_path));
 #endif
 }

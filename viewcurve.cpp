@@ -1306,11 +1306,11 @@ void ViewCurve::print_to_pdf(int paper_sz)
   if(mainwindow->recent_savedir[0]!=0)
   {
     strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
-    strlcat(path, "/", MAX_PATH_LENGTH - strlen(path));
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
   get_filename_from_path(path + strlen(path), mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename, MAX_PATH_LENGTH - strlen(path));
   remove_extension_from_filename(path);
-  strlcat(path, ".pdf", MAX_PATH_LENGTH - strlen(path));
+  strlcat(path, ".pdf", MAX_PATH_LENGTH);
 
   strlcpy(path, QFileDialog::getSaveFileName(0, "Print to PDF", QString::fromLocal8Bit(path), "PDF files (*.pdf *.PDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
@@ -1394,11 +1394,11 @@ void ViewCurve::print_to_image(int w_img, int h_img, int img_format)
   if(mainwindow->recent_savedir[0]!=0)
   {
     strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
-    strlcat(path, "/", MAX_PATH_LENGTH - strlen(path));
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
   get_filename_from_path(path + strlen(path), mainwindow->edfheaderlist[mainwindow->sel_viewtime]->filename, MAX_PATH_LENGTH - strlen(path));
   remove_extension_from_filename(path);
-  strlcat(path, ".png", MAX_PATH_LENGTH - strlen(path));
+  strlcat(path, ".png", MAX_PATH_LENGTH);
 
   strlcpy(path, QFileDialog::getSaveFileName(0, "Print to Image", QString::fromLocal8Bit(path), "PNG (*.png *.PNG)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 

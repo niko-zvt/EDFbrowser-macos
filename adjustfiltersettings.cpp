@@ -82,11 +82,11 @@ AdjustFilterSettings::AdjustFilterSettings(sigcompblck_t *signal_comp, QWidget *
   strlcpy(txtbuf, "Filter settings ", 2048);
   if(signalcomp->alias[0] != 0)
   {
-    strlcat(txtbuf, signalcomp->alias, 2048 - strlen(txtbuf));
+    strlcat(txtbuf, signalcomp->alias, 2048);
   }
   else
   {
-    strlcat(txtbuf, signalcomp->signallabel, 2048 - strlen(txtbuf));
+    strlcat(txtbuf, signalcomp->signallabel, 2048);
   }
   filtersettings_dialog->setWindowTitle(txtbuf);
   filtersettings_dialog->setModal(true);
@@ -281,7 +281,7 @@ void AdjustFilterSettings::loadFilterSettings(void)
       snprintf(txtbuf + strlen(txtbuf), 2048, " - %f", frequency2);
     }
 
-    strlcat(txtbuf, " Hz", 2048 - strlen(txtbuf));
+    strlcat(txtbuf, " Hz", 2048);
 
     remove_trailing_zeros(txtbuf);
 

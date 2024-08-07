@@ -36,7 +36,7 @@
 
 UI_aeeg_window::UI_aeeg_window(QWidget *w_parent, sigcompblck_t *signal_comp, int numb, aeeg_dock_param_t *p_par)
 {
-  char str[1024]="";
+  char str_1024[1024]="";
 
   myobjectDialog = NULL;
 
@@ -63,12 +63,12 @@ UI_aeeg_window::UI_aeeg_window(QWidget *w_parent, sigcompblck_t *signal_comp, in
     return;
   }
 
-  snprintf(str, 1024, "aEEG   %s", signalcomp->signallabel);
+  snprintf(str_1024, 1024, "aEEG   %s", signalcomp->signallabel);
 
   myobjectDialog = new QDialog;
 
   myobjectDialog->setMinimumSize(300 * mainwindow->w_scaling, 250 * mainwindow->h_scaling);
-  myobjectDialog->setWindowTitle(str);
+  myobjectDialog->setWindowTitle(str_1024);
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
   myobjectDialog->setSizeGripEnabled(true);
@@ -226,7 +226,7 @@ void UI_aeeg_window::start_button_clicked()
          min_margin_median_buf[MARGIN_MEDIAN_SZ]={0},
          scale_max_amp;
 
-  char str[32]={""},
+  char str_32[32]={""},
        filt_spec_str_bp[256]={""},
        *filt_spec_ptr_bp=NULL,
        *fid_err_bp=NULL,
@@ -238,24 +238,24 @@ void UI_aeeg_window::start_button_clicked()
 
   memset(&dock_param, 0, sizeof(aeeg_dock_param_t));
 
-  strlcpy(str, signalcomp->physdimension, 32);
-  trim_spaces(str);
-  if((strcmp(str, "uV")) && (strcmp(str, "mV")) && (strcmp(str, "V")))
+  strlcpy(str_32, signalcomp->physdimension, 32);
+  trim_spaces(str_32);
+  if((strcmp(str_32, "uV")) && (strcmp(str_32, "mV")) && (strcmp(str_32, "V")))
   {
     QMessageBox msgBox(QMessageBox::Critical, "Error", "Unknown physical dimension (unit), expected uV or mV or V", QMessageBox::Close);
     msgBox.exec();
     return;
   }
 
-  if(!strcmp(str, "uV"))
+  if(!strcmp(str_32, "uV"))
   {
     uv_scaling = 1;
   }
-  else if(!strcmp(str, "mV"))
+  else if(!strcmp(str_32, "mV"))
     {
       uv_scaling = 1000;
     }
-    else if(!strcmp(str, "V"))
+    else if(!strcmp(str_32, "V"))
       {
         uv_scaling = 1000000;
       }

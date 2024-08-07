@@ -733,20 +733,20 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   if(recent_savedir[0]!=0)
   {
     strlcpy(outputfilename, recent_savedir, MAX_PATH_LENGTH);
-    strlcat(outputfilename, "/", MAX_PATH_LENGTH - strlen(outputfilename));
+    strlcat(outputfilename, "/", MAX_PATH_LENGTH);
   }
   len = strlen(outputfilename);
   get_filename_from_path(outputfilename + len, path, MAX_PATH_LENGTH - len);
   remove_extension_from_filename(outputfilename);
   if(edf_format)
   {
-    strlcat(outputfilename, ".edf", MAX_PATH_LENGTH - strlen(outputfilename));
+    strlcat(outputfilename, ".edf", MAX_PATH_LENGTH);
 
     strlcpy(outputfilename, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(outputfilename), "EDF files (*.edf *.EDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
   else
   {
-    strlcat(outputfilename, ".bdf", MAX_PATH_LENGTH - strlen(outputfilename));
+    strlcat(outputfilename, ".bdf", MAX_PATH_LENGTH);
 
     strlcpy(outputfilename, QFileDialog::getSaveFileName(0, "Output file", QString::fromLocal8Bit(outputfilename), "BDF files (*.bdf *.BDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
@@ -876,7 +876,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
       if(autoPhysicalMaximum)
       {
         snprintf(str1_256, 256, "%.8f", physmax[edf_signal++] * -1.0);
-        strlcat(str1_256, "        ", 256 - strlen(str1_256));
+        strlcat(str1_256, "        ", 256);
         str1_256[8] = 0;
         fprintf(outputfile, "%s", str1_256);
       }
@@ -901,7 +901,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
       if(autoPhysicalMaximum)
       {
         snprintf(str1_256, 256, "%.8f", physmax[edf_signal++]);
-        strlcat(str1_256, "        ", 256 - strlen(str1_256));
+        strlcat(str1_256, "        ", 256);
         str1_256[8] = 0;
         fprintf(outputfile, "%s", str1_256);
       }
@@ -1293,9 +1293,9 @@ void UI_ASCII2EDFapp::savebuttonpressed()
   if(recent_savedir[0]!=0)
   {
     strlcpy(path, recent_savedir, MAX_PATH_LENGTH);
-    strlcat(path, "/", MAX_PATH_LENGTH - strlen(path));
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
-  strlcat(path, "ascii_to_edf.template", MAX_PATH_LENGTH - strlen(path));
+  strlcat(path, "ascii_to_edf.template", MAX_PATH_LENGTH);
 
   strlcpy(path, QFileDialog::getSaveFileName(0, "Save parameters", QString::fromLocal8Bit(path), "Template files (*.template *.TEMPLATE)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 

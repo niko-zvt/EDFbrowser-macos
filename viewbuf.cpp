@@ -990,7 +990,7 @@ void UI_Mainwindow::setup_viewbuf()
           {
             convert_to_metric_suffix(pagetime_string_128, (double)pagetime / TIME_FIXP_SCALING, 3, 64);
 
-            strlcat(pagetime_string_128, "S", 128 - strlen(pagetime_string_128));
+            strlcat(pagetime_string_128, "S", 128);
 
             if((pagetime >= (TIME_FIXP_SCALING / 10)) && display_pagetime_mmsec)
             {

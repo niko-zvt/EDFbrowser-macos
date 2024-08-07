@@ -677,7 +677,7 @@ void aeeg_curve_widget::paintEvent(QPaintEvent *)
 
   /* draw the signal label */
   strlcpy(str_64, "aEEG ", 64);
-  strlcat(str_64, param.signalcomp->signallabel, 64 - strlen(str_64));
+  strlcat(str_64, param.signalcomp->signallabel, 64);
   painter.drawText(30 * mainwindow->w_scaling, h * 0.7, str_64);
   painter.drawText(w - (120 * mainwindow->w_scaling), h * 0.7, str_64);
 

@@ -1161,7 +1161,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
               remove_trailing_zeros(annot_duration_str_256);
 
-              strlcat(annot_duration_str_256, " sec", 256 - strlen(annot_duration_str_256));
+              strlcat(annot_duration_str_256, " sec", 256);
             }
 
             l_tmp = annot->onset;

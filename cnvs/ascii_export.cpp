@@ -166,11 +166,11 @@ void UI_AsciiExportwindow::ExportButtonClicked()
   if(mainwindow->recent_savedir[0]!=0)
   {
     strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
-    strlcat(path, "/", MAX_PATH_LENGTH - strlen(path));
+    strlcat(path, "/", MAX_PATH_LENGTH);
   }
-  get_filename_from_path(path + strlen(path), mainwindow->edfheaderlist[n]->filename, MAX_PATH_LENGTH - strlen(path));
+  get_filename_from_path(path + strlen(path), mainwindow->edfheaderlist[n]->filename, MAX_PATH_LENGTH);
   remove_extension_from_filename(path);
-  strlcat(path, "_data.txt", MAX_PATH_LENGTH - strlen(path));
+  strlcat(path, "_data.txt", MAX_PATH_LENGTH);
 
   strlcpy(path, QFileDialog::getSaveFileName(0, "Export to ASCII", QString::fromLocal8Bit(path), "Text files (*.txt *.TXT)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
@@ -448,7 +448,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
   strlcpy(ascii_path, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(ascii_path);
-  strlcat(ascii_path, "_signals.txt", MAX_PATH_LENGTH - strlen(path));
+  strlcat(ascii_path, "_signals.txt", MAX_PATH_LENGTH);
   outputfile = fopeno(ascii_path, "wb");
   if(outputfile==NULL)
   {
@@ -499,7 +499,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
   strlcpy(ascii_path, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(ascii_path);
-  strlcat(ascii_path, "_annotations.txt", MAX_PATH_LENGTH - strlen(ascii_path));
+  strlcat(ascii_path, "_annotations.txt", MAX_PATH_LENGTH);
   annotationfile = fopeno(ascii_path, "wb");
   if(annotationfile==NULL)
   {
@@ -521,7 +521,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
   strlcpy(ascii_path, path, MAX_PATH_LENGTH);
   remove_extension_from_filename(ascii_path);
-  strlcat(ascii_path, "_data.txt", MAX_PATH_LENGTH - strlen(ascii_path));
+  strlcat(ascii_path, "_data.txt", MAX_PATH_LENGTH);
   outputfile = fopeno(ascii_path, "wb");
   if(outputfile==NULL)
   {

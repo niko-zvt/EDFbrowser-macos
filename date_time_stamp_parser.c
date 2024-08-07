@@ -42,8 +42,8 @@ long long parse_date_time_stamp(const char *src)
 {
   int i, len, probes;
 
-  char str[1024],
-       *ptr;
+  char str[1024]={""},
+       *ptr=NULL;
 
   len = strlen(src);
 
