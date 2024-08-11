@@ -105,11 +105,11 @@ void UI_EDFDwindow::SelectFileButton()
   char txt_string[2048],
        inputpath[MAX_PATH_LENGTH],
        output_path[MAX_PATH_LENGTH],
-       *fileheader,
-       *readbuf,
-       *tal;
+       *fileheader=NULL,
+       *readbuf=NULL,
+       *tal=NULL;
 
-  annotblck_t *annot_ptr;
+  annotblck_t *annot_ptr=NULL;
 
   edfhdrblck_t *edfhdr=NULL;
 

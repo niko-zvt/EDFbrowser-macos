@@ -268,9 +268,9 @@ void UI_FilterDialog::updatecurve(void)
          ripple=1.0,
          frequency2=200.0;
 
-  char *err;
+  char *err=NULL;
 
-  FidFilter *ff;
+  FidFilter *ff=NULL;
 
 
   order = orderbox->value();

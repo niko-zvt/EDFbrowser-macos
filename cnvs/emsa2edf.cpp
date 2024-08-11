@@ -109,23 +109,23 @@ void UI_EMSA2EDFwindow::SelectFileButton()
       time_off,
       duration_present=0;
 
-  long long filesize;
+  long long filesize=0;
 
-  char path[MAX_PATH_LENGTH],
-       scratchpad[256],
+  char path[MAX_PATH_LENGTH]={""},
+       scratchpad[256]={""},
        *buf=NULL,
-       date[9],
-       time[9],
-       month[4],
-       patientname[128],
-       b_month[4],
-       *p,
-       equipment[41],
-       handedness[16],
-       weight[16],
-       birthdate[16],
-       txt_string[2048],
-       outputfilename[MAX_PATH_LENGTH];
+       date[9]={""},
+       time[9]={""},
+       month[4]={""},
+       patientname[128]={""},
+       b_month[4]={""},
+       *p=NULL,
+       equipment[41]={""},
+       handedness[16]={""},
+       weight[16]={""},
+       birthdate[16]={""},
+       txt_string[2048]={""},
+       outputfilename[MAX_PATH_LENGTH]={""};
 
   union{
          int number;

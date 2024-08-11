@@ -244,7 +244,7 @@ void UI_AverageCurveWindow::export_edf(void)
     strlcpy(path, mainwindow->recent_savedir, MAX_PATH_LENGTH);
     strlcat(path, "/", MAX_PATH_LENGTH);
   }
-  get_filename_from_path(path + strlen(path), signalcomp->edfhdr->filename, 512);
+  get_filename_from_path(path + strlen(path), signalcomp->edfhdr->filename, MAX_PATH_LENGTH - strlen(path));
   remove_extension_from_filename(path);
   snprintf(str, 4096, " averaging %s %i triggers [%s]", signalcomp->signallabel, avg_cnt, avg_annotation);
   strlcat(path, str, MAX_PATH_LENGTH);

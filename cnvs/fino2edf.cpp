@@ -106,18 +106,18 @@ void UI_FINO2EDFwindow::SelectFileButton()
       column,
       line_nr;
 
-  char txt_string[2048],
-       path[MAX_PATH_LENGTH],
-       outputfilename[MAX_PATH_LENGTH],
-       line[2048],
-       scratchpad[128],
+  char txt_string[2048]={""},
+       path[MAX_PATH_LENGTH]={""},
+       outputfilename[MAX_PATH_LENGTH]={""},
+       line[2048]={""},
+       scratchpad[128]={""},
        labels[F_MAX_SIGNALS][17],
        phys_dim[F_MAX_SIGNALS][9],
        phys_min[F_MAX_SIGNALS][9],
        phys_max[F_MAX_SIGNALS][9],
-       patientname[81],
-       recording[81],
-       datetime[128];
+       patientname[81]={""},
+       recording[81]={""},
+       datetime[128]={""};
 
 
   double sensitivity[F_MAX_SIGNALS],
