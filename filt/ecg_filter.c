@@ -156,6 +156,7 @@ RUN_OUT_ERROR:
 
   st->stat_buf = dptr;
   st->stat_smpl_buf = lptr;
+  st->malloc_err = 1;
   return 0;
 }
 

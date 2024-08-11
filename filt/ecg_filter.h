@@ -63,6 +63,8 @@ typedef struct
   int stat_buf_idx;
   int stat_buf_sz;
   int sample_cntr;
+
+  int malloc_err;
 } ecgfiltset_t;
 
 

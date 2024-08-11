@@ -253,6 +253,11 @@ OUT_EXIT_RETURN:
 
   progress.reset();
 
+  if(signalcomp->ecg_filter->malloc_err)
+  {
+    tmessagebox(QMessageBox::Critical, "Error", "The QRS detector ran out of memory.", "Could not reallocate enough memory when running the QRS detector.", NULL);
+  }
+
   free_ecg_filter(signalcomp->ecg_filter);
 
   signalcomp->ecg_filter = ecg_filter_bu;
