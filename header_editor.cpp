@@ -1420,7 +1420,7 @@ void UI_headerEditorWindow::save_hdr()
 
   for(i=0; i<edfsignals; i++)
   {
-    if(((QLineEdit *)(signallist->cellWidget(i, 0)))->isEnabled() == false)  // EDF/BDF Annotations signal
+    if(((QLineEdit *)(signallist->cellWidget(i, 1)))->isEnabled() == false)  // EDF/BDF Annotations signal
     {
       fseeko(file, (long long)(256 + (edfsignals * 96) + (i * 8)), SEEK_SET);  // physical dimension
       fprintf(file, "        ");
