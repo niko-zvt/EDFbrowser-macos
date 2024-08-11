@@ -914,7 +914,7 @@ void UI_headerEditorWindow::read_header()
   lineEdit14->setVisible(true);
   lineEdit14->setText(scratchpad);
 
-  for(i=0; i<edfsignals; i++)
+  for(i=0, sig_idx=1; i<edfsignals; i++)
   {
     if(!(i % 100))
     {
@@ -1465,7 +1465,7 @@ void UI_headerEditorWindow::save_hdr()
     }
     else
     {
-      strlcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 0)))->text().toLatin1().data(), 256);
+      strlcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 1)))->text().toLatin1().data(), 256);
       for(j=strlen(scratchpad); j<16; j++)
       {
         scratchpad[j] = ' ';
@@ -1479,7 +1479,7 @@ void UI_headerEditorWindow::save_hdr()
       fseeko(file, (long long)(256 + (i * 16)), SEEK_SET);
       fprintf(file, "%s", scratchpad);
 
-      strlcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 1)))->text().toLatin1().data(), 256);
+      strlcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 2)))->text().toLatin1().data(), 256);
       for(j=strlen(scratchpad); j<8; j++)
       {
         scratchpad[j] = ' ';
@@ -1489,7 +1489,7 @@ void UI_headerEditorWindow::save_hdr()
       fseeko(file, (long long)(256 + (edfsignals * 96) + (i * 8)), SEEK_SET);  // physical dimension
       fprintf(file, "%s", scratchpad);
 
-      strlcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 2)))->text().toLatin1().data(), 256);
+      strlcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 3)))->text().toLatin1().data(), 256);
       for(j=strlen(scratchpad); j<80; j++)
       {
         scratchpad[j] = ' ';
@@ -1499,7 +1499,7 @@ void UI_headerEditorWindow::save_hdr()
       fseeko(file, (long long)(256 + (edfsignals * 136) + (i * 80)), SEEK_SET);  // prefiltering
       fprintf(file, "%s", scratchpad);
 
-      strlcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 3)))->text().toLatin1().data(), 256);
+      strlcpy(scratchpad, ((QLineEdit *)(signallist->cellWidget(i, 4)))->text().toLatin1().data(), 256);
       for(j=strlen(scratchpad); j<80; j++)
       {
         scratchpad[j] = ' ';

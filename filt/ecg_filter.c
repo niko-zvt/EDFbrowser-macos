@@ -124,7 +124,7 @@ double run_ecg_filter(double new_sample, ecgfiltset_t *st)
     if(st->stat_buf == NULL)
       goto RUN_OUT_ERROR;
 
-    st->stat_smpl_buf = (long long *)realloc(st->stat_smpl_buf, sizeof(long long) * (st->stat_buf_sz * ECG_FILTER_STAT_BUFSIZE));
+    st->stat_smpl_buf = (long long *)realloc(st->stat_smpl_buf, sizeof(long long) * (st->stat_buf_sz + ECG_FILTER_STAT_BUFSIZE));
     if(st->stat_smpl_buf == NULL)
       goto RUN_OUT_ERROR;
 
