@@ -61,6 +61,7 @@ typedef struct
   double *stat_buf;
   long long *stat_smpl_buf;
   int stat_buf_idx;
+  int stat_buf_sz;
   int sample_cntr;
 } ecgfiltset_t;
 

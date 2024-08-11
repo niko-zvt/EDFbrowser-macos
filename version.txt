@@ -8,6 +8,8 @@
  - Fix possible random aborts (crash-alike) caused by false positives when
    compile option "fortify source" was enabled in the Qt makespecs by some distributions.
 
+ - QRS detector: increased the maximum number of QRS annotations from 262144 to 2^31 (as long as the amount of system memory suffice).
+
 
  version 2.10      June 8, 2024
  --------------

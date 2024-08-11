@@ -28,7 +28,7 @@
 #include "ecg_filter.h"
 
 
-#define ECG_FILTER_STAT_BUFSIZE 262144
+#define ECG_FILTER_STAT_BUFSIZE  (16384)
 
 
 ecgfiltset_t * create_ecg_filter(double sf, double bitval, double sense)
@@ -62,6 +62,8 @@ ecgfiltset_t * create_ecg_filter(double sf, double bitval, double sense)
   if(st->stat_smpl_buf == NULL)
     goto CREATE_OUT_ERROR;
 
+  st->stat_buf_sz = ECG_FILTER_STAT_BUFSIZE;
+
   return st;
 
 CREATE_OUT_ERROR:
@@ -91,6 +93,10 @@ double run_ecg_filter(double new_sample, ecgfiltset_t *st)
   int rr_smpl_ival,
       qrs_smpl_offset;
 
+  long long *lptr;
+
+  double *dptr;
+
   qrs_smpl_offset = run_pt_qrs(new_sample, st->pt_qrs);
 
   if(qrs_smpl_offset == 0)
@@ -106,21 +112,37 @@ double run_ecg_filter(double new_sample, ecgfiltset_t *st)
 
   st->bpm = (st->sf * 60.0) / rr_smpl_ival;
 
-  if(st->stat_buf_idx < ECG_FILTER_STAT_BUFSIZE)
+  if(st->stat_buf_idx >= st->stat_buf_sz)
   {
-    st->stat_buf[st->stat_buf_idx] = ((double)rr_smpl_ival) / st->sf;
+    dptr = st->stat_buf;
 
-    if(st->stat_buf_idx > 0)
-    {
-      st->stat_smpl_buf[st->stat_buf_idx] = st->stat_smpl_buf[st->stat_buf_idx - 1] + rr_smpl_ival;
-    }
-    else
-    {
-      st->stat_smpl_buf[st->stat_buf_idx] = st->sample_cntr - qrs_smpl_offset;
-    }
+    lptr= st->stat_smpl_buf;
 
-    st->stat_buf_idx++;
+    if(st->stat_buf_idx >= 0x7fffffff - (ECG_FILTER_STAT_BUFSIZE * 2))  goto RUN_OUT_ERROR;
+
+    st->stat_buf = (double *)realloc(st->stat_buf, sizeof(double) * (st->stat_buf_sz + ECG_FILTER_STAT_BUFSIZE));
+    if(st->stat_buf == NULL)
+      goto RUN_OUT_ERROR;
+
+    st->stat_smpl_buf = (long long *)realloc(st->stat_smpl_buf, sizeof(long long) * (st->stat_buf_sz * ECG_FILTER_STAT_BUFSIZE));
+    if(st->stat_smpl_buf == NULL)
+      goto RUN_OUT_ERROR;
+
+    st->stat_buf_sz += ECG_FILTER_STAT_BUFSIZE;
   }
+
+  st->stat_buf[st->stat_buf_idx] = ((double)rr_smpl_ival) / st->sf;
+
+  if(st->stat_buf_idx > 0)
+  {
+    st->stat_smpl_buf[st->stat_buf_idx] = st->stat_smpl_buf[st->stat_buf_idx - 1] + rr_smpl_ival;
+  }
+  else
+  {
+    st->stat_smpl_buf[st->stat_buf_idx] = st->sample_cntr - qrs_smpl_offset;
+  }
+
+  st->stat_buf_idx++;
 
   st->qrs_smpl_offset_old = qrs_smpl_offset;
 
@@ -129,6 +151,12 @@ double run_ecg_filter(double new_sample, ecgfiltset_t *st)
   st->smpl_n = 1;
 
   return (st->bpm / st->bitvalue);
+
+RUN_OUT_ERROR:
+
+  st->stat_buf = dptr;
+  st->stat_smpl_buf = lptr;
+  return 0;
 }
 
 
