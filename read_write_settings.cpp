@@ -862,9 +862,26 @@ void UI_Mainwindow::read_general_settings()
     }
 
     clip_to_pane = atoi(result);
-    if((clip_to_pane < 0) || (clip_to_pane > 1))
+    if(clip_to_pane != 1)
     {
       clip_to_pane = 0;
+    }
+
+    xml_go_up(xml_hdl);
+  }
+
+  if(!(xml_goto_nth_element_inside(xml_hdl, "signal_plotorder", 0)))
+  {
+    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    signal_plotorder = atoi(result);
+    if(signal_plotorder != 1)
+    {
+      signal_plotorder = 0;
     }
 
     xml_go_up(xml_hdl);
@@ -879,7 +896,7 @@ void UI_Mainwindow::read_general_settings()
     }
 
     auto_reload_mtg = atoi(result);
-    if((auto_reload_mtg < 0) || (auto_reload_mtg > 1))
+    if(auto_reload_mtg)
     {
       auto_reload_mtg = 1;
     }
@@ -896,7 +913,7 @@ void UI_Mainwindow::read_general_settings()
     }
 
     read_biosemi_status_signal = atoi(result);
-    if((read_biosemi_status_signal < 0) || (read_biosemi_status_signal > 1))
+    if(read_biosemi_status_signal)
     {
       read_biosemi_status_signal = 1;
     }
@@ -913,7 +930,7 @@ void UI_Mainwindow::read_general_settings()
     }
 
     read_nk_trigger_signal = atoi(result);
-    if((read_nk_trigger_signal < 0) || (read_nk_trigger_signal > 1))
+    if(read_nk_trigger_signal)
     {
       read_nk_trigger_signal = 1;
     }
@@ -947,7 +964,7 @@ void UI_Mainwindow::read_general_settings()
     }
 
     use_threads = atoi(result);
-    if((use_threads < 0) || (use_threads > 1))
+    if(use_threads)
     {
       use_threads = 1;
     }
@@ -964,7 +981,7 @@ void UI_Mainwindow::read_general_settings()
     }
 
     session_relative_paths = atoi(result);
-    if((session_relative_paths < 0) || (session_relative_paths > 1))
+    if(session_relative_paths != 1)
     {
       session_relative_paths = 0;
     }
@@ -981,7 +998,7 @@ void UI_Mainwindow::read_general_settings()
     }
 
     edf_debug = atoi(result);
-    if((edf_debug < 0) || (edf_debug > 1))
+    if(edf_debug != 1)
     {
       edf_debug = 0;
     }
@@ -998,7 +1015,7 @@ void UI_Mainwindow::read_general_settings()
     }
 
     strip_label_types = atoi(result);
-    if((strip_label_types < 0) || (strip_label_types > 1))
+    if(strip_label_types)
     {
       strip_label_types = 1;
     }
@@ -3461,6 +3478,9 @@ void UI_Mainwindow::write_settings()
 
     fprintf(cfgfile, "    <clip_to_pane>%i</clip_to_pane>\n",
                     clip_to_pane);
+
+    fprintf(cfgfile, "    <signal_plotorder>%i</signal_plotorder>\n",
+                    signal_plotorder);
 
     fprintf(cfgfile, "    <auto_reload_mtg>%i</auto_reload_mtg>\n",
                     auto_reload_mtg);

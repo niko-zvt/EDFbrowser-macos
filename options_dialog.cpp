@@ -196,6 +196,28 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   hlayout_tmp->addStretch(1000);
   flayout1_1->addRow("Clip signals to pane", hlayout_tmp);
 
+  checkbox5 = new QCheckBox;
+  checkbox5->setTristate(false);
+  checkbox5->setToolTip("Traces are plotted one after another and, as a result, the last trace plotted can overwrite the other traces.\n"
+                        "When unchecked (default), the plotting order will be from bottom to top.\n"
+                        "If checked, the plotting order will be from top to bottom.");
+  if(mainwindow->signal_plotorder)
+  {
+    checkbox5->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox5->setCheckState(Qt::Unchecked);
+  }
+  hlayout_tmp = new QHBoxLayout;
+  hlayout_tmp->setAlignment(Qt::AlignCenter);
+  hlayout_tmp->addWidget(checkbox5);
+  hlayout_tmp->addStretch(1000);
+  flayout1_1->addRow("Reverse signal plot order", hlayout_tmp);
+  flayout1_1->labelForField(hlayout_tmp)->setToolTip("Traces are plotted one after another and, as a result, the last trace plotted can overwrite the other traces.\n"
+                                                     "When unchecked (default), the plotting order will be from bottom to top.\n"
+                                                     "If checked, the plotting order will be from top to bottom.");
+
   QFormLayout *flayout1_2 = new QFormLayout;
   flayout1_2->setSpacing(20);
 
@@ -457,6 +479,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   QObject::connect(checkbox2_3,             SIGNAL(stateChanged(int)),        this, SLOT(checkbox2_3Clicked(int)));
   QObject::connect(checkbox3,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox3Clicked(int)));
   QObject::connect(checkbox4,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox4Clicked(int)));
+  QObject::connect(checkbox5,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox5Clicked(int)));
   QObject::connect(annotlistdock_edited_txt_color_button, SIGNAL(clicked(SpecialButton *)), this, SLOT(annotlistdock_edited_txt_color_button_clicked(SpecialButton *)));
   QObject::connect(checkbox16,              SIGNAL(stateChanged(int)),        this, SLOT(checkbox16Clicked(int)));
   QObject::connect(saveColorSchemaButton,   SIGNAL(clicked()),                this, SLOT(saveColorSchemaButtonClicked()));
@@ -2255,6 +2278,21 @@ void UI_OptionsDialog::checkbox4Clicked(int state)
   else
   {
     mainwindow->clip_to_pane = 0;
+  }
+
+  mainwindow->maincurve->update();
+}
+
+
+void UI_OptionsDialog::checkbox5Clicked(int state)
+{
+  if(state==Qt::Checked)
+  {
+    mainwindow->signal_plotorder = 1;
+  }
+  else
+  {
+    mainwindow->signal_plotorder = 0;
   }
 
   mainwindow->maincurve->update();

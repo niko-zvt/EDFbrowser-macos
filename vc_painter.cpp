@@ -1367,8 +1367,17 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     vertical_distance = ((double)h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1.0);
   }
 
-  for(i=0; i<signalcomps; i++)
+  for(k=0; k<signalcomps; k++)
   {
+    if(mainwindow->signal_plotorder)
+    {
+      i = k;
+    }
+    else
+    {
+      i = signalcomps - 1 - k;
+    }
+
     if(mainwindow->clip_to_pane)
     {
       painter->setClipRect(0, vertical_distance * i + (vertical_distance / 2) - scroll_h_offset, w, vertical_distance);

@@ -300,7 +300,8 @@ public:
       default_invert_eeg_signals,
       default_time_scale,
       default_fit_signals_to_pane,
-      ecg_view_mode;
+      ecg_view_mode,
+      signal_plotorder;
 
 volatile int rc_cmd_in_progress;
 

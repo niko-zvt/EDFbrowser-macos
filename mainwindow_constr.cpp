@@ -176,6 +176,8 @@ UI_Mainwindow::UI_Mainwindow()
 
   strip_label_types = 1;
 
+  signal_plotorder = 0;
+
   display_pagetime_mmsec = 1;
 
   window_width_sav_rest = 0;

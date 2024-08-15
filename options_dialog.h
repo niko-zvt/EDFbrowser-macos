@@ -122,6 +122,7 @@ QCheckBox      *checkbox1,
                *checkbox3,
                *checkbox3_1,
                *checkbox4,
+               *checkbox5,
                *checkbox6,
                *checkbox16,
                *checkbox4_1,
@@ -217,6 +218,7 @@ void checkbox2_2Clicked(int);
 void checkbox2_3Clicked(int);
 void checkbox3Clicked(int);
 void checkbox4Clicked(int);
+void checkbox5Clicked(int);
 void annotlistdock_edited_txt_color_button_clicked(SpecialButton *);
 void checkbox6Clicked(int);
 void checkbox16Clicked(int);
