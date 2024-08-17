@@ -30,7 +30,7 @@
 
 void ViewCurve::exec_sidemenu(int signal_nr_intern)
 {
-  char str[32]={""};
+  char str_32[32]={""};
 
   signal_nr = signal_nr_intern;
 
@@ -64,11 +64,11 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   {
     ScaleBox->setValue(mainwindow->signalcomp[signal_nr]->voltpercm);
   }
-  strlcpy(str, mainwindow->signalcomp[signal_nr]->physdimension, 32);
-  trim_spaces(str);
-  str_insert_substr(str, 0, 32, " ", 0, 1);
-  strlcat(str, "/cm", 32);
-  ScaleBox->setSuffix(str);
+  strlcpy(str_32, mainwindow->signalcomp[signal_nr]->physdimension, 32);
+  trim_spaces(str_32);
+  str_insert_substr(str_32, 0, 32, " ", 0, 1);
+  strlcat(str_32, "/cm", 32);
+  ScaleBox->setSuffix(str_32);
   flayout->addRow("Amplitude", ScaleBox);
 
   ScaleBox2 = new QDoubleSpinBox;
@@ -77,10 +77,10 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   ScaleBox2->setMinimum(-1000000.0);
   ScaleBox2->setValue(-mainwindow->signalcomp[signal_nr]->screen_offset * mainwindow->y_pixelsizefactor * mainwindow->signalcomp[signal_nr]->voltpercm);
   ScaleBox2->setSuffix(mainwindow->signalcomp[signal_nr]->physdimension);
-  strlcpy(str, mainwindow->signalcomp[signal_nr]->physdimension, 32);
-  trim_spaces(str);
-  str_insert_substr(str, 0, 32, " ", 0, 1);
-  ScaleBox2->setSuffix(str);
+  strlcpy(str_32, mainwindow->signalcomp[signal_nr]->physdimension, 32);
+  trim_spaces(str_32);
+  str_insert_substr(str_32, 0, 32, " ", 0, 1);
+  ScaleBox2->setSuffix(str_32);
   flayout->addRow("Offset", ScaleBox2);
 
   sidemenuButton1 = new QPushButton;
@@ -225,7 +225,7 @@ void ViewCurve::ECGdetectButton()
 {
   int sense=1;
 
-  char str[32]={""};
+  char str_32[32]={""};
 
   sigcompblck_t *newsignalcomp;
 
@@ -242,17 +242,17 @@ void ViewCurve::ECGdetectButton()
     return;
   }
 
-  strlcpy(str, mainwindow->signalcomp[signal_nr]->edfparam_0->physdimension, 32);
-  trim_spaces(str);
-  if(!strcmp(str, "uV"))
+  strlcpy(str_32, mainwindow->signalcomp[signal_nr]->edfparam_0->physdimension, 32);
+  trim_spaces(str_32);
+  if(!strcmp(str_32, "uV"))
   {
     sense = 1;
   }
-  else if(!strcmp(str, "mV"))
+  else if(!strcmp(str_32, "mV"))
     {
       sense = 1000;
     }
-    else if(!strcmp(str, "V"))
+    else if(!strcmp(str_32, "V"))
       {
         sense = 1000000;
       }
@@ -320,7 +320,7 @@ void ViewCurve::ECGdetectButton()
 
 void ViewCurve::QRSdetectButton()
 {
-  char str[32]={""};
+  char str_32[32]={""};
 
   sidemenu->close();
 
@@ -335,9 +335,9 @@ void ViewCurve::QRSdetectButton()
     return;
   }
 
-  strlcpy(str, mainwindow->signalcomp[signal_nr]->edfparam_0->physdimension, 32);
-  trim_spaces(str);
-  if((strcmp(str, "uV")) && (strcmp(str, "mV")) && (strcmp(str, "V")))
+  strlcpy(str_32, mainwindow->signalcomp[signal_nr]->edfparam_0->physdimension, 32);
+  trim_spaces(str_32);
+  if((strcmp(str_32, "uV")) && (strcmp(str_32, "mV")) && (strcmp(str_32, "V")))
   {
     QMessageBox::critical(this, "Error", "Unknown physical dimension (unit), expected uV or mV or V");
     return;
@@ -480,7 +480,7 @@ void ViewCurve::aeeg_button()
 {
   int i;
 
-  char str[32]={""};
+  char str_32[32]={""};
 
   sidemenu->close();
 
@@ -500,9 +500,9 @@ void ViewCurve::aeeg_button()
     return;
   }
 
-  strlcpy(str, mainwindow->signalcomp[signal_nr]->edfparam_0->physdimension, 32);
-  trim_spaces(str);
-  if((strcmp(str, "uV")) && (strcmp(str, "mV")) && (strcmp(str, "V")))
+  strlcpy(str_32, mainwindow->signalcomp[signal_nr]->edfparam_0->physdimension, 32);
+  trim_spaces(str_32);
+  if((strcmp(str_32, "uV")) && (strcmp(str_32, "mV")) && (strcmp(str_32, "V")))
   {
     QMessageBox::critical(this, "Error", "Unknown physical dimension (unit), expected uV or mV or V");
     return;

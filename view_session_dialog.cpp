@@ -140,14 +140,14 @@ void UI_ViewSessionwindow::SelectButtonClicked()
             utc_starttime=0;
 
   char result[XML_STRBUFLEN]="",
-       composition_txt[2048]="",
-       label[256]="",
-       str2[2048]="",
-       str3[64]="",
-       edf_path[2048]="",
+       composition_txt_2048[2048]="",
+       label_256[256]="",
+       str2_2048[2048]="",
+       str3_64[64]="",
+       edf_path_2048[2048]="",
        e_file_path[MAXFILES][MAX_PATH_LENGTH],
        path_r[MAX_PATH_LENGTH]="",
-       video_path[2048]="";
+       video_path_2048[2048]="";
 
   double frequency,
          frequency2,
@@ -301,13 +301,13 @@ void UI_ViewSessionwindow::SelectButtonClicked()
     return;
   }
   timescale = atoll(result);
-  snprintf(str2, 2048, "Timescale: %i:%02i:%02i.%04i",
-                       ((int)(timescale / TIME_FIXP_SCALING)) / 3600,
-                       (((int)(timescale / TIME_FIXP_SCALING)) % 3600) / 60,
-                       ((int)(timescale / TIME_FIXP_SCALING)) % 60,
-                       ((int)(timescale % TIME_FIXP_SCALING)) / 1000);
-  remove_trailing_zeros(str2);
-  parentItem->appendRow(new QStandardItem(str2));
+  snprintf(str2_2048, 2048, "Timescale: %i:%02i:%02i.%04i",
+          ((int)(timescale / TIME_FIXP_SCALING)) / 3600,
+          (((int)(timescale / TIME_FIXP_SCALING)) % 3600) / 60,
+          ((int)(timescale / TIME_FIXP_SCALING)) % 60,
+          ((int)(timescale % TIME_FIXP_SCALING)) / 1000);
+  remove_trailing_zeros(str2_2048);
+  parentItem->appendRow(new QStandardItem(str2_2048));
   xml_go_up(xml_hdl);
 
   if(!(xml_goto_nth_element_inside(xml_hdl, "ecg_view_mode", 0)))
@@ -345,11 +345,11 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
     if(i == ref_file)
     {
-      snprintf(edf_path, 2048, "File (reference): %.2000s", result);
+      snprintf(edf_path_2048, 2048, "File (reference): %.2000s", result);
     }
     else
     {
-      snprintf(edf_path, 2048, "File: %.2000s", result);
+      snprintf(edf_path_2048, 2048, "File: %.2000s", result);
     }
 
     if(use_relative_path)
@@ -367,8 +367,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
     if(f_test == NULL)
     {
-      strlcat(edf_path, "  (not found!)", 2048);
-      tmp_item = new QStandardItem(edf_path);
+      strlcat(edf_path_2048, "  (not found!)", 2048);
+      tmp_item = new QStandardItem(edf_path_2048);
       tmp_item->setIcon(QIcon(":/images/delete_16x16.png"));
       parentItem->appendRow(tmp_item);
     }
@@ -376,7 +376,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
     {
       fclose(f_test);
       f_test = NULL;
-      parentItem->appendRow(new QStandardItem(edf_path));
+      parentItem->appendRow(new QStandardItem(edf_path_2048));
     }
     xml_go_up(xml_hdl);
 
@@ -394,7 +394,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
     if(viewtime < 0)
     {
       viewtime *= -1;
-      snprintf(str2, 2048, "File position: -%i:%02i:%02i.%04i",
+      snprintf(str2_2048, 2048, "File position: -%i:%02i:%02i.%04i",
                            ((int)(viewtime / TIME_FIXP_SCALING)) / 3600,
                            (((int)(viewtime / TIME_FIXP_SCALING)) % 3600) / 60,
                            ((int)(viewtime / TIME_FIXP_SCALING)) % 60,
@@ -402,14 +402,14 @@ void UI_ViewSessionwindow::SelectButtonClicked()
     }
     else
     {
-      snprintf(str2, 2048, "File position: %i:%02i:%02i.%04i",
+      snprintf(str2_2048, 2048, "File position: %i:%02i:%02i.%04i",
                            ((int)(viewtime / TIME_FIXP_SCALING)) / 3600,
                            (((int)(viewtime / TIME_FIXP_SCALING)) % 3600) / 60,
                            ((int)(viewtime / TIME_FIXP_SCALING)) % 60,
                            ((int)(viewtime % TIME_FIXP_SCALING)) / 1000);
     }
-    remove_trailing_zeros(str2);
-    parentItem->appendRow(new QStandardItem(str2));
+    remove_trailing_zeros(str2_2048);
+    parentItem->appendRow(new QStandardItem(str2_2048));
     xml_go_up(xml_hdl);
   }
   xml_go_up(xml_hdl);
@@ -440,7 +440,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       view_session_format_error(__FILE__, __LINE__, xml_hdl);
       return;
     }
-    snprintf(edf_path, 2048, "File: %.2000s", result);
+    snprintf(edf_path_2048, 2048, "File: %.2000s", result);
     xml_go_up(xml_hdl);
 
     if(xml_goto_nth_element_inside(xml_hdl, "num_of_signals", 0))
@@ -598,7 +598,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       xml_go_up(xml_hdl);
     }
 
-    composition_txt[0] = 0;
+    composition_txt_2048[0] = 0;
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "alias", 0)))
     {
@@ -609,9 +609,9 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       }
       if(result[0] != 0)
       {
-        strlcpy(composition_txt, "alias: ", 2048);
-        strlcat(composition_txt, result, 2048);
-        strlcat(composition_txt, "   ", 2048);
+        strlcpy(composition_txt_2048, "alias: ", 2048);
+        strlcat(composition_txt_2048, result, 2048);
+        strlcat(composition_txt_2048, "   ", 2048);
       }
       xml_go_up(xml_hdl);
     }
@@ -656,23 +656,23 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       }
       if(idx_used)
       {
-        strlcpy(label, "index: ", 256);
+        strlcpy(label_256, "index: ", 256);
       }
       else
       {
-        strlcpy(label, "label: ", 256);
+        strlcpy(label_256, "label: ", 256);
       }
-      strlcat(label, result, 256);
+      strlcat(label_256, result, 256);
 
-      snprintf(str3, 64, "%+f", factor[signals_read]);
+      snprintf(str3_64, 64, "%+f", factor[signals_read]);
 
-      remove_trailing_zeros(str3);
+      remove_trailing_zeros(str3_64);
 
-      snprintf(composition_txt + strlen(composition_txt), 2048 - strlen(composition_txt), "%sx %s", str3, label);
+      snprintf(composition_txt_2048 + strlen(composition_txt_2048), 2048 - strlen(composition_txt_2048), "%sx %s", str3_64, label_256);
 
-      remove_trailing_spaces(composition_txt);
+      remove_trailing_spaces(composition_txt_2048);
 
-      strlcat(composition_txt, "   ", 2048);
+      strlcat(composition_txt_2048, "   ", 2048);
 
       xml_go_up(xml_hdl);
       xml_go_up(xml_hdl);
@@ -680,81 +680,81 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
     if(polarity == -1)
     {
-      strlcat(composition_txt, "inverted: yes", 2048);
+      strlcat(composition_txt_2048, "inverted: yes", 2048);
     }
 
-    signalItem = new QStandardItem(composition_txt);
+    signalItem = new QStandardItem(composition_txt_2048);
 
     parentItem->appendRow(signalItem);
 
-    snprintf(composition_txt, 2048, "amplitude: %f", voltpercm);
+    snprintf(composition_txt_2048, 2048, "amplitude: %f", voltpercm);
 
-    remove_trailing_zeros(composition_txt);
+    remove_trailing_zeros(composition_txt_2048);
 
-    snprintf(composition_txt + strlen(composition_txt), 2048 - strlen(composition_txt), "/cm  offset: %f", (double)screen_offset * mainwindow->y_pixelsizefactor * voltpercm);
+    snprintf(composition_txt_2048 + strlen(composition_txt_2048), 2048 - strlen(composition_txt_2048), "/cm  offset: %f", (double)screen_offset * mainwindow->y_pixelsizefactor * voltpercm);
 
-    remove_trailing_zeros(composition_txt);
+    remove_trailing_zeros(composition_txt_2048);
 
-    strlcat(composition_txt, "  color: ", 2048);
+    strlcat(composition_txt_2048, "  color: ", 2048);
 
     switch(color)
     {
-      case Qt::white       : strlcat(composition_txt, "white", 2048);
+      case Qt::white       : strlcat(composition_txt_2048, "white", 2048);
                              signalItem->setIcon(QIcon(":/images/white_icon_16x16.png"));
                              break;
-      case Qt::black       : strlcat(composition_txt, "black", 2048);
+      case Qt::black       : strlcat(composition_txt_2048, "black", 2048);
                              signalItem->setIcon(QIcon(":/images/black_icon_16x16.png"));
                              break;
-      case Qt::red         : strlcat(composition_txt, "red", 2048);
+      case Qt::red         : strlcat(composition_txt_2048, "red", 2048);
                              signalItem->setIcon(QIcon(":/images/red_icon_16x16.png"));
                              break;
-      case Qt::darkRed     : strlcat(composition_txt, "dark red", 2048);
+      case Qt::darkRed     : strlcat(composition_txt_2048, "dark red", 2048);
                              signalItem->setIcon(QIcon(":/images/darkred_icon_16x16.png"));
                              break;
-      case Qt::green       : strlcat(composition_txt, "green", 2048);
+      case Qt::green       : strlcat(composition_txt_2048, "green", 2048);
                              signalItem->setIcon(QIcon(":/images/green_icon_16x16.png"));
                              break;
-      case Qt::darkGreen   : strlcat(composition_txt, "dark green", 2048);
+      case Qt::darkGreen   : strlcat(composition_txt_2048, "dark green", 2048);
                              signalItem->setIcon(QIcon(":/images/darkgreen_icon_16x16.png"));
                              break;
-      case Qt::blue        : strlcat(composition_txt, "blue", 2048);
+      case Qt::blue        : strlcat(composition_txt_2048, "blue", 2048);
                              signalItem->setIcon(QIcon(":/images/blue_icon_16x16.png"));
                              break;
-      case Qt::darkBlue    : strlcat(composition_txt, "dark blue", 2048);
+      case Qt::darkBlue    : strlcat(composition_txt_2048, "dark blue", 2048);
                              signalItem->setIcon(QIcon(":/images/darkblue_icon_16x16.png"));
                              break;
-      case Qt::cyan        : strlcat(composition_txt, "cyan", 2048);
+      case Qt::cyan        : strlcat(composition_txt_2048, "cyan", 2048);
                              signalItem->setIcon(QIcon(":/images/cyan_icon_16x16.png"));
                              break;
-      case Qt::darkCyan    : strlcat(composition_txt, "dark cyan", 2048);
+      case Qt::darkCyan    : strlcat(composition_txt_2048, "dark cyan", 2048);
                              signalItem->setIcon(QIcon(":/images/darkcyan_icon_16x16.png"));
                              break;
-      case Qt::magenta     : strlcat(composition_txt, "magenta", 2048);
+      case Qt::magenta     : strlcat(composition_txt_2048, "magenta", 2048);
                              signalItem->setIcon(QIcon(":/images/magenta_icon_16x16.png"));
                              break;
-      case Qt::darkMagenta : strlcat(composition_txt, "dark magenta", 2048);
+      case Qt::darkMagenta : strlcat(composition_txt_2048, "dark magenta", 2048);
                              signalItem->setIcon(QIcon(":/images/darkmagenta_icon_16x16.png"));
                              break;
-      case Qt::yellow      : strlcat(composition_txt, "yellow", 2048);
+      case Qt::yellow      : strlcat(composition_txt_2048, "yellow", 2048);
                              signalItem->setIcon(QIcon(":/images/yellow_icon_16x16.png"));
                              break;
-      case Qt::darkYellow  : strlcat(composition_txt, "dark yellow", 2048);
+      case Qt::darkYellow  : strlcat(composition_txt_2048, "dark yellow", 2048);
                              signalItem->setIcon(QIcon(":/images/darkyellow_icon_16x16.png"));
                              break;
-      case Qt::gray        : strlcat(composition_txt, "gray", 2048);
+      case Qt::gray        : strlcat(composition_txt_2048, "gray", 2048);
                              signalItem->setIcon(QIcon(":/images/gray_icon_16x16.png"));
                              break;
-      case Qt::darkGray    : strlcat(composition_txt, "dark gray", 2048);
+      case Qt::darkGray    : strlcat(composition_txt_2048, "dark gray", 2048);
                              signalItem->setIcon(QIcon(":/images/darkgray_icon_16x16.png"));
                              break;
-      case Qt::lightGray   : strlcat(composition_txt, "light gray", 2048);
+      case Qt::lightGray   : strlcat(composition_txt_2048, "light gray", 2048);
                              signalItem->setIcon(QIcon(":/images/lightgray_icon_16x16.png"));
                              break;
     }
 
-    signalItem->appendRow(new QStandardItem(edf_path));
+    signalItem->appendRow(new QStandardItem(edf_path_2048));
 
-    signalItem->appendRow(new QStandardItem(composition_txt));
+    signalItem->appendRow(new QStandardItem(composition_txt_2048));
 
 
     if(math_func_cnt_before)
@@ -807,13 +807,13 @@ void UI_ViewSessionwindow::SelectButtonClicked()
           return;
         }
 
-        strlcpy(str3, "Math function: ", 64);
-        get_math_func_descr(math_func, str3 + strlen(str3), 64 - strlen(str3));
+        strlcpy(str3_64, "Math function: ", 64);
+        get_math_func_descr(math_func, str3_64 + strlen(str3_64), 64 - strlen(str3_64));
         if(math_func == MATH_FUNC_PK_HOLD)
         {
-          snprintf(str3 + strlen(str3), 64 - strlen(str3), " %i smpls", math_func_pk_hold_smpls);
+          snprintf(str3_64 + strlen(str3_64), 64 - strlen(str3_64), " %i smpls", math_func_pk_hold_smpls);
         }
-        math_item_before->appendRow(new QStandardItem(str3));
+        math_item_before->appendRow(new QStandardItem(str3_64));
 
         xml_go_up(xml_hdl);
         xml_go_up(xml_hdl);
@@ -863,13 +863,13 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       if(holdoff < 10)  holdoff = 10;
       if(holdoff > 1000)  holdoff = 1000;
 
-      snprintf(composition_txt, 2048, "Spike: Velocity: %.8f", velocity);
+      snprintf(composition_txt_2048, 2048, "Spike: Velocity: %.8f", velocity);
 
-      remove_trailing_zeros(composition_txt);
+      remove_trailing_zeros(composition_txt_2048);
 
-      snprintf(composition_txt + strlen(composition_txt), 2048 - strlen(composition_txt), "  Hold-off: %i milli-Sec.", holdoff);
+      snprintf(composition_txt_2048 + strlen(composition_txt_2048), 2048 - strlen(composition_txt_2048), "  Hold-off: %i milli-Sec.", holdoff);
 
-      filterItem->appendRow(new QStandardItem(composition_txt));
+      filterItem->appendRow(new QStandardItem(composition_txt_2048));
 
       xml_go_up(xml_hdl);
       xml_go_up(xml_hdl);
@@ -910,16 +910,16 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
       if(islpf)
       {
-        snprintf(composition_txt, 2048, "LPF: %fHz", frequency);
+        snprintf(composition_txt_2048, 2048, "LPF: %fHz", frequency);
       }
       else
       {
-        snprintf(composition_txt, 2048, "HPF: %fHz", frequency);
+        snprintf(composition_txt_2048, 2048, "HPF: %fHz", frequency);
       }
 
-      remove_trailing_zeros(composition_txt);
+      remove_trailing_zeros(composition_txt_2048);
 
-      filterItem->appendRow(new QStandardItem(composition_txt));
+      filterItem->appendRow(new QStandardItem(composition_txt_2048));
 
       xml_go_up(xml_hdl);
       xml_go_up(xml_hdl);
@@ -960,15 +960,15 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
       if(type == 0)
       {
-        snprintf(composition_txt, 2048, "highpass moving average %ismpls", size);
+        snprintf(composition_txt_2048, 2048, "highpass moving average %ismpls", size);
       }
 
       if(type == 1)
       {
-        snprintf(composition_txt, 2048, "lowpass moving average %ismpls", size);
+        snprintf(composition_txt_2048, 2048, "lowpass moving average %ismpls", size);
       }
 
-      filterItem->appendRow(new QStandardItem(composition_txt));
+      filterItem->appendRow(new QStandardItem(composition_txt_2048));
 
       xml_go_up(xml_hdl);
       xml_go_up(xml_hdl);
@@ -1063,17 +1063,17 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       {
         if(model == 0)
         {
-          snprintf(composition_txt, 2048, "highpass Butterworth %fHz %ith order  ", frequency, order);
+          snprintf(composition_txt_2048, 2048, "highpass Butterworth %fHz %ith order  ", frequency, order);
         }
 
         if(model == 1)
         {
-          snprintf(composition_txt, 2048, "highpass Chebyshev %fHz %ith order %fdB ripple  ", frequency, order, ripple);
+          snprintf(composition_txt_2048, 2048, "highpass Chebyshev %fHz %ith order %fdB ripple  ", frequency, order, ripple);
         }
 
         if(model == 2)
         {
-          snprintf(composition_txt, 2048, "highpass Bessel %fHz %ith order  ", frequency, order);
+          snprintf(composition_txt_2048, 2048, "highpass Bessel %fHz %ith order  ", frequency, order);
         }
       }
 
@@ -1081,40 +1081,40 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       {
         if(model == 0)
         {
-          snprintf(composition_txt, 2048, "lowpass Butterworth %fHz %ith order  ", frequency, order);
+          snprintf(composition_txt_2048, 2048, "lowpass Butterworth %fHz %ith order  ", frequency, order);
         }
 
         if(model == 1)
         {
-          snprintf(composition_txt, 2048, "lowpass Chebyshev %fHz %ith order %fdB ripple  ", frequency, order, ripple);
+          snprintf(composition_txt_2048, 2048, "lowpass Chebyshev %fHz %ith order %fdB ripple  ", frequency, order, ripple);
         }
 
         if(model == 2)
         {
-          snprintf(composition_txt, 2048, "lowpass Bessel %fHz %ith order  ", frequency, order);
+          snprintf(composition_txt_2048, 2048, "lowpass Bessel %fHz %ith order  ", frequency, order);
         }
       }
 
       if(type == 2)
       {
-        snprintf(composition_txt, 2048, "notch %fHz Q-factor %i  ", frequency, order);
+        snprintf(composition_txt_2048, 2048, "notch %fHz Q-factor %i  ", frequency, order);
       }
 
       if(type == 3)
       {
         if(model == 0)
         {
-          snprintf(composition_txt, 2048, "bandpass Butterworth %f-%fHz %ith order  ", frequency, frequency2, order);
+          snprintf(composition_txt_2048, 2048, "bandpass Butterworth %f-%fHz %ith order  ", frequency, frequency2, order);
         }
 
         if(model == 1)
         {
-          snprintf(composition_txt, 2048, "bandpass Chebyshev %f-%fHz %ith order %fdB ripple  ", frequency, frequency2, order, ripple);
+          snprintf(composition_txt_2048, 2048, "bandpass Chebyshev %f-%fHz %ith order %fdB ripple  ", frequency, frequency2, order, ripple);
         }
 
         if(model == 2)
         {
-          snprintf(composition_txt, 2048, "bandpass Bessel %f-%fHz %ith order  ", frequency, frequency2, order);
+          snprintf(composition_txt_2048, 2048, "bandpass Bessel %f-%fHz %ith order  ", frequency, frequency2, order);
         }
       }
 
@@ -1122,23 +1122,23 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       {
         if(model == 0)
         {
-          snprintf(composition_txt, 2048, "bandstop Butterworth %f-%fHz %ith order  ", frequency, frequency2, order);
+          snprintf(composition_txt_2048, 2048, "bandstop Butterworth %f-%fHz %ith order  ", frequency, frequency2, order);
         }
 
         if(model == 1)
         {
-          snprintf(composition_txt, 2048, "bandstop Chebyshev %f-%fHz %ith order %fdB ripple  ", frequency, frequency2, order, ripple);
+          snprintf(composition_txt_2048, 2048, "bandstop Chebyshev %f-%fHz %ith order %fdB ripple  ", frequency, frequency2, order, ripple);
         }
 
         if(model == 2)
         {
-          snprintf(composition_txt, 2048, "bandstop Bessel %f-%fHz %ith order  ", frequency, frequency2, order);
+          snprintf(composition_txt_2048, 2048, "bandstop Bessel %f-%fHz %ith order  ", frequency, frequency2, order);
         }
       }
 
-      remove_trailing_zeros(composition_txt);
+      remove_trailing_zeros(composition_txt_2048);
 
-      filterItem->appendRow(new QStandardItem(composition_txt));
+      filterItem->appendRow(new QStandardItem(composition_txt_2048));
 
       xml_go_up(xml_hdl);
       xml_go_up(xml_hdl);
@@ -1194,13 +1194,13 @@ void UI_ViewSessionwindow::SelectButtonClicked()
           return;
         }
 
-        strlcpy(str3, "Math function: ", 64);
-        get_math_func_descr(math_func, str3 + strlen(str3), 64 - strlen(str3));
+        strlcpy(str3_64, "Math function: ", 64);
+        get_math_func_descr(math_func, str3_64 + strlen(str3_64), 64 - strlen(str3_64));
         if(math_func == MATH_FUNC_PK_HOLD)
         {
-          snprintf(str3 + strlen(str3), 64 - strlen(str3), " %i smpls", math_func_pk_hold_smpls);
+          snprintf(str3_64 + strlen(str3_64), 64 - strlen(str3_64), " %i smpls", math_func_pk_hold_smpls);
         }
-        math_item_after->appendRow(new QStandardItem(str3));
+        math_item_after->appendRow(new QStandardItem(str3_64));
 
         xml_go_up(xml_hdl);
         xml_go_up(xml_hdl);
@@ -1229,9 +1229,9 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       plif_powerlinefrequency += 50;
       xml_go_up(xml_hdl);
 
-      snprintf(composition_txt, 2048, "ECG powerline interference subtraction: %iHz", plif_powerlinefrequency);
+      snprintf(composition_txt_2048, 2048, "ECG powerline interference subtraction: %iHz", plif_powerlinefrequency);
 
-      filterItem->appendRow(new QStandardItem(composition_txt));
+      filterItem->appendRow(new QStandardItem(composition_txt_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -1258,9 +1258,9 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       plif_powerlinefrequency += 50;
       xml_go_up(xml_hdl);
 
-      snprintf(composition_txt, 2048, "EEG powerline interference subtraction: %iHz", plif_powerlinefrequency);
+      snprintf(composition_txt_2048, 2048, "EEG powerline interference subtraction: %iHz", plif_powerlinefrequency);
 
-      filterItem->appendRow(new QStandardItem(composition_txt));
+      filterItem->appendRow(new QStandardItem(composition_txt_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -1281,13 +1281,13 @@ void UI_ViewSessionwindow::SelectButtonClicked()
           return;
         }
 
-        strlcpy(str2, result, 512);
+        strlcpy(str2_2048, result, 512);
 
         xml_go_up(xml_hdl);
       }
       else
       {
-        str2[0] = 0;
+        str2_2048[0] = 0;
       }
 
       if(xml_goto_nth_element_inside(xml_hdl, "size", 0))
@@ -1345,20 +1345,20 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
       xml_go_up(xml_hdl);
 
-      if(!strlen(str2))
+      if(!strlen(str2_2048))
       {
-        snprintf(str2, 2048, "Custom FIR filter with %i taps", n_taps);
+        snprintf(str2_2048, 2048, "Custom FIR filter with %i taps", n_taps);
       }
 
-      firfilterItem = new QStandardItem(str2);
+      firfilterItem = new QStandardItem(str2_2048);
 
       filterItem->appendRow(firfilterItem);
 
       for(r=0; r<n_taps; r++)
       {
-        snprintf(str2, 2048, " %.24f ", fir_vars[r]);
+        snprintf(str2_2048, 2048, " %.24f ", fir_vars[r]);
 
-        firfilterItem->appendRow(new QStandardItem(str2));
+        firfilterItem->appendRow(new QStandardItem(str2_2048));
       }
 
       free(fir_vars);
@@ -1383,10 +1383,10 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
       if(type == 1)
       {
-        snprintf(composition_txt, 2048, "ECG heartrate detection");
+        snprintf(composition_txt_2048, 2048, "ECG heartrate detection");
       }
 
-      filterItem->appendRow(new QStandardItem(composition_txt));
+      filterItem->appendRow(new QStandardItem(composition_txt_2048));
 
       xml_go_up(xml_hdl);
       xml_go_up(xml_hdl);
@@ -1422,10 +1422,10 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         }
         d_tmp = atof(result);
 
-        snprintf(composition_txt, 2048, "Z-ratio  cross-over frequency is %.1f", d_tmp);
+        snprintf(composition_txt_2048, 2048, "Z-ratio  cross-over frequency is %.1f", d_tmp);
       }
 
-      filterItem->appendRow(new QStandardItem(composition_txt));
+      filterItem->appendRow(new QStandardItem(composition_txt_2048));
 
       xml_go_up(xml_hdl);
       xml_go_up(xml_hdl);
@@ -1467,8 +1467,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "Signal index: %i", sigcomp_idx + 1);
-      powerspectrumdockItem->appendRow(new QStandardItem(str2));
+      snprintf(str2_2048, 2048, "Signal index: %i", sigcomp_idx + 1);
+      powerspectrumdockItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -1493,8 +1493,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "FFT blocksize: %i samples", dftblocksize);
-      powerspectrumdockItem->appendRow(new QStandardItem(str2));
+      snprintf(str2_2048, 2048, "FFT blocksize: %i samples", dftblocksize);
+      powerspectrumdockItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -1627,8 +1627,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "File: %s", e_file_path[hdr_idx]);
-      hypnogramItem->appendRow(new QStandardItem(str2));
+      snprintf(str2_2048, 2048, "File: %s", e_file_path[hdr_idx]);
+      hypnogramItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -1643,7 +1643,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
           return;
         }
 
-        snprintf(str2, 2048, "Stage %i name: %.2000s", j + 1, result);
+        snprintf(str2_2048, 2048, "Stage %i name: %.2000s", j + 1, result);
 
         xml_go_up(xml_hdl);
 
@@ -1659,9 +1659,9 @@ void UI_ViewSessionwindow::SelectButtonClicked()
           return;
         }
 
-        strlcat(str2, "   Annotation: ", 2048);
-        strlcat(str2, result, 2048);
-        hypnogramItem->appendRow(new QStandardItem(str2));
+        strlcat(str2_2048, "   Annotation: ", 2048);
+        strlcat(str2_2048, result, 2048);
+        hypnogramItem->appendRow(new QStandardItem(str2_2048));
 
         xml_go_up(xml_hdl);
       }
@@ -1699,8 +1699,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
         xml_go_up(xml_hdl);
 
-        snprintf(str2, 2048, "Overlay annotation: %s", result);
-        tmp_item = new QStandardItem(str2);
+        snprintf(str2_2048, 2048, "Overlay annotation: %s", result);
+        tmp_item = new QStandardItem(str2_2048);
 
         mainwindow->get_rgbcolor_settings(xml_hdl, "annot_ov_color", j, &tmp_color);
         if(tmp_color.isValid() == true)
@@ -1746,8 +1746,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "Signal index: %i", sigcomp_idx + 1);
-      cdsaItem->appendRow(new QStandardItem(str2));
+      snprintf(str2_2048, 2048, "Signal index: %i", sigcomp_idx + 1);
+      cdsaItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -1772,8 +1772,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "Lower frequency bin: %i Hz", min_hz);
-      cdsaItem->appendRow(new QStandardItem(str2));
+      snprintf(str2_2048, 2048, "Lower frequency bin: %i Hz", min_hz);
+      cdsaItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -1798,8 +1798,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "Upper frequency bin: %i Hz", max_hz);
-      cdsaItem->appendRow(new QStandardItem(str2));
+      snprintf(str2_2048, 2048, "Upper frequency bin: %i Hz", max_hz);
+      cdsaItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -1824,8 +1824,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "Segment length: %i seconds", segment_len);
-      cdsaItem->appendRow(new QStandardItem(str2));
+      snprintf(str2_2048, 2048, "Segment length: %i seconds", segment_len);
+      cdsaItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -1850,8 +1850,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "Block length: %i seconds", block_len);
-      cdsaItem->appendRow(new QStandardItem(str2));
+      snprintf(str2_2048, 2048, "Block length: %i seconds", block_len);
+      cdsaItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -1999,9 +1999,9 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
         max_pwr = atoi(result);
 
-        snprintf(str2, 2048, "Max. level: %idB", max_pwr);
+        snprintf(str2_2048, 2048, "Max. level: %idB", max_pwr);
 
-        cdsaItem->appendRow(new QStandardItem(str2));
+        cdsaItem->appendRow(new QStandardItem(str2_2048));
 
         xml_go_up(xml_hdl);
       }
@@ -2021,9 +2021,9 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
         min_pwr = atoi(result);
 
-        snprintf(str2, 2048, "Min. level: %idB", min_pwr);
+        snprintf(str2_2048, 2048, "Min. level: %idB", min_pwr);
 
-        cdsaItem->appendRow(new QStandardItem(str2));
+        cdsaItem->appendRow(new QStandardItem(str2_2048));
 
         xml_go_up(xml_hdl);
       }
@@ -2046,9 +2046,9 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
         max_voltage = atof(result);
 
-        snprintf(str2, 2048, "Max. level: %e", max_voltage);
+        snprintf(str2_2048, 2048, "Max. level: %e", max_voltage);
 
-        cdsaItem->appendRow(new QStandardItem(str2));
+        cdsaItem->appendRow(new QStandardItem(str2_2048));
 
         xml_go_up(xml_hdl);
       }
@@ -2120,8 +2120,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "Signal index: %i", sigcomp_idx + 1);
-      aeegItem->appendRow(new QStandardItem(str2));
+      snprintf(str2_2048, 2048, "Signal index: %i", sigcomp_idx + 1);
+      aeegItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -2146,8 +2146,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "Bandpass min. frequency: %.1f Hz", bp_min_hz);
-      aeegItem->appendRow(new QStandardItem(str2));
+      snprintf(str2_2048, 2048, "Bandpass min. frequency: %.1f Hz", bp_min_hz);
+      aeegItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -2172,8 +2172,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "Bandpass max. frequency: %.1f Hz", bp_max_hz);
-      aeegItem->appendRow(new QStandardItem(str2));
+      snprintf(str2_2048, 2048, "Bandpass max. frequency: %.1f Hz", bp_max_hz);
+      aeegItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -2198,8 +2198,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "Segment length: %i seconds", segment_len);
-      aeegItem->appendRow(new QStandardItem(str2));
+      snprintf(str2_2048, 2048, "Segment length: %i seconds", segment_len);
+      aeegItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -2224,8 +2224,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "Envelope lowpass filter: %.2f sec", lp_hz);
-      aeegItem->appendRow(new QStandardItem(str2));
+      snprintf(str2_2048, 2048, "Envelope lowpass filter: %.2f sec", lp_hz);
+      aeegItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -2245,9 +2245,9 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
       scale_max_amp = atof(result);
 
-      snprintf(str2, 2048, "Max. amplitude: %.1f", scale_max_amp);
+      snprintf(str2_2048, 2048, "Max. amplitude: %.1f", scale_max_amp);
 
-      aeegItem->appendRow(new QStandardItem(str2));
+      aeegItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -2255,7 +2255,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
     xml_go_up(xml_hdl);
   }
 
-  video_path[0] = 0;
+  video_path_2048[0] = 0;
 
   if(!xml_goto_nth_element_inside(xml_hdl, "video", 0))
   {
@@ -2282,7 +2282,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(video_path, 2048, "Video: %.2000s", result);
+      snprintf(video_path_2048, 2048, "Video: %.2000s", result);
 
       if(use_relative_path)
       {
@@ -2299,8 +2299,8 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
       if(f_test == NULL)
       {
-        strlcat(video_path, "  (not found!)", 2048);
-        tmp_item = new QStandardItem(video_path);
+        strlcat(video_path_2048, "  (not found!)", 2048);
+        tmp_item = new QStandardItem(video_path_2048);
         tmp_item->setIcon(QIcon(":/images/delete_16x16.png"));
         videoItem->appendRow(tmp_item);
       }
@@ -2308,7 +2308,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       {
         fclose(f_test);
         f_test = NULL;
-        videoItem->appendRow(new QStandardItem(video_path));
+        videoItem->appendRow(new QStandardItem(video_path_2048));
       }
 
       xml_go_up(xml_hdl);
@@ -2336,10 +2336,10 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
       utc_to_date_time(utc_starttime, &dt);
 
-      snprintf(str2, 2048, "Start: %i-%s-%04i %02i:%02i:%02i",
+      snprintf(str2_2048, 2048, "Start: %i-%s-%04i %02i:%02i:%02i",
                         dt.day, dt.month_str, dt.year, dt.hour, dt.minute, dt.second);
 
-      videoItem->appendRow(new QStandardItem(str2));
+      videoItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }
@@ -2364,9 +2364,9 @@ void UI_ViewSessionwindow::SelectButtonClicked()
         return;
       }
 
-      snprintf(str2, 2048, "Position: %i:%02i:%02i", video_seek / 3600, (video_seek % 3600) / 60, video_seek % 60);
+      snprintf(str2_2048, 2048, "Position: %i:%02i:%02i", video_seek / 3600, (video_seek % 3600) / 60, video_seek % 60);
 
-      videoItem->appendRow(new QStandardItem(str2));
+      videoItem->appendRow(new QStandardItem(str2_2048));
 
       xml_go_up(xml_hdl);
     }

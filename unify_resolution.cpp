@@ -181,10 +181,10 @@ void UI_unify_resolution::SaveButtonClicked()
 
   long long datrec;
 
-  char str[128]={""},
-       phys_dim[16]={""},
-       str_phys_max[32]={""},
-       str_phys_min[32]={""},
+  char str_128[128]={""},
+       phys_dim_16[16]={""},
+       str_phys_max_32[32]={""},
+       str_phys_min_32[32]={""},
        *buf_in=NULL,
        *ptr8=NULL;
 
@@ -228,14 +228,14 @@ void UI_unify_resolution::SaveButtonClicked()
     {
       if(!num_checked)
       {
-        strlcpy(phys_dim, edfhdr->edfparam[i].physdimension, 16);
-        trim_spaces(phys_dim);
+        strlcpy(phys_dim_16, edfhdr->edfparam[i].physdimension, 16);
+        trim_spaces(phys_dim_16);
       }
       else
       {
-        strlcpy(str, edfhdr->edfparam[i].physdimension, 16);
-        trim_spaces(str);
-        if(strcmp(phys_dim, str))
+        strlcpy(str_128, edfhdr->edfparam[i].physdimension, 16);
+        trim_spaces(str_128);
+        if(strcmp(phys_dim_16, str_128))
         {
           QMessageBox::critical(myobjectDialog, "Error", "Selected signals must have equal physical dimension (unit).");
           return;
@@ -265,18 +265,18 @@ void UI_unify_resolution::SaveButtonClicked()
     return;
   }
 
-  snprintf(str_phys_max, 32, "%.8f", phys_max_spinbox->value());
-  str_phys_max[8] = 0;
-  if(str_phys_max[7] == '.')
+  snprintf(str_phys_max_32, 32, "%.8f", phys_max_spinbox->value());
+  str_phys_max_32[8] = 0;
+  if(str_phys_max_32[7] == '.')
   {
-    str_phys_max[7] = ' ';
+    str_phys_max_32[7] = ' ';
   }
 
-  snprintf(str_phys_min, 32, "%.8f", -phys_max_spinbox->value());
-  str_phys_min[8] = 0;
-  if(str_phys_min[7] == '.')
+  snprintf(str_phys_min_32, 32, "%.8f", -phys_max_spinbox->value());
+  str_phys_min_32[8] = 0;
+  if(str_phys_min_32[7] == '.')
   {
-    str_phys_min[7] = ' ';
+    str_phys_min_32[7] = ' ';
   }
 
   outputpath[0] = 0;
@@ -340,8 +340,8 @@ void UI_unify_resolution::SaveButtonClicked()
   {
     if(is_checked[i])
     {
-      memcpy(buf_in + 256 + (104 * edfhdr->edfsignals) + (8 * i), str_phys_min, 8);
-      memcpy(buf_in + 256 + (112 * edfhdr->edfsignals) + (8 * i), str_phys_max, 8);
+      memcpy(buf_in + 256 + (104 * edfhdr->edfsignals) + (8 * i), str_phys_min_32, 8);
+      memcpy(buf_in + 256 + (112 * edfhdr->edfsignals) + (8 * i), str_phys_max_32, 8);
       if(edfhdr->edf)
       {
         memcpy(buf_in + 256 + (120 * edfhdr->edfsignals) + (8 * i), "-32768  ", 8);

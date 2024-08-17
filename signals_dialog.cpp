@@ -285,8 +285,8 @@ void UI_Signalswindow::DisplayCompButtonClicked()
 {
   int i, j, n, edfsignal=0;
 
-  char str[512]="",
-       str2[128]="";
+  char str1_512[512]="",
+       str2_128[128]="";
 
   sigcompblck_t *newsignalcomp=NULL;
 
@@ -300,8 +300,8 @@ void UI_Signalswindow::DisplayCompButtonClicked()
 
   if(mainwindow->signalcomps >= MAXSIGNALS)
   {
-    snprintf(str, 512, "Cannot display more than %i traces.", MAXSIGNALS);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    snprintf(str1_512, 512, "Cannot display more than %i traces.", MAXSIGNALS);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_512);
     messagewindow.exec();
     return;
   }
@@ -311,10 +311,10 @@ void UI_Signalswindow::DisplayCompButtonClicked()
     if((((QDoubleSpinBox *)(compositionlist->cellWidget(i, 2)))->value() < 0.001) &&
        (((QDoubleSpinBox *)(compositionlist->cellWidget(i, 2)))->value() > -0.001))
     {
-      strlcpy(str2, ((QLabel *)(compositionlist->cellWidget(i, 0)))->text().toLatin1().data(), 128);
+      strlcpy(str2_128, ((QLabel *)(compositionlist->cellWidget(i, 0)))->text().toLatin1().data(), 128);
 
-      snprintf(str, 512, "Signal %i in the Composition list has a Factor too close to zero.", atoi(str2));
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+      snprintf(str1_512, 512, "Signal %i in the Composition list has a Factor too close to zero.", atoi(str2_128));
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_512);
       messagewindow.exec();
       return;
     }
@@ -347,15 +347,15 @@ void UI_Signalswindow::DisplayCompButtonClicked()
 
   for(i=0; i<n; i++)
   {
-    strlcpy(str, ((QLabel *)(compositionlist->cellWidget(i, 0)))->text().toLatin1().data(), 512);
+    strlcpy(str1_512, ((QLabel *)(compositionlist->cellWidget(i, 0)))->text().toLatin1().data(), 512);
 
-    edfsignal = atoi(str) - 1;
+    edfsignal = atoi(str1_512) - 1;
 
-    strlcpy(str, ((QLabel *)(compositionlist->cellWidget(i, 1)))->text().toLatin1().data(), 512);
+    strlcpy(str1_512, ((QLabel *)(compositionlist->cellWidget(i, 1)))->text().toLatin1().data(), 512);
 
     for(j=0; j<newsignalcomp->edfhdr->edfsignals; j++)
     {
-      if(!strcmp(newsignalcomp->edfhdr->edfparam[j].label, str))
+      if(!strcmp(newsignalcomp->edfhdr->edfparam[j].label, str1_512))
       {
         if(j != edfsignal)  continue;
 
@@ -372,12 +372,12 @@ void UI_Signalswindow::DisplayCompButtonClicked()
             strlcat(newsignalcomp->signallabel, "+ ", 512);
           }
         }
-        strlcpy(str2, newsignalcomp->edfhdr->edfparam[j].label, 128);
+        strlcpy(str2_128, newsignalcomp->edfhdr->edfparam[j].label, 128);
         if(mainwindow->strip_label_types)
         {
-          newsignalcomp->signallabel_type_stripped = strip_types_from_label(str2);
+          newsignalcomp->signallabel_type_stripped = strip_types_from_label(str2_128);
         }
-        strlcat(newsignalcomp->signallabel, str2, 512);
+        strlcat(newsignalcomp->signallabel, str2_128, 512);
         trim_spaces(newsignalcomp->signallabel);
         strlcat(newsignalcomp->signallabel, " ", 512);
 
@@ -446,7 +446,7 @@ void UI_Signalswindow::DisplayButtonClicked()
 {
   int i, n, s, old_scomps;
 
-  char str1[512]={""};
+  char str1_512[512]={""};
 
   sigcompblck_t *newsignalcomp=NULL;
 
@@ -464,8 +464,8 @@ void UI_Signalswindow::DisplayButtonClicked()
 
   if(mainwindow->signalcomps + n > MAXSIGNALS)
   {
-    snprintf(str1, 512, "Cannot display more than %i traces.", MAXSIGNALS);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", str1);
+    snprintf(str1_512, 512, "Cannot display more than %i traces.", MAXSIGNALS);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_512);
     messagewindow.exec();
     return;
   }
@@ -493,17 +493,17 @@ void UI_Signalswindow::DisplayButtonClicked()
     newsignalcomp->factor[0] = 1;
     if(mainwindow->ecg_view_mode)
     {
-      strlcpy(str1, newsignalcomp->edfhdr->edfparam[s].physdimension, 32);
-      trim_spaces(str1);
-      if(!strcmp(str1, "uV"))
+      strlcpy(str1_512, newsignalcomp->edfhdr->edfparam[s].physdimension, 32);
+      trim_spaces(str1_512);
+      if(!strcmp(str1_512, "uV"))
       {
         newsignalcomp->voltpercm = 500.0;
       }
-      else if(!strcmp(str1, "mV"))
+      else if(!strcmp(str1_512, "mV"))
         {
           newsignalcomp->voltpercm = 0.5;
         }
-        else if(!strcmp(str1, "V"))
+        else if(!strcmp(str1_512, "V"))
           {
             newsignalcomp->voltpercm = 0.0005;
           }
@@ -633,8 +633,8 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
 {
   int i, j, k, n, s, row, duplicate;
 
-  char str1[256]={""},
-       str2[4096]={""};
+  char str1_256[256]={""},
+       str2_4096[4096]={""};
 
   QListWidgetItem *item;
 
@@ -687,11 +687,11 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
     {
       if(dblcmp(bitvalue, mainwindow->edfheaderlist[row]->edfparam[s].bitvalue))
       {
-        strlcpy(str2, derivation_err_str, 4096);
-        strlcat(str2, "\n\nIn this case the problem is that the amplitude resolution of the signals selected for the derivation,\n"
+        strlcpy(str2_4096, derivation_err_str, 4096);
+        strlcat(str2_4096, "\n\nIn this case the problem is that the amplitude resolution of the signals selected for the derivation,\n"
                       "have different values. You can correct this with the tool \"Unify resolution\" in the tools menu.\n"
                       "Have a look at the manual for the details.", 4096);
-        tmessagebox(QMessageBox::Warning, "Warning", "Cannot make derivation", str2, SignalsDialog);
+        tmessagebox(QMessageBox::Warning, "Warning", "Cannot make derivation", str2_4096, SignalsDialog);
         continue;
       }
     }
@@ -705,9 +705,9 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
     k = compositionlist->rowCount();
     for(j=0; j<k; j++)
     {
-      strlcpy(str1, ((QLabel *)(compositionlist->cellWidget(j, 0)))->text().toLatin1().data(), 256);
+      strlcpy(str1_256, ((QLabel *)(compositionlist->cellWidget(j, 0)))->text().toLatin1().data(), 256);
 
-      if((s + 1) == atoi(str1))
+      if((s + 1) == atoi(str1_256))
       {
         duplicate = 1;
         break;
@@ -727,8 +727,8 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
     else
     {
       compositionlist->insertRow(k);
-      snprintf(str1, 200, "%i", s + 1);
-      compositionlist->setCellWidget(k, 0, new QLabel(str1));
+      snprintf(str1_256, 200, "%i", s + 1);
+      compositionlist->setCellWidget(k, 0, new QLabel(str1_256));
       ((QLabel *)(compositionlist->cellWidget(k, 0)))->setAlignment(Qt::AlignCenter);
       compositionlist->setCellWidget(k, 1, new QLabel(mainwindow->edfheaderlist[row]->edfparam[s].label));
       ((QLabel *)(compositionlist->cellWidget(k, 1)))->setAlignment(Qt::AlignCenter);
@@ -747,10 +747,10 @@ void UI_Signalswindow::AddSubtractButtonsClicked(int subtract)
         ((QDoubleSpinBox *)(compositionlist->cellWidget(k, 2)))->setValue(1);
       }
 
-      convert_to_metric_suffix(str1, mainwindow->edfheaderlist[row]->edfparam[s].sf_f, 3, 256);
-      remove_trailing_zeros(str1);
-      strlcat(str1, "Hz", 256);
-      compositionlist->setCellWidget(k, 3, new QLabel(str1));
+      convert_to_metric_suffix(str1_256, mainwindow->edfheaderlist[row]->edfparam[s].sf_f, 3, 256);
+      remove_trailing_zeros(str1_256);
+      strlcat(str1_256, "Hz", 256);
+      compositionlist->setCellWidget(k, 3, new QLabel(str1_256));
       ((QLabel *)(compositionlist->cellWidget(k, 3)))->setAlignment(Qt::AlignCenter);
     }
   }
@@ -763,7 +763,7 @@ void UI_Signalswindow::show_signals(int row)
 {
   int i, j, idx, len, skip, signal_cnt=0;
 
-  char str[256]={""};
+  char str1_256[256]={""};
 
   long long file_duration=0LL;
 
@@ -781,41 +781,41 @@ void UI_Signalswindow::show_signals(int row)
 
   if((mainwindow->edfheaderlist[row]->edfplus)||(mainwindow->edfheaderlist[row]->bdfplus))
   {
-    strlcpy(str, "Subject:  ", 256);
-    strlcat(str, mainwindow->edfheaderlist[row]->plus_patient_name, 256);
-    strlcat(str, "  ", 256);
-    strlcat(str, mainwindow->edfheaderlist[row]->plus_birthdate, 256);
-    strlcat(str, "  ", 256);
-    strlcat(str, mainwindow->edfheaderlist[row]->plus_patientcode, 256);
-    label1->setText(str);
-    strlcpy(str, "Recording:  ", 256);
-    strlcat(str, mainwindow->edfheaderlist[row]->plus_admincode, 256);
-    label2->setText(str);
+    strlcpy(str1_256, "Subject:  ", 256);
+    strlcat(str1_256, mainwindow->edfheaderlist[row]->plus_patient_name, 256);
+    strlcat(str1_256, "  ", 256);
+    strlcat(str1_256, mainwindow->edfheaderlist[row]->plus_birthdate, 256);
+    strlcat(str1_256, "  ", 256);
+    strlcat(str1_256, mainwindow->edfheaderlist[row]->plus_patientcode, 256);
+    label1->setText(str1_256);
+    strlcpy(str1_256, "Recording:  ", 256);
+    strlcat(str1_256, mainwindow->edfheaderlist[row]->plus_admincode, 256);
+    label2->setText(str1_256);
   }
   else
   {
-    strlcpy(str, "Subject:  ", 256);
-    strlcat(str, mainwindow->edfheaderlist[row]->patient, 256);
-    len = strlen(str);
+    strlcpy(str1_256, "Subject:  ", 256);
+    strlcat(str1_256, mainwindow->edfheaderlist[row]->patient, 256);
+    len = strlen(str1_256);
     for(j=0; j<len; j++)
     {
-      if(str[j]=='_')
+      if(str1_256[j]=='_')
       {
-        str[j] = ' ';
+        str1_256[j] = ' ';
       }
     }
-    label1->setText(str);
-    strlcpy(str, "Recording:  ", 256);
-    strlcat(str, mainwindow->edfheaderlist[row]->recording, 256);
-    len = strlen(str);
+    label1->setText(str1_256);
+    strlcpy(str1_256, "Recording:  ", 256);
+    strlcat(str1_256, mainwindow->edfheaderlist[row]->recording, 256);
+    len = strlen(str1_256);
     for(j=0; j<len; j++)
     {
-      if(str[j]=='_')
+      if(str1_256[j]=='_')
       {
-        str[j] = ' ';
+        str1_256[j] = ' ';
       }
     }
-    label2->setText(str);
+    label2->setText(str1_256);
   }
 
   utc_to_date_time(mainwindow->edfheaderlist[row]->utc_starttime, &date_time);
@@ -824,7 +824,7 @@ void UI_Signalswindow::show_signals(int row)
   date_time.month_str[1] += 32;
   date_time.month_str[2] += 32;
 
-  snprintf(str, 256, "Start:  %i %s %i   %2i:%02i:%02i",
+  snprintf(str1_256, 256, "Start:  %i %s %i   %2i:%02i:%02i",
           date_time.day,
           date_time.month_str,
           date_time.year,
@@ -835,25 +835,25 @@ void UI_Signalswindow::show_signals(int row)
   if(mainwindow->edfheaderlist[row]->starttime_subsec != 0LL)
   {
 #ifdef Q_OS_WIN32
-    __mingw_snprintf(str + strlen(str), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_subsec);
+    __mingw_snprintf(str1_256 + strlen(str1_256), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_subsec);
 #else
-    snprintf(str + strlen(str), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_subsec);
+    snprintf(str1_256 + strlen(str1_256), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_subsec);
 #endif
 
-    remove_trailing_zeros(str);
+    remove_trailing_zeros(str1_256);
   }
 
-  label3->setText(str);
+  label3->setText(str1_256);
 
   file_duration = mainwindow->edfheaderlist[row]->long_data_record_duration * mainwindow->edfheaderlist[row]->datarecords;
-  snprintf(str, 256,
+  snprintf(str1_256, 256,
           "Duration:  %2i:%02i:%02i.%07i",
           (int)((file_duration / TIME_FIXP_SCALING) / 3600LL),
           (int)(((file_duration / TIME_FIXP_SCALING) % 3600LL) / 60LL),
           (int)((file_duration / TIME_FIXP_SCALING) % 60LL),
           (int)(file_duration % TIME_FIXP_SCALING));
-  remove_trailing_zeros(str);
-  label4->setText(str);
+  remove_trailing_zeros(str1_256);
+  label4->setText(str1_256);
 
   utc_to_date_time(mainwindow->edfheaderlist[row]->utc_starttime +
    ((file_duration + mainwindow->edfheaderlist[row]->starttime_subsec) / TIME_FIXP_SCALING), &date_time);
@@ -862,7 +862,7 @@ void UI_Signalswindow::show_signals(int row)
   date_time.month_str[1] += 32;
   date_time.month_str[2] += 32;
 
-  snprintf(str, 256, "End:  %i %s %i   %2i:%02i:%02i",
+  snprintf(str1_256, 256, "End:  %i %s %i   %2i:%02i:%02i",
           date_time.day,
           date_time.month_str,
           date_time.year,
@@ -870,13 +870,13 @@ void UI_Signalswindow::show_signals(int row)
           date_time.minute,
           date_time.second);
 #ifdef Q_OS_WIN32
-  __mingw_snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_subsec + file_duration) % TIME_FIXP_SCALING);
+  __mingw_snprintf(str1_256 + strlen(str1_256), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_subsec + file_duration) % TIME_FIXP_SCALING);
 #else
-  snprintf(str + strlen(str), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_subsec + file_duration) % TIME_FIXP_SCALING);
+  snprintf(str1_256 + strlen(str1_256), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_subsec + file_duration) % TIME_FIXP_SCALING);
 #endif
-  remove_trailing_zeros(str);
+  remove_trailing_zeros(str1_256);
 
-  label7->setText(str);
+  label7->setText(str1_256);
 
   skip = 0;
 
@@ -906,21 +906,21 @@ void UI_Signalswindow::show_signals(int row)
       }
     }
 
-    snprintf(str, 256, "%-3i ", idx++);
-    strlcat(str, mainwindow->edfheaderlist[row]->edfparam[i].label, 256);
-    strlcat(str, "   ", 256);
+    snprintf(str1_256, 256, "%-3i ", idx++);
+    strlcat(str1_256, mainwindow->edfheaderlist[row]->edfparam[i].label, 256);
+    strlcat(str1_256, "   ", 256);
     if(mainwindow->edfheaderlist[row]->edfparam[i].sf_int)
     {
-      convert_to_metric_suffix(str + strlen(str), mainwindow->edfheaderlist[row]->edfparam[i].sf_int, 6, 256 - strlen(str));
+      convert_to_metric_suffix(str1_256 + strlen(str1_256), mainwindow->edfheaderlist[row]->edfparam[i].sf_int, 6, 256 - strlen(str1_256));
     }
     else
     {
-      convert_to_metric_suffix(str + strlen(str), mainwindow->edfheaderlist[row]->edfparam[i].sf_f, 6, 256 - strlen(str));
+      convert_to_metric_suffix(str1_256 + strlen(str1_256), mainwindow->edfheaderlist[row]->edfparam[i].sf_f, 6, 256 - strlen(str1_256));
     }
-    remove_trailing_zeros(str);
-    strlcat(str, "Hz", 256);
+    remove_trailing_zeros(str1_256);
+    strlcat(str1_256, "Hz", 256);
     item = new QListWidgetItem;
-    item->setText(str);
+    item->setText(str1_256);
     item->setData(Qt::UserRole, QVariant(i));
     signallist->addItem(item);
   }
@@ -989,7 +989,7 @@ void UI_Signalswindow::selected_signals_changed()
 {
   int n;
 
-  char str[128]={""};
+  char str1_128[128]={""};
 
   QList<QListWidgetItem *> selectedlist;
 
@@ -997,9 +997,9 @@ void UI_Signalswindow::selected_signals_changed()
 
   n = selectedlist.size();
 
-  snprintf(str, 128, "Signals in file:   (%i selected)", n);
+  snprintf(str1_128, 128, "Signals in file:   (%i selected)", n);
 
-  label5->setText(str);
+  label5->setText(str1_128);
 }
 
 

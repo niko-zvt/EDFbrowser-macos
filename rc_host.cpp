@@ -75,16 +75,16 @@ int UI_Mainwindow::rc_cmd2key(const char *cmd_str)
 {
   int i, len, idx, query=0;
 
-  char str[32];
+  char str1_32[32]={""};
 
-  strlcpy(str, cmd_str, 32);
+  strlcpy(str1_32, cmd_str, 32);
 
-  len = strlen(str);
+  len = strlen(str1_32);
   if(len < 3)  return -1;
 
-  ascii_toupper(str);
+  ascii_toupper(str1_32);
 
-  if(str[len-1] == '?')
+  if(str1_32[len-1] == '?')
   {
     query = RC_CMD_QUERY;
 
@@ -93,7 +93,7 @@ int UI_Mainwindow::rc_cmd2key(const char *cmd_str)
 
   for(i=0, idx=-1; i<RC_CMD_LIST_SZ; i++)
   {
-    if(!strncmp(str, rc_cmd_key_lst[i], len))
+    if(!strncmp(str1_32, rc_cmd_key_lst[i], len))
     {
       if(idx >= 0)
       {
@@ -725,7 +725,7 @@ int UI_Mainwindow::process_rc_cmd_montage(const char *cmd_args, int *cmds_parsed
 {
   int err, file_num=0;
 
-  char str1[1024]="",
+  char str1_1024[1024]="",
        *ptr=NULL;
 
   if(n_sub_cmds < 2)
@@ -735,8 +735,8 @@ int UI_Mainwindow::process_rc_cmd_montage(const char *cmd_args, int *cmds_parsed
 
   if((n_sub_cmds == 2) && (cmds_parsed_key[1] == RC_CMD_LOAD))
   {
-    strlcpy(str1, cmd_args, 1024);
-    err = rc_get_last_cmd_args_token(str1, &ptr);
+    strlcpy(str1_1024, cmd_args, 1024);
+    err = rc_get_last_cmd_args_token(str1_1024, &ptr);
     if(err)
     {
       return err;
@@ -763,7 +763,7 @@ int UI_Mainwindow::process_rc_cmd_montage(const char *cmd_args, int *cmds_parsed
 
     rc_load_mtg_file_num = file_num;
 
-    strlcpy(montagepath, str1, MAX_PATH_LENGTH);
+    strlcpy(montagepath, str1_1024, MAX_PATH_LENGTH);
     UI_LoadMontagewindow load_mtg(this, montagepath);
     montagepath[0] = 0;
     return rc_load_mtg_err;
@@ -798,8 +798,8 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
 {
   int i, n, ival, err, file_num=0;
 
-  char str1[1024]="",
-       str2[1024]="",
+  char str1_1024[1024]="",
+       str2_1024[1024]="",
        *ptr=NULL;
 
   double value2=100,
@@ -816,8 +816,8 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
   {
     if((n_sub_cmds == 3) && (cmds_parsed_key[2] == RC_CMD_LABEL))
     {
-      strlcpy(str1, cmd_args, 1024);
-      err = rc_get_last_cmd_args_token(str1, &ptr);
+      strlcpy(str1_1024, cmd_args, 1024);
+      err = rc_get_last_cmd_args_token(str1_1024, &ptr);
       if(err)
       {
         return err;
@@ -827,9 +827,9 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
       if(signalcomps >= MAXSIGNALS)  return 205;
       if(strip_label_types)
       {
-        strip_types_from_label(str1);
+        strip_types_from_label(str1_1024);
       }
-      trim_spaces(str1);
+      trim_spaces(str1_1024);
 
       if(is_integer_number(ptr))
       {
@@ -851,13 +851,13 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
       for(i=0; i<edfheaderlist[file_num]->edfsignals; i++)
       {
         if(edfheaderlist[file_num]->edfparam[i].annotation)  continue;
-        strlcpy(str2, edfheaderlist[file_num]->edfparam[i].label, 1024);
+        strlcpy(str2_1024, edfheaderlist[file_num]->edfparam[i].label, 1024);
         if(strip_label_types)
         {
-          strip_types_from_label(str2);
+          strip_types_from_label(str2_1024);
         }
-        trim_spaces(str2);
-        if(!strcmp(str2, str1))
+        trim_spaces(str2_1024);
+        if(!strcmp(str2_1024, str1_1024))
         {
           newsignalcomp = (sigcompblck_t *)calloc(1, sizeof(sigcompblck_t));
           if(newsignalcomp==NULL)  return 206;
@@ -1001,8 +1001,8 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
 
     if((n_sub_cmds == 3) && (cmds_parsed_key[2] == RC_CMD_LABEL))
     {
-      strlcpy(str1, cmd_args, 1024);
-      err = rc_get_last_cmd_args_token(str1, &ptr);
+      strlcpy(str1_1024, cmd_args, 1024);
+      err = rc_get_last_cmd_args_token(str1_1024, &ptr);
       if(err)
       {
         return err;
@@ -1013,7 +1013,7 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
       value2 = atof(ptr);
       if((value2 > 1000000.001) || (value2 < 0.0000000999))  return 208;
 
-      n = get_signalcomp_number(str1);
+      n = get_signalcomp_number(str1_1024);
       if(n < 0)  return 207;
 
       if(signalcomp[n]->edfparam_0->bitvalue < 0.0)
@@ -1142,8 +1142,8 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
 
     if((n_sub_cmds == 3) && (cmds_parsed_key[2] == RC_CMD_LABEL))
     {
-      strlcpy(str1, cmd_args, 1024);
-      err = rc_get_last_cmd_args_token(str1, &ptr);
+      strlcpy(str1_1024, cmd_args, 1024);
+      err = rc_get_last_cmd_args_token(str1_1024, &ptr);
       if(err)
       {
         return err;
@@ -1152,7 +1152,7 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
       ival = atoi(ptr);
       if((ival < 0) || (ival > 2))  return 208;
 
-      n = get_signalcomp_number(str1);
+      n = get_signalcomp_number(str1_1024);
       if(n < 0)  return 207;
 
       signalcomp_invert(ival, n);

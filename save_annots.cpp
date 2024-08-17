@@ -47,7 +47,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
       annot_cnt;
 
   char *readbuf=NULL,
-       scratchpad[256]={""},
+       scratchpad_256[256]={""},
        *annot_buf=NULL;
 
   long long time=0LL;
@@ -155,7 +155,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
   fseeko(inputfile, 8LL, SEEK_SET);
   if((hdr->edfplus)||(hdr->bdfplus))
   {
-    if(fread(scratchpad, 176, 1, inputfile)!=1)
+    if(fread(scratchpad_256, 176, 1, inputfile)!=1)
     {
       free(readbuf);
       free(annot_buf);
@@ -168,7 +168,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
 
       for(n=80; n<160; n++)
       {
-        if(scratchpad[n] == ' ')
+        if(scratchpad_256[n] == ' ')
         {
           space++;
 
@@ -183,16 +183,16 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
 
       if(n<150)
       {
-        if(!strncmp(scratchpad + n, "EEG", 3))
+        if(!strncmp(scratchpad_256 + n, "EEG", 3))
         {
-          scratchpad[n] = 'e';
-          scratchpad[n+1] = 'e';
-          scratchpad[n+2] = 'g';
+          scratchpad_256[n] = 'e';
+          scratchpad_256[n+1] = 'e';
+          scratchpad_256[n+2] = 'g';
         }
       }
     }
 
-    if(fwrite(scratchpad, 176, 1, outputfile)!=1)
+    if(fwrite(scratchpad_256, 176, 1, outputfile)!=1)
     {
       free(readbuf);
       free(annot_buf);
@@ -201,39 +201,39 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
   }
   else
   {
-    strlcpy(scratchpad, "X X X X ", 256);
-    if(fread(scratchpad + 8, 80, 1, inputfile)!=1)
+    strlcpy(scratchpad_256, "X X X X ", 256);
+    if(fread(scratchpad_256 + 8, 80, 1, inputfile)!=1)
     {
       free(readbuf);
       free(annot_buf);
       return 2;
     }
-    if(fwrite(scratchpad, 80, 1, outputfile)!=1)
+    if(fwrite(scratchpad_256, 80, 1, outputfile)!=1)
     {
       free(readbuf);
       free(annot_buf);
       return 3;
     }
-    strlcpy(scratchpad, "Startdate X X X X ", 256);
-    if(fread(scratchpad + 18, 80, 1, inputfile)!=1)
+    strlcpy(scratchpad_256, "Startdate X X X X ", 256);
+    if(fread(scratchpad_256 + 18, 80, 1, inputfile)!=1)
     {
       free(readbuf);
       free(annot_buf);
       return 2;
     }
-    if(fwrite(scratchpad, 80, 1, outputfile)!=1)
+    if(fwrite(scratchpad_256, 80, 1, outputfile)!=1)
     {
       free(readbuf);
       free(annot_buf);
       return 3;
     }
-    if(fread(scratchpad, 16, 1, inputfile)!=1)
+    if(fread(scratchpad_256, 16, 1, inputfile)!=1)
     {
       free(readbuf);
       free(annot_buf);
       return 2;
     }
-    if(fwrite(scratchpad, 16, 1, outputfile)!=1)
+    if(fwrite(scratchpad_256, 16, 1, outputfile)!=1)
     {
       free(readbuf);
       free(annot_buf);
@@ -254,18 +254,18 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
     fputc(' ', outputfile);
   }
   fprintf(outputfile, "%-8i", datarecords);
-  snprintf(scratchpad, 256, "%.12f", hdr->data_record_duration);
-  remove_trailing_zeros(scratchpad);
-  strlcat(scratchpad, "         ", 256);
-  if((!strncmp(scratchpad, "0.", 2)) && (scratchpad[8] != ' '))
+  snprintf(scratchpad_256, 256, "%.12f", hdr->data_record_duration);
+  remove_trailing_zeros(scratchpad_256);
+  strlcat(scratchpad_256, "         ", 256);
+  if((!strncmp(scratchpad_256, "0.", 2)) && (scratchpad_256[8] != ' '))
   {
-    scratchpad[9] = 0;
-    fprintf(outputfile, "%s", scratchpad + 1);
+    scratchpad_256[9] = 0;
+    fprintf(outputfile, "%s", scratchpad_256 + 1);
   }
   else
   {
-    scratchpad[8] = 0;
-    fprintf(outputfile, "%s", scratchpad);
+    scratchpad_256[8] = 0;
+    fprintf(outputfile, "%s", scratchpad_256);
   }
   fprintf(outputfile, "%-4i", new_edfsignals + 1);
 
@@ -299,60 +299,60 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, edfhdrblck_t *
   }
   for(i=0; i<new_edfsignals; i++)
   {
-    snprintf(scratchpad, 256, "%f", hdr->edfparam[signalslist[i]].phys_min);
+    snprintf(scratchpad_256, 256, "%f", hdr->edfparam[signalslist[i]].phys_min);
     for(k=0; k<8; k++)
     {
-      if(scratchpad[k]=='.')
+      if(scratchpad_256[k]=='.')
       {
         for(j=7; j>=0; j--)
         {
-          if((scratchpad[j]!='.')&&(scratchpad[j]!='0'))
+          if((scratchpad_256[j]!='.')&&(scratchpad_256[j]!='0'))
           {
             break;
           }
 
-          if(scratchpad[j]=='.')
+          if(scratchpad_256[j]=='.')
           {
-            scratchpad[j] = ' ';
+            scratchpad_256[j] = ' ';
             break;
           }
 
-          scratchpad[j] = ' ';
+          scratchpad_256[j] = ' ';
         }
         break;
       }
-      scratchpad[8] = 0;
+      scratchpad_256[8] = 0;
     }
-    fprintf(outputfile, "%s", scratchpad);
+    fprintf(outputfile, "%s", scratchpad_256);
   }
   fprintf(outputfile, "-1      ");
   for(i=0; i<new_edfsignals; i++)
   {
-    snprintf(scratchpad, 256, "%f", hdr->edfparam[signalslist[i]].phys_max);
+    snprintf(scratchpad_256, 256, "%f", hdr->edfparam[signalslist[i]].phys_max);
     for(k=0; k<8; k++)
     {
-      if(scratchpad[k]=='.')
+      if(scratchpad_256[k]=='.')
       {
         for(j=7; j>=0; j--)
         {
-          if((scratchpad[j]!='.')&&(scratchpad[j]!='0'))
+          if((scratchpad_256[j]!='.')&&(scratchpad_256[j]!='0'))
           {
             break;
           }
 
-          if(scratchpad[j]=='.')
+          if(scratchpad_256[j]=='.')
           {
-            scratchpad[j] = ' ';
+            scratchpad_256[j] = ' ';
             break;
           }
 
-          scratchpad[j] = ' ';
+          scratchpad_256[j] = ' ';
         }
         break;
       }
     }
-    scratchpad[8] = 0;
-    fprintf(outputfile, "%s", scratchpad);
+    scratchpad_256[8] = 0;
+    fprintf(outputfile, "%s", scratchpad_256);
   }
   fprintf(outputfile, "1       ");
   for(i=0; i<new_edfsignals; i++)

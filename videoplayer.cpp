@@ -381,7 +381,7 @@ void UI_Mainwindow::video_poll_timer_func()
 
   static int repeat=0;
 
-  char buf[4096];
+  char str_4096[4096]={""};
 
   if(video_player->status == VIDEO_STATUS_STOPPED)  return;
 
@@ -402,7 +402,7 @@ void UI_Mainwindow::video_poll_timer_func()
 #ifdef DEBUG_VIDEOPLAYER
     fprintf(debug_vpr, "edfbr_status: %i\n", video_player->status);
 #endif
-  len = mpr_read(buf, 4095);
+  len = mpr_read(str_4096, 4095);
 
   if((len < 1) && (video_player->status == VIDEO_STATUS_PLAYING))
   {
@@ -417,7 +417,7 @@ void UI_Mainwindow::video_poll_timer_func()
   {
     if(video_player->status == VIDEO_STATUS_STARTUP_1)
     {
-      while(mpr_read(buf, 4095) > 0) ;
+      while(mpr_read(str_4096, 4095) > 0) ;
 
       mpr_write("clear\n");
 
@@ -435,13 +435,13 @@ void UI_Mainwindow::video_poll_timer_func()
         }
         else
         {
-          strlcpy(buf, "add ", 4096);
+          strlcpy(str_4096, "add ", 4096);
 
-          strlcat(buf, videopath, 4096);
+          strlcat(str_4096, videopath, 4096);
 
-          strlcat(buf, "\n", 4096);
+          strlcat(str_4096, "\n", 4096);
 
-          mpr_write(buf);
+          mpr_write(str_4096);
 
           video_player->status = VIDEO_STATUS_STARTUP_3;
 #ifdef DEBUG_VIDEOPLAYER
@@ -571,19 +571,19 @@ void UI_Mainwindow::video_poll_timer_func()
   {
     for(p=0; p<len; p++)
     {
-      if((buf[p] != '>') && (buf[p] != ' '))
+      if((str_4096[p] != '>') && (str_4096[p] != ' '))
       {
         break;
       }
     }
 
-    if((len > (p + 2)) && (buf[len-1] == '\n'))
+    if((len > (p + 2)) && (str_4096[len-1] == '\n'))
     {
       err = 0;
 
       for(i=p; i<(len-1); i++)
       {
-        if((buf[i] < '0') || (buf[i] > '9'))
+        if((str_4096[i] < '0') || (str_4096[i] > '9'))
 
         err = 1;
 
@@ -592,7 +592,7 @@ void UI_Mainwindow::video_poll_timer_func()
 
       if(!err)
       {
-        vpos = atoi(buf + p);
+        vpos = atoi(str_4096 + p);
 
         if(video_player->fpos != vpos)
         {
@@ -609,7 +609,7 @@ void UI_Mainwindow::video_poll_timer_func()
       {
         for(i=0; i<(len-11); i++)
         {
-          if(!strncmp(buf + i, "stop state:", 11))
+          if(!strncmp(str_4096 + i, "stop state:", 11))
           {
             stop_video_generic(1);
 
@@ -618,7 +618,7 @@ void UI_Mainwindow::video_poll_timer_func()
         }
       }
     }
-    else if(buf[p] == '\r')
+    else if(str_4096[p] == '\r')
     {
       video_player->stop_det_counter += video_player->poll_timer;
 

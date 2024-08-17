@@ -99,12 +99,12 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
   long long filesize, ll_tmp;
 
-  char input_filename[MAX_PATH_LENGTH],
-       txt_string[2048],
-       edf_filename[MAX_PATH_LENGTH],
-       scratchpad[MAX_PATH_LENGTH],
+  char input_filename[MAX_PATH_LENGTH]={""},
+       str1_2048[2048]={""},
+       edf_filename[MAX_PATH_LENGTH]={""},
+       scratchpad[MAX_PATH_LENGTH]={""},
        *block=NULL,
-       *ch_ptr;
+       *ch_ptr=NULL;
 
   pushButton1->setEnabled(false);
 
@@ -136,15 +136,15 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   inputfile = fopeno(input_filename, "rb");
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", input_filename);
-    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    snprintf(str1_2048, 2048, "Cannot open file %s for reading.\n", input_filename);
+    textEdit1->append(QString::fromLocal8Bit(str1_2048));
     goto EXIT_1;
   }
 
   get_filename_from_path(scratchpad, input_filename, MAX_PATH_LENGTH);
 
-  snprintf(txt_string, 2048, "Read file: %s", scratchpad);
-  textEdit1->append(QString::fromLocal8Bit(txt_string));
+  snprintf(str1_2048, 2048, "Read file: %s", scratchpad);
+  textEdit1->append(QString::fromLocal8Bit(str1_2048));
 
   fseeko(inputfile, 0LL, SEEK_END);
   filesize = ftello(inputfile);
@@ -1000,8 +1000,8 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
   if(hdl<0)
   {
-    snprintf(txt_string, 2048, "Cannot open file %s for writing.\n", edf_filename);
-    textEdit1->append(txt_string);
+    snprintf(str1_2048, 2048, "Cannot open file %s for writing.\n", edf_filename);
+    textEdit1->append(str1_2048);
     goto EXIT_4;
   }
 
@@ -1350,7 +1350,7 @@ int UI_SCPECG2EDFwindow::check_crc(FILE *inputfile, long long offset, long long 
 
 int UI_SCPECG2EDFwindow::read_section_header(int n, FILE *inputfile, long long offset, char *block)
 {
-  char str[256];
+  char str1_256[256]={""};
 
   fseeko(inputfile, offset, SEEK_SET);
 
@@ -1398,8 +1398,8 @@ int UI_SCPECG2EDFwindow::read_section_header(int n, FILE *inputfile, long long o
 
   if(check_crc(inputfile, offset + 2, sp[n].section_length - 2LL, sp[n].crc, block))
   {
-    snprintf(str, 256, "CRC-error in section %i\n", n);
-    textEdit1->append(str);
+    snprintf(str1_256, 256, "CRC-error in section %i\n", n);
+    textEdit1->append(str1_256);
     return -1;
   }
 
@@ -1507,7 +1507,7 @@ void UI_SCPECG2EDFwindow::lead_label_lookup(unsigned char idx, char *label, int 
 
 int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
 {
-  char str[2048];
+  char str1_2048[2048]={""};
 
   int i, j, n, len, tag;
 
@@ -1527,13 +1527,13 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
   {
     fseeko(inputfile, offset, SEEK_SET);
 
-    if(fread(str, 3, 1, inputfile) != 1)
+    if(fread(str1_2048, 3, 1, inputfile) != 1)
     {
       textEdit1->append("A read-error occurred (80)\n");
       return -1;
     }
 
-    len = *((unsigned short *)(str + 1));
+    len = *((unsigned short *)(str1_2048 + 1));
 
     if((offset + len + 3 - sp[1].file_offset) > sp[1].section_length)
     {
@@ -1544,7 +1544,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
 
     offset += (len + 3);
 
-    tag = *((unsigned char *)str);
+    tag = *((unsigned char *)str1_2048);
 
     if(tag == 255)
     {
@@ -1560,17 +1560,17 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
         n = 2046;
       }
 
-      if(fread(str, n, 1, inputfile) != 1)
+      if(fread(str1_2048, n, 1, inputfile) != 1)
       {
         textEdit1->append("A read-error occurred (82)\n");
         return -1;
       }
 
-      str[n] = 0;
+      str1_2048[n] = 0;
 
       if(tag == 2)  // Patient ID
       {
-        strncpy(pat_dat.pat_id, str, 20);
+        strncpy(pat_dat.pat_id, str1_2048, 20);
 
         pat_dat.pat_id[20] = 0;
         trim_spaces(pat_dat.pat_id);
@@ -1578,7 +1578,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
 
       if(tag == 0)  // Patient last name
       {
-        strncpy(pat_dat.last_name, str, 20);
+        strncpy(pat_dat.last_name, str1_2048, 20);
 
         pat_dat.last_name[20] = 0;
         trim_spaces(pat_dat.last_name);
@@ -1586,7 +1586,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
 
       if(tag == 1)  // Patient first name
       {
-        strncpy(pat_dat.first_name, str, 20);
+        strncpy(pat_dat.first_name, str1_2048, 20);
 
         pat_dat.first_name[20] = 0;
         trim_spaces(pat_dat.first_name);
@@ -1594,44 +1594,44 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
 
       if(tag == 8)  // Patient sex
       {
-        pat_dat.sex = str[0];
+        pat_dat.sex = str1_2048[0];
       }
 
       if(tag == 25)  // startdate
       {
-        pntr = str;
+        pntr = str1_2048;
         pat_dat.startdate_year = *((unsigned short *)pntr);
-        pat_dat.startdate_month = str[2];
-        pat_dat.startdate_day = str[3];
+        pat_dat.startdate_month = str1_2048[2];
+        pat_dat.startdate_day = str1_2048[3];
       }
 
       if(tag == 26)  // starttime
       {
-        pat_dat.starttime_hour = str[0];
-        pat_dat.starttime_minute = str[1];
-        pat_dat.starttime_second = str[2];
+        pat_dat.starttime_hour = str1_2048[0];
+        pat_dat.starttime_minute = str1_2048[1];
+        pat_dat.starttime_second = str1_2048[2];
       }
 
       if(tag == 5)  // birthdate
       {
-        pntr = str;
+        pntr = str1_2048;
         pat_dat.startdate_year = *((unsigned short *)pntr);
-        pat_dat.startdate_month = str[2];
-        pat_dat.startdate_day = str[3];
+        pat_dat.startdate_month = str1_2048[2];
+        pat_dat.startdate_day = str1_2048[3];
       }
 
       if(tag == 14)  // machine ID acquiring device
       {
-        pat_dat.lang_code = str[16];
-        strncpy(pat_dat.device_model, str + 8, 5);
+        pat_dat.lang_code = str1_2048[16];
+        strncpy(pat_dat.device_model, str1_2048 + 8, 5);
         pat_dat.device_model[5] = 0;
 
-        i = str[35];
+        i = str1_2048[35];
         i += 36;
 
         if(i < 1500)
         {
-          strncpy(pat_dat.device_serial, str + i + 1, 48);
+          strncpy(pat_dat.device_serial, str1_2048 + i + 1, 48);
           latin1_to_ascii(pat_dat.device_serial, 48);
           pat_dat.device_serial[48] = 0;
           trim_spaces(pat_dat.device_serial);
@@ -1641,13 +1641,13 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
 
         for( ; i<1500; i++)
         {
-          if(str[i] == 0)
+          if(str1_2048[i] == 0)
           {
             j++;
 
             if(j == 1)
             {
-              strncpy(pat_dat.device_ident, str + i + 1, 48);
+              strncpy(pat_dat.device_ident, str1_2048 + i + 1, 48);
               latin1_to_ascii(pat_dat.device_ident, 48);
               pat_dat.device_ident[48] = 0;
               trim_spaces(pat_dat.device_ident);
@@ -1655,7 +1655,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
 
             if(j == 3)
             {
-              strncpy(pat_dat.manufacturer, str + i + 1, 48);
+              strncpy(pat_dat.manufacturer, str1_2048 + i + 1, 48);
               latin1_to_ascii(pat_dat.manufacturer, 48);
               pat_dat.manufacturer[48] = 0;
               trim_spaces(pat_dat.manufacturer);

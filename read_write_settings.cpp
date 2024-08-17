@@ -105,12 +105,10 @@ void UI_Mainwindow::read_color_settings()
 {
   int i;
 
-  char cfg_path[MAX_PATH_LENGTH],
-       result[XML_STRBUFLEN];
+  char cfg_path[MAX_PATH_LENGTH]={""},
+       result[XML_STRBUFLEN]={""};
 
-  xml_hdl_t *xml_hdl;
-
-  cfg_path[0] = 0;
+  xml_hdl_t *xml_hdl=NULL;
 
 #ifdef Q_OS_WIN32
   strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
@@ -403,14 +401,12 @@ void UI_Mainwindow::read_recent_file_settings()
 {
   int i;
 
-  char cfg_path[MAX_PATH_LENGTH],
-       result[XML_STRBUFLEN];
+  char cfg_path[MAX_PATH_LENGTH]={""},
+       result[XML_STRBUFLEN]={""};
 
-  xml_hdl_t *xml_hdl;
+  xml_hdl_t *xml_hdl=NULL;
 
-  cfg_path[0] = 0;
-
-  QAction *act;
+  QAction *act=NULL;
 
 #ifdef Q_OS_WIN32
   strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
@@ -661,12 +657,10 @@ void UI_Mainwindow::read_general_settings()
 {
   int i;
 
-  char cfg_path[MAX_PATH_LENGTH],
-       result[XML_STRBUFLEN];
+  char cfg_path[MAX_PATH_LENGTH]={""},
+       result[XML_STRBUFLEN]={""};
 
-  xml_hdl_t *xml_hdl;
-
-  cfg_path[0] = 0;
+  xml_hdl_t *xml_hdl=NULL;
 
 #ifdef Q_OS_WIN32
   strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
@@ -3272,7 +3266,7 @@ void UI_Mainwindow::write_settings()
   int i;
 
   char cfg_path[MAX_PATH_LENGTH]={""},
-       str[1024]={""};
+       str1_1024[1024]={""};
 
   FILE *cfgfile=NULL;
 
@@ -3419,9 +3413,9 @@ void UI_Mainwindow::write_settings()
 
     for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
     {
-      xml_strlcpy_encode_entity(str, mc_annot_ov_name_predefined[i], 1024);
+      xml_strlcpy_encode_entity(str1_1024, mc_annot_ov_name_predefined[i], 1024);
 
-      fprintf(cfgfile, "        <mc_annot_ov_name_predefined>%s</mc_annot_ov_name_predefined>\n", str);
+      fprintf(cfgfile, "        <mc_annot_ov_name_predefined>%s</mc_annot_ov_name_predefined>\n", str1_1024);
     }
 
     fprintf(cfgfile, "      </annot_ov_predefined_block>\n");
@@ -3652,9 +3646,9 @@ void UI_Mainwindow::write_settings()
 
     fprintf(cfgfile, "      <datastartline>%i</datastartline>\n", import_annotations_var->datastartline);
 
-    xml_strlcpy_encode_entity(str, import_annotations_var->separator, 1024);
+    xml_strlcpy_encode_entity(str1_1024, import_annotations_var->separator, 1024);
 
-    fprintf(cfgfile, "      <separator>%s</separator>\n", str);
+    fprintf(cfgfile, "      <separator>%s</separator>\n", str1_1024);
 
     fprintf(cfgfile, "      <ascii_txt_encoding>%i</ascii_txt_encoding>\n", import_annotations_var->ascii_txt_encoding);
 
@@ -3666,9 +3660,9 @@ void UI_Mainwindow::write_settings()
 
     fprintf(cfgfile, "      <manualdescription>%i</manualdescription>\n", import_annotations_var->manualdescription);
 
-    xml_strlcpy_encode_entity(str, import_annotations_var->description, 1024);
+    xml_strlcpy_encode_entity(str1_1024, import_annotations_var->description, 1024);
 
-    fprintf(cfgfile, "      <description>%s</description>\n", str);
+    fprintf(cfgfile, "      <description>%s</description>\n", str1_1024);
 
     fprintf(cfgfile, "      <ignoreconsecutive>%i</ignoreconsecutive>\n", import_annotations_var->ignoreconsecutive);
 
@@ -3713,21 +3707,21 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "    <hypnogram>\n");
     for(i=0; i<HYPNOGRAM_STAGENUM; i++)
     {
-      xml_strlcpy_encode_entity(str, hypnogram_stage_name[i], 1024);
+      xml_strlcpy_encode_entity(str1_1024, hypnogram_stage_name[i], 1024);
 
-      fprintf(cfgfile, "      <stage_name>%s</stage_name>\n", str);
+      fprintf(cfgfile, "      <stage_name>%s</stage_name>\n", str1_1024);
     }
     for(i=0; i<HYPNOGRAM_STAGENUM; i++)
     {
-      xml_strlcpy_encode_entity(str, hypnogram_annot_name[i], 1024);
+      xml_strlcpy_encode_entity(str1_1024, hypnogram_annot_name[i], 1024);
 
-      fprintf(cfgfile, "      <annot_name>%s</annot_name>\n", str);
+      fprintf(cfgfile, "      <annot_name>%s</annot_name>\n", str1_1024);
     }
     for(i=0; i<HYPNOGRAM_OVNUM; i++)
     {
-      xml_strlcpy_encode_entity(str, hypnogram_annot_ov_name[i], 1024);
+      xml_strlcpy_encode_entity(str1_1024, hypnogram_annot_ov_name[i], 1024);
 
-      fprintf(cfgfile, "      <annot_ov_name>%s</annot_ov_name>\n", str);
+      fprintf(cfgfile, "      <annot_ov_name>%s</annot_ov_name>\n", str1_1024);
     }
     for(i=0; i<HYPNOGRAM_OVNUM; i++)
     {
@@ -3748,8 +3742,8 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "    </hypnogram>\n");
 
     fprintf(cfgfile, "    <ecg_qrs>\n");
-    xml_strlcpy_encode_entity(str, ecg_qrs_rpeak_descr, 1024);
-    fprintf(cfgfile, "      <r_peak_description>%s</r_peak_description>\n", str);
+    xml_strlcpy_encode_entity(str1_1024, ecg_qrs_rpeak_descr, 1024);
+    fprintf(cfgfile, "      <r_peak_description>%s</r_peak_description>\n", str1_1024);
     fprintf(cfgfile, "      <use_signallabel_in_annot_descr>%i</use_signallabel_in_annot_descr>\n", use_signallabel_in_annot_descr);
     fprintf(cfgfile, "    </ecg_qrs>\n");
 
@@ -3786,8 +3780,8 @@ void UI_Mainwindow::write_settings()
     }
     for(i=0; i<8; i++)
     {
-      xml_strlcpy_encode_entity(str, annot_edit_user_button_name[i], 1024);
-      fprintf(cfgfile, "      <annot_edit_user_button_name>%s</annot_edit_user_button_name>\n", str);
+      xml_strlcpy_encode_entity(str1_1024, annot_edit_user_button_name[i], 1024);
+      fprintf(cfgfile, "      <annot_edit_user_button_name>%s</annot_edit_user_button_name>\n", str1_1024);
     }
     for(i=0; i<8; i++)
     {
@@ -3807,8 +3801,8 @@ void UI_Mainwindow::write_settings()
 #endif
     for(i=0; i<MAX_ANNOTEDIT_SIDE_MENU_ANNOTS; i++)
     {
-      xml_strlcpy_encode_entity(str, annot_by_rect_draw_description[i], 1024);
-      fprintf(cfgfile, "      <annot_by_rect_draw_description>%s</annot_by_rect_draw_description>\n", str);
+      xml_strlcpy_encode_entity(str1_1024, annot_by_rect_draw_description[i], 1024);
+      fprintf(cfgfile, "      <annot_by_rect_draw_description>%s</annot_by_rect_draw_description>\n", str1_1024);
     }
     fprintf(cfgfile, "    </annotation_editor>\n");
 
@@ -3884,9 +3878,9 @@ void UI_Mainwindow::write_settings()
 
     fprintf(cfgfile, "      <skipbytes>%i</skipbytes>\n", raw2edf_var.skipbytes);
 
-    xml_strlcpy_encode_entity(str, raw2edf_var.phys_dim, 1024);
+    xml_strlcpy_encode_entity(str1_1024, raw2edf_var.phys_dim, 1024);
 
-    fprintf(cfgfile, "      <phys_dim>%s</phys_dim>\n", str);
+    fprintf(cfgfile, "      <phys_dim>%s</phys_dim>\n", str1_1024);
 
     fprintf(cfgfile, "    </raw2edf_var>\n");
 

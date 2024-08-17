@@ -39,7 +39,7 @@ static const int dftsz_range[24]={200,1000,1024,2048,4096,5000,8192,10000,16384,
 
 UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 {
-  char str[1024];
+  char str_1024[1024]={""};
 
   fft_data = NULL;
 
@@ -112,8 +112,8 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   {
     if(mainwindow->spectrumdock_vlog)
     {
-      snprintf(str, 512, "log10(%s)", physdimension);
-      curve1->setV_label(str);
+      snprintf(str_1024, 512, "log10(%s)", physdimension);
+      curve1->setV_label(str_1024);
     }
     else
     {
@@ -124,14 +124,14 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   {
     if(mainwindow->spectrumdock_vlog)
     {
-      snprintf(str, 512, "log((%s)^2/Hz)", physdimension);
+      snprintf(str_1024, 512, "log((%s)^2/Hz)", physdimension);
     }
     else
     {
-      snprintf(str, 512, "(%s)^2/Hz", physdimension);
+      snprintf(str_1024, 512, "(%s)^2/Hz", physdimension);
     }
 
-    curve1->setV_label(str);
+    curve1->setV_label(str_1024);
   }
   curve1->create_button("to Text");
 
@@ -459,7 +459,7 @@ void UI_SpectrumDockWindow::overlap_box_changed(int idx)
 
 void UI_SpectrumDockWindow::open_close_dock(bool visible)
 {
-  char str[512]={""};
+  char str_512[512]={""};
 
   if(mainwindow->files_open != 1 || signal_nr < 0)
   {
@@ -482,14 +482,14 @@ void UI_SpectrumDockWindow::open_close_dock(bool visible)
     {
       sqrtButton->setChecked(true);
 
-      snprintf(str, 512, "Amplitude Spectrum %.64s", signallabel);
+      snprintf(str_512, 512, "Amplitude Spectrum %.64s", signallabel);
 
-      dock->setWindowTitle(str);
+      dock->setWindowTitle(str_512);
 
       if(mainwindow->spectrumdock_vlog)
       {
-        snprintf(str, 512, "log10(%s)", physdimension);
-        curve1->setV_label(str);
+        snprintf(str_512, 512, "log10(%s)", physdimension);
+        curve1->setV_label(str_512);
       }
       else
       {
@@ -500,20 +500,20 @@ void UI_SpectrumDockWindow::open_close_dock(bool visible)
     {
       sqrtButton->setChecked(false);
 
-      snprintf(str, 512, "Power Spectrum %.64s", signallabel);
+      snprintf(str_512, 512, "Power Spectrum %.64s", signallabel);
 
-      dock->setWindowTitle(str);
+      dock->setWindowTitle(str_512);
 
       if(mainwindow->spectrumdock_vlog)
       {
-        snprintf(str, 512, "log((%s)^2/Hz)", physdimension);
+        snprintf(str_512, 512, "log((%s)^2/Hz)", physdimension);
       }
       else
       {
-        snprintf(str, 512, "(%s)^2/Hz", physdimension);
+        snprintf(str_512, 512, "(%s)^2/Hz", physdimension);
       }
 
-      curve1->setV_label(str);
+      curve1->setV_label(str_512);
     }
 
     if(mainwindow->spectrumdock_vlog)
@@ -656,10 +656,10 @@ void UI_SpectrumDockWindow::print_to_txt()
 {
   int i;
 
-  char str[1024],
+  char str_1024[1024]={""},
        path[MAX_PATH_LENGTH];
 
-  FILE *outputfile;
+  FILE *outputfile=NULL;
 
 
   if(fft_data == NULL)  return;
@@ -684,8 +684,8 @@ void UI_SpectrumDockWindow::print_to_txt()
   outputfile = fopen(path, "wb");
   if(outputfile == NULL)
   {
-    snprintf(str, 1024, "Cannot open file %.990s for writing.", path);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str));
+    snprintf(str_1024, 1024, "Cannot open file %.990s for writing.", path);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str_1024));
     messagewindow.exec();
     return;
   }
@@ -769,45 +769,45 @@ void UI_SpectrumDockWindow::colorBarButtonClicked(bool value)
 
 void UI_SpectrumDockWindow::sqrtButtonClicked(bool value)
 {
-  char str[2048];
+  char str_2048[2048]={""};
 
   if(value == false)
   {
     mainwindow->spectrumdock_sqrt = 0;
 
-    snprintf(str, 2048, "Power Spectrum %s", signallabel);
+    snprintf(str_2048, 2048, "Power Spectrum %s", signallabel);
 
-    dock->setWindowTitle(str);
+    dock->setWindowTitle(str_2048);
 
     if(mainwindow->spectrumdock_vlog)
     {
-      snprintf(str, 2048, "log10((%s)^2/Hz)", physdimension);
+      snprintf(str_2048, 2048, "log10((%s)^2/Hz)", physdimension);
     }
     else
     {
-      snprintf(str, 2048, "(%s)^2/Hz", physdimension);
+      snprintf(str_2048, 2048, "(%s)^2/Hz", physdimension);
     }
 
-    curve1->setV_label(str);
+    curve1->setV_label(str_2048);
   }
   else
   {
     mainwindow->spectrumdock_sqrt = 1;
 
-    snprintf(str, 2048, "Amplitude Spectrum %s", signallabel);
+    snprintf(str_2048, 2048, "Amplitude Spectrum %s", signallabel);
 
-    dock->setWindowTitle(str);
+    dock->setWindowTitle(str_2048);
 
     if(mainwindow->spectrumdock_vlog)
     {
-      snprintf(str, 2048, "log(%s)", physdimension);
+      snprintf(str_2048, 2048, "log(%s)", physdimension);
     }
     else
     {
-      snprintf(str, 2048, "%s", physdimension);
+      snprintf(str_2048, 2048, "%s", physdimension);
     }
 
-    curve1->setV_label(str);
+    curve1->setV_label(str_2048);
   }
 
   sliderMoved(0);
@@ -816,7 +816,7 @@ void UI_SpectrumDockWindow::sqrtButtonClicked(bool value)
 
 void UI_SpectrumDockWindow::vlogButtonClicked(bool value)
 {
-  char str[600];
+  char str_600[600]={""};
 
   if(value == false)
   {
@@ -824,14 +824,14 @@ void UI_SpectrumDockWindow::vlogButtonClicked(bool value)
 
     if(mainwindow->spectrumdock_sqrt)
     {
-      snprintf(str, 600, "%s", physdimension);
+      snprintf(str_600, 600, "%s", physdimension);
     }
     else
     {
-      snprintf(str, 600, "(%s)^2/Hz", physdimension);
+      snprintf(str_600, 600, "(%s)^2/Hz", physdimension);
     }
 
-    curve1->setV_label(str);
+    curve1->setV_label(str_600);
 
     log_minslider->setVisible(false);
   }
@@ -841,14 +841,14 @@ void UI_SpectrumDockWindow::vlogButtonClicked(bool value)
 
     if(mainwindow->spectrumdock_sqrt)
     {
-      snprintf(str, 600, "log10(%s)", physdimension);
+      snprintf(str_600, 600, "log10(%s)", physdimension);
     }
     else
     {
-      snprintf(str, 600, "log10((%s)^2/Hz)", physdimension);
+      snprintf(str_600, 600, "log10((%s)^2/Hz)", physdimension);
     }
 
-    curve1->setV_label(str);
+    curve1->setV_label(str_600);
 
     log_minslider->setVisible(true);
   }
@@ -866,7 +866,7 @@ void UI_SpectrumDockWindow::sliderMoved(int)
   double max_freq,
          start_freq;
 
-  char str[1024];
+  char str_1024[1024]={""};
 
   if(fft_data == NULL)  return;
 
@@ -917,23 +917,23 @@ void UI_SpectrumDockWindow::sliderMoved(int)
 
   curve1->setH_RulerValues(start_freq, max_freq);
 
-  strlcpy(str, "Center ", 1024);
-  convert_to_metric_suffix(str + strlen(str), start_freq + ((max_freq - start_freq) / 2.0), 3, 1024 - strlen(str));
-//  remove_trailing_zeros(str);
-  strlcat(str, "Hz", 1024);
-  centerLabel->setText(str);
+  strlcpy(str_1024, "Center ", 1024);
+  convert_to_metric_suffix(str_1024 + strlen(str_1024), start_freq + ((max_freq - start_freq) / 2.0), 3, 1024 - strlen(str_1024));
+//  remove_trailing_zeros(str_1024);
+  strlcat(str_1024, "Hz", 1024);
+  centerLabel->setText(str_1024);
 
-  strlcpy(str, "Span ", 1024);
-  convert_to_metric_suffix(str + strlen(str), max_freq - start_freq, 3, 1024 - strlen(str));
-//  remove_trailing_zeros(str);
-  strlcat(str, "Hz", 1024);
-  spanLabel->setText(str);
+  strlcpy(str_1024, "Span ", 1024);
+  convert_to_metric_suffix(str_1024 + strlen(str_1024), max_freq - start_freq, 3, 1024 - strlen(str_1024));
+//  remove_trailing_zeros(str_1024);
+  strlcat(str_1024, "Hz", 1024);
+  spanLabel->setText(str_1024);
 }
 
 
 void UI_SpectrumDockWindow::init(int signal_num)
 {
-  char str[2048];
+  char str_2048[2048]={""};
 
   init_maxvalue = 1;
 
@@ -964,8 +964,8 @@ void UI_SpectrumDockWindow::init(int signal_num)
       {
         vlogButton->setChecked(true);
 
-        snprintf(str, 512, "log10(%s)", physdimension);
-        curve1->setV_label(str);
+        snprintf(str_2048, 512, "log10(%s)", physdimension);
+        curve1->setV_label(str_2048);
       }
       else
       {
@@ -982,16 +982,16 @@ void UI_SpectrumDockWindow::init(int signal_num)
       {
         vlogButton->setChecked(true);
 
-        snprintf(str, 512, "log((%s)^2/Hz)", physdimension);
+        snprintf(str_2048, 512, "log((%s)^2/Hz)", physdimension);
       }
       else
       {
         vlogButton->setChecked(false);
 
-        snprintf(str, 512, "(%s)^2/Hz", physdimension);
+        snprintf(str_2048, 512, "(%s)^2/Hz", physdimension);
       }
 
-      curve1->setV_label(str);
+      curve1->setV_label(str_2048);
     }
 
     amplitudeSlider->setValue(1000);
@@ -1058,7 +1058,7 @@ void UI_SpectrumDockWindow::update_curve()
 
   unsigned long long s, s2;
 
-  char str[1024];
+  char str_1024[1024]={""};
 
   double dig_value=0.0,
          f_tmp=0.0;
@@ -1322,8 +1322,8 @@ void UI_SpectrumDockWindow::update_curve()
 
   if(samples > buf1_sz)
   {
-    snprintf(str, 1000, "Internal error in file: %s at line: %i.", __FILE__, __LINE__);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    snprintf(str_1024, 1000, "Internal error in file: %s at line: %i.", __FILE__, __LINE__);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str_1024);
     messagewindow.exec();
     busy = 0;
     return;
@@ -1549,13 +1549,13 @@ void UI_SpectrumDockWindow::update_curve()
     buf1 = NULL;
   }
 
-//  snprintf(str, 1024, "FFT resolution: %f Hz   %i blocks of %i samples", freqstep, dftblocks, dftblocksize);
+//  snprintf(str_1024, 1024, "FFT resolution: %f Hz   %i blocks of %i samples", freqstep, dftblocks, dftblocksize);
 
-  strlcpy(str, "FFT resolution: ", 1024);
-  convert_to_metric_suffix(str + strlen(str), freqstep, 3, 1024 - strlen(str));
-  remove_trailing_zeros(str);
-  snprintf(str + strlen(str), 1024 - strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks_processed, fft_data->dft_sz);
-  curve1->setUpperLabel1(str);
+  strlcpy(str_1024, "FFT resolution: ", 1024);
+  convert_to_metric_suffix(str_1024 + strlen(str_1024), freqstep, 3, 1024 - strlen(str_1024));
+  remove_trailing_zeros(str_1024);
+  snprintf(str_1024 + strlen(str_1024), 1024 - strlen(str_1024), "Hz   %i blocks of %i samples", fft_data->blocks_processed, fft_data->dft_sz);
+  curve1->setUpperLabel1(str_1024);
 
   curve1->setUpperLabel2(signallabel);
 
@@ -1646,14 +1646,14 @@ void UI_SpectrumDockWindow::update_curve()
 
   if(mainwindow->spectrumdock_sqrt)
   {
-    snprintf(str, 1024, "Amplitude Spectrum %s", signallabel);
+    snprintf(str_1024, 1024, "Amplitude Spectrum %s", signallabel);
   }
   else
   {
-    snprintf(str, 1024, "Power Spectrum %s", signallabel);
+    snprintf(str_1024, 1024, "Power Spectrum %s", signallabel);
   }
 
-  dock->setWindowTitle(str);
+  dock->setWindowTitle(str_1024);
 
   if(set_settings)
   {

@@ -248,7 +248,7 @@ void UI_ReduceSignalsWindow::spinBox1changed(int value)
 
   int days;
 
-  char scratchpad[256];
+  char scratchpad_256[256]={""};
 
   QObject::disconnect(spinBox2,       SIGNAL(valueChanged(int)), this,           SLOT(spinBox2changed(int)));
   spinBox2->setMinimum(value);
@@ -269,13 +269,13 @@ void UI_ReduceSignalsWindow::spinBox1changed(int value)
   milliSec /= 10000LL;
   if(days)
   {
-    snprintf(scratchpad, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(scratchpad_256, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
   else
   {
-    snprintf(scratchpad, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(scratchpad_256, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
-  label4->setText(scratchpad);
+  label4->setText(scratchpad_256);
 }
 
 
@@ -286,7 +286,7 @@ void UI_ReduceSignalsWindow::spinBox2changed(int value)
 
   int days;
 
-  char scratchpad[256];
+  char scratchpad_256[256]={""};
 
   QObject::disconnect(spinBox1,       SIGNAL(valueChanged(int)), this,           SLOT(spinBox1changed(int)));
   spinBox1->setMaximum(value);
@@ -303,13 +303,13 @@ void UI_ReduceSignalsWindow::spinBox2changed(int value)
   milliSec /= 10000LL;
   if(days)
   {
-    snprintf(scratchpad, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(scratchpad_256, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
   else
   {
-    snprintf(scratchpad, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(scratchpad_256, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
-  label5->setText(scratchpad);
+  label5->setText(scratchpad_256);
 }
 
 
@@ -320,7 +320,7 @@ void UI_ReduceSignalsWindow::radioButton1Toggled(bool checked)
 
   int days;
 
-  char scratchpad[256];
+  char scratchpad_256[256]={""};
 
   if(checked == true)
   {
@@ -350,16 +350,16 @@ void UI_ReduceSignalsWindow::radioButton1Toggled(bool checked)
     {
       label4->setText("0d 0:00:00.000");
 
-      snprintf(scratchpad, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+      snprintf(scratchpad_256, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
     }
     else
     {
       label4->setText("0:00:00.000");
 
-      snprintf(scratchpad, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+      snprintf(scratchpad_256, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
     }
 
-    label5->setText(scratchpad);
+    label5->setText(scratchpad_256);
   }
 }
 
@@ -668,7 +668,7 @@ void UI_ReduceSignalsWindow::StartConversion()
       annot_list_sz=0;
 
   char *readbuf=NULL,
-       scratchpad[256];
+       scratchpad_256[256]={""};
 
   long long new_starttime,
             time_diff,
@@ -926,7 +926,7 @@ void UI_ReduceSignalsWindow::StartConversion()
   utc_to_date_time(new_starttime, &dts);
 
   rewind(inputfile);
-  if(fread(scratchpad, 168, 1, inputfile)!=1)
+  if(fread(scratchpad_256, 168, 1, inputfile)!=1)
   {
     QMessageBox::critical(myobjectDialog, "Error", "Read error (1).");
     goto END_4;
@@ -934,15 +934,15 @@ void UI_ReduceSignalsWindow::StartConversion()
 
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
-    if(scratchpad[98] != 'X')
+    if(scratchpad_256[98] != 'X')
     {
-      snprintf(scratchpad + 98, 256 - 98, "%02i-%s-%04i", dts.day, dts.month_str, dts.year);
+      snprintf(scratchpad_256 + 98, 256 - 98, "%02i-%s-%04i", dts.day, dts.month_str, dts.year);
 
-      scratchpad[109] = ' ';
+      scratchpad_256[109] = ' ';
     }
   }
 
-  if(fwrite(scratchpad, 168, 1, outputfile)!=1)
+  if(fwrite(scratchpad_256, 168, 1, outputfile)!=1)
   {
     QMessageBox::critical(myobjectDialog, "Error", "Write error (1).");
     goto END_4;
@@ -988,15 +988,15 @@ void UI_ReduceSignalsWindow::StartConversion()
     }
   }
   fprintf(outputfile, "%-8i", datarecords);
-  snprintf(scratchpad, 256, "%f", edfhdr->data_record_duration);
-  convert_trailing_zeros_to_spaces(scratchpad);
-  if(scratchpad[7]=='.')
+  snprintf(scratchpad_256, 256, "%f", edfhdr->data_record_duration);
+  convert_trailing_zeros_to_spaces(scratchpad_256);
+  if(scratchpad_256[7]=='.')
   {
-    scratchpad[7] = ' ';
+    scratchpad_256[7] = ' ';
   }
-  scratchpad[8] = 0;
+  scratchpad_256[8] = 0;
 
-  fprintf(outputfile, "%s", scratchpad);
+  fprintf(outputfile, "%s", scratchpad_256);
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
     fprintf(outputfile, "%-4i", new_edfsignals + 1);
@@ -1042,14 +1042,14 @@ void UI_ReduceSignalsWindow::StartConversion()
   }
   for(i=0; i<new_edfsignals; i++)
   {
-    snprintf(scratchpad, 256, "%f", edfhdr->edfparam[signalslist[i]].phys_min);
-    convert_trailing_zeros_to_spaces(scratchpad);
-    if(scratchpad[7]=='.')
+    snprintf(scratchpad_256, 256, "%f", edfhdr->edfparam[signalslist[i]].phys_min);
+    convert_trailing_zeros_to_spaces(scratchpad_256);
+    if(scratchpad_256[7]=='.')
     {
-      scratchpad[7] = ' ';
+      scratchpad_256[7] = ' ';
     }
-    scratchpad[8] = 0;
-    fprintf(outputfile, "%s", scratchpad);
+    scratchpad_256[8] = 0;
+    fprintf(outputfile, "%s", scratchpad_256);
   }
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
@@ -1057,14 +1057,14 @@ void UI_ReduceSignalsWindow::StartConversion()
   }
   for(i=0; i<new_edfsignals; i++)
   {
-    snprintf(scratchpad, 256, "%f", edfhdr->edfparam[signalslist[i]].phys_max);
-    convert_trailing_zeros_to_spaces(scratchpad);
-    if(scratchpad[7]=='.')
+    snprintf(scratchpad_256, 256, "%f", edfhdr->edfparam[signalslist[i]].phys_max);
+    convert_trailing_zeros_to_spaces(scratchpad_256);
+    if(scratchpad_256[7]=='.')
     {
-      scratchpad[7] = ' ';
+      scratchpad_256[7] = ' ';
     }
-    scratchpad[8] = 0;
-    fprintf(outputfile, "%s", scratchpad);
+    scratchpad_256[8] = 0;
+    fprintf(outputfile, "%s", scratchpad_256);
   }
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
@@ -1361,13 +1361,13 @@ void UI_ReduceSignalsWindow::StartConversion()
 
           annot_ptr = edfplus_annotation_get_item(&new_annot_list, annot_cnt++);
 
-          len = snprintf(scratchpad, 256, "%+i.%07i",
+          len = snprintf(scratchpad_256, 256, "%+i.%07i",
           (int)(annot_ptr->onset / TIME_FIXP_SCALING),
           (int)(annot_ptr->onset % TIME_FIXP_SCALING));
 
           for(j=0; j<7; j++)
           {
-            if(scratchpad[len - j - 1] != '0')
+            if(scratchpad_256[len - j - 1] != '0')
             {
               break;
             }
@@ -1383,7 +1383,7 @@ void UI_ReduceSignalsWindow::StartConversion()
             }
           }
 
-          if(fwrite(scratchpad, len, 1, outputfile) != 1)
+          if(fwrite(scratchpad_256, len, 1, outputfile) != 1)
           {
             progress.reset();
             QMessageBox::critical(myobjectDialog, "Error", "Write error (5).");

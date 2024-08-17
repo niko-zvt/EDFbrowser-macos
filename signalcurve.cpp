@@ -671,9 +671,8 @@ void SignalCurve::print_to_ascii()
 
 void SignalCurve::print_to_pdf()
 {
-  char path[SC_MAX_PATH_LEN];
+  char path[SC_MAX_PATH_LEN]={""};
 
-  path[0] = 0;
   if(recent_savedir[0]!=0)
   {
     strlcpy(path, recent_savedir, SC_MAX_PATH_LEN);
@@ -723,9 +722,8 @@ void SignalCurve::print_to_pdf()
 
 void SignalCurve::print_to_image()
 {
-  char path[SC_MAX_PATH_LEN];
+  char path[SC_MAX_PATH_LEN]={""};
 
-  path[0] = 0;
   if(recent_savedir[0]!=0)
   {
     strlcpy(path, recent_savedir, SC_MAX_PATH_LEN);
@@ -819,7 +817,7 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
             p_ruler_startvalue,
             p_ruler_endvalue;
 
-  char str[128];
+  char str1_128[128]={""};
 
   double v_sens,
          offset,
@@ -918,13 +916,13 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
         continue;
       }
 
-      convert_to_metric_suffix(str, (double)i / (double)p_multiplier, 4, 128);
+      convert_to_metric_suffix(str1_128, (double)i / (double)p_multiplier, 4, 128);
 
-      remove_trailing_zeros(str);
+      remove_trailing_zeros(str1_128);
 
       p_tmp = (double)(i - p_ruler_startvalue) * p_pixels_per_unit;
 
-      painter->drawText(bordersize + p_tmp - (30 * p_factor),  curve_h - bordersize + (18 * p_factor), 60 * p_factor, 16 * p_factor, Qt::AlignCenter | Qt::TextSingleLine, str);
+      painter->drawText(bordersize + p_tmp - (30 * p_factor),  curve_h - bordersize + (18 * p_factor), 60 * p_factor, 16 * p_factor, Qt::AlignCenter | Qt::TextSingleLine, str1_128);
 
       painter->drawLine(bordersize + p_tmp, curve_h - bordersize + (5 * p_factor), bordersize + p_tmp, curve_h - bordersize + ((5 + 10) * p_factor));
     }
@@ -1317,11 +1315,11 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
     path.lineTo(crosshair_1_x_position * p_factor, crosshair_1_y_value);
     painter->fillPath(path, QBrush(Qt::black));
 
-    snprintf(str, 128, "%f", crosshair_1_value);
-    painter->drawText((crosshair_1_x_position + 8) * p_factor, (crosshair_1_y_position - 10) * p_factor, str);
-    convert_to_metric_suffix(str, crosshair_1_value_2, 3, 128);
-    strlcat(str, h_label, 128);
-    painter->drawText((crosshair_1_x_position + 8) * p_factor, (crosshair_1_y_position + 10) * p_factor, str);
+    snprintf(str1_128, 128, "%f", crosshair_1_value);
+    painter->drawText((crosshair_1_x_position + 8) * p_factor, (crosshair_1_y_position - 10) * p_factor, str1_128);
+    convert_to_metric_suffix(str1_128, crosshair_1_value_2, 3, 128);
+    strlcat(str1_128, h_label, 128);
+    painter->drawText((crosshair_1_x_position + 8) * p_factor, (crosshair_1_y_position + 10) * p_factor, str1_128);
   }
 
   bordersize = bordersize_backup;
@@ -1379,7 +1377,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
          p_pixels_per_unit,
          p2_pixels_per_unit;
 
-  char str[128];
+  char str1_128[128]={""};
 
   QString q_str;
 
@@ -1464,13 +1462,13 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
         continue;
       }
 
-      convert_to_metric_suffix(str, (double)lk / (double)p_multiplier, 4, 128);
+      convert_to_metric_suffix(str1_128, (double)lk / (double)p_multiplier, 4, 128);
 
-      remove_trailing_zeros(str);
+      remove_trailing_zeros(str1_128);
 
       p_tmp = (double)(lk - p_ruler_startvalue) * p_pixels_per_unit;
 
-      painter->drawText(bordersize + p_tmp - (30 * w_scaling),  curve_h - bordersize + (18 * w_scaling), 60 * w_scaling, 16 * w_scaling, Qt::AlignCenter | Qt::TextSingleLine, str);
+      painter->drawText(bordersize + p_tmp - (30 * w_scaling),  curve_h - bordersize + (18 * w_scaling), 60 * w_scaling, 16 * w_scaling, Qt::AlignCenter | Qt::TextSingleLine, str1_128);
 
       painter->drawLine(bordersize + p_tmp, curve_h - bordersize + (5 * w_scaling), bordersize + p_tmp, curve_h - bordersize + (15 * w_scaling));
     }
@@ -1683,13 +1681,13 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
                           (Qt::GlobalColor)spectrum_color->color[0]);
       }
 
-      strlcpy(str, spectrum_color->label[0], 128);
+      strlcpy(str1_128, spectrum_color->label[0], 128);
       if(spectrum_color->method == 0)
       {
-        snprintf(str + strlen(str), 128 - strlen(str), " (%.1f%%)", (spectrum_color->value[0] * 100.0) / sum_colorbar_value);
+        snprintf(str1_128 + strlen(str1_128), 128 - strlen(str1_128), " (%.1f%%)", (spectrum_color->value[0] * 100.0) / sum_colorbar_value);
       }
       painter->setPen(Qt::lightGray);
-      painter->drawText(10, 20, str);
+      painter->drawText(10, 20, str1_128);
     }
 
     for(i=1; i < spectrum_color->items; i++)
@@ -1708,20 +1706,20 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
                             (Qt::GlobalColor)spectrum_color->color[i]);
         }
 
-        strlcpy(str, spectrum_color->label[i], 128);
+        strlcpy(str1_128, spectrum_color->label[i], 128);
         if(spectrum_color->method == 0)
         {
-          snprintf(str + strlen(str), 128 - strlen(str), " (%.1f%%)", (spectrum_color->value[i] * 100.0) / sum_colorbar_value);
+          snprintf(str1_128 + strlen(str1_128), 128 - strlen(str1_128), " (%.1f%%)", (spectrum_color->value[i] * 100.0) / sum_colorbar_value);
         }
         painter->setPen(Qt::lightGray);
-        painter->drawText((spectrum_color->freq[i-1] - h_ruler_startvalue) * pixelsPerUnit + 10, 20 + ((i%2) * 20), str);
+        painter->drawText((spectrum_color->freq[i-1] - h_ruler_startvalue) * pixelsPerUnit + 10, 20 + ((i%2) * 20), str1_128);
       }
     }
 
     if(spectrum_color->method == 0)
     {
-      snprintf(str, 128, "Total Power: %.1f", sum_colorbar_value);
-      painter->drawText(curve_w - 200, 20 + ((i%2) * 20), str);
+      snprintf(str1_128, 128, "Total Power: %.1f", sum_colorbar_value);
+      painter->drawText(curve_w - 200, 20 + ((i%2) * 20), str1_128);
     }
   }
 
@@ -2167,12 +2165,12 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
     painter->fillPath(path, QBrush(crosshair_1_color));
 
     painter->fillRect(crosshair_1_x_position + (6 * w_scaling), crosshair_1_y_position - (23 * h_scaling), 60 * w_scaling, 16 * h_scaling, BackgroundColor);
-    snprintf(str, 128, "%f", crosshair_1_value);
-    painter->drawText(crosshair_1_x_position + (8 * w_scaling), crosshair_1_y_position - (10 * h_scaling), str);
+    snprintf(str1_128, 128, "%f", crosshair_1_value);
+    painter->drawText(crosshair_1_x_position + (8 * w_scaling), crosshair_1_y_position - (10 * h_scaling), str1_128);
     painter->fillRect(crosshair_1_x_position + (6 * w_scaling), crosshair_1_y_position - (3 * h_scaling), 60 * w_scaling, 16 * h_scaling, BackgroundColor);
-    convert_to_metric_suffix(str, crosshair_1_value_2, 3, 128);
-    strlcat(str, h_label, 128);
-    painter->drawText(crosshair_1_x_position + (8 * w_scaling), crosshair_1_y_position + (10 * h_scaling), str);
+    convert_to_metric_suffix(str1_128, crosshair_1_value_2, 3, 128);
+    strlcat(str1_128, h_label, 128);
+    painter->drawText(crosshair_1_x_position + (8 * w_scaling), crosshair_1_y_position + (10 * h_scaling), str1_128);
   }
 
 /////////////////////////////////// draw the buttons ///////////////////////////////////////////

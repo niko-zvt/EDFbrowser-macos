@@ -114,7 +114,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
       chns,
       hdl,
       err,
-      *buf2,
+      *buf2=NULL,
       bufsize,
       blocks_written,
       progress_steps,
@@ -125,13 +125,13 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
   char path[MAX_PATH_LENGTH],
        binfilepath[MAX_PATH_LENGTH],
        outputfilename[MAX_PATH_LENGTH],
-       scratchpad[2048],
-       str[256],
-       *buf1,
+       scratchpad_2048[2048]={""},
+       str_256[256]={""},
+       *buf1=NULL,
        tmp2,
-       linebuf[512];
+       linebuf_1024[1024]={""};
 
-  xml_hdl_t *xml_hdl;
+  xml_hdl_t *xml_hdl=NULL;
 
 
   strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "XML files (*.xml *.XML);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
@@ -147,13 +147,13 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   if(xml_hdl == NULL)
   {
-    snprintf(scratchpad, 2048, "Error, cannot open file:\n%s\n", path);
-    textEdit1->append(QString::fromLocal8Bit(scratchpad));
+    snprintf(scratchpad_2048, 2048, "Error, cannot open file:\n%s\n", path);
+    textEdit1->append(QString::fromLocal8Bit(scratchpad_2048));
     return;
   }
 
-  snprintf(scratchpad, 2048, "Processing file:\n%s", path);
-  textEdit1->append(QString::fromLocal8Bit(scratchpad));
+  snprintf(scratchpad_2048, 2048, "Processing file:\n%s", path);
+  textEdit1->append(QString::fromLocal8Bit(scratchpad_2048));
 
   char_encoding = xml_hdl->encoding;
 
@@ -173,13 +173,13 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
     return;
   }
 
-  if(xml_get_attribute_of_element(xml_hdl, "timestampStart", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "timestampStart", str_256, 255) < 0)
   {
     textEdit1->append("Error, cannot find attribute \"timestampStart\".\n");
     return;
   }
 
-  if((strlen(str) < 19) || (strlen(str) > 23) || (str[4] != '-') || (str[7] != '-') || (str[10] != 'T') || (str[13] != ':') || (str[16] != ':'))
+  if((strlen(str_256) < 19) || (strlen(str_256) > 23) || (str_256[4] != '-') || (str_256[7] != '-') || (str_256[10] != 'T') || (str_256[13] != ':') || (str_256[16] != ':'))
   {
     textEdit1->append("Error, cannot find attribute \"timestampStart\".\n");
     return;
@@ -191,19 +191,19 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
   {
     if((i == 4) || (i == 7) || (i == 10) || (i == 13) || (i == 16))  continue;
 
-    if(!(isdigit(str[i])))  err = 1;
+    if(!(isdigit(str_256[i])))  err = 1;
   }
 
-  if(strlen(str) == 23)
+  if(strlen(str_256) == 23)
   {
-    if(str[19] != '.')  err = 1;
+    if(str_256[19] != '.')  err = 1;
 
     for(i=20; i<23; i++)
     {
-      if(!(isdigit(str[i])))  err = 1;
+      if(!(isdigit(str_256[i])))  err = 1;
     }
 
-    starttime_fraction = atoi(str + 20);
+    starttime_fraction = atoi(str_256 + 20);
 
     if((starttime_fraction < 0) || (starttime_fraction > 999))  err = 1;
   }
@@ -218,17 +218,17 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
     return;
   }
 
-  strncpy(str_timestampStart, str, 19);
+  strncpy(str_timestampStart, str_256, 19);
 
   str_timestampStart[19] = 0;
 
-  if(xml_get_attribute_of_element(xml_hdl, "measurementId", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "measurementId", str_256, 255) < 0)
   {
     textEdit1->append("Error, cannot find attribute \"measurementId\".\n");
     return;
   }
 
-  if(strlen(str) < 1)
+  if(strlen(str_256) < 1)
   {
     textEdit1->append("Error, attribute \"measurementId\" has no data.\n");
     return;
@@ -236,16 +236,16 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   if(char_encoding == 1)  // Latin-1
   {
-    strlcpy(str_measurementId, QString::fromLatin1(str).toLocal8Bit().data(), 128);
+    strlcpy(str_measurementId, QString::fromLatin1(str_256).toLocal8Bit().data(), 128);
   }
   else if(char_encoding == 2)
     {
-      strlcpy(str_measurementId, QString::fromUtf8(str).toLocal8Bit().data(), 128);
+      strlcpy(str_measurementId, QString::fromUtf8(str_256).toLocal8Bit().data(), 128);
     }
     else
     {
-//      strlcpy(str_measurementId, str, 128);
-      strlcpy(str_measurementId, QString::fromUtf8(str).toLocal8Bit().data(), 128);  // default for XML is UTF-8
+//      strlcpy(str_measurementId, str_256, 128);
+      strlcpy(str_measurementId, QString::fromUtf8(str_256).toLocal8Bit().data(), 128);  // default for XML is UTF-8
     }
 
   str_measurementId[127] = 0;
@@ -322,7 +322,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         return;
       }
 
-      if(xml_get_attribute_of_element(xml_hdl, "separator", str, 255) < 0)
+      if(xml_get_attribute_of_element(xml_hdl, "separator", str_256, 255) < 0)
       {
         textEdit1->append("Error, cannot find attribute \"separator\".\n");
         xml_close(xml_hdl);
@@ -330,7 +330,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         return;
       }
 
-      if(strlen(str) != 1)
+      if(strlen(str_256) != 1)
       {
         textEdit1->append("Error, value for \"separator\" must be one character.\n");
         xml_close(xml_hdl);
@@ -338,15 +338,15 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         return;
       }
 
-      csv_sep[file_cnt] = str[0];
+      csv_sep[file_cnt] = str_256[0];
 
-      if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str, 255) < 0)
+      if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str_256, 255) < 0)
       {
         csv_dec_sep[file_cnt] = '.';  // if attribute decimalSeparator is not present, fall back to a dot
       }
       else
       {
-        if(strlen(str) != 1)
+        if(strlen(str_256) != 1)
         {
           textEdit1->append("Error, value for \"decimalSeparator\" must be one character.\n");
           xml_close(xml_hdl);
@@ -354,7 +354,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
           return;
         }
 
-        csv_dec_sep[file_cnt] = str[0];
+        csv_dec_sep[file_cnt] = str_256[0];
 
         if(csv_sep[file_cnt] == csv_dec_sep[file_cnt])
         {
@@ -378,7 +378,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         return;
       }
 
-      if(xml_get_attribute_of_element(xml_hdl, "endianess", str, 255) < 0)
+      if(xml_get_attribute_of_element(xml_hdl, "endianess", str_256, 255) < 0)
       {
         textEdit1->append("Error, cannot find attribute \"endianess\".\n");
         xml_close(xml_hdl);
@@ -386,7 +386,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         return;
       }
 
-      if(strlen(str) < 1)
+      if(strlen(str_256) < 1)
       {
         textEdit1->append("Error, cannot find attribute \"endianess\".\n");
         xml_close(xml_hdl);
@@ -394,7 +394,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         return;
       }
 
-      if(strcmp(str, "LITTLE") && strcmp(str, "BIG"))
+      if(strcmp(str_256, "LITTLE") && strcmp(str_256, "BIG"))
       {
         textEdit1->append("Error, attribute \"endianess\" has an unknown value.\n");
         xml_close(xml_hdl);
@@ -402,7 +402,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         return;
       }
 
-      if(!(strcmp(str, "LITTLE")))
+      if(!(strcmp(str_256, "LITTLE")))
       {
         big_endian[file_cnt] = 0;
       }
@@ -425,7 +425,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         break;
       }
 
-      if(xml_get_attribute_of_element(xml_hdl, "name", str, 255) < 0)
+      if(xml_get_attribute_of_element(xml_hdl, "name", str_256, 255) < 0)
       {
         textEdit1->append("Error, cannot find attribute \"name\" in element \"channel\".\n");
         xml_close(xml_hdl);
@@ -435,16 +435,16 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
       if(char_encoding == 1)  // Latin-1
       {
-        strlcpy(signallabel[total_edf_signals], str, 17);
+        strlcpy(signallabel[total_edf_signals], str_256, 17);
       }
       else if(char_encoding == 2)
         {
-          strlcpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 17);
+          strlcpy(signallabel[total_edf_signals], QString::fromUtf8(str_256).toLatin1().data(), 17);
         }
         else
         {
-//          strlcpy(signallabel[total_edf_signals], str, 17);
-          strlcpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 17);  // default for XML is UTF-8
+//          strlcpy(signallabel[total_edf_signals], str_256, 17);
+          strlcpy(signallabel[total_edf_signals], QString::fromUtf8(str_256).toLatin1().data(), 17);  // default for XML is UTF-8
         }
 
       signallabel[total_edf_signals][16] = 0;
@@ -480,8 +480,8 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
     binfile[file_cnt] = fopeno(binfilepath, "rb");
     if(binfile[file_cnt] == NULL)
     {
-      snprintf(scratchpad, 2048, "Error, cannot open file:\n%s\n", binfilepath);
-      textEdit1->append(QString::fromLocal8Bit(scratchpad));
+      snprintf(scratchpad_2048, 2048, "Error, cannot open file:\n%s\n", binfilepath);
+      textEdit1->append(QString::fromLocal8Bit(scratchpad_2048));
       xml_close(xml_hdl);
       for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
       return;
@@ -564,7 +564,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
       return;
     }
 
-    if(xml_get_attribute_of_element(xml_hdl, "separator", str, 255) < 0)
+    if(xml_get_attribute_of_element(xml_hdl, "separator", str_256, 255) < 0)
     {
       textEdit1->append("Error, cannot find attribute \"separator\".\n");
       xml_close(xml_hdl);
@@ -572,7 +572,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
       return;
     }
 
-    if(strlen(str) != 1)
+    if(strlen(str_256) != 1)
     {
       textEdit1->append("Error, value for \"separator\" must be one character.\n");
       xml_close(xml_hdl);
@@ -580,15 +580,15 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
       return;
     }
 
-    csv_sep[file_cnt] = str[0];
+    csv_sep[file_cnt] = str_256[0];
 
-    if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str, 255) < 0)
+    if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str_256, 255) < 0)
     {
       csv_dec_sep[file_cnt] = '.';  // if attribute decimalSeparator is not present, fall back to a dot
     }
     else
     {
-      if(strlen(str) != 1)
+      if(strlen(str_256) != 1)
       {
         textEdit1->append("Error, value for \"decimalSeparator\" must be one character.\n");
         xml_close(xml_hdl);
@@ -596,7 +596,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         return;
       }
 
-      csv_dec_sep[file_cnt] = str[0];
+      csv_dec_sep[file_cnt] = str_256[0];
 
       if(csv_sep[file_cnt] == csv_dec_sep[file_cnt])
       {
@@ -618,7 +618,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         break;
       }
 
-      if(xml_get_attribute_of_element(xml_hdl, "name", str, 255) < 0)
+      if(xml_get_attribute_of_element(xml_hdl, "name", str_256, 255) < 0)
       {
         textEdit1->append("Error, cannot find attribute \"name\" in element \"channel\".\n");
         xml_close(xml_hdl);
@@ -628,16 +628,16 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
       if(char_encoding == 1)  // Latin-1
       {
-        strlcpy(signallabel[total_edf_signals], str, 17);
+        strlcpy(signallabel[total_edf_signals], str_256, 17);
       }
       else if(char_encoding == 2)
         {
-          strlcpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 17);
+          strlcpy(signallabel[total_edf_signals], QString::fromUtf8(str_256).toLatin1().data(), 17);
         }
         else
         {
-//          strlcpy(signallabel[total_edf_signals], str, 17);
-          strlcpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 17);  // default for XML is UTF-8
+//          strlcpy(signallabel[total_edf_signals], str_256, 17);
+          strlcpy(signallabel[total_edf_signals], QString::fromUtf8(str_256).toLatin1().data(), 17);  // default for XML is UTF-8
         }
 
       signallabel[total_edf_signals][16] = 0;
@@ -673,8 +673,8 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
     binfile[file_cnt] = fopeno(binfilepath, "rb");
     if(binfile[file_cnt] == NULL)
     {
-      snprintf(scratchpad, 2048, "Error, cannot open binary file:\n%s", binfilepath);
-      textEdit1->append(QString::fromLocal8Bit(scratchpad));
+      snprintf(scratchpad_2048, 2048, "Error, cannot open binary file:\n%s", binfilepath);
+      textEdit1->append(QString::fromLocal8Bit(scratchpad_2048));
       xml_close(xml_hdl);
       for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
       return;
@@ -791,9 +791,9 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
       {
         tmp = 0;
 
-        while(fgets(linebuf, 32, binfile[k]) != NULL)
+        while(fgets(linebuf_1024, 32, binfile[k]) != NULL)
         {
-          tmp = atoi(linebuf);
+          tmp = atoi(linebuf_1024);
         }
 
         if(sf_inv[k])  // samplefrequency lower than 1 Hz
@@ -874,7 +874,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
     if(!xml_goto_nth_element_inside(xml_hdl, "csvFileFormat", 0))
     {
-      if(xml_get_attribute_of_element(xml_hdl, "separator", str, 255) < 0)
+      if(xml_get_attribute_of_element(xml_hdl, "separator", str_256, 255) < 0)
       {
         textEdit1->append("Error, cannot find attribute \"separator\".\n");
         xml_close(xml_hdl);
@@ -882,7 +882,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         return;
       }
 
-      if(strlen(str) != 1)
+      if(strlen(str_256) != 1)
       {
         textEdit1->append("Error, value for \"separator\" must be one character.\n");
         xml_close(xml_hdl);
@@ -890,15 +890,15 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
         return;
       }
 
-      csv_sep[k] = str[0];
+      csv_sep[k] = str_256[0];
 
-      if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str, 255) < 0)
+      if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str_256, 255) < 0)
       {
         csv_dec_sep[k] = '.';  // if attribute decimalSeparator is not present, fall back to a dot
       }
       else
       {
-        if(strlen(str) != 1)
+        if(strlen(str_256) != 1)
         {
           textEdit1->append("Error, value for \"decimalSeparator\" must be one character.\n");
           xml_close(xml_hdl);
@@ -906,7 +906,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
           return;
         }
 
-        csv_dec_sep[k] = str[0];
+        csv_dec_sep[k] = str_256[0];
 
         if(csv_sep[k] == csv_dec_sep[k])
         {
@@ -979,8 +979,8 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   if(hdl<0)
   {
-    snprintf(scratchpad, 2048, "Error, cannot open file %s for writing.\n", outputfilename);
-    textEdit1->append(QString::fromLocal8Bit(scratchpad));
+    snprintf(scratchpad_2048, 2048, "Error, cannot open file %s for writing.\n", outputfilename);
+    textEdit1->append(QString::fromLocal8Bit(scratchpad_2048));
     for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
     xml_close(xml_hdl);
     return;
@@ -1156,19 +1156,19 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
       sep = csv_sep[k];
 
-      if(fgets(linebuf, 512, binfile[k]) != NULL)
+      if(fgets(linebuf_1024, 1024, binfile[k]) != NULL)
       {
         if(dec_sep != '.')
         {
-          for(ptr=linebuf; *ptr!=0; ptr++)
+          for(ptr=linebuf_1024; *ptr!=0; ptr++)
           {
             if(*ptr == dec_sep)  *ptr = '.';
           }
         }
 
-        nedval_smpl[k] = atoi(linebuf);
+        nedval_smpl[k] = atoi(linebuf_1024);
 
-        ptr=linebuf;
+        ptr=linebuf_1024;
 
         for(i=0; i<signals_t; i++)
         {
@@ -1232,19 +1232,19 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
               {
                 if(((blocks_written * sf_t) + i) == nedval_smpl[k])
                 {
-                  if(fgets(linebuf, 512, binfile[k]) != NULL)
+                  if(fgets(linebuf_1024, 1024, binfile[k]) != NULL)
                   {
                     if(dec_sep != '.')
                     {
-                      for(ptr=linebuf; *ptr!=0; ptr++)
+                      for(ptr=linebuf_1024; *ptr!=0; ptr++)
                       {
                         if(*ptr == dec_sep)  *ptr = '.';
                       }
                     }
 
-                    nedval_smpl[k] = atoi(linebuf);
+                    nedval_smpl[k] = atoi(linebuf_1024);
 
-                    ptr=linebuf;
+                    ptr=linebuf_1024;
 
                     for(j=0; j<signals_t; j++)
                     {
@@ -1282,7 +1282,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
             }
             else
             {
-              if(fgets(linebuf, 512, binfile[k]) == NULL)
+              if(fgets(linebuf_1024, 1024, binfile[k]) == NULL)
               {
                 progress.reset();
                 textEdit1->append("A read error occurred during the conversion.\n");
@@ -1296,13 +1296,13 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
               if(dec_sep != '.')
               {
-                for(ptr=linebuf; *ptr!=0; ptr++)
+                for(ptr=linebuf_1024; *ptr!=0; ptr++)
                 {
                   if(*ptr == dec_sep)  *ptr = '.';
                 }
               }
 
-              ptr = linebuf;
+              ptr = linebuf_1024;
 
               for(j=0; j<signals_t; j++)
               {
@@ -1736,16 +1736,16 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
       progress_steps,
       triggers_written=0;
 
-  char scratchpad[2048],
-       csvfilepath[MAX_PATH_LENGTH],
-       linebuf[1024],
-       *ptr,
+  char scratchpad_2048[2048]={""},
+       csvfilepath[MAX_PATH_LENGTH]={""},
+       linebuf_1024[1024]={""},
+       *ptr=NULL,
        sep,
-       annotation[64];
+       annotation[64]={""};
 
   long long onset;
 
-  FILE *csvfile;
+  FILE *csvfile=NULL;
 
 
   QProgressDialog progress("Converting triggers ...", "Cancel", 0, total_annotations, myobjectDialog);
@@ -1769,8 +1769,8 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
     if(csvfile == NULL)
     {
       progress.reset();
-      snprintf(scratchpad, 2048, "Error, cannot open csv file:\n%s\n", evtfilename[k]);
-      textEdit1->append(QString::fromLocal8Bit(scratchpad));
+      snprintf(scratchpad_2048, 2048, "Error, cannot open csv file:\n%s\n", evtfilename[k]);
+      textEdit1->append(QString::fromLocal8Bit(scratchpad_2048));
       return 1;
     }
 
@@ -1792,11 +1792,11 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
         }
       }
 
-      ptr = fgets(linebuf, 1024, csvfile);
+      ptr = fgets(linebuf_1024, 1024, csvfile);
 
       if(ptr == NULL)  break;
 
-      len = strlen(linebuf);
+      len = strlen(linebuf_1024);
 
       if(len < 3)  continue;
 
@@ -1813,7 +1813,7 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
           {
             *ptr = 0;
 
-            onset = atoi(linebuf);
+            onset = atoi(linebuf_1024);
 
             strncpy(annotation, ++ptr, 46);
 
@@ -1889,12 +1889,12 @@ int UI_UNISENS2EDFwindow::count_events_from_csv_files(int max_files, const char 
 {
   int evt_cnt=0, k;
 
-  char scratchpad[2048],
-       csvfilepath[MAX_PATH_LENGTH],
-       linebuf[1024],
-       *ptr;
+  char scratchpad_2048[2048]={""},
+       csvfilepath[MAX_PATH_LENGTH]={""},
+       linebuf_1024[1024]={""},
+       *ptr=NULL;
 
-  FILE *csvfile;
+  FILE *csvfile=NULL;
 
 
   *result = 0;
@@ -1909,14 +1909,14 @@ int UI_UNISENS2EDFwindow::count_events_from_csv_files(int max_files, const char 
     csvfile = fopeno(csvfilepath, "rb");
     if(csvfile == NULL)
     {
-      snprintf(scratchpad, 2048, "Error, cannot open csv file:\n%s\n", evtfilename[k]);
-      textEdit1->append(QString::fromLocal8Bit(scratchpad));
+      snprintf(scratchpad_2048, 2048, "Error, cannot open csv file:\n%s\n", evtfilename[k]);
+      textEdit1->append(QString::fromLocal8Bit(scratchpad_2048));
       return 1;
     }
 
     while(1)
     {
-      ptr = fgets(linebuf, 1024, csvfile);
+      ptr = fgets(linebuf_1024, 1024, csvfile);
 
       if(ptr == NULL)  break;
 
@@ -1934,69 +1934,69 @@ int UI_UNISENS2EDFwindow::count_events_from_csv_files(int max_files, const char 
 
 int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xml_hdl, int file_nr)
 {
-  char str[256],
-       scratchpad[2048];
+  char str_256[256]={""},
+       scratchpad_2048[2048]={""};
 
   double d_tmp;
 
 
-  if(xml_get_attribute_of_element(xml_hdl, "id", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "id", str_256, 255) < 0)
   {
     textEdit1->append("Error, cannot find attribute \"id\".\n");
     return 1;
   }
 
-  if(strlen(str) < 1)
+  if(strlen(str_256) < 1)
   {
     textEdit1->append("Error, attribute \"id\" has no value.\n");
     return 1;
   }
 
-  strncpy(binfilename[file_nr], str, MAX_PATH_LENGTH - 1);
+  strncpy(binfilename[file_nr], str_256, MAX_PATH_LENGTH - 1);
 
-  if(xml_get_attribute_of_element(xml_hdl, "adcResolution", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "adcResolution", str_256, 255) < 0)
   {
     adcres[file_nr] = 0;
   }
-  else if(strlen(str) < 1)
+  else if(strlen(str_256) < 1)
     {
       adcres[file_nr] = 0;
     }
-    else adcres[file_nr] = atoi(str);
+    else adcres[file_nr] = atoi(str_256);
 
-  if(xml_get_attribute_of_element(xml_hdl, "unit", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "unit", str_256, 255) < 0)
   {
     strlcpy(physdim[file_nr], "X", 9);
   }
-  else if(strlen(str) < 1)
+  else if(strlen(str_256) < 1)
     {
       strlcpy(physdim[file_nr], "X", 9);
     }
     else if(char_encoding == 1)  // Latin-1
       {
-        strlcpy(physdim[file_nr], str, 9);
+        strlcpy(physdim[file_nr], str_256, 9);
       }
       else if(char_encoding == 2)
         {
-          strlcpy(physdim[file_nr], QString::fromUtf8(str).toLatin1().data(), 9);
+          strlcpy(physdim[file_nr], QString::fromUtf8(str_256).toLatin1().data(), 9);
         }
         else
         {
-//          strlcpy(physdim[file_nr], str, 9);
-          strlcpy(physdim[file_nr], QString::fromUtf8(str).toLatin1().data(), 9);  // default for XML is UTF-8
+//          strlcpy(physdim[file_nr], str_256, 9);
+          strlcpy(physdim[file_nr], QString::fromUtf8(str_256).toLatin1().data(), 9);  // default for XML is UTF-8
         }
 
   physdim[file_nr][8] = 0;
 
   trim_spaces(physdim[file_nr]);
 
-  if(xml_get_attribute_of_element(xml_hdl, "sampleRate", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "sampleRate", str_256, 255) < 0)
   {
     textEdit1->append("Error, cannot find attribute \"sampleRate\".\n");
     return 1;
   }
 
-  if(strlen(str) < 1)
+  if(strlen(str_256) < 1)
   {
     textEdit1->append("Error, attribute \"sampleRate\" has no value.");
     return 1;
@@ -2004,13 +2004,13 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
 
   sf_inv[file_nr] = 0;
 
-  sf[file_nr] = nearbyint(atof(str));
+  sf[file_nr] = nearbyint(atof(str_256));
 
   if((sf[file_nr] < 1) || (sf[file_nr] > 1000000))
   {
     if(sf[file_nr] < 1)
     {
-      d_tmp = atof(str);
+      d_tmp = atof(str_256);
 
       if(d_tmp >= 0.001)
       {
@@ -2031,45 +2031,45 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
     }
   }
 
-  if(xml_get_attribute_of_element(xml_hdl, "baseline", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "baseline", str_256, 255) < 0)
   {
     baseline[file_nr] = 0LL;
   }
   else
   {
-    if(strlen(str) < 1)
+    if(strlen(str_256) < 1)
     {
       textEdit1->append("Error, attribute \"baseline\" has no value.\n");
       return 1;
     }
 
-    baseline[file_nr] = strtoll(str, NULL, 0);
+    baseline[file_nr] = strtoll(str_256, NULL, 0);
   }
 
-  if(xml_get_attribute_of_element(xml_hdl, "adcZero", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "adcZero", str_256, 255) < 0)
   {
     adczero[file_nr] = 0LL;
   }
   else
   {
-    if(strlen(str) < 1)
+    if(strlen(str_256) < 1)
     {
       textEdit1->append("Error, attribute \"adcZero\" has no value.\n");
       return 1;
     }
 
-    adczero[file_nr] = strtoll(str, NULL, 0);
+    adczero[file_nr] = strtoll(str_256, NULL, 0);
   }
 
-  if(xml_get_attribute_of_element(xml_hdl, "lsbValue", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "lsbValue", str_256, 255) < 0)
   {
     lsbval[file_nr] = 1.0;
   }
-  else if(strlen(str) < 1)
+  else if(strlen(str_256) < 1)
     {
       lsbval[file_nr] = 1.0;
     }
-    else lsbval[file_nr] = atof(str);
+    else lsbval[file_nr] = atof(str_256);
 
   if((lsbval[file_nr] < -1000000.0) || (lsbval[file_nr] > 1000000.0))
   {
@@ -2081,7 +2081,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
 
   physmin[file_nr] = lsbval[file_nr];
 
-  if(xml_get_attribute_of_element(xml_hdl, "dataType", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "dataType", str_256, 255) < 0)
   {
     textEdit1->append("Error, cannot find attribute \"dataType\".\n");
     return 1;
@@ -2089,7 +2089,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
 
   if(csv_enc[file_nr])
   {
-    if(!strcmp(str, "double"))
+    if(!strcmp(str_256, "double"))
     {
       datatype[file_nr] = US_DATATYPE_DOUBLE_LI;
       bdf = 1;
@@ -2100,7 +2100,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
       digmax[file_nr] = 8388607;
       digmin[file_nr] = -8388608;
     }
-    else if(!strcmp(str, "float"))
+    else if(!strcmp(str_256, "float"))
       {
         datatype[file_nr] = US_DATATYPE_FLOAT_LI;
         bdf = 1;
@@ -2111,7 +2111,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
         digmax[file_nr] = 8388607;
         digmin[file_nr] = -8388608;
       }
-      else if(!strcmp(str, "int32"))
+      else if(!strcmp(str_256, "int32"))
         {
           datatype[file_nr] = US_DATATYPE_INT32_LI;
           bdf = 1;
@@ -2122,7 +2122,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
           digmax[file_nr] = 8388607;
           digmin[file_nr] = -8388608;
         }
-        else if(!strcmp(str, "uint32"))
+        else if(!strcmp(str_256, "uint32"))
           {
             datatype[file_nr] = US_DATATYPE_UINT32_LI;
             bdf = 1;
@@ -2133,7 +2133,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
             digmax[file_nr] = 8388607;
             digmin[file_nr] = -8388608;
           }
-          else if(!strcmp(str, "int16"))
+          else if(!strcmp(str_256, "int16"))
             {
               datatype[file_nr] = US_DATATYPE_INT16_LI;
               straightbinary[file_nr] = 0;
@@ -2143,7 +2143,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
               digmax[file_nr] = 32767;
               digmin[file_nr] = -32768;
             }
-            else if(!strcmp(str, "uint16"))
+            else if(!strcmp(str_256, "uint16"))
               {
                 datatype[file_nr] = US_DATATYPE_UINT16_LI;
                 straightbinary[file_nr] = 1;
@@ -2153,7 +2153,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
                 digmax[file_nr] = 32767;
                 digmin[file_nr] = -32768;
               }
-              else if(!strcmp(str, "int8"))
+              else if(!strcmp(str_256, "int8"))
                 {
                   datatype[file_nr] = US_DATATYPE_INT8_LI;
                   straightbinary[file_nr] = 0;
@@ -2163,7 +2163,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
                   digmax[file_nr] = 127;
                   digmin[file_nr] = -128;
                 }
-                else if(!strcmp(str, "uint8"))
+                else if(!strcmp(str_256, "uint8"))
                   {
                     datatype[file_nr] = US_DATATYPE_UINT8_LI;
                     straightbinary[file_nr] = 1;
@@ -2173,7 +2173,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
                     digmax[file_nr] = 127;
                     digmin[file_nr] = -128;
                   }
-                  else if(!strcmp(str, "int64"))
+                  else if(!strcmp(str_256, "int64"))
                     {
                       datatype[file_nr] = US_DATATYPE_INT64_LI;
                       bdf = 1;
@@ -2184,7 +2184,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
                       digmax[file_nr] = 8388607;
                       digmin[file_nr] = -8388608;
                     }
-                    else if(!strcmp(str, "uint64"))
+                    else if(!strcmp(str_256, "uint64"))
                       {
                         datatype[file_nr] = US_DATATYPE_UINT64_LI;
                         bdf = 1;
@@ -2197,14 +2197,14 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
                       }
                       else
                       {
-                        snprintf(scratchpad, 2048, "Error, unsupported combination of datatype: %s and csv file\n", str);
-                        textEdit1->append(scratchpad);
+                        snprintf(scratchpad_2048, 2048, "Error, unsupported combination of datatype: %s and csv file\n", str_256);
+                        textEdit1->append(scratchpad_2048);
                         return 1;
                       }
   }
   else
   {
-    if(!strcmp(str, "uint8"))
+    if(!strcmp(str_256, "uint8"))
     {
       datatype[file_nr] = US_DATATYPE_UINT8_LI;
       straightbinary[file_nr] = 1;
@@ -2214,7 +2214,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
       digmax[file_nr] = 127;
       digmin[file_nr] = -128;
     }
-    else if(!strcmp(str, "int8"))
+    else if(!strcmp(str_256, "int8"))
       {
         datatype[file_nr] = US_DATATYPE_INT8_LI;
         straightbinary[file_nr] = 0;
@@ -2224,7 +2224,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
         digmax[file_nr] = 127;
         digmin[file_nr] = -128;
       }
-      else if(!strcmp(str, "uint16"))
+      else if(!strcmp(str_256, "uint16"))
         {
           datatype[file_nr] = US_DATATYPE_UINT16_LI;
           straightbinary[file_nr] = 1;
@@ -2234,7 +2234,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
           digmax[file_nr] = 32767;
           digmin[file_nr] = -32768;
         }
-        else if(!strcmp(str, "int16"))
+        else if(!strcmp(str_256, "int16"))
           {
             datatype[file_nr] = US_DATATYPE_INT16_LI;
             straightbinary[file_nr] = 0;
@@ -2244,7 +2244,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
             digmax[file_nr] = 32767;
             digmin[file_nr] = -32768;
           }
-          else if(!strcmp(str, "uint24"))
+          else if(!strcmp(str_256, "uint24"))
             {
               datatype[file_nr] = US_DATATYPE_UINT24_LI;
               bdf = 1;
@@ -2255,7 +2255,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
               digmax[file_nr] = 8388607;
               digmin[file_nr] = -8388608;
             }
-            else if(!strcmp(str, "int24"))
+            else if(!strcmp(str_256, "int24"))
               {
                 datatype[file_nr] = US_DATATYPE_INT24_LI;
                 bdf = 1;
@@ -2266,7 +2266,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
                 digmax[file_nr] = 8388607;
                 digmin[file_nr] = -8388608;
               }
-              else if(!strcmp(str, "uint32"))
+              else if(!strcmp(str_256, "uint32"))
                 {
                   datatype[file_nr] = US_DATATYPE_UINT32_LI;
                   bdf = 1;
@@ -2277,7 +2277,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
                   digmax[file_nr] = 8388607;
                   digmin[file_nr] = -8388608;
                 }
-                else if(!strcmp(str, "int32"))
+                else if(!strcmp(str_256, "int32"))
                   {
                     datatype[file_nr] = US_DATATYPE_INT32_LI;
                     bdf = 1;
@@ -2288,7 +2288,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
                     digmax[file_nr] = 8388607;
                     digmin[file_nr] = -8388608;
                   }
-                  else if(!strcmp(str, "float"))
+                  else if(!strcmp(str_256, "float"))
                     {
                       datatype[file_nr] = US_DATATYPE_FLOAT_LI;
                       bdf = 1;
@@ -2299,7 +2299,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
                       digmax[file_nr] = 8388607;
                       digmin[file_nr] = -8388608;
                     }
-                    else if(!strcmp(str, "double"))
+                    else if(!strcmp(str_256, "double"))
                       {
                         datatype[file_nr] = US_DATATYPE_DOUBLE_LI;
                         bdf = 1;
@@ -2310,7 +2310,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
                         digmax[file_nr] = 8388607;
                         digmin[file_nr] = -8388608;
                       }
-                      else if(!strcmp(str, "uint64"))
+                      else if(!strcmp(str_256, "uint64"))
                         {
                           datatype[file_nr] = US_DATATYPE_UINT64_LI;
                           bdf = 1;
@@ -2321,7 +2321,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
                           digmax[file_nr] = 8388607;
                           digmin[file_nr] = -8388608;
                         }
-                        else if(!strcmp(str, "int64"))
+                        else if(!strcmp(str_256, "int64"))
                           {
                             datatype[file_nr] = US_DATATYPE_INT64_LI;
                             bdf = 1;
@@ -2334,8 +2334,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
                           }
                           else
                           {
-                            snprintf(scratchpad, 2048, "Error, unsupported combination of datatype: %s and binary file\n", str);
-                            textEdit1->append(scratchpad);
+                            snprintf(scratchpad_2048, 2048, "Error, unsupported combination of datatype: %s and binary file\n", str_256);
+                            textEdit1->append(scratchpad_2048);
                             return 1;
                           }
   }
@@ -2346,35 +2346,35 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(xml_hdl_t *xm
 
 int UI_UNISENS2EDFwindow::get_signalparameters_from_EVT_attributes(xml_hdl_t *xml_hdl, int file_nr)
 {
-  char str[256];
+  char str_256[256]={""};
 
-  if(xml_get_attribute_of_element(xml_hdl, "id", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "id", str_256, 255) < 0)
   {
     textEdit1->append("Error, cannot find attribute \"id\".\n");
     return 1;
   }
 
-  if(strlen(str) < 1)
+  if(strlen(str_256) < 1)
   {
     textEdit1->append("Error, attribute \"id\" has no value.\n");
     return 1;
   }
 
-  strncpy(evtfilename[file_nr], str, MAX_PATH_LENGTH - 1);
+  strncpy(evtfilename[file_nr], str_256, MAX_PATH_LENGTH - 1);
 
-  if(xml_get_attribute_of_element(xml_hdl, "sampleRate", str, 255) < 0)
+  if(xml_get_attribute_of_element(xml_hdl, "sampleRate", str_256, 255) < 0)
   {
     textEdit1->append("Error, cannot find attribute \"sampleRate\".\n");
     return 1;
   }
 
-  if(strlen(str) < 1)
+  if(strlen(str_256) < 1)
   {
     textEdit1->append("Error, attribute \"sampleRate\" has no value.\n");
     return 1;
   }
 
-  evt_sf[file_nr] = atoi(str);
+  evt_sf[file_nr] = atoi(str_256);
 
   if((evt_sf[file_nr] < 1) || (evt_sf[file_nr] > 1000000))
   {

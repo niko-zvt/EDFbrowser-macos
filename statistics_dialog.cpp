@@ -57,8 +57,8 @@ UI_StatisticWindow::UI_StatisticWindow(sigcompblck_t *signalcomp,
       job_src=0,
       err;
 
-  char stat_str[2048]={""},
-       label[64]={""};
+  char stat_str_2048[2048]={""},
+       label_64[64]={""};
 
   double *beat_interval_list=NULL;
 
@@ -135,9 +135,9 @@ UI_StatisticWindow::UI_StatisticWindow(sigcompblck_t *signalcomp,
     curve1->setDashBoardEnabled(false);
     if(job_src == STAT_JOB_SRC_ANNOT)
     {
-      strlcpy(stat_str, "Distribution ", 2048);
-      strlcat(stat_str, annot->description, 2048);
-      curve1->setUpperLabel1(stat_str);
+      strlcpy(stat_str_2048, "Distribution ", 2048);
+      strlcat(stat_str_2048, annot->description, 2048);
+      curve1->setUpperLabel1(stat_str_2048);
     }
     else
     {
@@ -193,18 +193,18 @@ UI_StatisticWindow::UI_StatisticWindow(sigcompblck_t *signalcomp,
   {
     if(signalcomp->alias[0] != 0)
     {
-      strlcpy(label, signalcomp->alias, 64);
+      strlcpy(label_64, signalcomp->alias, 64);
     }
     else
     {
-      strlcpy(label, signalcomp->signallabel, 64);
+      strlcpy(label_64, signalcomp->signallabel, 64);
     }
 
     if((signalcomp->stat_cnt < 1) || (pagetime < 10LL))
     {
-      snprintf(stat_str, 2048, "Signal:  %s\n\nSamples:   0\n\nSum:       0 %s\n\nMean:      0 %s\n\nRMS:       0 %s\n\nMRS:       0 %s\n\nZero crossings:  0\n\nFrequency:  0 Hz\n\n"
+      snprintf(stat_str_2048, 2048, "Signal:  %s\n\nSamples:   0\n\nSum:       0 %s\n\nMean:      0 %s\n\nRMS:       0 %s\n\nMRS:       0 %s\n\nZero crossings:  0\n\nFrequency:  0 Hz\n\n"
                                "Max. peak:  0 %s\n\nMin. peak:  0 %s\n\nPeak to peak:  0 %s",
-              label,
+              label_64,
               signalcomp->physdimension,
               signalcomp->physdimension,
               signalcomp->physdimension,
@@ -215,9 +215,9 @@ UI_StatisticWindow::UI_StatisticWindow(sigcompblck_t *signalcomp,
     }
     else
     {
-      snprintf(stat_str, 2048, "Signal:  %s\n\nSamples:   %i\n\nSum:       %f %s\n\nMean:      %f %s\n\nRMS:       %f %s\n\nMRS:       %f %s\n\nZero crossings:  %i\n\nFrequency:  %f Hz\n\n"
+      snprintf(stat_str_2048, 2048, "Signal:  %s\n\nSamples:   %i\n\nSum:       %f %s\n\nMean:      %f %s\n\nRMS:       %f %s\n\nMRS:       %f %s\n\nZero crossings:  %i\n\nFrequency:  %f Hz\n\n"
                                "Max. peak:  %f %s\n\nMin. peak:  %f %s\n\nPeak to peak:  %f %s",
-              label,
+              label_64,
               signalcomp->stat_cnt,
               signalcomp->stat_sum * signalcomp->edfparam_0->bitvalue,
               signalcomp->physdimension,
@@ -298,15 +298,15 @@ UI_StatisticWindow::UI_StatisticWindow(sigcompblck_t *signalcomp,
 
     if(beat_cnt < 3)
     {
-      snprintf(stat_str, 2048, "Not enough beats.");
+      snprintf(stat_str_2048, 2048, "Not enough beats.");
     }
     else
     {
       err = ecg_get_hr_statistics(beat_interval_list, beat_cnt, &hr_stat);
       if(err)
       {
-        snprintf(stat_str, 2048, "Error %i occurred at line %i in file %s.", err, __LINE__, __FILE__);
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", stat_str);
+        snprintf(stat_str_2048, 2048, "Error %i occurred at line %i in file %s.", err, __LINE__, __FILE__);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", stat_str_2048);
         messagewindow.exec();
         return;
       }
@@ -369,7 +369,7 @@ UI_StatisticWindow::UI_StatisticWindow(sigcompblck_t *signalcomp,
 //       sdnn_bpm = sqrt(sdnn_bpm / beat_cnt);
 //       sdnn_rr = sqrt(sdnn_rr / beat_cnt);
 //
-//       sprintf(stat_str,
+//       sprintf(stat_str_2048,
 //               "Heart Rate\n\n"
 //               "Beats:    %3i\n\n"
 //               "Mean RR:  %3i ms\n\n"
@@ -394,7 +394,7 @@ UI_StatisticWindow::UI_StatisticWindow(sigcompblck_t *signalcomp,
 //
 //       free(buf_bpm);
 
-      snprintf(stat_str, 2048,
+      snprintf(stat_str_2048, 2048,
               "Heart Rate\n\n"
               "Beats:    %3i\n\n"
               "Mean RR:  %3.1f ms\n\n"
@@ -488,7 +488,7 @@ UI_StatisticWindow::UI_StatisticWindow(sigcompblck_t *signalcomp,
     mainwindow->enable_hrv_stats_toolbar(annot->description, annot_list, NULL);
   }
 
-  Label1->setText(stat_str);
+  Label1->setText(stat_str_2048);
 
   StatDialog->exec();
 }

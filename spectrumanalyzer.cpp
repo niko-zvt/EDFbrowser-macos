@@ -42,7 +42,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(sigcompblck_t *signal_comp, char *v
 {
   int i;
 
-  char str[2048];
+  char str_2048[2048]={""};
 
   long long l_temp;
 
@@ -144,13 +144,13 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(sigcompblck_t *signal_comp, char *v
   SpectrumDialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
   if(mainwindow->spectrum_sqrt)
   {
-    snprintf(str, 2048, "Amplitude Spectrum %s", signallabel);
+    snprintf(str_2048, 2048, "Amplitude Spectrum %s", signallabel);
   }
   else
   {
-    snprintf(str, 2048, "Power Spectral Density %s", signallabel);
+    snprintf(str_2048, 2048, "Power Spectral Density %s", signallabel);
   }
-  SpectrumDialog->setWindowTitle(str);
+  SpectrumDialog->setWindowTitle(str_2048);
   SpectrumDialog->setWindowIcon(QIcon(":/images/edf.png"));
 
   curve1 = new SignalCurve;
@@ -164,9 +164,9 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(sigcompblck_t *signal_comp, char *v
   {
     if(mainwindow->spectrum_vlog)
     {
-      snprintf(str, 2048, "log10(%s)", physdimension);
+      snprintf(str_2048, 2048, "log10(%s)", physdimension);
 
-      curve1->setV_label(str);
+      curve1->setV_label(str_2048);
     }
     else
     {
@@ -177,14 +177,14 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(sigcompblck_t *signal_comp, char *v
   {
     if(mainwindow->spectrum_vlog)
     {
-      snprintf(str, 2048, "log10((%s)^2/Hz)", physdimension);
+      snprintf(str_2048, 2048, "log10((%s)^2/Hz)", physdimension);
     }
     else
     {
-      snprintf(str, 2048, "(%s)^2/Hz", physdimension);
+      snprintf(str_2048, 2048, "(%s)^2/Hz", physdimension);
     }
 
-    curve1->setV_label(str);
+    curve1->setV_label(str_2048);
   }
   curve1->create_button("to Text");
   curve1->setDashBoardEnabled(false);
@@ -545,8 +545,8 @@ void UI_FreqSpectrumWindow::print_to_txt()
 {
   int i;
 
-  char str[1024],
-       path[MAX_PATH_LENGTH];
+  char str_1024[1024]={""},
+       path[MAX_PATH_LENGTH]={""};
 
   FILE *outputfile;
 
@@ -572,8 +572,8 @@ void UI_FreqSpectrumWindow::print_to_txt()
   outputfile = fopen(path, "wb");
   if(outputfile == NULL)
   {
-    snprintf(str, 1024, "Cannot open file %.990s for writing.", path);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str));
+    snprintf(str_1024, 1024, "Cannot open file %.990s for writing.", path);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str_1024));
     messagewindow.exec();
     return;
   }
@@ -654,7 +654,7 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
   double max_freq,
          start_freq;
 
-  char str[2048];
+  char str_2048[2048]={""};
 
   if(fft_data == NULL)  return;
 
@@ -675,15 +675,15 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
   {
     mainwindow->spectrum_sqrt = 1;
 
-    snprintf(str, 2048, "Amplitude Spectrum %s", signallabel);
+    snprintf(str_2048, 2048, "Amplitude Spectrum %s", signallabel);
 
-    SpectrumDialog->setWindowTitle(str);
+    SpectrumDialog->setWindowTitle(str_2048);
 
     if(mainwindow->spectrum_vlog)
     {
-      snprintf(str, 2048, "log10(%s)", physdimension);
+      snprintf(str_2048, 2048, "log10(%s)", physdimension);
 
-      curve1->setV_label(str);
+      curve1->setV_label(str_2048);
     }
     else
     {
@@ -694,20 +694,20 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
   {
     mainwindow->spectrum_sqrt = 0;
 
-    snprintf(str, 2048, "Power Spectral Density %s", signallabel);
+    snprintf(str_2048, 2048, "Power Spectral Density %s", signallabel);
 
-    SpectrumDialog->setWindowTitle(str);
+    SpectrumDialog->setWindowTitle(str_2048);
 
     if(mainwindow->spectrum_vlog)
     {
-      snprintf(str, 2048, "log10((%s)^2/Hz)", physdimension);
+      snprintf(str_2048, 2048, "log10((%s)^2/Hz)", physdimension);
     }
     else
     {
-      snprintf(str, 2048, "(%s)^2/Hz", physdimension);
+      snprintf(str_2048, 2048, "(%s)^2/Hz", physdimension);
     }
 
-    curve1->setV_label(str);
+    curve1->setV_label(str_2048);
   }
 
   if(BWCheckBox->isChecked() == true)
@@ -792,17 +792,17 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
 
   curve1->setH_RulerValues(start_freq, max_freq);
 
-  strlcpy(str, "Center ", 2048);
-  convert_to_metric_suffix(str + strlen(str), start_freq + ((max_freq - start_freq) / 2.0), 3, 2048 - strlen(str));
-//  remove_trailing_zeros(str);
-  strlcat(str, "Hz", 2048);
-  centerLabel->setText(str);
+  strlcpy(str_2048, "Center ", 2048);
+  convert_to_metric_suffix(str_2048 + strlen(str_2048), start_freq + ((max_freq - start_freq) / 2.0), 3, 2048 - strlen(str_2048));
+//  remove_trailing_zeros(str_2048);
+  strlcat(str_2048, "Hz", 2048);
+  centerLabel->setText(str_2048);
 
-  strlcpy(str, "Span ", 2048);
-  convert_to_metric_suffix(str + strlen(str), max_freq - start_freq, 3, 2048 - strlen(str));
-//  remove_trailing_zeros(str);
-  strlcat(str, "Hz", 2048);
-  spanLabel->setText(str);
+  strlcpy(str_2048, "Span ", 2048);
+  convert_to_metric_suffix(str_2048 + strlen(str_2048), max_freq - start_freq, 3, 2048 - strlen(str_2048));
+//  remove_trailing_zeros(str_2048);
+  strlcat(str_2048, "Hz", 2048);
+  spanLabel->setText(str_2048);
 }
 
 
@@ -1296,7 +1296,7 @@ void UI_FreqSpectrumWindow::update_curve()
 
 void UI_FreqSpectrumWindow::thr_finished_func()
 {
-  char str[4096];
+  char str_4096[4096];
 
   if(spectrumdialog_is_destroyed)
   {
@@ -1307,11 +1307,11 @@ void UI_FreqSpectrumWindow::thr_finished_func()
   {
     QApplication::restoreOverrideCursor();
 
-    snprintf(str, 4096,
+    snprintf(str_4096, 4096,
             "The system was not able to provide enough resources (memory) to perform the requested action. (%i)",
             malloc_err);
 
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str_4096);
     messagewindow.exec();
 
     curve1->clear();
@@ -1321,12 +1321,12 @@ void UI_FreqSpectrumWindow::thr_finished_func()
     return;
   }
 
-  strlcpy(str, "FFT resolution: ", 4096);
-  convert_to_metric_suffix(str + strlen(str), freqstep, 3, 4096 - strlen(str));
-  remove_trailing_zeros(str);
-  snprintf(str + strlen(str), 4096 - strlen(str), "Hz   %i blocks of %i samples", fft_data->blocks_processed, fft_data->dft_sz);
+  strlcpy(str_4096, "FFT resolution: ", 4096);
+  convert_to_metric_suffix(str_4096 + strlen(str_4096), freqstep, 3, 4096 - strlen(str_4096));
+  remove_trailing_zeros(str_4096);
+  snprintf(str_4096 + strlen(str_4096), 4096 - strlen(str_4096), "Hz   %i blocks of %i samples", fft_data->blocks_processed, fft_data->dft_sz);
 
-  curve1->setUpperLabel1(str);
+  curve1->setUpperLabel1(str_4096);
 
   curve1->setUpperLabel2(signallabel);
 

@@ -175,7 +175,7 @@ void UI_SignalChooser::call_sidemenu(QListWidgetItem *)
 {
   int i, signal_nr2;
 
-  char str[32]={""};
+  char str1_32[32]={""};
 
   if(task == 3) return;
 
@@ -252,9 +252,9 @@ void UI_SignalChooser::call_sidemenu(QListWidgetItem *)
       return;
     }
 
-    strlcpy(str, mainwindow->signalcomp[signal_nr2]->edfparam_0->physdimension, 32);
-    trim_spaces(str);
-    if((strcmp(str, "uV")) && (strcmp(str, "mV")) && (strcmp(str, "V")))
+    strlcpy(str1_32, mainwindow->signalcomp[signal_nr2]->edfparam_0->physdimension, 32);
+    trim_spaces(str1_32);
+    if((strcmp(str1_32, "uV")) && (strcmp(str1_32, "mV")) && (strcmp(str1_32, "V")))
     {
       QMessageBox::critical(signalchooser_dialog, "Error", "Unknown physical dimension (unit), expected uV or mV or V");
       signalchooser_dialog->close();
