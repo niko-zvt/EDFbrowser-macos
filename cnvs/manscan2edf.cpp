@@ -116,11 +116,11 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
   long long filesize, ll_tmp;
 
-  char header_filename[MAX_PATH_LENGTH],
-       txt_string[2048],
-       edf_filename[MAX_PATH_LENGTH],
-       data_filename[MAX_PATH_LENGTH],
-       scratchpad[MAX_PATH_LENGTH];
+  char header_filename[MAX_PATH_LENGTH]={""},
+       str1_2048[2048]={""},
+       edf_filename[MAX_PATH_LENGTH]={""},
+       data_filename[MAX_PATH_LENGTH]={""},
+       scratchpad_mp[MAX_PATH_LENGTH]={""};
 
   double d_tmp;
 
@@ -148,16 +148,16 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
   header_inputfile = fopeno(header_filename, "rb");
   if(header_inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", header_filename);
-    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    snprintf(str1_2048, 2048, "Cannot open file %s for reading.\n", header_filename);
+    textEdit1->append(QString::fromLocal8Bit(str1_2048));
     pushButton1->setEnabled(true);
     return;
   }
 
-  get_filename_from_path(scratchpad, header_filename, MAX_PATH_LENGTH);
+  get_filename_from_path(scratchpad_mp, header_filename, MAX_PATH_LENGTH);
 
-  snprintf(txt_string, 2048, "Read file: %s", scratchpad);
-  textEdit1->append(QString::fromLocal8Bit(txt_string));
+  snprintf(str1_2048, 2048, "Read file: %s", scratchpad_mp);
+  textEdit1->append(QString::fromLocal8Bit(str1_2048));
 
   fseeko(header_inputfile, 0LL, SEEK_END);
   filesize = ftello(header_inputfile);
@@ -297,8 +297,8 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
     if(blocks < 1)
     {
-      snprintf(txt_string, 2048, "Skipping segment %i because it's shorter dan one second.", segment_cnt + 1);
-      textEdit1->append(txt_string);
+      snprintf(str1_2048, 2048, "Skipping segment %i because it's shorter dan one second.", segment_cnt + 1);
+      textEdit1->append(str1_2048);
 
       continue;
     }
@@ -333,8 +333,8 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
     data_inputfile = fopeno(data_filename, "rb");
     if(data_inputfile==NULL)
     {
-      snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", data_filename);
-      textEdit1->append(QString::fromLocal8Bit(txt_string));
+      snprintf(str1_2048, 2048, "Cannot open file %s for reading.\n", data_filename);
+      textEdit1->append(QString::fromLocal8Bit(str1_2048));
       fclose(header_inputfile);
       free(buf);
       free(segment_properties);
@@ -360,21 +360,21 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
     {
       segment_properties->sweeps = n;
 
-      snprintf(txt_string, 2048, "Warning: samples in datafile are less than in headerfile.");
-      textEdit1->append(txt_string);
+      snprintf(str1_2048, 2048, "Warning: samples in datafile are less than in headerfile.");
+      textEdit1->append(str1_2048);
     }
 
-    get_filename_from_path(scratchpad, edf_filename, MAX_PATH_LENGTH - 1);
+    get_filename_from_path(scratchpad_mp, edf_filename, MAX_PATH_LENGTH - 1);
 
-    snprintf(txt_string, 2048, "Convert a segment to %s ...", scratchpad);
-    textEdit1->append(txt_string);
+    snprintf(str1_2048, 2048, "Convert a segment to %s ...", scratchpad_mp);
+    textEdit1->append(str1_2048);
 
     hdl = edfopen_file_writeonly(edf_filename, EDFLIB_FILETYPE_EDFPLUS, chns);
 
     if(hdl<0)
     {
-      snprintf(txt_string, 2048, "Cannot open file %s for writing.\n", edf_filename);
-      textEdit1->append(QString::fromLocal8Bit(txt_string));
+      snprintf(str1_2048, 2048, "Cannot open file %s for writing.\n", edf_filename);
+      textEdit1->append(QString::fromLocal8Bit(str1_2048));
       fclose(header_inputfile);
       fclose(data_inputfile);
       free(buf);
@@ -449,16 +449,16 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       {
         d_tmp = 32767.0 / segment_properties->gain[i];
 
-        strlcpy(scratchpad, "uV", MAX_PATH_LENGTH);
+        strlcpy(scratchpad_mp, "uV", MAX_PATH_LENGTH);
       }
       else
       {
         d_tmp = 32.767 / segment_properties->gain[i];
 
-        strlcpy(scratchpad, "mV", MAX_PATH_LENGTH);
+        strlcpy(scratchpad_mp, "mV", MAX_PATH_LENGTH);
       }
 
-      if(edf_set_physical_dimension(hdl, i, scratchpad))
+      if(edf_set_physical_dimension(hdl, i, scratchpad_mp))
       {
         textEdit1->append("Error: edf_set_physical_dimension()\n");
         fclose(header_inputfile);
@@ -554,25 +554,25 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       return;
     }
 
-    scratchpad[0] = 0;
+    scratchpad_mp[0] = 0;
 
     if(segment_properties->hpf > 0.0001)
     {
-      snprintf(scratchpad + strlen(scratchpad), MAX_PATH_LENGTH - strlen(scratchpad), "HP:%fHz ", segment_properties->hpf);
+      snprintf(scratchpad_mp + strlen(scratchpad_mp), MAX_PATH_LENGTH - strlen(scratchpad_mp), "HP:%fHz ", segment_properties->hpf);
 
-      remove_trailing_zeros(scratchpad);
+      remove_trailing_zeros(scratchpad_mp);
     }
 
     if(segment_properties->lpf > 0.0001)
     {
-      snprintf(scratchpad + strlen(scratchpad), MAX_PATH_LENGTH - strlen(scratchpad), "LP:%fHz ", segment_properties->lpf);
+      snprintf(scratchpad_mp + strlen(scratchpad_mp), MAX_PATH_LENGTH - strlen(scratchpad_mp), "LP:%fHz ", segment_properties->lpf);
 
-      remove_trailing_zeros(scratchpad);
+      remove_trailing_zeros(scratchpad_mp);
     }
 
     for(i=0; i<chns; i++)
     {
-      if(edf_set_prefilter(hdl, i, scratchpad))
+      if(edf_set_prefilter(hdl, i, scratchpad_mp))
       {
         textEdit1->append("Error: edf_set_prefilter()\n");
         fclose(header_inputfile);
@@ -872,7 +872,7 @@ int UI_MANSCAN2EDFwindow::get_starttime_offset(struct segment_prop_struct *segpr
 {
   int segment_cnt=0;
 
-  char linebuf[MBILINEBUFSZ];
+  char linebuf[MBILINEBUFSZ]={""};
 
   long long time;
 
@@ -933,7 +933,7 @@ int UI_MANSCAN2EDFwindow::get_recorder_version(struct segment_prop_struct *segpr
 {
   int segment_cnt=0;
 
-  char linebuf[MBILINEBUFSZ];
+  char linebuf[MBILINEBUFSZ]={""};
 
 
   rewind(inputfile);
@@ -997,8 +997,8 @@ int UI_MANSCAN2EDFwindow::get_filter_settings(struct segment_prop_struct *segpro
 {
   int segment_cnt=0;
 
-  char linebuf[MBILINEBUFSZ],
-       *chrpntr;
+  char linebuf[MBILINEBUFSZ]={""},
+       *chrpntr=NULL;
 
   double lpf, hpf;
 
@@ -1154,7 +1154,7 @@ int UI_MANSCAN2EDFwindow::get_sample_rate(struct segment_prop_struct *segprop, i
   int sf,
       segment_cnt=0;
 
-  char linebuf[MBILINEBUFSZ];
+  char linebuf[MBILINEBUFSZ]={""};
 
   double d_tmp;
 
@@ -1262,7 +1262,7 @@ int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, in
       startdate_month,
       startdate_year;
 
-  char linebuf[MBILINEBUFSZ];
+  char linebuf[MBILINEBUFSZ]={""};
 
 
   rewind(inputfile);
@@ -1445,9 +1445,9 @@ int UI_MANSCAN2EDFwindow::get_channel_gain(struct segment_prop_struct *segprop, 
       channels,
       column;
 
-  char linebuf[MBILINEBUFSZ],
-       *chrpntr,
-       label[17];
+  char linebuf[MBILINEBUFSZ]={""},
+       *chrpntr=NULL,
+       label[17]={""};
 
   double gain;
 
@@ -1585,8 +1585,8 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
       segment_cnt=0,
       channels;
 
-  char linebuf[MBILINEBUFSZ],
-       scratchpad[256];
+  char linebuf[MBILINEBUFSZ]={""},
+       scratchpad_256[256]={""};
 
   rewind(inputfile);
 
@@ -1714,9 +1714,9 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
     return -1;
   }
 
-  strncpy(scratchpad, linebuf, len);
-  scratchpad[len] = 0;
-  tmp = atoi(scratchpad);  // field 1
+  strncpy(scratchpad_256, linebuf, len);
+  scratchpad_256[len] = 0;
+  tmp = atoi(scratchpad_256);  // field 1
 
   for(p=len; ; p++)
   {
@@ -1739,9 +1739,9 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
     return -1;
   }
 
-  strncpy(scratchpad, linebuf + p, len);
-  scratchpad[len] = 0;
-  segprop->data_offset = atoi(scratchpad);  // field 2
+  strncpy(scratchpad_256, linebuf + p, len);
+  scratchpad_256[len] = 0;
+  segprop->data_offset = atoi(scratchpad_256);  // field 2
 
   segprop->data_offset <<= 32;
   segprop->data_offset += tmp;
@@ -1767,9 +1767,9 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
     return -1;
   }
 
-  strncpy(scratchpad, linebuf + p, len);
-  scratchpad[len] = 0;
-  segprop->sweeps = atoi(scratchpad);  // field 3
+  strncpy(scratchpad_256, linebuf + p, len);
+  scratchpad_256[len] = 0;
+  segprop->sweeps = atoi(scratchpad_256);  // field 3
 
   for(p+=len; ; p++)
   {
@@ -1792,9 +1792,9 @@ int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, 
     return -1;
   }
 
-  strncpy(scratchpad, linebuf + p, len);
-  scratchpad[len] = 0;
-  strlcpy(segprop->datafilename, scratchpad, MAX_PATH_LENGTH);  // field 4
+  strncpy(scratchpad_256, linebuf + p, len);
+  scratchpad_256[len] = 0;
+  strlcpy(segprop->datafilename, scratchpad_256, MAX_PATH_LENGTH);  // field 4
 
   return 0;
 }
@@ -1804,7 +1804,7 @@ int UI_MANSCAN2EDFwindow::get_number_of_segments(FILE *inputfile)
 {
   int segment_cnt=1;
 
-  char linebuf[MBILINEBUFSZ];
+  char linebuf[MBILINEBUFSZ]={""};
 
   rewind(inputfile);
 
@@ -1833,7 +1833,7 @@ char * UI_MANSCAN2EDFwindow::fgetline(char *s, int size, FILE *stream)
       spc1=0,
       spc2=0;
 
-  char *result;
+  char *result=NULL;
 
   result = fgets(s, size, stream);
   if(result == NULL)

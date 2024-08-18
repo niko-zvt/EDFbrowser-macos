@@ -216,13 +216,13 @@ void UI_MIT2EDFwindow::SelectFileButton()
   short *mit_buf16=NULL,
         *edf_buf16=NULL;
 
-  char header_filename[MAX_PATH_LENGTH],
-       txt_string[2048]={""},
-       edf_filename[MAX_PATH_LENGTH],
-       data_filename[MAX_PATH_LENGTH],
-       annot_filename[MAX_PATH_LENGTH],
-       filename_x[MAX_PATH_LENGTH],
-       scratchpad[4096]={""},
+  char header_filename[MAX_PATH_LENGTH]={""},
+       str1_2048[2048]={""},
+       edf_filename[MAX_PATH_LENGTH]={""},
+       data_filename[MAX_PATH_LENGTH]={""},
+       annot_filename[MAX_PATH_LENGTH]={""},
+       filename_x[MAX_PATH_LENGTH]={""},
+       scratchpad_4096[4096]={""},
        *charpntr=NULL;
 
   unsigned char a_buf[128];
@@ -249,20 +249,20 @@ void UI_MIT2EDFwindow::SelectFileButton()
   header_inputfile = fopeno(header_filename, "rb");
   if(header_inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", header_filename);
-    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    snprintf(str1_2048, 2048, "Cannot open file %s for reading.\n", header_filename);
+    textEdit1->append(QString::fromLocal8Bit(str1_2048));
     pushButton1->setEnabled(true);
     return;
   }
 
   get_filename_from_path(filename_x, header_filename, MAX_PATH_LENGTH);
 
-  snprintf(txt_string, 2048, "Read file: %s", filename_x);
-  textEdit1->append(QString::fromLocal8Bit(txt_string));
+  snprintf(str1_2048, 2048, "Read file: %s", filename_x);
+  textEdit1->append(QString::fromLocal8Bit(str1_2048));
 
   remove_extension_from_filename(filename_x);
 
-  charpntr = fgets(scratchpad, 4095, header_inputfile);
+  charpntr = fgets(scratchpad_4096, 4095, header_inputfile);
   if(charpntr == NULL)
   {
     textEdit1->append("Cannot read header file. (error 1)\n");
@@ -416,7 +416,7 @@ void UI_MIT2EDFwindow::SelectFileButton()
 
     snprintf(mit_hdr.label[j], 17, "chan. %i", j + 1);
 
-    charpntr = fgets(scratchpad, 4095, header_inputfile);
+    charpntr = fgets(scratchpad_4096, 4095, header_inputfile);
     if(charpntr == NULL)
     {
       textEdit1->append("Cannot read header file. (error 11)\n");
@@ -492,8 +492,8 @@ void UI_MIT2EDFwindow::SelectFileButton()
       (mit_hdr.format[j] != 32) &&
       (mit_hdr.format[j] != 61))
     {
-      snprintf(txt_string, 2048, "Error, unsupported format: %i  (error 16)\n", mit_hdr.format[j]);
-      textEdit1->append(txt_string);
+      snprintf(str1_2048, 2048, "Error, unsupported format: %i  (error 16)\n", mit_hdr.format[j]);
+      textEdit1->append(str1_2048);
       fclose(header_inputfile);
       pushButton1->setEnabled(true);
       return;
@@ -680,16 +680,16 @@ void UI_MIT2EDFwindow::SelectFileButton()
   data_inputfile = fopeno(data_filename, "rb");
   if(data_inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", data_filename);
-    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    snprintf(str1_2048, 2048, "Cannot open file %s for reading.\n", data_filename);
+    textEdit1->append(QString::fromLocal8Bit(str1_2048));
     pushButton1->setEnabled(true);
     return;
   }
 
   get_filename_from_path(filename_x, data_filename, MAX_PATH_LENGTH);
 
-  snprintf(txt_string, 2048, "Read file: %s (format: %i)", filename_x, mit_hdr.format[0]);
-  textEdit1->append(QString::fromLocal8Bit(txt_string));
+  snprintf(str1_2048, 2048, "Read file: %s (format: %i)", filename_x, mit_hdr.format[0]);
+  textEdit1->append(QString::fromLocal8Bit(str1_2048));
 
   remove_extension_from_filename(filename_x);
 
@@ -732,8 +732,8 @@ void UI_MIT2EDFwindow::SelectFileButton()
   hdl = edfopen_file_writeonly(edf_filename, EDFLIB_FILETYPE_EDFPLUS, mit_hdr.chns);
   if(hdl<0)
   {
-    snprintf(txt_string, 2048, "Cannot open file %s for writing.\n", edf_filename);
-    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    snprintf(str1_2048, 2048, "Cannot open file %s for writing.\n", edf_filename);
+    textEdit1->append(QString::fromLocal8Bit(str1_2048));
     fclose(data_inputfile);
     pushButton1->setEnabled(true);
     return;
@@ -1243,14 +1243,14 @@ OUT1:
 
     if(annot_inputfile==NULL)
     {
-      snprintf(txt_string, 2048, "Cannot open file %s for reading.\n"
+      snprintf(str1_2048, 2048, "Cannot open file %s for reading.\n"
                                  "Annotations cannot be included.", filename_x);
-      textEdit1->append(QString::fromLocal8Bit(txt_string));
+      textEdit1->append(QString::fromLocal8Bit(str1_2048));
     }
     else
     {
-      snprintf(txt_string, 2048, "Read file: %s", filename_x);
-      textEdit1->append(QString::fromLocal8Bit(txt_string));
+      snprintf(str1_2048, 2048, "Read file: %s", filename_x);
+      textEdit1->append(QString::fromLocal8Bit(str1_2048));
 
       fseeko(annot_inputfile, 0LL, SEEK_END);
       filesize = ftello(annot_inputfile);
@@ -1350,8 +1350,8 @@ OUT1:
 
   if(total_annots)
   {
-    snprintf(txt_string, 2048, "Read %i annotations.", total_annots);
-    textEdit1->append(txt_string);
+    snprintf(str1_2048, 2048, "Read %i annotations.", total_annots);
+    textEdit1->append(str1_2048);
   }
 
   progress.reset();
