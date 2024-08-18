@@ -129,9 +129,9 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
                data_chunk_offset,
                tmp;
 
-  char path[MAX_PATH_LENGTH],
-       outputfilename[MAX_PATH_LENGTH],
-       scratchpad[512],
+  char path[MAX_PATH_LENGTH]={""},
+       outputfilename[MAX_PATH_LENGTH]={""},
+       scratchpad_512[512]={""},
        *buf1=NULL;
 
   long long blocks,
@@ -193,7 +193,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
 
   rewind(inputfile);
 
-  if(fread(scratchpad, 256, 1, inputfile)!=1)
+  if(fread(scratchpad_512, 256, 1, inputfile)!=1)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading from inputfile.");
     messagewindow.exec();
@@ -202,7 +202,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
     return;
   }
 
-  if((strncmp(scratchpad, "RIFF", 4)) || (strncmp(scratchpad + 8, "WAVE", 4)))
+  if((strncmp(scratchpad_512, "RIFF", 4)) || (strncmp(scratchpad_512 + 8, "WAVE", 4)))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "File is not a Wave file.");
     messagewindow.exec();
@@ -217,7 +217,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
   {
     fseeko(inputfile, (long long)fmt_chunk_offset, SEEK_SET);
 
-    if(fread(scratchpad, 256, 1, inputfile)!=1)
+    if(fread(scratchpad_512, 256, 1, inputfile)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find fmt chunk.");
       messagewindow.exec();
@@ -226,12 +226,12 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
       return;
     }
 
-    if(strncmp(scratchpad, "fmt ", 4) == 0)
+    if(strncmp(scratchpad_512, "fmt ", 4) == 0)
     {
       break;
     }
 
-    tmp = *((unsigned int *)(scratchpad + 4));
+    tmp = *((unsigned int *)(scratchpad_512 + 4));
     if(tmp < 2)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find fmt chunk.");
@@ -249,7 +249,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
     fmt_chunk_offset += (tmp + 8);
   }
 
-  if(*((signed short *)(scratchpad + 8)) != 1)
+  if(*((signed short *)(scratchpad_512 + 8)) != 1)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "File contains compressed data.\nCannot convert compressed data.");
     messagewindow.exec();
@@ -258,7 +258,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
     return;
   }
 
-  edfsignals = *((unsigned short *)(scratchpad + 10));
+  edfsignals = *((unsigned short *)(scratchpad_512 + 10));
 
   if(edfsignals < 1)
   {
@@ -279,7 +279,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
     return;
   }
 
-  sf = *((unsigned int *)(scratchpad + 12));
+  sf = *((unsigned int *)(scratchpad_512 + 12));
 
   switch(sf)
   {
@@ -317,9 +317,9 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
 
   if(!dsf)
   {
-    snprintf(scratchpad, 512, "error: samplefrequency is %iHz.\n"
+    snprintf(scratchpad_512, 512, "error: samplefrequency is %iHz.\n"
            "expected: 8000, 11025, 16000, 22050, 32000, 44100, 48000, 88200 or 96000 Hz\n", sf);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad_512);
     messagewindow.exec();
     fclose(inputfile);
     enable_widgets(true);
@@ -335,7 +335,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
   df = uf / dsf;  // df:   downsampling frequency (500Hz, samplefrequency of the new EDF file)
                   // dsf:  downsampling factor
 
-  resolution = *((unsigned short *)(scratchpad + 22));
+  resolution = *((unsigned short *)(scratchpad_512 + 22));
 
   if(resolution != 16)
   {
@@ -354,7 +354,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
   {
     fseeko(inputfile, (long long)data_chunk_offset, SEEK_SET);
 
-    if(fread(scratchpad, 256, 1, inputfile)!=1)
+    if(fread(scratchpad_512, 256, 1, inputfile)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find data chunk.");
       messagewindow.exec();
@@ -363,12 +363,12 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
       return;
     }
 
-    if(strncmp(scratchpad, "data", 4) == 0)
+    if(strncmp(scratchpad_512, "data", 4) == 0)
     {
       break;
     }
 
-    tmp = *((unsigned int *)(scratchpad + 4));
+    tmp = *((unsigned int *)(scratchpad_512 + 4));
     if(tmp < 2)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find data chunk.");
@@ -388,7 +388,7 @@ void UI_FMaudio2EDFwindow::SelectFileButton()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-  blocks = (long long)(*((int *)(scratchpad + 4)));
+  blocks = (long long)(*((int *)(scratchpad_512 + 4)));
 
   blocks /= (sf * edfsignals * 2);
 

@@ -110,8 +110,8 @@ void UI_AsciiExportwindow::ExportButtonClicked()
       max_tal_ln,
       progress_steps;
 
-  char path[MAX_PATH_LENGTH],
-       ascii_path[MAX_PATH_LENGTH],
+  char path[MAX_PATH_LENGTH]={""},
+       ascii_path[MAX_PATH_LENGTH]={""},
        *edf_hdr=NULL,
        *scratchpad=NULL,
        *cnv_buf=NULL,

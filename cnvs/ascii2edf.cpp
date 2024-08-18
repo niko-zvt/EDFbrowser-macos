@@ -291,7 +291,7 @@ void UI_ASCII2EDFapp::numofcolumnschanged(int cnt)
 {
   int i;
 
-  char str[256]="";
+  char str1_256[256]="";
 
   if(cnt>columns)
   {
@@ -304,8 +304,8 @@ void UI_ASCII2EDFapp::numofcolumnschanged(int cnt)
       connect(SignalsTablewidget->cellWidget(i, 0), SIGNAL(stateChanged(int)), this, SLOT(signalCheckboxChanged(int)));
       SignalsTablewidget->setCellWidget(i, 1, new QLineEdit);
       ((QLineEdit *)SignalsTablewidget->cellWidget(i, 1))->setMaxLength(16);
-      snprintf(str, 256, "chan. %i", i + 1);
-      ((QLineEdit *)SignalsTablewidget->cellWidget(i, 1))->setText(str);
+      snprintf(str1_256, 256, "chan. %i", i + 1);
+      ((QLineEdit *)SignalsTablewidget->cellWidget(i, 1))->setText(str1_256);
       SignalsTablewidget->setCellWidget(i, 2, new QLineEdit);
       ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setMaxLength(7);
       ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setText("3000");

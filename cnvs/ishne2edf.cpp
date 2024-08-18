@@ -106,10 +106,10 @@ int i, j,
 
   char path[MAX_PATH_LENGTH]={""},
        hdr[4096]={""},
-       scratchpad[4096]={""},
-       tmp_str[128]={""},
+       scratchpad_4096[4096]={""},
+       str1_128[128]={""},
        rbuf[4]={0,0,0,0},
-       annot_descr[128]="";
+       annot_descr_128[128]="";
 
   const char *lead_label[20]={"Unknown","Generic bipolar","X bipolar","Y bipolar","Z bipolar","I","II","III","aVR","aVL",
                               "aVF","V1","V2","V3","V4","V5","V6","ES","AS","AI"};
@@ -151,13 +151,13 @@ struct
 
   if(inputfile == NULL)
   {
-    snprintf(scratchpad, 4096, "Error, cannot open file:\n%s\n", path);
-    textEdit1->append(QString::fromLocal8Bit(scratchpad));
+    snprintf(scratchpad_4096, 4096, "Error, cannot open file:\n%s\n", path);
+    textEdit1->append(QString::fromLocal8Bit(scratchpad_4096));
     return;
   }
 
-  snprintf(scratchpad, 4096, "Processing ecg file:\n%s", path);
-  textEdit1->append(QString::fromLocal8Bit(scratchpad));
+  snprintf(scratchpad_4096, 4096, "Processing ecg file:\n%s", path);
+  textEdit1->append(QString::fromLocal8Bit(scratchpad_4096));
 
   fseek(inputfile, 0, SEEK_END);
 
@@ -272,16 +272,16 @@ struct
     lead_spec[i] = *((short *)(hdr + 158 + (i * 2)));
     if((lead_spec[i] < 0) || (lead_spec[i] > 19))
     {
-      snprintf(scratchpad, 4096, "Error, lead specification of lead %i is out of range.", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad_4096, 4096, "Error, lead specification of lead %i is out of range.", i + 1);
+      textEdit1->append(scratchpad_4096);
       goto OUT_EXIT;
     }
 
     amp_resolution[i] = *((short *)(hdr + 206 + (i * 2)));
     if(amp_resolution[i] < 1)
     {
-      snprintf(scratchpad, 4096, "Error, amplitude resolution of lead %i is less than 1nV.", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad_4096, 4096, "Error, amplitude resolution of lead %i is less than 1nV.", i + 1);
+      textEdit1->append(scratchpad_4096);
       goto OUT_EXIT;
     }
   }
@@ -352,8 +352,8 @@ struct
 
 //   if(!birthdate_valid)
 //   {
-//     snprintf(scratchpad, 4096, "Skipping illegal date of birth: %04i-%02i-%02i", birth_d.year, birth_d.month, birth_d.day);
-//     textEdit1->append(scratchpad);
+//     snprintf(scratchpad_4096, 4096, "Skipping illegal date of birth: %04i-%02i-%02i", birth_d.year, birth_d.month, birth_d.day);
+//     textEdit1->append(scratchpad_4096);
 //   }
 
 /////////////////////////////////////// STORE TO EDF ///////////////////////////////
@@ -438,37 +438,37 @@ struct
     goto OUT_EXIT;
   }
 
-  strncpy(tmp_str, hdr + 28, 40);
-  tmp_str[40] = 0;
+  strncpy(str1_128, hdr + 28, 40);
+  str1_128[40] = 0;
 
-  trim_spaces(tmp_str);
-  strlcat(tmp_str, " ", 128);
+  trim_spaces(str1_128);
+  strlcat(str1_128, " ", 128);
 
-  strncpy(scratchpad, hdr + 68, 40);
-  scratchpad[40] = 0;
+  strncpy(scratchpad_4096, hdr + 68, 40);
+  scratchpad_4096[40] = 0;
 
-  trim_spaces(scratchpad);
+  trim_spaces(scratchpad_4096);
 
-  strlcat(tmp_str, scratchpad, 128);
-  remove_trailing_spaces(tmp_str);
+  strlcat(str1_128, scratchpad_4096, 128);
+  remove_trailing_spaces(str1_128);
 
-  if(strlen(tmp_str))
+  if(strlen(str1_128))
   {
-    if(edf_set_patientname(edf_hdl, tmp_str))
+    if(edf_set_patientname(edf_hdl, str1_128))
     {
       textEdit1->append("Error, edf_set_patientname()\n");
       goto OUT_EXIT;
     }
   }
 
-  strncpy(tmp_str, hdr + 108, 20);
-  tmp_str[20] = 0;
+  strncpy(str1_128, hdr + 108, 20);
+  str1_128[20] = 0;
 
-  trim_spaces(tmp_str);
+  trim_spaces(str1_128);
 
-  if(strlen(tmp_str))
+  if(strlen(str1_128))
   {
-    if(edf_set_patientcode(edf_hdl, tmp_str))
+    if(edf_set_patientcode(edf_hdl, str1_128))
     {
       textEdit1->append("Error, edf_set_patientcode()\n");
       goto OUT_EXIT;
@@ -501,14 +501,14 @@ struct
     }
   }
 
-  strncpy(tmp_str, hdr + 232, 40);
-  tmp_str[40] = 0;
+  strncpy(str1_128, hdr + 232, 40);
+  str1_128[40] = 0;
 
-  trim_spaces(tmp_str);
+  trim_spaces(str1_128);
 
-  if(strlen(tmp_str))
+  if(strlen(str1_128))
   {
-    if(edf_set_equipment(edf_hdl, tmp_str))
+    if(edf_set_equipment(edf_hdl, str1_128))
     {
       textEdit1->append("Error, edf_set_equipment()\n");
       goto OUT_EXIT;
@@ -596,8 +596,8 @@ struct
     goto OUT_EXIT;
   }
 
-  snprintf(scratchpad, 4096, "Processing annotations file:\n%s", path);
-  textEdit1->append(QString::fromLocal8Bit(scratchpad));
+  snprintf(scratchpad_4096, 4096, "Processing annotations file:\n%s", path);
+  textEdit1->append(QString::fromLocal8Bit(scratchpad_4096));
 
   fseek(inputfile, 0, SEEK_END);
 
@@ -707,16 +707,16 @@ struct
     lead_spec[i] = *((short *)(hdr + 158 + (i * 2)));
     if((lead_spec[i] < 0) || (lead_spec[i] > 19))
     {
-      snprintf(scratchpad, 4096, "Error, lead specification of lead %i is out of range.", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad_4096, 4096, "Error, lead specification of lead %i is out of range.", i + 1);
+      textEdit1->append(scratchpad_4096);
       goto OUT_EXIT;
     }
 
     amp_resolution[i] = *((short *)(hdr + 206 + (i * 2)));
     if(amp_resolution[i] < 1)
     {
-      snprintf(scratchpad, 4096, "Error, amplitude resolution of lead %i is less than 1nV.", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad_4096, 4096, "Error, amplitude resolution of lead %i is less than 1nV.", i + 1);
+      textEdit1->append(scratchpad_4096);
       goto OUT_EXIT;
     }
   }
@@ -798,48 +798,48 @@ struct
 
     if(rbuf[0] == 'N')
     {
-      strlcpy(annot_descr, "Normal beat", 128);
+      strlcpy(annot_descr_128, "Normal beat", 128);
     }
     else if(rbuf[0] == 'V')
       {
-        strlcpy(annot_descr, "Premature ventricular contraction", 128);
+        strlcpy(annot_descr_128, "Premature ventricular contraction", 128);
       }
       else if(rbuf[0] == 'S')
         {
-          strlcpy(annot_descr, "Supraventricular premature or ectopic beat", 128);
+          strlcpy(annot_descr_128, "Supraventricular premature or ectopic beat", 128);
         }
         else if(rbuf[0] == 'C')
           {
-            strlcpy(annot_descr, "Calibration Pulse", 128);
+            strlcpy(annot_descr_128, "Calibration Pulse", 128);
           }
           else if(rbuf[0] == 'B')
             {
-              strlcpy(annot_descr, "Bundle branch block beat", 128);
+              strlcpy(annot_descr_128, "Bundle branch block beat", 128);
             }
             else if(rbuf[0] == 'P')
               {
-                strlcpy(annot_descr, "Pace", 128);
+                strlcpy(annot_descr_128, "Pace", 128);
               }
               else if(rbuf[0] == 'X')
                 {
-                  strlcpy(annot_descr, "Artefact", 128);
+                  strlcpy(annot_descr_128, "Artefact", 128);
                 }
                 else if(rbuf[0] == '!')
                   {
-                    strlcpy(annot_descr, "Timeout", 128);
+                    strlcpy(annot_descr_128, "Timeout", 128);
                   }
                   else if(rbuf[0] == 'U')
                     {
-                      strlcpy(annot_descr, "Unknown", 128);
+                      strlcpy(annot_descr_128, "Unknown", 128);
                     }
                     else
                     {
-                      strlcpy(annot_descr, "Unspecified", 128);
+                      strlcpy(annot_descr_128, "Unspecified", 128);
                     }
 
     onset += *((unsigned short *)(rbuf + 2));
 
-    edfwrite_annotation_latin1_hr(edf_hdl, (onset * 1000000LL) / sf, -1, annot_descr);
+    edfwrite_annotation_latin1_hr(edf_hdl, (onset * 1000000LL) / sf, -1, annot_descr_128);
   }
 
   textEdit1->append("Done\n");

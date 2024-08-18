@@ -112,7 +112,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   long long filesize=0;
 
   char path[MAX_PATH_LENGTH]={""},
-       scratchpad[256]={""},
+       scratchpad_256[256]={""},
        *buf=NULL,
        date[9]={""},
        time[9]={""},
@@ -124,7 +124,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
        handedness[16]={""},
        weight[16]={""},
        birthdate[16]={""},
-       txt_string[2048]={""},
+       str1_2048[2048]={""},
        outputfilename[MAX_PATH_LENGTH]={""};
 
   union{
@@ -151,8 +151,8 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", path);
-    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    snprintf(str1_2048, 2048, "Cannot open file %s for reading.\n", path);
+    textEdit1->append(QString::fromLocal8Bit(str1_2048));
     pushButton1->setEnabled(true);
     return;
   }
@@ -168,14 +168,14 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   }
 
   rewind(inputfile);
-  if(fread(scratchpad, 3, 1, inputfile)!=1)
+  if(fread(scratchpad_256, 3, 1, inputfile)!=1)
   {
     textEdit1->append("Read error.\n");
     fclose(inputfile);
     pushButton1->setEnabled(true);
     return;
   }
-  if((strncmp(scratchpad, "PBJ", 3))&&(strncmp(scratchpad, "BPC", 3)))
+  if((strncmp(scratchpad_256, "PBJ", 3))&&(strncmp(scratchpad_256, "BPC", 3)))
   {
     textEdit1->append("Error, file id does not match.\n");
     fclose(inputfile);
@@ -230,7 +230,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     return;
   }
 
-  if(get_string(scratchpad, inputfile, 205, 32)!=8)
+  if(get_string(scratchpad_256, inputfile, 205, 32)!=8)
   {
     textEdit1->append("Error, cannot read startdate.\n");
     fclose(inputfile);
@@ -238,14 +238,14 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     return;
   }
   error = 0;
-  if((scratchpad[0]<'0')||(scratchpad[0]>'9'))  error = 1;
-  if((scratchpad[1]<'0')||(scratchpad[1]>'9'))  error = 1;
-  date[6] = scratchpad[2];
-  date[7] = scratchpad[3];
-  date[3] = scratchpad[4];
-  date[4] = scratchpad[5];
-  date[0] = scratchpad[6];
-  date[1] = scratchpad[7];
+  if((scratchpad_256[0]<'0')||(scratchpad_256[0]>'9'))  error = 1;
+  if((scratchpad_256[1]<'0')||(scratchpad_256[1]>'9'))  error = 1;
+  date[6] = scratchpad_256[2];
+  date[7] = scratchpad_256[3];
+  date[3] = scratchpad_256[4];
+  date[4] = scratchpad_256[5];
+  date[0] = scratchpad_256[6];
+  date[1] = scratchpad_256[7];
   date[2] = 0;
   date[5] = 0;
   date[8] = 0;
@@ -255,21 +255,21 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   if((date[4]<'0')||(date[4]>'9'))  error = 1;
   if((date[6]<'0')||(date[6]>'9'))  error = 1;
   if((date[7]<'0')||(date[7]>'9'))  error = 1;
-  scratchpad[4] = 0;
-  year = atoi(scratchpad);
+  scratchpad_256[4] = 0;
+  year = atoi(scratchpad_256);
   if((year < 1985) || (year > 2084))
   {
     year = 1985;
   }
 
-  if(get_string(scratchpad, inputfile, 214, 32)!=8)
+  if(get_string(scratchpad_256, inputfile, 214, 32)!=8)
   {
     textEdit1->append("Error, cannot read starttime.\n");
     fclose(inputfile);
     pushButton1->setEnabled(true);
     return;
   }
-  strlcpy(time, scratchpad, 9);
+  strlcpy(time, scratchpad_256, 9);
   if(time[2] != ':')  error = 1;
   if(time[5] != ':')  error = 1;
   time[2] = 0;
@@ -329,7 +329,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
               break;
   }
 
-  if(get_string(scratchpad, inputfile, 169, 32)!=8)
+  if(get_string(scratchpad_256, inputfile, 169, 32)!=8)
   {
     strlcpy(birthdate, "X", 16);
   }
@@ -338,13 +338,13 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     error = 0;
     for(i=0; i<8; i++)
     {
-      if((scratchpad[i]<'0')||(scratchpad[i]>'9'))  error = 1;
+      if((scratchpad_256[i]<'0')||(scratchpad_256[i]>'9'))  error = 1;
     }
-    scratchpad[8] = 0;
-    b_date = atoi(scratchpad+6);
+    scratchpad_256[8] = 0;
+    b_date = atoi(scratchpad_256+6);
     if((b_date<1)||(b_date>31))  error = 1;
-    scratchpad[6] = 0;
-    i = atoi(scratchpad+4);
+    scratchpad_256[6] = 0;
+    i = atoi(scratchpad_256+4);
     if((i<1)||(i>12))  error = 1;
     switch(i)
     {
@@ -375,8 +375,8 @@ void UI_EMSA2EDFwindow::SelectFileButton()
       default : strlcpy(b_month, "ERR", 4);
                 break;
     }
-    scratchpad[4] = 0;
-    b_year = atoi(scratchpad);
+    scratchpad_256[4] = 0;
+    b_year = atoi(scratchpad_256);
     if(error)
     {
       strlcpy(birthdate, "X", 16);
@@ -530,7 +530,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
 
       for(i=0; i<annot_cnt; i++)
       {
-        if(get_string(scratchpad, logfile, i * 69, 10)!=8)
+        if(get_string(scratchpad_256, logfile, i * 69, 10)!=8)
         {
           textEdit1->append("Error, cannot read event starttime in .LBK file.\n");
           fclose(inputfile);
@@ -539,21 +539,21 @@ void UI_EMSA2EDFwindow::SelectFileButton()
           return;
         }
 
-        if(scratchpad[2] != ':')  error = 1;
-        if(scratchpad[5] != ':')  error = 1;
-        scratchpad[2] = 0;
-        scratchpad[5] = 0;
-        scratchpad[8] = 0;
-        if((scratchpad[0]<'0')||(scratchpad[0]>'9'))  error = 1;
-        if((scratchpad[1]<'0')||(scratchpad[1]>'9'))  error = 1;
-        if((scratchpad[3]<'0')||(scratchpad[3]>'9'))  error = 1;
-        if((scratchpad[4]<'0')||(scratchpad[4]>'9'))  error = 1;
-        if((scratchpad[6]<'0')||(scratchpad[6]>'9'))  error = 1;
-        if((scratchpad[7]<'0')||(scratchpad[7]>'9'))  error = 1;
+        if(scratchpad_256[2] != ':')  error = 1;
+        if(scratchpad_256[5] != ':')  error = 1;
+        scratchpad_256[2] = 0;
+        scratchpad_256[5] = 0;
+        scratchpad_256[8] = 0;
+        if((scratchpad_256[0]<'0')||(scratchpad_256[0]>'9'))  error = 1;
+        if((scratchpad_256[1]<'0')||(scratchpad_256[1]>'9'))  error = 1;
+        if((scratchpad_256[3]<'0')||(scratchpad_256[3]>'9'))  error = 1;
+        if((scratchpad_256[4]<'0')||(scratchpad_256[4]>'9'))  error = 1;
+        if((scratchpad_256[6]<'0')||(scratchpad_256[6]>'9'))  error = 1;
+        if((scratchpad_256[7]<'0')||(scratchpad_256[7]>'9'))  error = 1;
 
-        if(atoi(scratchpad)>23)  error = 1;
-        if(atoi(scratchpad+3)>59)  error = 1;
-        if(atoi(scratchpad+6)>59)  error = 1;
+        if(atoi(scratchpad_256)>23)  error = 1;
+        if(atoi(scratchpad_256+3)>59)  error = 1;
+        if(atoi(scratchpad_256+6)>59)  error = 1;
         if(error)
         {
           textEdit1->append("Error, cannot read event starttime in .LBK file.\n");
@@ -563,11 +563,11 @@ void UI_EMSA2EDFwindow::SelectFileButton()
           return;
         }
 
-        time_on = atoi(scratchpad) * 3600;
-        time_on += atoi(scratchpad+3) * 60;
-        time_on += atoi(scratchpad+6);
+        time_on = atoi(scratchpad_256) * 3600;
+        time_on += atoi(scratchpad_256+3) * 60;
+        time_on += atoi(scratchpad_256+6);
 
-        if(get_string(scratchpad, logfile, i * 69 + 9, 10)!=8)
+        if(get_string(scratchpad_256, logfile, i * 69 + 9, 10)!=8)
         {
           textEdit1->append("Error, cannot read event stoptime in .LBK file.\n");
           fclose(inputfile);
@@ -576,21 +576,21 @@ void UI_EMSA2EDFwindow::SelectFileButton()
           return;
         }
 
-        if(scratchpad[2] != ':')  error = 1;
-        if(scratchpad[5] != ':')  error = 1;
-        scratchpad[2] = 0;
-        scratchpad[5] = 0;
-        scratchpad[8] = 0;
-        if((scratchpad[0]<'0')||(scratchpad[0]>'9'))  error = 1;
-        if((scratchpad[1]<'0')||(scratchpad[1]>'9'))  error = 1;
-        if((scratchpad[3]<'0')||(scratchpad[3]>'9'))  error = 1;
-        if((scratchpad[4]<'0')||(scratchpad[4]>'9'))  error = 1;
-        if((scratchpad[6]<'0')||(scratchpad[6]>'9'))  error = 1;
-        if((scratchpad[7]<'0')||(scratchpad[7]>'9'))  error = 1;
+        if(scratchpad_256[2] != ':')  error = 1;
+        if(scratchpad_256[5] != ':')  error = 1;
+        scratchpad_256[2] = 0;
+        scratchpad_256[5] = 0;
+        scratchpad_256[8] = 0;
+        if((scratchpad_256[0]<'0')||(scratchpad_256[0]>'9'))  error = 1;
+        if((scratchpad_256[1]<'0')||(scratchpad_256[1]>'9'))  error = 1;
+        if((scratchpad_256[3]<'0')||(scratchpad_256[3]>'9'))  error = 1;
+        if((scratchpad_256[4]<'0')||(scratchpad_256[4]>'9'))  error = 1;
+        if((scratchpad_256[6]<'0')||(scratchpad_256[6]>'9'))  error = 1;
+        if((scratchpad_256[7]<'0')||(scratchpad_256[7]>'9'))  error = 1;
 
-        if(atoi(scratchpad)>23)  error = 1;
-        if(atoi(scratchpad+3)>59)  error = 1;
-        if(atoi(scratchpad+6)>59)  error = 1;
+        if(atoi(scratchpad_256)>23)  error = 1;
+        if(atoi(scratchpad_256+3)>59)  error = 1;
+        if(atoi(scratchpad_256+6)>59)  error = 1;
         if(error)
         {
           textEdit1->append("Error, cannot read event stoptime in .LBK file.\n");
@@ -600,9 +600,9 @@ void UI_EMSA2EDFwindow::SelectFileButton()
           return;
         }
 
-        time_off = atoi(scratchpad) * 3600;
-        time_off += atoi(scratchpad+3) * 60;
-        time_off += atoi(scratchpad+6);
+        time_off = atoi(scratchpad_256) * 3600;
+        time_off += atoi(scratchpad_256+3) * 60;
+        time_off += atoi(scratchpad_256+6);
 
         logbuf[i].duration = time_off - time_on;
 
@@ -708,8 +708,8 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   outputfile = fopen(path, "wb");
   if(outputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Error, cannot open file %s for writing.\n", path);
-    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    snprintf(str1_2048, 2048, "Error, cannot open file %s for writing.\n", path);
+    textEdit1->append(QString::fromLocal8Bit(str1_2048));
     fclose(inputfile);
     free(logbuf);
     pushButton1->setEnabled(true);
@@ -781,18 +781,18 @@ void UI_EMSA2EDFwindow::SelectFileButton()
 
   for(i=0; i<channels; i++)
   {
-    len = get_string(scratchpad, inputfile, 1034 + (i * 512), 16);
+    len = get_string(scratchpad_256, inputfile, 1034 + (i * 512), 16);
     for(j=len; j<16; j++)
     {
-      scratchpad[j] = ' ';
+      scratchpad_256[j] = ' ';
     }
-    latin1_to_ascii(scratchpad, 16);
-    scratchpad[16] = 0;
+    latin1_to_ascii(scratchpad_256, 16);
+    scratchpad_256[16] = 0;
     fseeko(inputfile, (long long)(1025 + (i * 512)), SEEK_SET);
     if((fgetc(inputfile)=='E')&&(len<13))
     {
       fprintf(outputfile, "EEG ");
-      if(fwrite(scratchpad, 12, 1, outputfile)!=1)
+      if(fwrite(scratchpad_256, 12, 1, outputfile)!=1)
       {
         textEdit1->append("Write error.\n");
         fclose(inputfile);
@@ -804,7 +804,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     }
     else
     {
-      if(fwrite(scratchpad, 16, 1, outputfile)!=1)
+      if(fwrite(scratchpad_256, 16, 1, outputfile)!=1)
       {
         textEdit1->append("Write error.\n");
         fclose(inputfile);
@@ -977,8 +977,8 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   fclose(inputfile);
   fclose(outputfile);
 
-  snprintf(txt_string, 2048, "Done, your EDF+ file is %s\n", path);
-  textEdit1->append(QString::fromLocal8Bit(txt_string));
+  snprintf(str1_2048, 2048, "Done, your EDF+ file is %s\n", path);
+  textEdit1->append(QString::fromLocal8Bit(str1_2048));
 
   pushButton1->setEnabled(true);
 }

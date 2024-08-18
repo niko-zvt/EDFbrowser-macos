@@ -102,9 +102,9 @@ void UI_EDFDwindow::SelectFileButton()
             chunk_starttime,
             chunk_endtime;
 
-  char txt_string[2048],
-       inputpath[MAX_PATH_LENGTH],
-       output_path[MAX_PATH_LENGTH],
+  char str1_2048[2048]={""},
+       inputpath[MAX_PATH_LENGTH]={""},
+       output_path[MAX_PATH_LENGTH]={""},
        *fileheader=NULL,
        *readbuf=NULL,
        *tal=NULL;
@@ -129,18 +129,18 @@ void UI_EDFDwindow::SelectFileButton()
   inputfile = fopeno(inputpath, "rb");
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Error, cannot open file %s for reading.\n", inputpath);
-    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    snprintf(str1_2048, 2048, "Error, cannot open file %s for reading.\n", inputpath);
+    textEdit1->append(QString::fromLocal8Bit(str1_2048));
     pushButton1->setEnabled(true);
     return;
   }
 
-  snprintf(txt_string, 2048, "Processing file %s", inputpath);
-  textEdit1->append(txt_string);
+  snprintf(str1_2048, 2048, "Processing file %s", inputpath);
+  textEdit1->append(str1_2048);
 
 /***************** check if the file is valid ******************************/
 
-  edfhdr = check_edf_file(inputfile, txt_string, 2048, 0, 0);
+  edfhdr = check_edf_file(inputfile, str1_2048, 2048, 0, 0);
   if(edfhdr==NULL)
   {
     fclose(inputfile);
@@ -260,10 +260,10 @@ void UI_EDFDwindow::SelectFileButton()
     snprintf(output_path + strlen(output_path), MAX_PATH_LENGTH, "_%04i.bdf", file_number);
   }
 
-  strlcpy(txt_string, "Creating file ", 2048);
-  len = strlen(txt_string);
-  get_filename_from_path(txt_string + len, output_path, MAX_PATH_LENGTH - len);
-  textEdit1->append(QString::fromLocal8Bit(txt_string));
+  strlcpy(str1_2048, "Creating file ", 2048);
+  len = strlen(str1_2048);
+  get_filename_from_path(str1_2048 + len, output_path, MAX_PATH_LENGTH - len);
+  textEdit1->append(QString::fromLocal8Bit(str1_2048));
 
   outputfile = fopeno(output_path, "w+b");
   if(outputfile==NULL)
@@ -481,10 +481,10 @@ void UI_EDFDwindow::SelectFileButton()
         snprintf(output_path + strlen(output_path), MAX_PATH_LENGTH - strlen(output_path), "_%04i.bdf", file_number);
       }
 
-      strlcpy(txt_string, "Creating file ", 2048);
-      len = strlen(txt_string);
-      get_filename_from_path(txt_string + len, output_path, MAX_PATH_LENGTH - len);
-      textEdit1->append(txt_string);
+      strlcpy(str1_2048, "Creating file ", 2048);
+      len = strlen(str1_2048);
+      get_filename_from_path(str1_2048 + len, output_path, MAX_PATH_LENGTH - len);
+      textEdit1->append(str1_2048);
 
       outputfile = fopeno(output_path, "w+b");
       if(outputfile==NULL)

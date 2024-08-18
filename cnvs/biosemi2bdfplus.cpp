@@ -35,7 +35,7 @@ UI_BIOSEMI2BDFPLUSwindow::UI_BIOSEMI2BDFPLUSwindow(QWidget *w_parent)
 {
   int i;
 
-  char str[128]={""};
+  char str1_128[128]={""};
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
@@ -63,14 +63,14 @@ UI_BIOSEMI2BDFPLUSwindow::UI_BIOSEMI2BDFPLUSwindow(QWidget *w_parent)
 
   for(i=0; i<16; i++)
   {
-    snprintf(str, 128, "%i", i + 1);
+    snprintf(str1_128, 128, "%i", i + 1);
 
     lineEdit1[i] = new QLineEdit;
-    snprintf(str, 128, "Trigger Input %i", i + 1);
-    lineEdit1[i]->setText(str);
+    snprintf(str1_128, 128, "Trigger Input %i", i + 1);
+    lineEdit1[i]->setText(str1_128);
     lineEdit1[i]->setMaxLength(16);
 
-    flayout->addRow(str, lineEdit1[i]);
+    flayout->addRow(str1_128, lineEdit1[i]);
   }
 
   radioButton1 = new QRadioButton;
@@ -152,7 +152,7 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
       new_sf,
       samplerate_divider;
 
-  char str[2048]={""},
+  char str1_2048[2048]={""},
        triggerlabel[24][64],
        outputfilename[MAX_PATH_LENGTH]={""};
 
@@ -179,8 +179,8 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
   {
     if(!lineEdit1[i]->text().length())
     {
-      snprintf(str, 2048, "Trigger Input label %i is empty!", i + 1);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+      snprintf(str1_2048, 2048, "Trigger Input label %i is empty!", i + 1);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
       messagewindow.exec();
       return;
     }
@@ -194,8 +194,8 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
       {
         if(!strcmp(lineEdit1[i]->text().toLocal8Bit().data(), lineEdit1[j]->text().toLocal8Bit().data()))
         {
-          snprintf(str, 2048, "Trigger Input labels %i and %i are the same!", i + 1, j + 1);
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+          snprintf(str1_2048, 2048, "Trigger Input labels %i and %i are the same!", i + 1, j + 1);
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
           messagewindow.exec();
           return;
         }
@@ -203,7 +203,7 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
     }
   }
 
-  str[0] = 0;
+  str1_2048[0] = 0;
 
   strlcpy(inputpath, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "BDF files (*.bdf *.BDF)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
@@ -222,32 +222,32 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
 
     switch(error)
     {
-      case EDFLIB_MALLOC_ERROR                : strlcpy(str, "EDFlib: malloc error.", 2048);
+      case EDFLIB_MALLOC_ERROR                : strlcpy(str1_2048, "EDFlib: malloc error.", 2048);
                                                 break;
-      case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY   : strlcpy(str, "EDFlib: no such file or directory.", 2048);
+      case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY   : strlcpy(str1_2048, "EDFlib: no such file or directory.", 2048);
                                                 break;
-      case EDFLIB_FILE_CONTAINS_FORMAT_ERRORS : strlcpy(str, "EDFlib: file contains format errors.\nOpen the file in EDFbrowser to get more info.", 2048);
+      case EDFLIB_FILE_CONTAINS_FORMAT_ERRORS : strlcpy(str1_2048, "EDFlib: file contains format errors.\nOpen the file in EDFbrowser to get more info.", 2048);
                                                 break;
-      case EDFLIB_MAXFILES_REACHED            : strlcpy(str, "EDFlib: maximum amount of files reached.", 2048);
+      case EDFLIB_MAXFILES_REACHED            : strlcpy(str1_2048, "EDFlib: maximum amount of files reached.", 2048);
                                                 break;
-      case EDFLIB_FILE_READ_ERROR             : strlcpy(str, "EDFlib: a file read error occurred.", 2048);
+      case EDFLIB_FILE_READ_ERROR             : strlcpy(str1_2048, "EDFlib: a file read error occurred.", 2048);
                                                 break;
-      case EDFLIB_FILE_ALREADY_OPENED         : strlcpy(str, "EDFlib: file is already opened.", 2048);
+      case EDFLIB_FILE_ALREADY_OPENED         : strlcpy(str1_2048, "EDFlib: file is already opened.", 2048);
                                                 break;
-      case EDFLIB_FILETYPE_ERROR              : strlcpy(str, "EDFlib: filetype error.", 2048);
+      case EDFLIB_FILETYPE_ERROR              : strlcpy(str1_2048, "EDFlib: filetype error.", 2048);
                                                 break;
-      case EDFLIB_FILE_WRITE_ERROR            : strlcpy(str, "EDFlib: file write error.", 2048);
+      case EDFLIB_FILE_WRITE_ERROR            : strlcpy(str1_2048, "EDFlib: file write error.", 2048);
                                                 break;
-      case EDFLIB_NUMBER_OF_SIGNALS_INVALID   : strlcpy(str, "EDFlib: invalid number of signals.", 2048);
+      case EDFLIB_NUMBER_OF_SIGNALS_INVALID   : strlcpy(str1_2048, "EDFlib: invalid number of signals.", 2048);
                                                 break;
-      case EDFLIB_FILE_IS_DISCONTINUOUS       : strlcpy(str, "EDFlib: file is discontinuous.", 2048);
+      case EDFLIB_FILE_IS_DISCONTINUOUS       : strlcpy(str1_2048, "EDFlib: file is discontinuous.", 2048);
                                                 break;
-      case EDFLIB_INVALID_READ_ANNOTS_VALUE   : strlcpy(str, "EDFlib: invalid read annotations argument.", 2048);
+      case EDFLIB_INVALID_READ_ANNOTS_VALUE   : strlcpy(str1_2048, "EDFlib: invalid read annotations argument.", 2048);
                                                 break;
-      default                                 : strlcpy(str, "EDFlib: unknown error.", 2048);
+      default                                 : strlcpy(str1_2048, "EDFlib: unknown error.", 2048);
     }
 
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
     messagewindow.exec();
 
     return;
@@ -457,26 +457,26 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
   {
     switch(hdl_out)
     {
-      case EDFLIB_MALLOC_ERROR                : strlcpy(str, "EDFlib: malloc error.", 2048);
+      case EDFLIB_MALLOC_ERROR                : strlcpy(str1_2048, "EDFlib: malloc error.", 2048);
                                                 break;
-      case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY   : strlcpy(str, "EDFlib: no such file or directory.", 2048);
+      case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY   : strlcpy(str1_2048, "EDFlib: no such file or directory.", 2048);
                                                 break;
-      case EDFLIB_MAXFILES_REACHED            : strlcpy(str, "EDFlib: maximum amount of files reached.", 2048);
+      case EDFLIB_MAXFILES_REACHED            : strlcpy(str1_2048, "EDFlib: maximum amount of files reached.", 2048);
                                                 break;
-      case EDFLIB_FILE_READ_ERROR             : strlcpy(str, "EDFlib: a file read error occurred.", 2048);
+      case EDFLIB_FILE_READ_ERROR             : strlcpy(str1_2048, "EDFlib: a file read error occurred.", 2048);
                                                 break;
-      case EDFLIB_FILE_ALREADY_OPENED         : strlcpy(str, "EDFlib: file is already opened.", 2048);
+      case EDFLIB_FILE_ALREADY_OPENED         : strlcpy(str1_2048, "EDFlib: file is already opened.", 2048);
                                                 break;
-      case EDFLIB_FILETYPE_ERROR              : strlcpy(str, "EDFlib: filetype error.", 2048);
+      case EDFLIB_FILETYPE_ERROR              : strlcpy(str1_2048, "EDFlib: filetype error.", 2048);
                                                 break;
-      case EDFLIB_FILE_WRITE_ERROR            : strlcpy(str, "EDFlib: file write error.", 2048);
+      case EDFLIB_FILE_WRITE_ERROR            : strlcpy(str1_2048, "EDFlib: file write error.", 2048);
                                                 break;
-      case EDFLIB_NUMBER_OF_SIGNALS_INVALID   : strlcpy(str, "EDFlib: invalid number of signals.", 2048);
+      case EDFLIB_NUMBER_OF_SIGNALS_INVALID   : strlcpy(str1_2048, "EDFlib: invalid number of signals.", 2048);
                                                 break;
-      default                                 : strlcpy(str, "EDFlib: unknown error.", 2048);
+      default                                 : strlcpy(str1_2048, "EDFlib: unknown error.", 2048);
     }
 
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
     messagewindow.exec();
 
     edfclose_file(hdl_in);
@@ -607,10 +607,10 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
                   }
                   if(!strcmp(annot_ptr->description, triggerlabel[j]))
                   {
-                    snprintf(str, 2048, "%.7f", ((datarecords * EDFLIB_TIME_DIMENSION) + (i * status_sample_duration) - annot_ptr->onset) / (double)EDFLIB_TIME_DIMENSION);
-                    str[19] = 0;
-                    strlcpy(annot_ptr->duration, str, 20);
-                    annot_ptr->long_duration = edfplus_annotation_get_long_from_number(str);
+                    snprintf(str1_2048, 2048, "%.7f", ((datarecords * EDFLIB_TIME_DIMENSION) + (i * status_sample_duration) - annot_ptr->onset) / (double)EDFLIB_TIME_DIMENSION);
+                    str1_2048[19] = 0;
+                    strlcpy(annot_ptr->duration, str1_2048, 20);
+                    annot_ptr->long_duration = edfplus_annotation_get_long_from_number(str1_2048);
                     break;
                   }
                 }
@@ -654,10 +654,10 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
                   }
                   if(!strcmp(annot_ptr->description, triggerlabel[j]))
                   {
-                    snprintf(str, 2048, "%.7f", ((datarecords * EDFLIB_TIME_DIMENSION) + (i * status_sample_duration) - annot_ptr->onset) / (double)EDFLIB_TIME_DIMENSION);
-                    str[19] = 0;
-                    strlcpy(annot_ptr->duration, str, 20);
-                    annot_ptr->long_duration = edfplus_annotation_get_long_from_number(str);
+                    snprintf(str1_2048, 2048, "%.7f", ((datarecords * EDFLIB_TIME_DIMENSION) + (i * status_sample_duration) - annot_ptr->onset) / (double)EDFLIB_TIME_DIMENSION);
+                    str1_2048[19] = 0;
+                    strlcpy(annot_ptr->duration, str1_2048, 20);
+                    annot_ptr->long_duration = edfplus_annotation_get_long_from_number(str1_2048);
                     break;
                   }
                 }
@@ -816,14 +816,14 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
   progress.reset();
 
 #ifdef Q_OS_WIN32
-  __mingw_snprintf(str, 2048, "Done. Converted %lli input trigger events to BDF+ annotations.\n"
+  __mingw_snprintf(str1_2048, 2048, "Done. Converted %lli input trigger events to BDF+ annotations.\n"
                       "\nBDF+ file is located at %s", trigger_cnt, outputpath);
 #else
-  snprintf(str, 2048, "Done. Converted %lli input trigger events to BDF+ annotations.\n"
+  snprintf(str1_2048, 2048, "Done. Converted %lli input trigger events to BDF+ annotations.\n"
                       "\nBDF+ file is located at %s", trigger_cnt, outputpath);
 #endif
 
-  QMessageBox messagewindow(QMessageBox::Information, "Ready", str);
+  QMessageBox messagewindow(QMessageBox::Information, "Ready", str1_2048);
   messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
   messagewindow.exec();
 }

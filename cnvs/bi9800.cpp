@@ -93,16 +93,16 @@ void UI_BI98002EDFwindow::SelectFileButton()
       starttime_second=0,
       progress_steps;
 
-  char path[MAX_PATH_LENGTH],
-       outputfilename[MAX_PATH_LENGTH],
-       str[2048],
-       str2[128],
-       *buf1,
+  char path[MAX_PATH_LENGTH]={""},
+       outputfilename[MAX_PATH_LENGTH]={""},
+       str1_2048[2048]={""},
+       str2_128[128]={""},
+       *buf1=NULL,
        tmp2,
-       modelnumber_str[32];
+       modelnumber_str[32]={""};
 
-  FILE *dcmfile,
-       *evtfile;
+  FILE *dcmfile=NULL,
+       *evtfile=NULL;
 
 
 
@@ -120,8 +120,8 @@ void UI_BI98002EDFwindow::SelectFileButton()
   dcmfile = fopeno(path, "rb");
   if(dcmfile==NULL)
   {
-    snprintf(str, 2048, "Cannot open file %s for reading.", path);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str));
+    snprintf(str1_2048, 2048, "Cannot open file %s for reading.", path);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str1_2048));
     messagewindow.exec();
     return;
   }
@@ -136,8 +136,8 @@ void UI_BI98002EDFwindow::SelectFileButton()
     evtfile = fopeno(path, "rb");
     if(evtfile==NULL)
     {
-      snprintf(str, 2048, "Cannot open file %s for reading.", path);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+      snprintf(str1_2048, 2048, "Cannot open file %s for reading.", path);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
       messagewindow.exec();
       fclose(dcmfile);
       return;
@@ -164,14 +164,14 @@ void UI_BI98002EDFwindow::SelectFileButton()
         break;
       }
 
-      str[i] = tmp;
+      str1_2048[i] = tmp;
     }
 
-    str[i] = 0;
+    str1_2048[i] = 0;
 
-    if(!(strncmp(str, "Sampling Rate=", 14)))
+    if(!(strncmp(str1_2048, "Sampling Rate=", 14)))
     {
-      samplefreq = atoi(str + 14);
+      samplefreq = atoi(str1_2048 + 14);
       switch(samplefreq)
       {
         case  128 : break;
@@ -189,9 +189,9 @@ void UI_BI98002EDFwindow::SelectFileButton()
       checked_samplerate = 1;
     }
 
-    if(!(strncmp(str, "Model number=", 13)))
+    if(!(strncmp(str1_2048, "Model number=", 13)))
     {
-      strncpy(modelnumber_str, str + 13, 8);
+      strncpy(modelnumber_str, str1_2048 + 13, 8);
       modelnumber_str[8] = 0;
 
       if(strcmp(modelnumber_str, "TM SD01G") &&
@@ -207,14 +207,14 @@ void UI_BI98002EDFwindow::SelectFileButton()
       checked_modelnumber = 1;
     }
 
-    if(!(strncmp(str, "Record Date=", 12)))
+    if(!(strncmp(str1_2048, "Record Date=", 12)))
     {
-      strncpy(str2, str + 12, 10);
-      str2[10] = 0;
+      strncpy(str2_128, str1_2048 + 12, 10);
+      str2_128[10] = 0;
 
-      startdate_year = atoi(str2);
-      startdate_month = atoi(str2 + 5);
-      startdate_day = atoi(str2 + 8);
+      startdate_year = atoi(str2_128);
+      startdate_month = atoi(str2_128 + 5);
+      startdate_day = atoi(str2_128 + 8);
 
       if((startdate_year < 1970) || (startdate_year > 3000) ||
          (startdate_month < 1)   || (startdate_month > 12)  ||
@@ -230,14 +230,14 @@ void UI_BI98002EDFwindow::SelectFileButton()
       checked_recorddate = 1;
     }
 
-    if(!(strncmp(str, "Record Time=", 12)))
+    if(!(strncmp(str1_2048, "Record Time=", 12)))
     {
-      strncpy(str2, str + 12, 10);
-      str2[8] = 0;
+      strncpy(str2_128, str1_2048 + 12, 10);
+      str2_128[8] = 0;
 
-      starttime_hour = atoi(str2);
-      starttime_minute = atoi(str2 + 3);
-      starttime_second = atoi(str2 + 6);
+      starttime_hour = atoi(str2_128);
+      starttime_minute = atoi(str2_128 + 3);
+      starttime_second = atoi(str2_128 + 6);
 
       if((starttime_hour < 0)  || (starttime_hour > 23)   ||
         (starttime_minute < 0) || (starttime_minute > 59) ||
@@ -253,12 +253,12 @@ void UI_BI98002EDFwindow::SelectFileButton()
       checked_recordtime = 1;
     }
 
-    if(!(strncmp(str, "Record Hours=", 13)))
+    if(!(strncmp(str1_2048, "Record Hours=", 13)))
     {
-      strncpy(str2, str + 13, 10);
-      str2[2] = 0;
+      strncpy(str2_128, str1_2048 + 13, 10);
+      str2_128[2] = 0;
 
-      if((atoi(str2) != 24) && (atoi(str2) != 48))
+      if((atoi(str2_128) != 24) && (atoi(str2_128) != 48))
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Wrong record hours.");
         messagewindow.exec();
@@ -337,8 +337,8 @@ void UI_BI98002EDFwindow::SelectFileButton()
   hdl = edfopen_file_writeonly(path, EDFLIB_FILETYPE_EDFPLUS, chns);
   if(hdl<0)
   {
-    snprintf(str, 2048, "Cannot open file %s for writing.", path);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    snprintf(str1_2048, 2048, "Cannot open file %s for writing.", path);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
     messagewindow.exec();
     fclose(dcmfile);
     fclose(evtfile);
@@ -469,16 +469,16 @@ void UI_BI98002EDFwindow::SelectFileButton()
         break;
       }
 
-      str[i] = tmp;
+      str1_2048[i] = tmp;
     }
 
-    str[i] = 0;
+    str1_2048[i] = 0;
 
-    if((isdigit(str[0])) && (isdigit(str[1])))
+    if((isdigit(str1_2048[0])) && (isdigit(str1_2048[1])))
     {
-      starttime_hour = atoi(str);
-      starttime_minute = atoi(str + 3);
-      starttime_second = atoi(str + 6);
+      starttime_hour = atoi(str1_2048);
+      starttime_minute = atoi(str1_2048 + 3);
+      starttime_second = atoi(str1_2048 + 6);
 
       if((starttime_hour < 0)   || (starttime_hour > 23)   ||
          (starttime_minute < 0) || (starttime_minute > 59) ||
@@ -487,9 +487,9 @@ void UI_BI98002EDFwindow::SelectFileButton()
       }
       else
       {
-        if(strlen(str) > 9)
+        if(strlen(str1_2048) > 9)
         {
-          edfwrite_annotation_latin1_hr(hdl, (starttime_second + (starttime_minute * 60) + (starttime_hour * 3600)) * 1000000LL, -1, str + 9);
+          edfwrite_annotation_latin1_hr(hdl, (starttime_second + (starttime_minute * 60) + (starttime_hour * 3600)) * 1000000LL, -1, str1_2048 + 9);
         }
       }
     }

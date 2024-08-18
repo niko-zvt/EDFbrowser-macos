@@ -296,7 +296,7 @@ void UI_BDF2EDFwindow::SelectFileButton()
 {
   int i;
 
-  char txt_string[2048];
+  char str1_2048[2048];
 
   if(edfhdr!=NULL)
   {
@@ -328,19 +328,19 @@ void UI_BDF2EDFwindow::SelectFileButton()
   inputfile = fopeno(inputpath, "rb");
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Cannot open file %s for reading.", inputpath);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(txt_string));
+    snprintf(str1_2048, 2048, "Cannot open file %s for reading.", inputpath);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str1_2048));
     messagewindow.exec();
     return;
   }
 
 /***************** check if the file is valid ******************************/
 
-  edfhdr = check_edf_file(inputfile, txt_string, 2048, 0, 0);
+  edfhdr = check_edf_file(inputfile, str1_2048, 2048, 0, 0);
   if(edfhdr==NULL)
   {
     fclose(inputfile);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
     messagewindow.exec();
     return;
   }
@@ -407,8 +407,8 @@ void UI_BDF2EDFwindow::StartConversion()
       len,
       progress_steps;
 
-  char *readbuf,
-       scratchpad[256];
+  char *readbuf=NULL,
+       scratchpad_256[256]={""};
 
   union {
           unsigned int one;
@@ -535,14 +535,14 @@ void UI_BDF2EDFwindow::StartConversion()
 
   fprintf(outputfile, "0       ");
   fseeko(inputfile, 8LL, SEEK_SET);
-  if(fread(scratchpad, 176, 1, inputfile)!=1)
+  if(fread(scratchpad_256, 176, 1, inputfile)!=1)
   {
     QMessageBox::critical(myobjectDialog, "Error", "Read error (1).");
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Read error (1).");
     messagewindow.exec();
     goto END_3;
   }
-  if(fwrite(scratchpad, 176, 1, outputfile)!=1)
+  if(fwrite(scratchpad_256, 176, 1, outputfile)!=1)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Write error (1).");
     messagewindow.exec();
@@ -572,15 +572,15 @@ void UI_BDF2EDFwindow::StartConversion()
     }
   }
   fprintf(outputfile, "%-8i", datarecords);
-  snprintf(scratchpad, 256, "%f", edfhdr->data_record_duration);
-  convert_trailing_zeros_to_spaces(scratchpad);
-  if(scratchpad[7]=='.')
+  snprintf(scratchpad_256, 256, "%f", edfhdr->data_record_duration);
+  convert_trailing_zeros_to_spaces(scratchpad_256);
+  if(scratchpad_256[7]=='.')
   {
-    scratchpad[7] = ' ';
+    scratchpad_256[7] = ' ';
   }
-  scratchpad[8] = 0;
+  scratchpad_256[8] = 0;
 
-  fprintf(outputfile, "%s", scratchpad);
+  fprintf(outputfile, "%s", scratchpad_256);
   fprintf(outputfile, "%-4i", new_edfsignals);
 
   for(i=0; i<new_edfsignals; i++)
@@ -610,14 +610,14 @@ void UI_BDF2EDFwindow::StartConversion()
     }
     else
     {
-      snprintf(scratchpad, 256, "%f", edfhdr->edfparam[signalslist[i]].bitvalue * -32768.0 * dividerlist[i]);
-      convert_trailing_zeros_to_spaces(scratchpad);
-      if(scratchpad[7]=='.')
+      snprintf(scratchpad_256, 256, "%f", edfhdr->edfparam[signalslist[i]].bitvalue * -32768.0 * dividerlist[i]);
+      convert_trailing_zeros_to_spaces(scratchpad_256);
+      if(scratchpad_256[7]=='.')
       {
-        scratchpad[7] = ' ';
+        scratchpad_256[7] = ' ';
       }
-      scratchpad[8] = 0;
-      fprintf(outputfile, "%s", scratchpad);
+      scratchpad_256[8] = 0;
+      fprintf(outputfile, "%s", scratchpad_256);
     }
   }
   for(i=0; i<new_edfsignals; i++)
@@ -628,14 +628,14 @@ void UI_BDF2EDFwindow::StartConversion()
     }
     else
     {
-      snprintf(scratchpad, 256, "%f", edfhdr->edfparam[signalslist[i]].bitvalue * 32767.0 * dividerlist[i]);
-      convert_trailing_zeros_to_spaces(scratchpad);
-      if(scratchpad[7]=='.')
+      snprintf(scratchpad_256, 256, "%f", edfhdr->edfparam[signalslist[i]].bitvalue * 32767.0 * dividerlist[i]);
+      convert_trailing_zeros_to_spaces(scratchpad_256);
+      if(scratchpad_256[7]=='.')
       {
-        scratchpad[7] = ' ';
+        scratchpad_256[7] = ' ';
       }
-      scratchpad[8] = 0;
-      fprintf(outputfile, "%s", scratchpad);
+      scratchpad_256[8] = 0;
+      fprintf(outputfile, "%s", scratchpad_256);
     }
   }
   for(i=0; i<new_edfsignals; i++)
@@ -657,55 +657,55 @@ void UI_BDF2EDFwindow::StartConversion()
     }
     else
     {
-      snprintf(scratchpad, 256, "HP:%f", ((QDoubleSpinBox *)(SignalsTablewidget->cellWidget(signalslist[i], 1)))->value());
-      remove_trailing_zeros(scratchpad);
-      strlcat(scratchpad, "Hz ", 256);
+      snprintf(scratchpad_256, 256, "HP:%f", ((QDoubleSpinBox *)(SignalsTablewidget->cellWidget(signalslist[i], 1)))->value());
+      remove_trailing_zeros(scratchpad_256);
+      strlcat(scratchpad_256, "Hz ", 256);
 
-      strlcat(scratchpad, edfhdr->edfparam[signalslist[i]].prefilter, 256);
+      strlcat(scratchpad_256, edfhdr->edfparam[signalslist[i]].prefilter, 256);
 
-      for(j=strlen(scratchpad); j<200; j++)
+      for(j=strlen(scratchpad_256); j<200; j++)
       {
-        scratchpad[j] = ' ';
+        scratchpad_256[j] = ' ';
       }
 
-      scratchpad[200] = 0;
+      scratchpad_256[200] = 0;
 
       for(j=0; j<80; j++)
       {
-        if(!strncmp(scratchpad + j, "No filtering", 12))
+        if(!strncmp(scratchpad_256 + j, "No filtering", 12))
         {
           for(k=j; k<(j+12); k++)
           {
-            scratchpad[k] = ' ';
+            scratchpad_256[k] = ' ';
           }
         }
       }
 
       for(j=0; j<80; j++)
       {
-        if(!strncmp(scratchpad + j, "None", 4))
+        if(!strncmp(scratchpad_256 + j, "None", 4))
         {
           for(k=j; k<(j+4); k++)
           {
-            scratchpad[k] = ' ';
+            scratchpad_256[k] = ' ';
           }
         }
       }
 
       for(j=0; j<80; j++)
       {
-        if(!strncmp(scratchpad + j, "HP: DC;", 7))
+        if(!strncmp(scratchpad_256 + j, "HP: DC;", 7))
         {
           for(k=j; k<(j+7); k++)
           {
-            scratchpad[k] = ' ';
+            scratchpad_256[k] = ' ';
           }
         }
       }
 
-      scratchpad[80] = 0;
+      scratchpad_256[80] = 0;
 
-      fprintf(outputfile, "%s", scratchpad);
+      fprintf(outputfile, "%s", scratchpad_256);
     }
   }
   for(i=0; i<new_edfsignals; i++)

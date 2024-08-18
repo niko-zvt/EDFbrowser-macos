@@ -106,10 +106,10 @@ void UI_FINO2EDFwindow::SelectFileButton()
       column,
       line_nr;
 
-  char txt_string[2048]={""},
+  char str1_2048[2048]={""},
        path[MAX_PATH_LENGTH]={""},
        outputfilename[MAX_PATH_LENGTH]={""},
-       line[2048]={""},
+       line_2048[2048]={""},
        scratchpad[128]={""},
        labels[F_MAX_SIGNALS][17],
        phys_dim[F_MAX_SIGNALS][9],
@@ -167,8 +167,8 @@ void UI_FINO2EDFwindow::SelectFileButton()
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Cannot open file %s for reading.", path);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
+    snprintf(str1_2048, 2048, "Cannot open file %s for reading.", path);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
     messagewindow.exec();
     enable_widgets(true);
     return;
@@ -284,11 +284,11 @@ void UI_FINO2EDFwindow::SelectFileButton()
         return;
       }
 
-      line[i] = 0;
+      line_2048[i] = 0;
 
       ok = 0;
 
-      if(!strcmp(line, "\" reSYS\""))
+      if(!strcmp(line_2048, "\" reSYS\""))
       {
         strlcpy(labels[edfsignals], "reSYS           ", 17);
         strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
@@ -298,7 +298,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\" fiSYS\""))
+      if(!strcmp(line_2048, "\" fiSYS\""))
       {
         strlcpy(labels[edfsignals], "fiSYS           ", 17);
         strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
@@ -308,7 +308,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\" reDIA\""))
+      if(!strcmp(line_2048, "\" reDIA\""))
       {
         strlcpy(labels[edfsignals], "reDIA           ", 17);
         strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
@@ -318,7 +318,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\" fiDIA\""))
+      if(!strcmp(line_2048, "\" fiDIA\""))
       {
         strlcpy(labels[edfsignals], "fiDIA           ", 17);
         strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
@@ -328,7 +328,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\" reMAP\""))
+      if(!strcmp(line_2048, "\" reMAP\""))
       {
         strlcpy(labels[edfsignals], "reMAP           ", 17);
         strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
@@ -338,7 +338,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\" fiMAP\""))
+      if(!strcmp(line_2048, "\" fiMAP\""))
       {
         strlcpy(labels[edfsignals], "fiMAP           ", 17);
         strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
@@ -348,7 +348,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\"  HR\""))
+      if(!strcmp(line_2048, "\"  HR\""))
       {
         strlcpy(labels[edfsignals], "HR              ", 17);
         strlcpy(phys_dim[edfsignals], "bpm     ", 9);
@@ -358,7 +358,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\"   IBI\""))
+      if(!strcmp(line_2048, "\"   IBI\""))
       {
         strlcpy(labels[edfsignals], "IBI             ", 17);
         strlcpy(phys_dim[edfsignals], "s       ", 9);
@@ -368,7 +368,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\"  SV\""))
+      if(!strcmp(line_2048, "\"  SV\""))
       {
         strlcpy(labels[edfsignals], "SV              ", 17);
         strlcpy(phys_dim[edfsignals], "ml      ", 9);
@@ -378,7 +378,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\"    CO\""))
+      if(!strcmp(line_2048, "\"    CO\""))
       {
         strlcpy(labels[edfsignals], "CO              ", 17);
         strlcpy(phys_dim[edfsignals], "lpm     ", 9);
@@ -388,7 +388,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\"   EJT\""))
+      if(!strcmp(line_2048, "\"   EJT\""))
       {
         strlcpy(labels[edfsignals], "EJT             ", 17);
         strlcpy(phys_dim[edfsignals], "s       ", 9);
@@ -398,7 +398,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\"    TPR\""))
+      if(!strcmp(line_2048, "\"    TPR\""))
       {
         strlcpy(labels[edfsignals], "TPR             ", 17);
         strlcpy(phys_dim[edfsignals], "MU      ", 9);
@@ -408,7 +408,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\" Artifact\""))
+      if(!strcmp(line_2048, "\" Artifact\""))
       {
         strlcpy(labels[edfsignals], "Artifact        ", 17);
         strlcpy(phys_dim[edfsignals], "_TPSROD2", 9);
@@ -418,7 +418,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\" Zao\""))
+      if(!strcmp(line_2048, "\" Zao\""))
       {
         strlcpy(labels[edfsignals], "Zao             ", 17);
         strlcpy(phys_dim[edfsignals], "mMU     ", 9);
@@ -428,7 +428,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\"   Cwk\""))
+      if(!strcmp(line_2048, "\"   Cwk\""))
       {
         strlcpy(labels[edfsignals], "Cwk             ", 17);
         strlcpy(phys_dim[edfsignals], "MU      ", 9);
@@ -438,7 +438,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         ok = 1;
       }
 
-      if(!strcmp(line, "\" Height\""))
+      if(!strcmp(line_2048, "\" Height\""))
       {
         strlcpy(labels[edfsignals], "Height          ", 17);
         strlcpy(phys_dim[edfsignals], "mmHg    ", 9);
@@ -450,8 +450,8 @@ void UI_FINO2EDFwindow::SelectFileButton()
 
       if(!ok)
       {
-        snprintf(txt_string, 2048, "Found unknown label/signal: %.2000s", line);
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
+        snprintf(str1_2048, 2048, "Found unknown label/signal: %.2000s", line_2048);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
         messagewindow.exec();
         fclose(inputfile);
         enable_widgets(true);
@@ -468,7 +468,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
       continue;
     }
 
-    line[i++] = temp;
+    line_2048[i++] = temp;
   }
 
   if(!edfsignals)
@@ -535,8 +535,8 @@ void UI_FINO2EDFwindow::SelectFileButton()
   outputfile = fopeno(path, "wb");
   if(outputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Cannot open file %s for writing.", path);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
+    snprintf(str1_2048, 2048, "Cannot open file %s for writing.", path);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
     messagewindow.exec();
     enable_widgets(true);
     fclose(inputfile);
@@ -665,27 +665,27 @@ void UI_FINO2EDFwindow::SelectFileButton()
       break;
     }
 
-    line[i] = temp;
+    line_2048[i] = temp;
 
   /**************************************/
 
-    if(line[i]==',')
+    if(line_2048[i]==',')
     {
-      line[i] = '.';
+      line_2048[i] = '.';
     }
 
-    if((line[i]==separator)||(line[i]=='\n'))
+    if((line_2048[i]==separator)||(line_2048[i]=='\n'))
     {
       if(column)
       {
-        new_value[column-1] = atof(line + str_start);
+        new_value[column-1] = atof(line_2048 + str_start);
       }
       else
       {
-        new_smpl_time = (int)(atof(line + str_start) * 100.0);
+        new_smpl_time = (int)(atof(line_2048 + str_start) * 100.0);
       }
 
-      if(line[i]=='\n')
+      if(line_2048[i]=='\n')
       {
         /**************************************/
 
@@ -694,8 +694,8 @@ void UI_FINO2EDFwindow::SelectFileButton()
         if(column!=edfsignals)
         {
           QApplication::restoreOverrideCursor();
-          snprintf(txt_string, 2048, "Number of separators in line %i is wrong.", line_nr);
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
+          snprintf(str1_2048, 2048, "Number of separators in line %i is wrong.", line_nr);
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
           messagewindow.exec();
           fclose(inputfile);
           fclose(outputfile);
@@ -708,8 +708,8 @@ void UI_FINO2EDFwindow::SelectFileButton()
         if(timestep<=0)
         {
           QApplication::restoreOverrideCursor();
-          snprintf(txt_string, 2048, "Timestep <= 0 in line %i.", line_nr);
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
+          snprintf(str1_2048, 2048, "Timestep <= 0 in line %i.", line_nr);
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
           messagewindow.exec();
           fclose(inputfile);
           fclose(outputfile);
@@ -764,8 +764,8 @@ void UI_FINO2EDFwindow::SelectFileButton()
     if(i>2046)
     {
       QApplication::restoreOverrideCursor();
-      snprintf(txt_string, 2048, "Line %i is too long.", line_nr);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
+      snprintf(str1_2048, 2048, "Line %i is too long.", line_nr);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
       messagewindow.exec();
       fclose(inputfile);
       fclose(outputfile);
@@ -795,8 +795,8 @@ void UI_FINO2EDFwindow::SelectFileButton()
     messagewindow.exec();
   }
 
-  snprintf(txt_string, 2048, "Done, EDF file is located at %s", path);
-  QMessageBox messagewindow(QMessageBox::Information, "Ready", txt_string);
+  snprintf(str1_2048, 2048, "Done, EDF file is located at %s", path);
+  QMessageBox messagewindow(QMessageBox::Information, "Ready", str1_2048);
   messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
   messagewindow.exec();
 

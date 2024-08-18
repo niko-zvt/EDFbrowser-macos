@@ -99,11 +99,11 @@ void UI_BIOX2EDFwindow::SelectFileButton()
       wr_buf[MAX_POSSIBLE_SF * EDF_CHNS],
       blocks;
 
-  char str[512],
+  char str1_512[512]={""},
        rd_buf[READ_BLOCK_SZ],
-       txt_string[2048],
-       edf_filename[MAX_PATH_LENGTH],
-       data_filename[MAX_PATH_LENGTH];
+       str2_2048[2048]={""},
+       edf_filename[MAX_PATH_LENGTH]={""},
+       data_filename[MAX_PATH_LENGTH]={""};
 
   unsigned char tmp_bits;
 
@@ -127,14 +127,14 @@ void UI_BIOX2EDFwindow::SelectFileButton()
   inputfile = fopeno(data_filename, "rb");
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Cannot open file %s for reading.\n", data_filename);
-    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    snprintf(str2_2048, 2048, "Cannot open file %s for reading.\n", data_filename);
+    textEdit1->append(QString::fromLocal8Bit(str2_2048));
     pushButton1->setEnabled(true);
     return;
   }
 
-  snprintf(txt_string, 2048, "Read file: %s", data_filename);
-  textEdit1->append(QString::fromLocal8Bit(txt_string));
+  snprintf(str2_2048, 2048, "Read file: %s", data_filename);
+  textEdit1->append(QString::fromLocal8Bit(str2_2048));
 
   fseeko(inputfile, 0x00, SEEK_END);
 
@@ -150,7 +150,7 @@ void UI_BIOX2EDFwindow::SelectFileButton()
 
   fseeko(inputfile, 0x0100, SEEK_SET);
 
-  if(fread(str, 17, 1, inputfile) != 1)
+  if(fread(str1_512, 17, 1, inputfile) != 1)
   {
     textEdit1->append("Cannot read ID string from file\n");
     fclose(inputfile);
@@ -158,7 +158,7 @@ void UI_BIOX2EDFwindow::SelectFileButton()
     return;
   }
 
-  if(strncmp(str, "CB-1305-C SD-ECG3", 17))
+  if(strncmp(str1_512, "CB-1305-C SD-ECG3", 17))
   {
     textEdit1->append("Wrong ID string in file\n");
     fclose(inputfile);
@@ -168,7 +168,7 @@ void UI_BIOX2EDFwindow::SelectFileButton()
 
   fseeko(inputfile, 0x0132, SEEK_SET);
 
-  if(fread(str, 4, 1, inputfile) != 1)
+  if(fread(str1_512, 4, 1, inputfile) != 1)
   {
     textEdit1->append("Cannot read parameter (samplefrequency) from file\n");
     fclose(inputfile);
@@ -176,12 +176,12 @@ void UI_BIOX2EDFwindow::SelectFileButton()
     return;
   }
 
-  sf = *((unsigned short *)str);
+  sf = *((unsigned short *)str1_512);
 
   if((sf != 128) && (sf != 256))
   {
-    snprintf(txt_string, 2048, "Invalid parameter (samplefrequency) in file: %iHz\n", sf);
-    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    snprintf(str2_2048, 2048, "Invalid parameter (samplefrequency) in file: %iHz\n", sf);
+    textEdit1->append(QString::fromLocal8Bit(str2_2048));
     fclose(inputfile);
     pushButton1->setEnabled(true);
     return;
@@ -290,9 +290,9 @@ void UI_BIOX2EDFwindow::SelectFileButton()
 
   for(i=0; i<chns; i++)
   {
-    snprintf(str, 512, "chan. %i", i + 1);
+    snprintf(str1_512, 512, "chan. %i", i + 1);
 
-    if(edf_set_label(hdl, i, str))
+    if(edf_set_label(hdl, i, str1_512))
     {
       textEdit1->append("Error: edf_set_label()\n");
       edfclose_file(hdl);

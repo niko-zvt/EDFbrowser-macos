@@ -102,7 +102,7 @@ void UI_CardiotrakEDFwindow::select_file_button_pressed()
 
   char path_in[MAX_PATH_LENGTH]="",
        path_out[MAX_PATH_LENGTH]="",
-       str[4096]={""};
+       str1_4096[4096]={""};
 
   edflib_hdr_t hdr;
 
@@ -123,8 +123,8 @@ void UI_CardiotrakEDFwindow::select_file_button_pressed()
 
   get_directory_from_path(recent_opendir, path_in, MAX_PATH_LENGTH);
 
-  snprintf(str, 4096, "Converting file %s... ", path_in);
-  logger_append_txt(str);
+  snprintf(str1_4096, 4096, "Converting file %s... ", path_in);
+  logger_append_txt(str1_4096);
 
   if(edfopen_file_readonly(path_in, &hdr, EDFLIB_DO_NOT_READ_ANNOTATIONS))
   {
