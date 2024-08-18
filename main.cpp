@@ -158,20 +158,20 @@ int main(int argc, char *argv[])
 
   qApp->setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 5; }");
 
-  char str[512]="";
+  char str1_512[512]="";
 
   UI_Mainwindow *MainWindow = new UI_Mainwindow;
   if(MainWindow == NULL)
   {
     splash.close();
 
-    snprintf(str, 512, "Malloc error.\nFile: %s  line: %i", __FILE__, __LINE__);
+    snprintf(str1_512, 512, "Malloc error.\nFile: %s  line: %i", __FILE__, __LINE__);
 
-    fprintf(stderr, "%s\n", str);
+    fprintf(stderr, "%s\n", str1_512);
 
     QMessageBox msgBox;
     msgBox.setIcon(QMessageBox::Critical);
-    msgBox.setText(str);
+    msgBox.setText(str1_512);
     msgBox.exec();
 
     return EXIT_FAILURE;

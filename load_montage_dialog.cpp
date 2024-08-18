@@ -144,12 +144,12 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       inst_num=0;
 
   char result[XML_STRBUFLEN],
-       scratchpad[2048]="",
-       str[128]="",
-       str2[512]="",
+       scratchpad_2048[2048]="",
+       str1_128[128]="",
+       str2_512[512]="",
        *err_ptr=NULL,
        *filter_spec_ptr=NULL,
-       spec_str[256]="";
+       spec_str_256[256]="";
 
   double frequency=1.0,
          frequency2=2.0,
@@ -201,8 +201,8 @@ int UI_LoadMontagewindow::LoadButtonClicked()
     }
     else
     {
-      snprintf(scratchpad, 2048, "Cannot open montage file:\n%s", mtg_path);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(scratchpad));
+      snprintf(scratchpad_2048, 2048, "Cannot open montage file:\n%s", mtg_path);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(scratchpad_2048));
       messagewindow.exec();
       mainwindow->remove_recent_file_mtg_path(mtg_path);
       return 0;
@@ -454,8 +454,8 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
     if(mainwindow->signalcomps >= MAXSIGNALS)
     {
-      snprintf(str2, 512, "Cannot display more than %i traces.", MAXSIGNALS);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+      snprintf(str2_512, 512, "Cannot display more than %i traces.", MAXSIGNALS);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str2_512);
       messagewindow.exec();
       xml_close(xml_hdl);
       return 0;
@@ -730,11 +730,11 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
         for(i=0; i<newsignalcomp->edfhdr->edfsignals; i++)
         {
-          strlcpy(scratchpad, newsignalcomp->edfhdr->edfparam[i].label, 2048);
+          strlcpy(scratchpad_2048, newsignalcomp->edfhdr->edfparam[i].label, 2048);
 
-          remove_trailing_spaces(scratchpad);
+          remove_trailing_spaces(scratchpad_2048);
 
-          if(!strcmp(scratchpad, result))
+          if(!strcmp(scratchpad_2048, result))
           {
             newsignalcomp->edfsignal[signals_read] = i;
 
@@ -825,12 +825,12 @@ int UI_LoadMontagewindow::LoadButtonClicked()
           }
         }
       }
-      strlcpy(str, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].label, 128);
+      strlcpy(str1_128, newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[signals_read]].label, 128);
       if(mainwindow->strip_label_types)
       {
-        newsignalcomp->signallabel_type_stripped = strip_types_from_label(str);
+        newsignalcomp->signallabel_type_stripped = strip_types_from_label(str1_128);
       }
-      strlcat(newsignalcomp->signallabel, str, 512);
+      strlcat(newsignalcomp->signallabel, str1_128, 512);
       remove_trailing_spaces(newsignalcomp->signallabel);
       strlcat(newsignalcomp->signallabel, " ", 512);
 
@@ -1033,15 +1033,15 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
       if(type == 0)
       {
-        snprintf(spec_str, 256, "HpBu1/%f", frequency);
+        snprintf(spec_str_256, 256, "HpBu1/%f", frequency);
       }
 
       if(type == 1)
       {
-        snprintf(spec_str, 256, "LpBu1/%f", frequency);
+        snprintf(spec_str_256, 256, "LpBu1/%f", frequency);
       }
 
-      filter_spec_ptr = spec_str;
+      filter_spec_ptr = spec_str_256;
 
       err_ptr = fid_parse(newsignalcomp->edfparam_0->sf_f,
                       &filter_spec_ptr,
@@ -1060,8 +1060,8 @@ int UI_LoadMontagewindow::LoadButtonClicked()
         }
         else
         {
-          snprintf(str2, 512, "%s\nFile: %s line: %i", err_ptr, __FILE__, __LINE__);
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+          snprintf(str2_512, 512, "%s\nFile: %s line: %i", err_ptr, __FILE__, __LINE__);
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", str2_512);
           messagewindow.exec();
           free(err_ptr);
           err_ptr = NULL;
@@ -1241,8 +1241,8 @@ int UI_LoadMontagewindow::LoadButtonClicked()
         }
         else
         {
-          snprintf(str2, 512, "There seems to be an error in this montage file.\nThe frequency of the filter(s) must be less than: samplerate / 2\nFile: %s line: %i", __FILE__, __LINE__);
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+          snprintf(str2_512, 512, "There seems to be an error in this montage file.\nThe frequency of the filter(s) must be less than: samplerate / 2\nFile: %s line: %i", __FILE__, __LINE__);
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", str2_512);
           messagewindow.exec();
           free(newsignalcomp);
           newsignalcomp = NULL;
@@ -1264,8 +1264,8 @@ int UI_LoadMontagewindow::LoadButtonClicked()
           }
           else
           {
-            snprintf(str2, 512, "There seems to be an error in this montage file.\nThe frequency of the filter(s) must be less than: samplerate / 2\nFile: %s line: %i", __FILE__, __LINE__);
-            QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+            snprintf(str2_512, 512, "There seems to be an error in this montage file.\nThe frequency of the filter(s) must be less than: samplerate / 2\nFile: %s line: %i", __FILE__, __LINE__);
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", str2_512);
             messagewindow.exec();
             free(newsignalcomp);
             newsignalcomp = NULL;
@@ -1287,17 +1287,17 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(model == 0)
         {
-          snprintf(spec_str, 256, "HpBu%i/%f", order, frequency);
+          snprintf(spec_str_256, 256, "HpBu%i/%f", order, frequency);
         }
 
         if(model == 1)
         {
-          snprintf(spec_str, 256, "HpCh%i/%f/%f", order, ripple, frequency);
+          snprintf(spec_str_256, 256, "HpCh%i/%f/%f", order, ripple, frequency);
         }
 
         if(model == 2)
         {
-          snprintf(spec_str, 256, "HpBe%i/%f", order, frequency);
+          snprintf(spec_str_256, 256, "HpBe%i/%f", order, frequency);
         }
       }
 
@@ -1305,17 +1305,17 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(model == 0)
         {
-          snprintf(spec_str, 256, "LpBu%i/%f", order, frequency);
+          snprintf(spec_str_256, 256, "LpBu%i/%f", order, frequency);
         }
 
         if(model == 1)
         {
-          snprintf(spec_str, 256, "LpCh%i/%f/%f", order, ripple, frequency);
+          snprintf(spec_str_256, 256, "LpCh%i/%f/%f", order, ripple, frequency);
         }
 
         if(model == 2)
         {
-          snprintf(spec_str, 256, "LpBe%i/%f", order, frequency);
+          snprintf(spec_str_256, 256, "LpBe%i/%f", order, frequency);
         }
       }
 
@@ -1333,7 +1333,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
         if(model == 0)
         {
-          snprintf(spec_str, 256, "BsRe/%i/%f", order, frequency);
+          snprintf(spec_str_256, 256, "BsRe/%i/%f", order, frequency);
         }
       }
 
@@ -1359,17 +1359,17 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(model == 0)
         {
-          snprintf(spec_str, 256, "BpBu%i/%f-%f", order, frequency, frequency2);
+          snprintf(spec_str_256, 256, "BpBu%i/%f-%f", order, frequency, frequency2);
         }
 
         if(model == 1)
         {
-          snprintf(spec_str, 256, "BpCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
+          snprintf(spec_str_256, 256, "BpCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
         }
 
         if(model == 2)
         {
-          snprintf(spec_str, 256, "BpBe%i/%f-%f", order, frequency, frequency2);
+          snprintf(spec_str_256, 256, "BpBe%i/%f-%f", order, frequency, frequency2);
         }
       }
 
@@ -1377,21 +1377,21 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(model == 0)
         {
-          snprintf(spec_str, 256, "BsBu%i/%f-%f", order, frequency, frequency2);
+          snprintf(spec_str_256, 256, "BsBu%i/%f-%f", order, frequency, frequency2);
         }
 
         if(model == 1)
         {
-          snprintf(spec_str, 256, "BsCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
+          snprintf(spec_str_256, 256, "BsCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
         }
 
         if(model == 2)
         {
-          snprintf(spec_str, 256, "BsBe%i/%f-%f", order, frequency, frequency2);
+          snprintf(spec_str_256, 256, "BsBe%i/%f-%f", order, frequency, frequency2);
         }
       }
 
-      filter_spec_ptr = spec_str;
+      filter_spec_ptr = spec_str_256;
 
       err_ptr = fid_parse(newsignalcomp->edfparam_0->sf_f,
                       &filter_spec_ptr,
@@ -1477,19 +1477,19 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
       if(sf % plif_powerlinefrequency)  not_compatibel = 1;
 
-      strlcpy(str, newsignalcomp->edfparam_0->physdimension, 128);
+      strlcpy(str1_128, newsignalcomp->edfparam_0->physdimension, 128);
 
-      remove_trailing_spaces(str);
+      remove_trailing_spaces(str1_128);
 
-      if(!strcmp(str, "uV"))
+      if(!strcmp(str1_128, "uV"))
       {
         dthreshold = 10.0 / newsignalcomp->edfparam_0->bitvalue;
       }
-      else if(!strcmp(str, "mV"))
+      else if(!strcmp(str1_128, "mV"))
         {
           dthreshold = 1e-2 / newsignalcomp->edfparam_0->bitvalue;
         }
-        else if(!strcmp(str, "V"))
+        else if(!strcmp(str1_128, "V"))
           {
             dthreshold = 1e-5 / newsignalcomp->edfparam_0->bitvalue;
           }
@@ -1512,9 +1512,9 @@ int UI_LoadMontagewindow::LoadButtonClicked()
           }
           else
           {
-            snprintf(str2, 512, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
+            snprintf(str2_512, 512, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
                           "File: %s line: %i", __FILE__, __LINE__);
-            QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", str2_512);
             messagewindow.exec();
             free(newsignalcomp);
             newsignalcomp = NULL;
@@ -1535,9 +1535,9 @@ int UI_LoadMontagewindow::LoadButtonClicked()
           }
           else
           {
-            snprintf(str2, 512, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
+            snprintf(str2_512, 512, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
                           "File: %s line: %i", __FILE__, __LINE__);
-            QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", str2_512);
             messagewindow.exec();
             free(newsignalcomp);
             newsignalcomp = NULL;
@@ -1596,9 +1596,9 @@ int UI_LoadMontagewindow::LoadButtonClicked()
           }
           else
           {
-            snprintf(str2, 512, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
+            snprintf(str2_512, 512, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
                           "File: %s line: %i", __FILE__, __LINE__);
-            QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", str2_512);
             messagewindow.exec();
             free(newsignalcomp);
             newsignalcomp = NULL;
@@ -1619,9 +1619,9 @@ int UI_LoadMontagewindow::LoadButtonClicked()
           }
           else
           {
-            snprintf(str2, 512, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
+            snprintf(str2_512, 512, "A memory allocation error occurred when creating a powerline interference removal filter.\n"
                           "File: %s line: %i", __FILE__, __LINE__);
-            QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", str2_512);
             messagewindow.exec();
             free(newsignalcomp);
             newsignalcomp = NULL;
@@ -1650,13 +1650,13 @@ int UI_LoadMontagewindow::LoadButtonClicked()
           return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
         }
 
-        strlcpy(str2, result, 512);
+        strlcpy(str2_512, result, 512);
 
         xml_go_up(xml_hdl);
       }
       else
       {
-        str2[0] = 0;
+        str2_512[0] = 0;
       }
 
       if(xml_goto_nth_element_inside(xml_hdl, "size", 0))
@@ -1706,7 +1706,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
       xml_go_up(xml_hdl);
 
-      newsignalcomp->fir_filter[filters_read] = create_fir_filter(fir_vars, n_taps, str2);
+      newsignalcomp->fir_filter[filters_read] = create_fir_filter(fir_vars, n_taps, str2_512);
       if(newsignalcomp->fir_filter[filters_read] == NULL)
       {
         return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
@@ -1738,18 +1738,18 @@ int UI_LoadMontagewindow::LoadButtonClicked()
       {
         if(newsignalcomp->edfparam_0->sf_f >= 199.999)
         {
-          strlcpy(str2, newsignalcomp->edfparam_0->physdimension, 32);
-          trim_spaces(str2);
+          strlcpy(str2_512, newsignalcomp->edfparam_0->physdimension, 32);
+          trim_spaces(str2_512);
           sense = 0;
-          if(!strcmp(str2, "uV"))
+          if(!strcmp(str2_512, "uV"))
           {
             sense = 1;
           }
-          else if(!strcmp(str2, "mV"))
+          else if(!strcmp(str2_512, "mV"))
             {
               sense = 1000;
             }
-            else if(!strcmp(str2, "V"))
+            else if(!strcmp(str2_512, "V"))
               {
                 sense = 1000000;
               }
@@ -1770,8 +1770,8 @@ int UI_LoadMontagewindow::LoadButtonClicked()
               }
               else
               {
-                snprintf(str2, 512, "Could not create an ECG filter.\nFile: %s line: %i", __FILE__, __LINE__);
-                QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+                snprintf(str2_512, 512, "Could not create an ECG filter.\nFile: %s line: %i", __FILE__, __LINE__);
+                QMessageBox messagewindow(QMessageBox::Critical, "Error", str2_512);
                 messagewindow.exec();
                 free(newsignalcomp);
                 newsignalcomp = NULL;
@@ -1843,8 +1843,8 @@ int UI_LoadMontagewindow::LoadButtonClicked()
             }
             else
             {
-              snprintf(str2, 512, "A memory allocation error occurred when creating a Z-ratio filter.\nFile: %s line: %i", __FILE__, __LINE__);
-              QMessageBox messagewindow(QMessageBox::Critical, "Error", str2);
+              snprintf(str2_512, 512, "A memory allocation error occurred when creating a Z-ratio filter.\nFile: %s line: %i", __FILE__, __LINE__);
+              QMessageBox messagewindow(QMessageBox::Critical, "Error", str2_512);
               messagewindow.exec();
               free(newsignalcomp);
               newsignalcomp = NULL;
@@ -3162,7 +3162,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
 
 int UI_LoadMontagewindow::format_error(const char *file_name, int line_number, sigcompblck_t *sigcomp, xml_hdl_t *hdl)
 {
-  char str[1024]="";
+  char str1_2048[1024]="";
 
   if(mainwindow->rc_cmd_in_progress)
   {
@@ -3172,8 +3172,8 @@ int UI_LoadMontagewindow::format_error(const char *file_name, int line_number, s
   }
   else
   {
-    snprintf(str, 1024, "There seems to be an error in this montage file.\nFile: %s line: %i", file_name, line_number);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    snprintf(str1_2048, 1024, "There seems to be an error in this montage file.\nFile: %s line: %i", file_name, line_number);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
     messagewindow.exec();
     free(sigcomp);
     xml_close(hdl);

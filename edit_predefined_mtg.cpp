@@ -34,7 +34,7 @@ UI_edit_predefined_mtg_window::UI_edit_predefined_mtg_window(QWidget *w_parent)
 {
   int i;
 
-  char str[1200];
+  char str1_1200[1200]={""};
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
@@ -50,14 +50,14 @@ UI_edit_predefined_mtg_window::UI_edit_predefined_mtg_window(QWidget *w_parent)
   mtg_path_list->setSpacing(1);
   for(i=0; i < MAXPREDEFINEDMONTAGES; i++)
   {
-    snprintf(str, 1200, "F%i : ", i + 1);
+    snprintf(str1_1200, 1200, "F%i : ", i + 1);
 
     if(mainwindow->predefined_mtg_path[i][0] != 0)
     {
-      strlcat(str, &(mainwindow->predefined_mtg_path[i][0]), 1200);
+      strlcat(str1_1200, &(mainwindow->predefined_mtg_path[i][0]), 1200);
     }
 
-    new QListWidgetItem(QString::fromLocal8Bit(str), mtg_path_list);
+    new QListWidgetItem(QString::fromLocal8Bit(str1_1200), mtg_path_list);
   }
 
   CloseButton = new QPushButton;
@@ -143,16 +143,16 @@ void UI_edit_predefined_mtg_window::adEntry()
 
 void UI_edit_predefined_mtg_window::removeEntry()
 {
-  char str[32];
+  char str1_32[32];
 
   dialog->close();
 
   mainwindow->predefined_mtg_path[row][0] = 0;
   mainwindow->load_predefined_mtg_act[row]->setText("Empty");
 
-  snprintf(str, 32, "F%i :", row + 1);
+  snprintf(str1_32, 32, "F%i :", row + 1);
 
-  listItem->setText(str);
+  listItem->setText(str1_32);
 }
 
 

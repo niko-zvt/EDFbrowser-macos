@@ -154,7 +154,7 @@ void UI_PLIF_EEG_filter_dialog::ApplyButtonClicked()
 {
   int i, s, n, sf, plf, err=0;
 
-  char str[256]="";
+  char str1_256[256]="";
 
   QListWidgetItem *item;
 
@@ -200,8 +200,8 @@ void UI_PLIF_EEG_filter_dialog::ApplyButtonClicked()
     if((sf % plf) || (!sf))
     {
       err = 1;
-      snprintf(str, 256, "Samplefrequency (%iHz) is not an integer multiple of the powerline frequency (%iHz)", sf, plf);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+      snprintf(str1_256, 256, "Samplefrequency (%iHz) is not an integer multiple of the powerline frequency (%iHz)", sf, plf);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_256);
       messagewindow.exec();
       break;
     }

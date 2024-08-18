@@ -336,7 +336,7 @@ void simple_tracking_indicator3::paintEvent(QPaintEvent *)
 {
   int i, w, h, pos_x, step=0;
 
-  char str[128]={""};
+  char str1_128[128]={""};
 
   w = width();
   h = height();
@@ -373,9 +373,9 @@ void simple_tracking_indicator3::paintEvent(QPaintEvent *)
 
       painter.drawLine(pos_x, 0, pos_x, h);
 
-      snprintf(str, 128, "%ih", i);
+      snprintf(str1_128, 128, "%ih", i);
 
-      painter.drawText(pos_x + 4, h - 2, str);
+      painter.drawText(pos_x + 4, h - 2, str1_128);
     }
   }
 
@@ -433,7 +433,7 @@ void simple_ruler_indicator3::paintEvent(QPaintEvent *)
 {
   int i, w, h;
 
-  char str[32]={""};
+  char str1_32[32]={""};
 
   double pixel_per_unit,
          offset;
@@ -457,9 +457,9 @@ void simple_ruler_indicator3::paintEvent(QPaintEvent *)
   {
     painter.drawLine(w - 4, (int)((pixel_per_unit * i) + 0.5 + offset), w - 13, (int)((pixel_per_unit * i) + 0.5 + offset));
 
-    snprintf(str, 32, "%i", (int)(min_val + ((5 - i) * ((max_val - min_val) / 5.0)) ));
+    snprintf(str1_32, 32, "%i", (int)(min_val + ((5 - i) * ((max_val - min_val) / 5.0)) ));
 
-    painter.drawText(QRectF(2, (int)((pixel_per_unit * i) + 0.5 + offset - (9 * h_scaling)), 40 * w_scaling, 25 * h_scaling), Qt::AlignRight | Qt::AlignHCenter, str);
+    painter.drawText(QRectF(2, (int)((pixel_per_unit * i) + 0.5 + offset - (9 * h_scaling)), 40 * w_scaling, 25 * h_scaling), Qt::AlignRight | Qt::AlignHCenter, str1_32);
   }
 }
 
@@ -528,7 +528,7 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
   long long hr_ival=0,
             former_onset=-1;
 
-  char str[MAX_ANNOTATION_LEN];
+  char str1[MAX_ANNOTATION_LEN];
 
   annotlist_t *annot_list;
 
@@ -572,10 +572,10 @@ void hrv_curve_widget::paintEvent(QPaintEvent *)
       break;
     }
 
-    strlcpy(str, annot->description, MAX_ANNOTATION_LEN);
-    trim_spaces(str);
+    strlcpy(str1, annot->description, MAX_ANNOTATION_LEN);
+    trim_spaces(str1);
 
-    if(!strcmp(str, param.annot_name))
+    if(!strcmp(str1, param.annot_name))
     {
       hr_ival = annot->onset - former_onset;
 

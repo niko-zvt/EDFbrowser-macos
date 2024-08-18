@@ -252,7 +252,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       txt_encoding=0;
 
   char path[MAX_PATH_LENGTH]={""},
-       str[1024]={""},
+       str1_1024[1024]={""},
        separator=';';
 
   FILE *annotationfile=NULL;
@@ -478,19 +478,19 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       {
         break;
       }
-      strlcpy(str, annot->description, 1024);
+      strlcpy(str1_1024, annot->description, 1024);
       if(txt_encoding)
       {
-        utf8_to_latin1(str);
+        utf8_to_latin1(str1_1024);
       }
-      str_replace_ctrl_chars(str, '.');
+      str_replace_ctrl_chars(str1_1024, '.');
 
-      len = strlen(str);
+      len = strlen(str1_1024);
       for(i=0; i<len; i++)
       {
-        if(str[i] == separator)
+        if(str1_1024[i] == separator)
         {
-          str[i] = '.';
+          str1_1024[i] = '.';
         }
       }
 
@@ -498,11 +498,11 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
       {
         if(include_duration)
         {
-          fprintf(annotationfile, "%+.7f%c%s%c%s\n", ((double)annot->onset) / TIME_FIXP_SCALING, separator, annot->duration, separator, str);
+          fprintf(annotationfile, "%+.7f%c%s%c%s\n", ((double)annot->onset) / TIME_FIXP_SCALING, separator, annot->duration, separator, str1_1024);
         }
         else
         {
-          fprintf(annotationfile, "%+.7f%c%s\n", ((double)annot->onset) / TIME_FIXP_SCALING, separator, str);
+          fprintf(annotationfile, "%+.7f%c%s\n", ((double)annot->onset) / TIME_FIXP_SCALING, separator, str1_1024);
         }
       }
 
@@ -521,11 +521,11 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
         if(include_duration)
         {
-          fprintf(annotationfile, "%02i:%02i:%02i%c%s%c%s\n", tm.hour, tm.minute, tm.second, separator, annot->duration, separator, str);
+          fprintf(annotationfile, "%02i:%02i:%02i%c%s%c%s\n", tm.hour, tm.minute, tm.second, separator, annot->duration, separator, str1_1024);
         }
         else
         {
-          fprintf(annotationfile, "%02i:%02i:%02i%c%s\n", tm.hour, tm.minute, tm.second, separator, str);
+          fprintf(annotationfile, "%02i:%02i:%02i%c%s\n", tm.hour, tm.minute, tm.second, separator, str1_1024);
         }
       }
 
@@ -544,11 +544,11 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
         if(include_duration)
         {
-          fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i%c%s%c%s\n", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, separator, annot->duration, separator, str);
+          fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i%c%s%c%s\n", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, separator, annot->duration, separator, str1_1024);
         }
         else
         {
-          fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i%c%s\n", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, separator, str);
+          fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i%c%s\n", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, separator, str1_1024);
         }
       }
 
@@ -569,11 +569,11 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
         if(include_duration)
         {
-          fprintf(annotationfile, "%02i:%02i:%02i.%07i%c%s%c%s\n", tm.hour, tm.minute, tm.second, temp, separator, annot->duration, separator, str);
+          fprintf(annotationfile, "%02i:%02i:%02i.%07i%c%s%c%s\n", tm.hour, tm.minute, tm.second, temp, separator, annot->duration, separator, str1_1024);
         }
         else
         {
-          fprintf(annotationfile, "%02i:%02i:%02i.%07i%c%s\n", tm.hour, tm.minute, tm.second, temp, separator, str);
+          fprintf(annotationfile, "%02i:%02i:%02i.%07i%c%s\n", tm.hour, tm.minute, tm.second, temp, separator, str1_1024);
         }
       }
 
@@ -594,11 +594,11 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
         if(include_duration)
         {
-          fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i.%07i%c%s%c%s\n", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, temp, separator, annot->duration, separator, str);
+          fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i.%07i%c%s%c%s\n", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, temp, separator, annot->duration, separator, str1_1024);
         }
         else
         {
-          fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i.%07i%c%s\n", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, temp, separator, str);
+          fprintf(annotationfile, "%04i-%02i-%02iT%02i:%02i:%02i.%07i%c%s\n", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, temp, separator, str1_1024);
         }
       }
     }
@@ -699,21 +699,21 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
     {
       switch(hdl)
       {
-        case EDFLIB_MALLOC_ERROR : strlcpy(str, "EDFlib: malloc error", 1024);
+        case EDFLIB_MALLOC_ERROR : strlcpy(str1_1024, "EDFlib: malloc error", 1024);
                                   break;
-        case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY : strlcpy(str, "EDFlib: no such file or directory", 1024);
+        case EDFLIB_NO_SUCH_FILE_OR_DIRECTORY : strlcpy(str1_1024, "EDFlib: no such file or directory", 1024);
                                   break;
-        case EDFLIB_MAXFILES_REACHED : strlcpy(str, "EDFlib: maximum files reached", 1024);
+        case EDFLIB_MAXFILES_REACHED : strlcpy(str1_1024, "EDFlib: maximum files reached", 1024);
                                   break;
-        case EDFLIB_FILE_ALREADY_OPENED : strlcpy(str, "EDFlib: file already opened", 1024);
+        case EDFLIB_FILE_ALREADY_OPENED : strlcpy(str1_1024, "EDFlib: file already opened", 1024);
                                   break;
-        case EDFLIB_NUMBER_OF_SIGNALS_INVALID : strlcpy(str, "EDFlib: number of signals is invalid", 1024);
+        case EDFLIB_NUMBER_OF_SIGNALS_INVALID : strlcpy(str1_1024, "EDFlib: number of signals is invalid", 1024);
                                   break;
-        default : strlcpy(str, "EDFlib: unknown error", 1024);
+        default : strlcpy(str1_1024, "EDFlib: unknown error", 1024);
                                   break;
       }
 
-      QMessageBox::critical(ExportAnnotsDialog, "Error", str, QMessageBox::Close);
+      QMessageBox::critical(ExportAnnotsDialog, "Error", str1_1024, QMessageBox::Close);
       edfplus_annotation_empty_list(annot_list);
       free(annot_list);
       ExportAnnotsDialog->close();

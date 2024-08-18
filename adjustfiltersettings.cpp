@@ -68,7 +68,7 @@ model:
 
 AdjustFilterSettings::AdjustFilterSettings(sigcompblck_t *signal_comp, QWidget *w_parent)
 {
-  char txtbuf[2048]={""};
+  char str1_2048[2048]={""};
 
   signalcomp = signal_comp;
 
@@ -79,16 +79,16 @@ AdjustFilterSettings::AdjustFilterSettings(sigcompblck_t *signal_comp, QWidget *
   filtersettings_dialog = new QDialog(w_parent);
 
   filtersettings_dialog->setMinimumSize(350 * mainwindow->w_scaling, 250 * mainwindow->h_scaling);
-  strlcpy(txtbuf, "Filter settings ", 2048);
+  strlcpy(str1_2048, "Filter settings ", 2048);
   if(signalcomp->alias[0] != 0)
   {
-    strlcat(txtbuf, signalcomp->alias, 2048);
+    strlcat(str1_2048, signalcomp->alias, 2048);
   }
   else
   {
-    strlcat(txtbuf, signalcomp->signallabel, 2048);
+    strlcat(str1_2048, signalcomp->signallabel, 2048);
   }
-  filtersettings_dialog->setWindowTitle(txtbuf);
+  filtersettings_dialog->setWindowTitle(str1_2048);
   filtersettings_dialog->setModal(true);
   filtersettings_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
   filtersettings_dialog->setSizeGripEnabled(true);
@@ -172,7 +172,7 @@ void AdjustFilterSettings::loadFilterSettings(void)
 {
   int i;
 
-  char txtbuf[2048]={""};
+  char str1_2048[2048]={""};
 
   filterbox->clear();
 
@@ -201,17 +201,17 @@ void AdjustFilterSettings::loadFilterSettings(void)
     {
       if(model == FILTERMODEL_BUTTERWORTH)
       {
-        snprintf(txtbuf, 2048, "HighPass Butterworth");
+        snprintf(str1_2048, 2048, "HighPass Butterworth");
       }
 
       if(model == FILTERMODEL_CHEBYSHEV)
       {
-        snprintf(txtbuf, 2048, "HighPass Chebyshev %.1fdB ripple", ripple);
+        snprintf(str1_2048, 2048, "HighPass Chebyshev %.1fdB ripple", ripple);
       }
 
       if(model == FILTERMODEL_BESSEL)
       {
-        snprintf(txtbuf, 2048, "HighPass Bessel");
+        snprintf(str1_2048, 2048, "HighPass Bessel");
       }
     }
 
@@ -219,40 +219,40 @@ void AdjustFilterSettings::loadFilterSettings(void)
     {
       if(model == FILTERMODEL_BUTTERWORTH)
       {
-        snprintf(txtbuf, 2048, "LowPass Butterworth");
+        snprintf(str1_2048, 2048, "LowPass Butterworth");
       }
 
       if(model == FILTERMODEL_CHEBYSHEV)
       {
-        snprintf(txtbuf, 2048, "LowPass Chebyshev %.1fdB ripple", ripple);
+        snprintf(str1_2048, 2048, "LowPass Chebyshev %.1fdB ripple", ripple);
       }
 
       if(model == FILTERMODEL_BESSEL)
       {
-        snprintf(txtbuf, 2048, "LowPass Bessel");
+        snprintf(str1_2048, 2048, "LowPass Bessel");
       }
     }
 
     if(type == FILTERTYPE_NOTCH)
     {
-      snprintf(txtbuf, 2048, "Notch (resonator)");
+      snprintf(str1_2048, 2048, "Notch (resonator)");
     }
 
     if(type == FILTERTYPE_BANDPASS)
     {
       if(model == FILTERMODEL_BUTTERWORTH)
       {
-        snprintf(txtbuf, 2048, "BandPass Butterworth");
+        snprintf(str1_2048, 2048, "BandPass Butterworth");
       }
 
       if(model == FILTERMODEL_CHEBYSHEV)
       {
-        snprintf(txtbuf, 2048, "BandPass Chebyshev %.1fdB ripple", ripple);
+        snprintf(str1_2048, 2048, "BandPass Chebyshev %.1fdB ripple", ripple);
       }
 
       if(model == FILTERMODEL_BESSEL)
       {
-        snprintf(txtbuf, 2048, "BandPass Bessel");
+        snprintf(str1_2048, 2048, "BandPass Bessel");
       }
     }
 
@@ -260,32 +260,32 @@ void AdjustFilterSettings::loadFilterSettings(void)
     {
       if(model == FILTERMODEL_BUTTERWORTH)
       {
-        snprintf(txtbuf, 2048, "BandStop Butterworth");
+        snprintf(str1_2048, 2048, "BandStop Butterworth");
       }
 
       if(model == FILTERMODEL_CHEBYSHEV)
       {
-        snprintf(txtbuf, 2048, "BandStop Chebyshev %.1fdB ripple", ripple);
+        snprintf(str1_2048, 2048, "BandStop Chebyshev %.1fdB ripple", ripple);
       }
 
       if(model == FILTERMODEL_BESSEL)
       {
-        snprintf(txtbuf, 2048, "BandStop Bessel");
+        snprintf(str1_2048, 2048, "BandStop Bessel");
       }
     }
 
-    snprintf(txtbuf + strlen(txtbuf), 2048, " %f", frequency1);
+    snprintf(str1_2048 + strlen(str1_2048), 2048 - strlen(str1_2048), " %f", frequency1);
 
     if((type == FILTERTYPE_BANDPASS) || (type == FILTERTYPE_BANDSTOP))
     {
-      snprintf(txtbuf + strlen(txtbuf), 2048, " - %f", frequency2);
+      snprintf(str1_2048 + strlen(str1_2048), 2048 - strlen(str1_2048), " - %f", frequency2);
     }
 
-    strlcat(txtbuf, " Hz", 2048);
+    strlcat(str1_2048, " Hz", 2048);
 
-    remove_trailing_zeros(txtbuf);
+    remove_trailing_zeros(str1_2048);
 
-    filterbox->addItem(txtbuf);
+    filterbox->addItem(str1_2048);
 
     brand[filter_cnt++] = FILTERBRAND_FIDFILTER;
   }
@@ -303,15 +303,15 @@ void AdjustFilterSettings::loadFilterSettings(void)
 
     if(type == FILTERTYPE_HIGHPASS)
     {
-      snprintf(txtbuf, 2048, "Highpass Moving Average %i samples", size);
+      snprintf(str1_2048, 2048, "Highpass Moving Average %i samples", size);
     }
 
     if(type == FILTERTYPE_LOWPASS)
     {
-      snprintf(txtbuf, 2048, "Lowpass Moving Average %i samples", size);
+      snprintf(str1_2048, 2048, "Lowpass Moving Average %i samples", size);
     }
 
-    filterbox->addItem(txtbuf);
+    filterbox->addItem(str1_2048);
 
     brand[filter_cnt++] = FILTERBRAND_MOVING_AVG;
   }

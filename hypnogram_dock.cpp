@@ -279,7 +279,7 @@ void simple_tracking_indicator2::paintEvent(QPaintEvent *)
 {
   int i, w, h, pos_x, step=0;
 
-  char str[128]={""};
+  char str1_128[128]={""};
 
   w = width();
   h = height();
@@ -316,9 +316,9 @@ void simple_tracking_indicator2::paintEvent(QPaintEvent *)
 
       painter.drawLine(pos_x, 0, pos_x, h);
 
-      snprintf(str, 128, "%ih", i);
+      snprintf(str1_128, 128, "%ih", i);
 
-      painter.drawText(pos_x + 4, h - 2, str);
+      painter.drawText(pos_x + 4, h - 2, str1_128);
     }
   }
 
@@ -431,7 +431,7 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
             prev_annot_end=0x7fffffffffffffffLL,
             tdiff=0LL;
 
-  char str[64]={""};
+  char str1_48[48]={""};
 
   annotlist_t *annot_list;
 
@@ -475,12 +475,12 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
     {
       annot = edfplus_annotation_get_item(annot_list, i);
 
-      strlcpy(str, annot->description, 48);
-      trim_spaces(str);
+      strlcpy(str1_48, annot->description, 48);
+      trim_spaces(str1_48);
 
       for(j=0; j<HYPNOGRAM_OVNUM; j++)
       {
-        if(!strcmp(str, param.annot_ov_name[j]))
+        if(!strcmp(str1_48, param.annot_ov_name[j]))
         {
           pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_FIXP_SCALING;
 
@@ -529,12 +529,12 @@ void hypnogram_curve_widget::paintEvent(QPaintEvent *)
   {
     annot = edfplus_annotation_get_item(annot_list, i);
 
-    strlcpy(str, annot->description, 48);
-    trim_spaces(str);
+    strlcpy(str1_48, annot->description, 48);
+    trim_spaces(str1_48);
 
     for(j=0; j<HYPNOGRAM_STAGENUM; j++)
     {
-      if(!strcmp(str, param.annot_name[j]))
+      if(!strcmp(str1_48, param.annot_name[j]))
       {
         pos_x2 = ((double)(annot->onset) * pixel_per_sec) / TIME_FIXP_SCALING;
 

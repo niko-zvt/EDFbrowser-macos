@@ -39,7 +39,7 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 {
   int i, n, max_len=4;
 
-  char str[256]={""};
+  char str1_256[256]={""};
 
   QListWidgetItem *item=NULL;
 
@@ -146,36 +146,36 @@ UI_FIRFilterDialog::UI_FIRFilterDialog(char *recent_dir, char *save_dir, QWidget
 
   for(i=0; i<mainwindow->signalcomps; i++)
   {
-    snprintf(str, 256, "%-3i ", i + 1);
+    snprintf(str1_256, 256, "%-3i ", i + 1);
 
     if(mainwindow->signalcomp[i]->alias[0] != 0)
     {
-      strlcat(str, mainwindow->signalcomp[i]->alias, 256);
+      strlcat(str1_256, mainwindow->signalcomp[i]->alias, 256);
     }
     else
     {
-      strlcat(str, mainwindow->signalcomp[i]->edfparam_0->label, 256);
+      strlcat(str1_256, mainwindow->signalcomp[i]->edfparam_0->label, 256);
     }
 
-    strlcat(str, "   ", 256);
+    strlcat(str1_256, "   ", 256);
     if(mainwindow->signalcomp[i]->edfparam_0->sf_int)
     {
-      convert_to_metric_suffix(str + strlen(str), mainwindow->signalcomp[i]->edfparam_0->sf_int, 6, 256 - strlen(str));
+      convert_to_metric_suffix(str1_256 + strlen(str1_256), mainwindow->signalcomp[i]->edfparam_0->sf_int, 6, 256 - strlen(str1_256));
     }
     else
     {
-      convert_to_metric_suffix(str + strlen(str), mainwindow->signalcomp[i]->edfparam_0->sf_f, 6, 256 - strlen(str));
+      convert_to_metric_suffix(str1_256 + strlen(str1_256), mainwindow->signalcomp[i]->edfparam_0->sf_f, 6, 256 - strlen(str1_256));
     }
-    remove_trailing_zeros(str);
-    strlcat(str, "Hz", 256);
+    remove_trailing_zeros(str1_256);
+    strlcat(str1_256, "Hz", 256);
 
-    if(max_len < (int)strlen(str))
+    if(max_len < (int)strlen(str1_256))
     {
-      max_len = strlen(str);
+      max_len = strlen(str1_256);
     }
 
     item = new QListWidgetItem;
-    item->setText(str);
+    item->setText(str1_256);
     item->setData(Qt::UserRole, QVariant(i));
     signals_list->addItem(item);
   }
@@ -524,8 +524,8 @@ void UI_FIRFilterDialog::check_text()
 
   double db_max=-10000, db_min=10000;
 
-  char *str=NULL,
-       str2[512]="";
+  char *str_p=NULL,
+       str2_512[512]="";
 
   n_taps = 0;
 
@@ -543,25 +543,25 @@ void UI_FIRFilterDialog::check_text()
     }
   }
 
-  str = strtok(textbuf, "\r\n");
+  str_p = strtok(textbuf, "\r\n");
 
-  while(str != NULL)
+  while(str_p != NULL)
   {
-    taps[n_taps++] = atof(str);
+    taps[n_taps++] = atof(str_p);
 
-    if(max_len < (int)strlen(str))
+    if(max_len < (int)strlen(str_p))
     {
-      max_len = strlen(str);
+      max_len = strlen(str_p);
     }
 
     if(n_taps >= FIR_FILTER_MAX_TAPS)  break;
 
-    str = strtok(NULL, "\r\n");
+    str_p = strtok(NULL, "\r\n");
   }
 
-  snprintf(str2, 256, "Filter taps: %i", n_taps);
+  snprintf(str2_512, 256, "Filter taps: %i", n_taps);
 
-  varsLabel->setText(str2);
+  varsLabel->setText(str2_512);
 
   if(n_taps < 2)
   {
@@ -599,8 +599,8 @@ void UI_FIRFilterDialog::check_text()
     filter_description_txt_2[0] = 0;
     filt_descr_label->clear();
 
-    snprintf(str2, 512, "fir_filter_freqz() error: %i", err);
-    QMessageBox::critical(firfilterdialog, "Error", str2);
+    snprintf(str2_512, 512, "fir_filter_freqz() error: %i", err);
+    QMessageBox::critical(firfilterdialog, "Error", str2_512);
     return;
   }
 
@@ -723,9 +723,9 @@ void UI_FIRFilterDialog::filebuttonpressed()
   int len=0, i;
 
   char path[MAX_PATH_LENGTH]="",
-  str[4096]="";
+  str1_2048[2048]="";
 
-  FILE *inputfile;
+  FILE *inputfile=NULL;
 
   strlcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 
@@ -739,8 +739,8 @@ void UI_FIRFilterDialog::filebuttonpressed()
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    snprintf(str, 2048, "Cannot open file %s for reading.", path);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str));
+    snprintf(str1_2048, 2048, "Cannot open file %s for reading.", path);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str1_2048));
     messagewindow.exec();
     return;
   }
@@ -798,17 +798,17 @@ void UI_FIRFilterDialog::selected_signals_changed()
 {
   int n;
 
-  char str[256]={""};
+  char str1_256[256]={""};
 
   n = signals_list->selectedItems().size();
 
-  snprintf(str, 256, "Selected signals: %i", n);
+  snprintf(str1_256, 256, "Selected signals: %i", n);
 
-  listlabel->setText(str);
+  listlabel->setText(str1_256);
 
-  snprintf(str, 256, "Apply the current filter to the %i selected (highlighted) signals", n);
+  snprintf(str1_256, 256, "Apply the current filter to the %i selected (highlighted) signals", n);
 
-  ApplyButton->setToolTip(str);
+  ApplyButton->setToolTip(str1_256);
 }
 
 
@@ -1013,19 +1013,19 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
       idx=0,
       buf_sz=10000;
 
-  char *str=NULL,
-       txt_str[512]={""};
+  char *str_p=NULL,
+       str1_512[512]={""};
 
   QMessageBox msgbox(firfilterdialog);
-  snprintf(txt_str, 512, "QLabel {min-width: %ipx;}", (int)(250 * mainwindow->w_scaling));
-  msgbox.setStyleSheet(txt_str);
+  snprintf(str1_512, 512, "QLabel {min-width: %ipx;}", (int)(250 * mainwindow->w_scaling));
+  msgbox.setStyleSheet(str1_512);
 
   if(pm_param_table->rowCount() < 2)  return;
 
   textEdit->clear();
 
-  str = (char *)malloc(buf_sz);
-  if(str == NULL)
+  str_p = (char *)malloc(buf_sz);
+  if(str_p == NULL)
   {
     return;
   }
@@ -1053,8 +1053,8 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
     {
       err = 1;
 
-      snprintf(txt_str, 512, "Error in parameters for band %i: if \"Gain\" is 0 (stopband),\"Ripple\" must be lower than 0", i + 1);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_str);
+      snprintf(str1_512, 512, "Error in parameters for band %i: if \"Gain\" is 0 (stopband),\"Ripple\" must be lower than 0", i + 1);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_512);
       messagewindow.exec();
 
       break;
@@ -1064,8 +1064,8 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
     {
       err = 1;
 
-      snprintf(txt_str, 512, "Error in parameters for band %i: if \"Gain\" is > 0 (passband),\"Ripple\" must be greater than 0", i + 1);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_str);
+      snprintf(str1_512, 512, "Error in parameters for band %i: if \"Gain\" is > 0 (passband),\"Ripple\" must be greater than 0", i + 1);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_512);
       messagewindow.exec();
 
       break;
@@ -1075,8 +1075,8 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
     {
       err = 1;
 
-      snprintf(txt_str, 512, "Error in parameters for band %i: frequency \"To\" must be higher than frequency \"From\"", i + 1);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_str);
+      snprintf(str1_512, 512, "Error in parameters for band %i: frequency \"To\" must be higher than frequency \"From\"", i + 1);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_512);
       messagewindow.exec();
 
       break;
@@ -1086,8 +1086,8 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
     {
       err = 1;
 
-      snprintf(txt_str, 512, "Error in parameters for band %i: freq. \"From\" divided by freq. \"To\" must be <= 0.95", i + 1);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_str);
+      snprintf(str1_512, 512, "Error in parameters for band %i: freq. \"From\" divided by freq. \"To\" must be <= 0.95", i + 1);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_512);
       messagewindow.exec();
 
       break;
@@ -1099,8 +1099,8 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
       {
         err = 1;
 
-        snprintf(txt_str, 512, "Error in parameters for band %i: frequency \"From\" must be higher than frequency \"To\" of band %i", i + 1, i);
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_str);
+        snprintf(str1_512, 512, "Error in parameters for band %i: frequency \"From\" must be higher than frequency \"To\" of band %i", i + 1, i);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_512);
         messagewindow.exec();
 
         break;
@@ -1110,8 +1110,8 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
       {
         err = 1;
 
-        snprintf(txt_str, 512, "Error in parameters for band %i: freq. \"To\" of band %i divided by freq. \"From\" of band %i must be <= 0.95", i + 1, i, i + 1);
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_str);
+        snprintf(str1_512, 512, "Error in parameters for band %i: freq. \"To\" of band %i divided by freq. \"From\" of band %i must be <= 0.95", i + 1, i, i + 1);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_512);
         messagewindow.exec();
 
         break;
@@ -1123,14 +1123,14 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
   {
     err = 1;
 
-    snprintf(txt_str, 512, "Error in parameters for band %i: freq \"To\" must be <= Fs/2", thrd->rz_params.band_num);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_str);
+    snprintf(str1_512, 512, "Error in parameters for band %i: freq \"To\" must be <= Fs/2", thrd->rz_params.band_num);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_512);
     messagewindow.exec();
   }
 
   if(err)
   {
-    free(str);
+    free(str_p);
     delete thrd;
     return;
   }
@@ -1171,13 +1171,13 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
     {
       for(i=0, idx=0; i<thrd->rz_params.tap_num; i++)
       {
-        idx += snprintf(str + idx, 128, "%+.24f\n", thrd->rz_params.f_taps[i]);
+        idx += snprintf(str_p + idx, 128, "%+.24f\n", thrd->rz_params.f_taps[i]);
 
         if(idx >= (buf_sz - 128))
         {
           buf_sz += 10000;
-          str = (char *)realloc(str, buf_sz);
-          if(str==NULL)
+          str_p = (char *)realloc(str_p, buf_sz);
+          if(str_p==NULL)
           {
             buf_sz = 0;
             break;
@@ -1185,7 +1185,7 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
         }
       }
 
-      if(str)
+      if(str_p)
       {
         len = 512;
         len -= snprintf(filter_description_txt_1, len,
@@ -1212,7 +1212,7 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
 
         remove_trailing_zeros(filter_description_txt_1);
 
-        textEdit->appendPlainText(str);
+        textEdit->appendPlainText(str_p);
       }
 
       QApplication::restoreOverrideCursor();
@@ -1220,7 +1220,7 @@ void UI_FIRFilterDialog::pm_design_button_pressed()
 
   delete thrd;
 
-  free(str);
+  free(str_p);
 }
 
 
@@ -1278,8 +1278,8 @@ void UI_FIRFilterDialog::sinc_design_button_pressed()
       idx=0,
       buf_sz=10000;
 
-  char *str=NULL,
-       txt_str[512]={""};
+  char *str_p=NULL,
+       str1_512[512]={""};
 
   double sinc_sf,
          sinc_cutoff1,
@@ -1289,8 +1289,8 @@ void UI_FIRFilterDialog::sinc_design_button_pressed()
 
   textEdit->clear();
 
-  str = (char *)malloc(buf_sz);
-  if(str == NULL)
+  str_p = (char *)malloc(buf_sz);
+  if(str_p == NULL)
   {
     return;
   }
@@ -1343,27 +1343,27 @@ void UI_FIRFilterDialog::sinc_design_button_pressed()
   {
     if(sinc_n_taps == -7)
     {
-      snprintf(txt_str, 512, "The resulting filter would have too many taps (>4000).\nRelax the constraints and try again");
+      snprintf(str1_512, 512, "The resulting filter would have too many taps (>4000).\nRelax the constraints and try again");
     }
     else
     {
-      snprintf(txt_str, 512, "wind_sinc() returned error %i", sinc_n_taps);
+      snprintf(str1_512, 512, "wind_sinc() returned error %i", sinc_n_taps);
     }
-    QMessageBox::critical(firfilterdialog, "Error", txt_str);
+    QMessageBox::critical(firfilterdialog, "Error", str1_512);
     free(sinc_taps);
-    free(str);
+    free(str_p);
     return;
   }
 
   for(i=0, idx=0; i<sinc_n_taps; i++)
   {
-    idx += snprintf(str + idx, 128, "%+.24f\n", sinc_taps[i]);
+    idx += snprintf(str_p + idx, 128, "%+.24f\n", sinc_taps[i]);
 
     if(idx >= (buf_sz - 128))
     {
       buf_sz += 10000;
-      str = (char *)realloc(str, buf_sz);
-      if(str==NULL)
+      str_p = (char *)realloc(str_p, buf_sz);
+      if(str_p==NULL)
       {
         buf_sz = 0;
         break;
@@ -1371,7 +1371,7 @@ void UI_FIRFilterDialog::sinc_design_button_pressed()
     }
   }
 
-  if(str)
+  if(str_p)
   {
     switch(sinc_type)
     {
@@ -1396,11 +1396,11 @@ void UI_FIRFilterDialog::sinc_design_button_pressed()
 
     remove_trailing_zeros(filter_description_txt_1);
 
-    textEdit->appendPlainText(str);
+    textEdit->appendPlainText(str_p);
   }
 
   free(sinc_taps);
-  free(str);
+  free(str_p);
 }
 
 

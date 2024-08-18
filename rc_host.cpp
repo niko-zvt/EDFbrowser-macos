@@ -166,8 +166,8 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
   static int rx_idx=0;
 
-  char tx_msg_str[2048]="",
-       cmd_args[1024]="",
+  char tx_msg_str_2048[2048]="",
+       cmd_args_1024[1024]="",
        cmds_parsed[CMD_MAX_SUB_CMDS][CMD_PARSE_STR_LEN]={"","","","","","","",""};
 
   static char rx_msg_str[1024];
@@ -227,14 +227,14 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     trim_spaces(rx_msg_str);
 
-    n_sub_cmds = parse_rc_command(rx_msg_str, cmds_parsed, cmds_parsed_key, cmd_args, 1024);
+    n_sub_cmds = parse_rc_command(rx_msg_str, cmds_parsed, cmds_parsed_key, cmd_args_1024, 1024);
 #ifdef RC_HOST_DEBUG
     printf("n_sub_cmds: %i\n", n_sub_cmds);
     for(i=0; i<n_sub_cmds; i++)
     {
       printf("sub command %i: ->%s<-  key: %i\n", i, cmds_parsed[i], cmds_parsed_key[i]);
     }
-    printf("cmd_args: ->%s<-\n", cmd_args);
+    printf("cmd_args_1024: ->%s<-\n", cmd_args_1024);
 #endif
     if(n_sub_cmds < 1)
     {
@@ -244,20 +244,20 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     if((n_sub_cmds == 1) && (cmds_parsed_key[0] == (RC_CMD_OPC | RC_CMD_QUERY)))
     {
-      if(strlen(cmd_args))
+      if(strlen(cmd_args_1024))
       {
         register_rc_err(203);
         continue;
       }
       if(rc_cmd_in_progress)
       {
-        len = snprintf(tx_msg_str, 1024, "0\n");
+        len = snprintf(tx_msg_str_2048, 1024, "0\n");
       }
       else
       {
-        len = snprintf(tx_msg_str, 1024, "1\n");
+        len = snprintf(tx_msg_str_2048, 1024, "1\n");
       }
-      rc_host_sock->write(tx_msg_str, len);
+      rc_host_sock->write(tx_msg_str_2048, len);
       continue;
     }
 
@@ -271,12 +271,12 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     if((n_sub_cmds == 1) && (cmds_parsed_key[0] == (RC_CMD_LIST | RC_CMD_QUERY)))
     {
-      if(strlen(cmd_args))
+      if(strlen(cmd_args_1024))
       {
         register_rc_err(203);
         continue;
       }
-      len = snprintf(tx_msg_str, 2048,
+      len = snprintf(tx_msg_str_2048, 2048,
               "*LIST?\n"
               "*IDN?\n"
               "*QUIT\n"
@@ -315,25 +315,25 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
               "SYStem:LOCked?\n"
               "SYStem:LOCked <0|1>\n");
 
-      rc_host_sock->write(tx_msg_str, len);
+      rc_host_sock->write(tx_msg_str_2048, len);
       continue;
     }
 
     if((n_sub_cmds == 1) && (cmds_parsed_key[0] == (RC_CMD_IDN | RC_CMD_QUERY)))
     {
-      if(strlen(cmd_args))
+      if(strlen(cmd_args_1024))
       {
         register_rc_err(203);
         continue;
       }
-      len = snprintf(tx_msg_str, 1024, PROGRAM_NAME "," PROGRAM_VERSION "," THIS_APP_BITS_W "\n");
-      rc_host_sock->write(tx_msg_str, len);
+      len = snprintf(tx_msg_str_2048, 1024, PROGRAM_NAME "," PROGRAM_VERSION "," THIS_APP_BITS_W "\n");
+      rc_host_sock->write(tx_msg_str_2048, len);
       continue;
     }
 
     if((n_sub_cmds == 1) && (cmds_parsed_key[0] == RC_CMD_QUIT))
     {
-      if(strlen(cmd_args))
+      if(strlen(cmd_args_1024))
       {
         register_rc_err(203);
         continue;
@@ -344,7 +344,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     if((n_sub_cmds == 1) && (cmds_parsed_key[0] == RC_CMD_RST))
     {
-      if(strlen(cmd_args))
+      if(strlen(cmd_args_1024))
       {
         register_rc_err(203);
         continue;
@@ -355,7 +355,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     if((n_sub_cmds == 1) && (cmds_parsed_key[0] == RC_CMD_CLS))
     {
-      if(strlen(cmd_args))
+      if(strlen(cmd_args_1024))
       {
         register_rc_err(203);
         continue;
@@ -370,7 +370,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     if((cmds_parsed_key[0] & RC_CMD_MASK) == RC_CMD_FILE)
     {
-      err = process_rc_cmd_file(cmd_args, cmds_parsed_key, n_sub_cmds);
+      err = process_rc_cmd_file(cmd_args_1024, cmds_parsed_key, n_sub_cmds);
       if(err)
       {
         register_rc_err(err);
@@ -380,7 +380,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     if((cmds_parsed_key[0] & RC_CMD_MASK) == RC_CMD_STREAM)
     {
-      err = process_rc_cmd_stream(cmd_args, cmds_parsed_key, n_sub_cmds);
+      err = process_rc_cmd_stream(cmd_args_1024, cmds_parsed_key, n_sub_cmds);
       if(err)
       {
         register_rc_err(err);
@@ -390,7 +390,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     if((cmds_parsed_key[0] & RC_CMD_MASK) == RC_CMD_MONTAGE)
     {
-      err = process_rc_cmd_montage(cmd_args, cmds_parsed_key, n_sub_cmds);
+      err = process_rc_cmd_montage(cmd_args_1024, cmds_parsed_key, n_sub_cmds);
       if(err)
       {
         register_rc_err(err);
@@ -400,7 +400,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     if((cmds_parsed_key[0] & RC_CMD_MASK) == RC_CMD_SESSION)
     {
-      err = process_rc_cmd_session(cmd_args, cmds_parsed_key, n_sub_cmds);
+      err = process_rc_cmd_session(cmd_args_1024, cmds_parsed_key, n_sub_cmds);
       if(err)
       {
         register_rc_err(err);
@@ -410,7 +410,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     if((cmds_parsed_key[0] & RC_CMD_MASK) == RC_CMD_SIGNAL)
     {
-      err = process_rc_cmd_signal(cmd_args, cmds_parsed_key, n_sub_cmds);
+      err = process_rc_cmd_signal(cmd_args_1024, cmds_parsed_key, n_sub_cmds);
       if(err)
       {
         register_rc_err(err);
@@ -420,7 +420,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     if((cmds_parsed_key[0] & RC_CMD_MASK) == RC_CMD_TIMESCALE)
     {
-      err = process_rc_cmd_timescale(cmd_args, cmds_parsed_key, n_sub_cmds);
+      err = process_rc_cmd_timescale(cmd_args_1024, cmds_parsed_key, n_sub_cmds);
       if(err)
       {
         register_rc_err(err);
@@ -430,7 +430,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     if((cmds_parsed_key[0] & RC_CMD_MASK) == RC_CMD_VIEWTIME)
     {
-      err = process_rc_cmd_viewtime(cmd_args, cmds_parsed_key, n_sub_cmds);
+      err = process_rc_cmd_viewtime(cmd_args_1024, cmds_parsed_key, n_sub_cmds);
       if(err)
       {
         register_rc_err(err);
@@ -440,7 +440,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     if((cmds_parsed_key[0] & RC_CMD_MASK) == RC_CMD_TIMELOCK)
     {
-      err = process_rc_cmd_timelock(cmd_args, cmds_parsed_key, n_sub_cmds);
+      err = process_rc_cmd_timelock(cmd_args_1024, cmds_parsed_key, n_sub_cmds);
       if(err)
       {
         register_rc_err(err);
@@ -450,7 +450,7 @@ void UI_Mainwindow::rc_host_sock_rxdata_handler()
 
     if((cmds_parsed_key[0] & RC_CMD_MASK) == RC_CMD_SYSTEM)
     {
-      err = process_rc_cmd_system(cmd_args, cmds_parsed_key, n_sub_cmds);
+      err = process_rc_cmd_system(cmd_args_1024, cmds_parsed_key, n_sub_cmds);
       if(err)
       {
         register_rc_err(err);
@@ -1175,7 +1175,7 @@ int UI_Mainwindow::process_rc_cmd_timescale(const char *cmd_args, int *cmds_pars
 
   long long ltmp;
 
-  char tx_msg_str[1024]="";
+  char tx_msg_str_1024[1024]="";
 
   if(n_sub_cmds < 1)
   {
@@ -1189,11 +1189,11 @@ int UI_Mainwindow::process_rc_cmd_timescale(const char *cmd_args, int *cmds_pars
       return 203;
     }
 #ifdef Q_OS_WIN32
-    len = __mingw_snprintf(tx_msg_str, 1024, "%llu.%07llu\n", pagetime / TIME_FIXP_SCALING, pagetime % TIME_FIXP_SCALING);
+    len = __mingw_snprintf(tx_msg_str_1024, 1024, "%llu.%07llu\n", pagetime / TIME_FIXP_SCALING, pagetime % TIME_FIXP_SCALING);
 #else
-    len = snprintf(tx_msg_str, 1024, "%llu.%07llu\n", pagetime / TIME_FIXP_SCALING, pagetime % TIME_FIXP_SCALING);
+    len = snprintf(tx_msg_str_1024, 1024, "%llu.%07llu\n", pagetime / TIME_FIXP_SCALING, pagetime % TIME_FIXP_SCALING);
 #endif
-    rc_host_sock->write(tx_msg_str, len);
+    rc_host_sock->write(tx_msg_str_1024, len);
     return 0;
   }
   else if((n_sub_cmds == 1) && (cmds_parsed_key[0] == RC_CMD_TIMESCALE))
@@ -1215,8 +1215,8 @@ int UI_Mainwindow::process_rc_cmd_timescale(const char *cmd_args, int *cmds_pars
         {
           return 203;
         }
-        len = snprintf(tx_msg_str, 1024, "%f\n", (maincurve->width() * x_pixelsizefactor * 10) / (((double)pagetime) / TIME_FIXP_SCALING));
-        rc_host_sock->write(tx_msg_str, len);
+        len = snprintf(tx_msg_str_1024, 1024, "%f\n", (maincurve->width() * x_pixelsizefactor * 10) / (((double)pagetime) / TIME_FIXP_SCALING));
+        rc_host_sock->write(tx_msg_str_1024, len);
         return 0;
       }
       else if((n_sub_cmds == 2) && (cmds_parsed_key[0] == RC_CMD_TIMESCALE) && (cmds_parsed_key[1] == RC_CMD_MMSECOND))
@@ -1247,7 +1247,7 @@ int UI_Mainwindow::process_rc_cmd_viewtime(const char *cmd_args, int *cmds_parse
 
   long long ltmp;
 
-  char tx_msg_str[1024]="";
+  char tx_msg_str_1024[1024]="";
 
   if(n_sub_cmds < 1)
   {
@@ -1262,16 +1262,16 @@ int UI_Mainwindow::process_rc_cmd_viewtime(const char *cmd_args, int *cmds_parse
     }
     if(!files_open)
     {
-      len = snprintf(tx_msg_str, 1024, "0\n");
-      rc_host_sock->write(tx_msg_str, len);
+      len = snprintf(tx_msg_str_1024, 1024, "0\n");
+      rc_host_sock->write(tx_msg_str_1024, len);
       return 0;
     }
 #ifdef Q_OS_WIN32
-    len = __mingw_snprintf(tx_msg_str, 1024, "%lli.%07lli\n", edfheaderlist[sel_viewtime]->viewtime / TIME_FIXP_SCALING, edfheaderlist[sel_viewtime]->viewtime % TIME_FIXP_SCALING);
+    len = __mingw_snprintf(tx_msg_str_1024, 1024, "%lli.%07lli\n", edfheaderlist[sel_viewtime]->viewtime / TIME_FIXP_SCALING, edfheaderlist[sel_viewtime]->viewtime % TIME_FIXP_SCALING);
 #else
-    len = snprintf(tx_msg_str, 1024, "%lli.%07lli\n", edfheaderlist[sel_viewtime]->viewtime / TIME_FIXP_SCALING, edfheaderlist[sel_viewtime]->viewtime % TIME_FIXP_SCALING);
+    len = snprintf(tx_msg_str_1024, 1024, "%lli.%07lli\n", edfheaderlist[sel_viewtime]->viewtime / TIME_FIXP_SCALING, edfheaderlist[sel_viewtime]->viewtime % TIME_FIXP_SCALING);
 #endif
-    rc_host_sock->write(tx_msg_str, len);
+    rc_host_sock->write(tx_msg_str_1024, len);
     return 0;
   }
   else if((n_sub_cmds == 1) && (cmds_parsed_key[0] == RC_CMD_VIEWTIME))
@@ -1300,7 +1300,7 @@ int UI_Mainwindow::process_rc_cmd_timelock(const char *cmd_args, int *cmds_parse
 {
   int len, mode=0, file_num=0;
 
-  char tx_msg_str[1024]="";
+  char tx_msg_str_1024[1024]="";
 
   if(n_sub_cmds < 1)
   {
@@ -1313,8 +1313,8 @@ int UI_Mainwindow::process_rc_cmd_timelock(const char *cmd_args, int *cmds_parse
     {
       return 203;
     }
-    len = snprintf(tx_msg_str, 1024, "%i\n", viewtime_sync);
-    rc_host_sock->write(tx_msg_str, len);
+    len = snprintf(tx_msg_str_1024, 1024, "%i\n", viewtime_sync);
+    rc_host_sock->write(tx_msg_str_1024, len);
     return 0;
   }
   else if((n_sub_cmds == 2) && (cmds_parsed_key[0] == RC_CMD_TIMELOCK) && (cmds_parsed_key[1] == RC_CMD_MODE))
@@ -1336,8 +1336,8 @@ int UI_Mainwindow::process_rc_cmd_timelock(const char *cmd_args, int *cmds_parse
     {
       return 203;
     }
-    len = snprintf(tx_msg_str, 1024, "%i\n", sel_viewtime);
-    rc_host_sock->write(tx_msg_str, len);
+    len = snprintf(tx_msg_str_1024, 1024, "%i\n", sel_viewtime);
+    rc_host_sock->write(tx_msg_str_1024, len);
     return 0;
   }
   else if((n_sub_cmds == 2) && (cmds_parsed_key[0] == RC_CMD_TIMELOCK) && (cmds_parsed_key[1] == RC_CMD_REFERENCE))
@@ -1367,7 +1367,7 @@ int UI_Mainwindow::process_rc_cmd_system(const char *cmd_args, int *cmds_parsed_
 {
   int len, lock;
 
-  char tx_msg_str[1024]="";
+  char tx_msg_str_1024[1024]="";
 
   if(n_sub_cmds < 2)
   {
@@ -1384,13 +1384,13 @@ int UI_Mainwindow::process_rc_cmd_system(const char *cmd_args, int *cmds_parsed_
       }
       if(rc_system_locked)
       {
-        len = snprintf(tx_msg_str, 1024, "1\n");
+        len = snprintf(tx_msg_str_1024, 1024, "1\n");
       }
       else
       {
-        len = snprintf(tx_msg_str, 1024, "0\n");
+        len = snprintf(tx_msg_str_1024, 1024, "0\n");
       }
-      rc_host_sock->write(tx_msg_str, len);
+      rc_host_sock->write(tx_msg_str_1024, len);
       return 0;
     }
     else if((cmds_parsed_key[0] == RC_CMD_SYSTEM) && (cmds_parsed_key[1] == RC_CMD_LOCKED))
@@ -1423,8 +1423,8 @@ int UI_Mainwindow::process_rc_cmd_system(const char *cmd_args, int *cmds_parsed_
           rc_err_queue_idx += (RC_ERR_QUEUE_SZ - 1);
           rc_err_queue_idx %= RC_ERR_QUEUE_SZ;
 
-          len = snprintf(tx_msg_str, 1024, "%i\n", rc_err_queue[rc_err_queue_idx]);
-          rc_host_sock->write(tx_msg_str, len);
+          len = snprintf(tx_msg_str_1024, 1024, "%i\n", rc_err_queue[rc_err_queue_idx]);
+          rc_host_sock->write(tx_msg_str_1024, len);
           rc_err_queue[rc_err_queue_idx] = 0;
           return 0;
         }

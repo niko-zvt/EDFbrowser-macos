@@ -39,7 +39,7 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, sigcompblck_t *signalcomp_)
       filenum=-1,
       instance_num=0;
 
-  char str[32]="",
+  char str1_32[32]="",
        rpeak_descr[MAX_ANNOTATION_LEN]="";
 
   double *processed_samples_buf=NULL;
@@ -76,17 +76,17 @@ UI_QRS_detector::UI_QRS_detector(QWidget *w_parent, sigcompblck_t *signalcomp_)
   sf = signalcomp->edfparam_0->sf_f;
   if(sf < 199.999)  return;
 
-  strlcpy(str, signalcomp->edfparam_0->physdimension, 32);
-  trim_spaces(str);
-  if(!strcmp(str, "uV"))
+  strlcpy(str1_32, signalcomp->edfparam_0->physdimension, 32);
+  trim_spaces(str1_32);
+  if(!strcmp(str1_32, "uV"))
   {
     sense = 1;
   }
-  else if(!strcmp(str, "mV"))
+  else if(!strcmp(str1_32, "mV"))
     {
       sense = 1000;
     }
-    else if(!strcmp(str, "V"))
+    else if(!strcmp(str1_32, "V"))
       {
         sense = 1000000;
       }

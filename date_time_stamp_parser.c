@@ -42,16 +42,16 @@ long long parse_date_time_stamp(const char *src)
 {
   int i, len, probes;
 
-  char str[1024]={""},
+  char str1_1024[1024]={""},
        *ptr=NULL;
 
   len = strlen(src);
 
   if(len < DATE_TIME_STAMP_LEN + 4)  goto ERROR;
 
-  strlcpy(str, src, 1024);
+  strlcpy(str1_1024, src, 1024);
 
-  len = strlen(str);
+  len = strlen(str1_1024);
 
   if(len < DATE_TIME_STAMP_LEN)  goto ERROR;
 
@@ -59,7 +59,7 @@ long long parse_date_time_stamp(const char *src)
 
   for(i=0; i<probes; i++)
   {
-    ptr = str + i;
+    ptr = str1_1024 + i;
 
     if((ptr[2] != '-') || (ptr[6] != '-') || (ptr[11] != '_') || (ptr[14] != 'h') || (ptr[17] != 'm'))  continue;
 

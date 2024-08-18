@@ -132,7 +132,7 @@ void UI_ECGExport::Export_RR_intervals()
       filenum=0;
 
   char path[MAX_PATH_LENGTH]={""},
-       str[2048]={""};
+       str1_2048[2048]={""};
 
   double *beat_interval_list=NULL,
          *buf=NULL;
@@ -453,8 +453,8 @@ void UI_ECGExport::Export_RR_intervals()
 
   if(!import_as_annots)
   {
-    snprintf(str, 2048, "Done. The %s's and/or RR-intervals are exported to:\n\n%s", mainwindow->ecg_qrs_rpeak_descr, path);
-    QMessageBox messagewindow(QMessageBox::Information, "Ready", QString::fromLocal8Bit(str));
+    snprintf(str1_2048, 2048, "Done. The %s's and/or RR-intervals are exported to:\n\n%s", mainwindow->ecg_qrs_rpeak_descr, path);
+    QMessageBox messagewindow(QMessageBox::Information, "Ready", QString::fromLocal8Bit(str1_2048));
     messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
     messagewindow.exec();
   }

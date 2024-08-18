@@ -65,7 +65,7 @@ void Check_for_updates::replyFinished()
 {
   long long int n;
 
-  char buf[128];
+  char buf_128[128];
 
   int this_version,
       latest_version;
@@ -86,7 +86,7 @@ void Check_for_updates::replyFinished()
     return;
   }
 
-  n = reply->read(buf, 100);
+  n = reply->read(buf_128, 100);
 
   if(n < 31)
   {
@@ -97,32 +97,32 @@ void Check_for_updates::replyFinished()
 
   reply->deleteLater();
 
-  buf[30] = 0;
+  buf_128[30] = 0;
 
-  if(strncmp(buf, "EDFbrowser latest version: ", 27))
+  if(strncmp(buf_128, "EDFbrowser latest version: ", 27))
   {
     return;
   }
 
   mainwindow->last_check_for_updates_time = time(NULL);
 
-  if(is_integer_number(buf + 27))
+  if(is_integer_number(buf_128 + 27))
   {
     return;
   }
 
-  latest_version = atoi(buf + 27);
+  latest_version = atoi(buf_128 + 27);
 
   if((latest_version < 1) || (latest_version > 1000000))
   {
     return;
   }
 
-  snprintf(buf, 128, PROGRAM_VERSION);
+  snprintf(buf_128, 128, PROGRAM_VERSION);
 
-  buf[1] = buf[0];
+  buf_128[1] = buf_128[0];
 
-  this_version = atoi(buf + 1);
+  this_version = atoi(buf_128 + 1);
 
   if(this_version >= latest_version)
   {

@@ -304,11 +304,11 @@ long long UI_Mainwindow::check_edf_file_datarecords(edfhdrblck_t *hdr)
 
 void UI_Mainwindow::save_file()
 {
-  char f_path[MAX_PATH_LENGTH];
+  char f_path[MAX_PATH_LENGTH]={""};
 
-  edfhdrblck_t *hdr;
+  edfhdrblck_t *hdr=NULL;
 
-  FILE *outputfile;
+  FILE *outputfile=NULL;
 
 
   if((!annotations_edited)||(!files_open))
@@ -1670,7 +1670,7 @@ void UI_Mainwindow::show_aeeg_dock()
 {
   int i;
 
-  char str[32]={""};
+  char str1_32[32]={""};
 
   if((!files_open) || (!signalcomps) || live_stream_active)  return;
 
@@ -1687,9 +1687,9 @@ void UI_Mainwindow::show_aeeg_dock()
       return;
     }
 
-    strlcpy(str, signalcomp[0]->edfparam_0->physdimension, 32);
-    trim_spaces(str);
-    if((strcmp(str, "uV")) && (strcmp(str, "mV")) && (strcmp(str, "V")))
+    strlcpy(str1_32, signalcomp[0]->edfparam_0->physdimension, 32);
+    trim_spaces(str1_32);
+    if((strcmp(str1_32, "uV")) && (strcmp(str1_32, "mV")) && (strcmp(str1_32, "V")))
     {
       QMessageBox::critical(this, "Error", "Unknown physical dimension (unit), expected uV or mV or V");
       return;
@@ -1753,7 +1753,7 @@ void UI_Mainwindow::open_new_file()
 
   int i, len, present, position, button_nr=0, err=0;
 
-  char str1[2048]="";
+  char str1_2048[2048]="";
 
   QAction *act=NULL;
 
@@ -1936,9 +1936,9 @@ void UI_Mainwindow::open_new_file()
       }
       else
       {
-        snprintf(str1, 2048, "File has an unknown extension:\n \n%s", path);
+        snprintf(str1_2048, 2048, "File has an unknown extension:\n \n%s", path);
 
-        QMessageBox::critical(this, "Error", QString::fromLocal8Bit(str1));
+        QMessageBox::critical(this, "Error", QString::fromLocal8Bit(str1_2048));
       }
       rc_file_open_requested = 0;
       drop_path[0] = 0;
@@ -1955,9 +1955,9 @@ void UI_Mainwindow::open_new_file()
       }
       else
       {
-        snprintf(str1, 2048, "Cannot open file for reading:\n \n%s\n \n"
+        snprintf(str1_2048, 2048, "Cannot open file for reading:\n \n%s\n \n"
                              "Check if you have the right permissions.", path);
-        QMessageBox::critical(this, "Error", QString::fromLocal8Bit(str1));
+        QMessageBox::critical(this, "Error", QString::fromLocal8Bit(str1_2048));
       }
       rc_file_open_requested = 0;
       drop_path[0] = 0;
@@ -1967,7 +1967,7 @@ void UI_Mainwindow::open_new_file()
 
     get_directory_from_path(recent_opendir, path, MAX_PATH_LENGTH);
 
-    edfhdr = check_edf_file(newfile, str1, 2048, live_stream_active, 0);
+    edfhdr = check_edf_file(newfile, str1_2048, 2048, live_stream_active, 0);
     if(edfhdr==NULL)
     {
       fclose(newfile);
@@ -1980,13 +1980,13 @@ void UI_Mainwindow::open_new_file()
       }
       else
       {
-        if(strstr(str1, "If you want to import annotations from this file") != NULL)
+        if(strstr(str1_2048, "If you want to import annotations from this file") != NULL)
         {
-          QMessageBox::critical(this, "Error", str1);
+          QMessageBox::critical(this, "Error", str1_2048);
         }
         else
         {
-          tmessagebox(QMessageBox::Critical, "Error", "File is not a valid EDF or BDF file.", str1, this);
+          tmessagebox(QMessageBox::Critical, "Error", "File is not a valid EDF or BDF file.", str1_2048, this);
         }
       }
       rc_file_open_requested = 0;
@@ -2252,7 +2252,7 @@ void UI_Mainwindow::setMainwindowTitle(edfhdrblck_t *edfhdr)
 {
   int i, len;
 
-  char str[MAX_PATH_LENGTH + 128]={""};
+  char str1[MAX_PATH_LENGTH + 128]={""};
 
   date_time_t date_time;
 
@@ -2268,7 +2268,7 @@ void UI_Mainwindow::setMainwindowTitle(edfhdrblck_t *edfhdr)
   {
     if(edfhdr->edfplus || edfhdr->bdfplus)
     {
-      snprintf(str, 256, PROGRAM_NAME "  subject %s  birthdate %s  startdate %s",
+      snprintf(str1, 256, PROGRAM_NAME "  subject %s  birthdate %s  startdate %s",
                     edfhdr->plus_patient_name,
                     edfhdr->plus_birthdate,
                     edfhdr->plus_startdate);
@@ -2281,17 +2281,17 @@ void UI_Mainwindow::setMainwindowTitle(edfhdrblck_t *edfhdr)
       date_time.month_str[1] += 32;
       date_time.month_str[2] += 32;
 
-      snprintf(str, 256, PROGRAM_NAME "  %s  startdate %i %s %i",
+      snprintf(str1, 256, PROGRAM_NAME "  %s  startdate %i %s %i",
                     edfhdr->patient,
                     date_time.day,
                     date_time.month_str,
                     date_time.year);
-      len = strlen(str);
+      len = strlen(str1);
       for(i=0; i<len; i++)
       {
-        if(str[i]=='_')
+        if(str1[i]=='_')
         {
-          str[i] = ' ';
+          str1[i] = ' ';
         }
       }
     }
@@ -2299,19 +2299,19 @@ void UI_Mainwindow::setMainwindowTitle(edfhdrblck_t *edfhdr)
 
   if(mainwindow_title_type == 1)
   {
-    get_filename_from_path(str, QString::fromLocal8Bit(edfhdr->filename).toUtf8().data(), MAX_PATH_LENGTH);
+    get_filename_from_path(str1, QString::fromLocal8Bit(edfhdr->filename).toUtf8().data(), MAX_PATH_LENGTH);
 
-    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128);
+    strlcat(str1, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128);
   }
 
   if(mainwindow_title_type == 2)
   {
-    strlcpy(str, QString::fromLocal8Bit(edfhdr->filename).toUtf8().data(), MAX_PATH_LENGTH + 128);
+    strlcpy(str1, QString::fromLocal8Bit(edfhdr->filename).toUtf8().data(), MAX_PATH_LENGTH + 128);
 
-    strlcat(str, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128);
+    strlcat(str1, " - " PROGRAM_NAME, MAX_PATH_LENGTH + 128);
   }
 
-  setWindowTitle(QString::fromUtf8(str));
+  setWindowTitle(QString::fromUtf8(str1));
 }
 
 
@@ -4140,7 +4140,7 @@ void UI_Mainwindow::qrs_detector()
 {
   int signal_nr=-2;
 
-  char str[2048]={""};
+  char str1_2048[2048]={""};
 
   double sf=1;
 
@@ -4160,19 +4160,19 @@ void UI_Mainwindow::qrs_detector()
   sf = signalcomp[signal_nr]->edfparam_0->sf_f;
   if(sf < 199.999)
   {
-    snprintf(str, 2048, "Sample rate of selected signal is %.1f Hz."
+    snprintf(str1_2048, 2048, "Sample rate of selected signal is %.1f Hz."
                         "The QRS detector needs a samplerate of 200 Hz or higher.", sf);
-    QMessageBox::critical(this, "Error", str);
+    QMessageBox::critical(this, "Error", str1_2048);
     return;
   }
 
-  strlcpy(str, signalcomp[signal_nr]->edfparam_0->physdimension, 2048);
-  trim_spaces(str);
-  if(strcmp(str, "uV") && strcmp(str, "mV") && strcmp(str, "V"))
+  strlcpy(str1_2048, signalcomp[signal_nr]->edfparam_0->physdimension, 2048);
+  trim_spaces(str1_2048);
+  if(strcmp(str1_2048, "uV") && strcmp(str1_2048, "mV") && strcmp(str1_2048, "V"))
   {
-    snprintf(str, 2048, "Unknown unit (physical dimension): \"%s\", expected uV or mV or V",
+    snprintf(str1_2048, 2048, "Unknown unit (physical dimension): \"%s\", expected uV or mV or V",
              signalcomp[signal_nr]->edfparam_0->physdimension);
-    QMessageBox::critical(this, "Error", str);
+    QMessageBox::critical(this, "Error", str1_2048);
     return;
   }
 
@@ -4693,7 +4693,7 @@ void UI_Mainwindow::edfplus_remove_duplicate_annotations()
 {
   int i, dup_cnt=0, cnt;
 
-  char str[1024];
+  char str1_256[256];
 
   if(!files_open)
   {
@@ -4729,8 +4729,8 @@ void UI_Mainwindow::edfplus_remove_duplicate_annotations()
     save_act->setEnabled(true);
   }
 
-  snprintf(str, 256, "Removed %i duplicates from the annotationlist(s)", dup_cnt);
-  QMessageBox::information(this, "Ready", str);
+  snprintf(str1_256, 256, "Removed %i duplicates from the annotationlist(s)", dup_cnt);
+  QMessageBox::information(this, "Ready", str1_256);
 }
 
 
@@ -4738,9 +4738,9 @@ sigcompblck_t * UI_Mainwindow::create_signalcomp_copy(sigcompblck_t *original_si
 {
   int i;
 
-  char spec_str[256],
-       *filter_spec,
-       *err;
+  char spec_str_256[256],
+       *filter_spec=NULL,
+       *err=NULL;
 
   sigcompblck_t *newsignalcomp;
 
@@ -4850,17 +4850,17 @@ sigcompblck_t * UI_Mainwindow::create_signalcomp_copy(sigcompblck_t *original_si
     {
       if(newsignalcomp->fidfilter_model[i] == 0)
       {
-        snprintf(spec_str, 256, "HpBu%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str_256, 256, "HpBu%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 1)
       {
-        snprintf(spec_str, 256, "HpCh%i/%f/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str_256, 256, "HpCh%i/%f/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 2)
       {
-        snprintf(spec_str, 256, "HpBe%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str_256, 256, "HpBe%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
       }
     }
 
@@ -4868,17 +4868,17 @@ sigcompblck_t * UI_Mainwindow::create_signalcomp_copy(sigcompblck_t *original_si
     {
       if(newsignalcomp->fidfilter_model[i] == 0)
       {
-        snprintf(spec_str, 256, "LpBu%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str_256, 256, "LpBu%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 1)
       {
-        snprintf(spec_str, 256, "LpCh%i/%f/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str_256, 256, "LpCh%i/%f/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 2)
       {
-        snprintf(spec_str, 256, "LpBe%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str_256, 256, "LpBe%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
       }
     }
 
@@ -4886,7 +4886,7 @@ sigcompblck_t * UI_Mainwindow::create_signalcomp_copy(sigcompblck_t *original_si
     {
       if(newsignalcomp->fidfilter_model[i] == 0)
       {
-        snprintf(spec_str, 256, "BsRe/%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
+        snprintf(spec_str_256, 256, "BsRe/%i/%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i]);
       }
     }
 
@@ -4894,17 +4894,17 @@ sigcompblck_t * UI_Mainwindow::create_signalcomp_copy(sigcompblck_t *original_si
     {
       if(newsignalcomp->fidfilter_model[i] == 0)
       {
-        snprintf(spec_str, 256, "BpBu%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
+        snprintf(spec_str_256, 256, "BpBu%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 1)
       {
-        snprintf(spec_str, 256, "BpCh%i/%f/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
+        snprintf(spec_str_256, 256, "BpCh%i/%f/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 2)
       {
-        snprintf(spec_str, 256, "BpBe%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
+        snprintf(spec_str_256, 256, "BpBe%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
       }
     }
 
@@ -4912,21 +4912,21 @@ sigcompblck_t * UI_Mainwindow::create_signalcomp_copy(sigcompblck_t *original_si
     {
       if(newsignalcomp->fidfilter_model[i] == 0)
       {
-        snprintf(spec_str, 256, "BsBu%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
+        snprintf(spec_str_256, 256, "BsBu%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 1)
       {
-        snprintf(spec_str, 256, "BsCh%i/%f/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
+        snprintf(spec_str_256, 256, "BsCh%i/%f/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_ripple[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
       }
 
       if(newsignalcomp->fidfilter_model[i] == 2)
       {
-        snprintf(spec_str, 256, "BsBe%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
+        snprintf(spec_str_256, 256, "BsBe%i/%f-%f", newsignalcomp->fidfilter_order[i], newsignalcomp->fidfilter_freq[i], newsignalcomp->fidfilter_freq2[i]);
       }
     }
 
-    filter_spec = spec_str;
+    filter_spec = spec_str_256;
 
     err = fid_parse(newsignalcomp->edfparam_0->sf_f, &filter_spec, &newsignalcomp->fidfilter[i]);
 

@@ -34,7 +34,7 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
 {
   int i, n, s, sf=0;
 
-  char str[256]={""};
+  char str1_256[256]={""};
 
   double dthreshold=0;
 
@@ -86,24 +86,24 @@ UI_PLIF_ECG_filter_dialog::UI_PLIF_ECG_filter_dialog(QWidget *w_parent)
       continue;
     }
 
-    strlcpy(str, mainwindow->signalcomp[i]->edfparam_0->physdimension, 256);
+    strlcpy(str1_256, mainwindow->signalcomp[i]->edfparam_0->physdimension, 256);
 
-    remove_trailing_spaces(str);
+    remove_trailing_spaces(str1_256);
 
-    if(strcmp(str, "uV") && strcmp(str, "mV") && strcmp(str, "V"))
+    if(strcmp(str1_256, "uV") && strcmp(str1_256, "mV") && strcmp(str1_256, "V"))
     {
       continue;
     }
 
-    if(!strcmp(str, "uV"))
+    if(!strcmp(str1_256, "uV"))
     {
       dthreshold = 5.0 / mainwindow->signalcomp[i]->edfparam_0->bitvalue;
     }
-    else if(!strcmp(str, "mV"))
+    else if(!strcmp(str1_256, "mV"))
       {
         dthreshold = 5e-3 / mainwindow->signalcomp[i]->edfparam_0->bitvalue;
       }
-      else if(!strcmp(str, "V"))
+      else if(!strcmp(str1_256, "V"))
         {
           dthreshold = 5e-6 / mainwindow->signalcomp[i]->edfparam_0->bitvalue;
         }
@@ -188,7 +188,7 @@ void UI_PLIF_ECG_filter_dialog::ApplyButtonClicked()
 {
   int i, s, n, sf, plf, err=0;
 
-  char str[256];
+  char str1_256[256];
 
   double dthreshold=0;
 
@@ -236,25 +236,25 @@ void UI_PLIF_ECG_filter_dialog::ApplyButtonClicked()
     if((sf % plf) || (!sf))
     {
       err = 1;
-      snprintf(str, 256, "Samplefrequency (%iHz) is not an integer multiple of the powerline frequency (%iHz)", sf, plf);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+      snprintf(str1_256, 256, "Samplefrequency (%iHz) is not an integer multiple of the powerline frequency (%iHz)", sf, plf);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_256);
       messagewindow.exec();
       break;
     }
 
-    strlcpy(str, mainwindow->signalcomp[s]->edfparam_0->physdimension, 256);
+    strlcpy(str1_256, mainwindow->signalcomp[s]->edfparam_0->physdimension, 256);
 
-    remove_trailing_spaces(str);
+    remove_trailing_spaces(str1_256);
 
-    if(!strcmp(str, "uV"))
+    if(!strcmp(str1_256, "uV"))
     {
       dthreshold = 5.0 / mainwindow->signalcomp[s]->edfparam_0->bitvalue;
     }
-    else if(!strcmp(str, "mV"))
+    else if(!strcmp(str1_256, "mV"))
       {
         dthreshold = 5e-3 / mainwindow->signalcomp[s]->edfparam_0->bitvalue;
       }
-      else if(!strcmp(str, "V"))
+      else if(!strcmp(str1_256, "V"))
         {
           dthreshold = 5e-6 / mainwindow->signalcomp[s]->edfparam_0->bitvalue;
         }

@@ -487,7 +487,7 @@ int edfplus_annotation_get_max_annotation_strlen(annotlist_t *list)
       timestamp_digits=0,
       timestamp_decimals=0;
 
-  char scratchpad[1024];
+  char scratchpad_1024[256]={""};
 
   annotblck_t *annot;
 
@@ -500,9 +500,9 @@ int edfplus_annotation_get_max_annotation_strlen(annotlist_t *list)
   {
     annot = &list->items[list->idx[i]];
 #ifdef _WIN32
-    len = __mingw_snprintf(scratchpad, 256, "%lli", annot->onset / TIME_FIXP_SCALING_II);
+    len = __mingw_snprintf(scratchpad_1024, 256, "%lli", annot->onset / TIME_FIXP_SCALING_II);
 #else
-    len = snprintf(scratchpad, 256, "%lli", annot->onset / TIME_FIXP_SCALING_II);
+    len = snprintf(scratchpad_1024, 256, "%lli", annot->onset / TIME_FIXP_SCALING_II);
 #endif
 
     if(len > timestamp_digits)

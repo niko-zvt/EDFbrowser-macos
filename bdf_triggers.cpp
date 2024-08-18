@@ -41,7 +41,7 @@ int BDF_triggers::get_triggers(edfhdrblck_t *hdr)
       trigger_cnt,
       status[24];
 
-  char *buf;
+  char *buf=NULL;
 
   long long datarecords,
             long_data_record_duration,

@@ -175,7 +175,7 @@ void UI_ExportFilteredSignalsWindow::spinBox1changed(int value)
 
   int days;
 
-  char scratchpad[256];
+  char scratchpad_256[256]={""};
 
   QObject::disconnect(spinBox2, SIGNAL(valueChanged(int)), this, SLOT(spinBox2changed(int)));
   spinBox2->setMinimum(value);
@@ -196,13 +196,13 @@ void UI_ExportFilteredSignalsWindow::spinBox1changed(int value)
   milliSec /= 10000LL;
   if(days)
   {
-    snprintf(scratchpad, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(scratchpad_256, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
   else
   {
-    snprintf(scratchpad, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(scratchpad_256, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
-  label4->setText(scratchpad);
+  label4->setText(scratchpad_256);
 }
 
 
@@ -213,7 +213,7 @@ void UI_ExportFilteredSignalsWindow::spinBox2changed(int value)
 
   int days;
 
-  char scratchpad[256];
+  char scratchpad_256[256]={""};
 
   QObject::disconnect(spinBox1, SIGNAL(valueChanged(int)), this, SLOT(spinBox1changed(int)));
   spinBox1->setMaximum(value);
@@ -230,13 +230,13 @@ void UI_ExportFilteredSignalsWindow::spinBox2changed(int value)
   milliSec /= 10000LL;
   if(days)
   {
-    snprintf(scratchpad, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(scratchpad_256, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
   else
   {
-    snprintf(scratchpad, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(scratchpad_256, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
-  label5->setText(scratchpad);
+  label5->setText(scratchpad_256);
 }
 
 
@@ -247,7 +247,7 @@ void UI_ExportFilteredSignalsWindow::radioButton1Toggled(bool checked)
 
   int days;
 
-  char scratchpad[256];
+  char scratchpad_256[256]={""};
 
   if(checked == true)
   {
@@ -277,16 +277,16 @@ void UI_ExportFilteredSignalsWindow::radioButton1Toggled(bool checked)
     {
       label4->setText("0d 0:00:00.000");
 
-      snprintf(scratchpad, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+      snprintf(scratchpad_256, 256, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
     }
     else
     {
       label4->setText("0:00:00.000");
 
-      snprintf(scratchpad, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+      snprintf(scratchpad_256, 256, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
     }
 
-    label5->setText(scratchpad);
+    label5->setText(scratchpad_256);
   }
 }
 
@@ -312,7 +312,7 @@ void UI_ExportFilteredSignalsWindow::SelectFileButton()
   long long seconds,
             milliSec;
 
-  char txt_string[2048];
+  char str1_2048[2048]={""};
 
   label1->clear();
   label4->clear();
@@ -361,8 +361,8 @@ void UI_ExportFilteredSignalsWindow::SelectFileButton()
   inputfile = edfhdr->file_hdl;
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Cannot open file %s for reading.", inputpath);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(txt_string));
+    snprintf(str1_2048, 2048, "Cannot open file %s for reading.", inputpath);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str1_2048));
     messagewindow.exec();
 
     inputpath[0] = 0;
@@ -413,13 +413,13 @@ void UI_ExportFilteredSignalsWindow::SelectFileButton()
   milliSec /= 10000LL;
   if(days)
   {
-    snprintf(txt_string, 2048, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(str1_2048, 2048, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
   else
   {
-    snprintf(txt_string, 2048, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(str1_2048, 2048, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
-  label5->setText(txt_string);
+  label5->setText(str1_2048);
 
   populate_tree_view();
 }
@@ -451,8 +451,8 @@ void UI_ExportFilteredSignalsWindow::StartExport()
       digmax,
       value;
 
-  char scratchpad[4096]={""},
-       str[1024]={""};
+  char scratchpad_4096[4096]={""},
+       str1_1024[1024]={""};
 
   double *filtered_blockread_buf[MAXSIGNALS],
          bitvalue,
@@ -540,8 +540,8 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
   if(err)
   {
-    snprintf(str, 1024, "create_flt_blck_rd() returned an error,   line %i file %s", __LINE__, __FILE__);
-    QMessageBox::critical(myobjectDialog, "Error", str);
+    snprintf(str1_1024, 1024, "create_flt_blck_rd() returned an error,   line %i file %s", __LINE__, __FILE__);
+    QMessageBox::critical(myobjectDialog, "Error", str1_1024);
     goto END_1;
   }
 
@@ -704,7 +704,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
   utc_to_date_time(new_starttime, &dts);
 
   rewind(inputfile);
-  if(fread(scratchpad, 168, 1, inputfile)!=1)
+  if(fread(scratchpad_4096, 168, 1, inputfile)!=1)
   {
     QMessageBox::critical(myobjectDialog, "Error", "Read error (1).");
     goto END_4;
@@ -712,15 +712,15 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
-    if(scratchpad[98] != 'X')
+    if(scratchpad_4096[98] != 'X')
     {
-      snprintf(scratchpad + 98, 4096 - 98, "%02i-%s-%04i", dts.day, dts.month_str, dts.year);
+      snprintf(scratchpad_4096 + 98, 4096 - 98, "%02i-%s-%04i", dts.day, dts.month_str, dts.year);
 
-      scratchpad[109] = ' ';
+      scratchpad_4096[109] = ' ';
     }
   }
 
-  if(fwrite(scratchpad, 168, 1, outputfile)!=1)
+  if(fwrite(scratchpad_4096, 168, 1, outputfile)!=1)
   {
     QMessageBox::critical(myobjectDialog, "Error", "Write error (1).");
     goto END_4;
@@ -766,15 +766,15 @@ void UI_ExportFilteredSignalsWindow::StartExport()
     }
   }
   fprintf(outputfile, "%-8i", datarecords);
-  snprintf(scratchpad, 256, "%f", edfhdr->data_record_duration);
-  convert_trailing_zeros_to_spaces(scratchpad);
-  if(scratchpad[7]=='.')
+  snprintf(scratchpad_4096, 256, "%f", edfhdr->data_record_duration);
+  convert_trailing_zeros_to_spaces(scratchpad_4096);
+  if(scratchpad_4096[7]=='.')
   {
-    scratchpad[7] = ' ';
+    scratchpad_4096[7] = ' ';
   }
-  scratchpad[8] = 0;
+  scratchpad_4096[8] = 0;
 
-  fprintf(outputfile, "%s", scratchpad);
+  fprintf(outputfile, "%s", scratchpad_4096);
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
     fprintf(outputfile, "%-4i", new_edfsignals + 1);
@@ -786,11 +786,11 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
   for(i=0; i<new_edfsignals; i++)
   {
-    strlcpy(scratchpad, signalcomp[i]->signallabel, 4096);
-    scratchpad[16] = 0;
-    strlcat(scratchpad, "                ", 4096);
-    scratchpad[16] = 0;
-    fprintf(outputfile, "%s", scratchpad);
+    strlcpy(scratchpad_4096, signalcomp[i]->signallabel, 4096);
+    scratchpad_4096[16] = 0;
+    strlcat(scratchpad_4096, "                ", 4096);
+    scratchpad_4096[16] = 0;
+    fprintf(outputfile, "%s", scratchpad_4096);
   }
   if(edfhdr->edfplus)
   {
@@ -826,20 +826,20 @@ void UI_ExportFilteredSignalsWindow::StartExport()
   {
     if((((int)(edfhdr->edfparam[signalslist[i]].phys_min * signalcomp[i]->polarity)) < -9999999) && (signalcomp[i]->polarity == -1))
     {
-      snprintf(str, 1024,
+      snprintf(str1_1024, 1024,
                "signal %i has been set to \"inverted\" but the physical minimum field has no free space left to write the minus sign",
                i + 1);
-      QMessageBox::critical(myobjectDialog, "Error", str);
+      QMessageBox::critical(myobjectDialog, "Error", str1_1024);
       goto END_4;
     }
-    snprintf(scratchpad, 256, "%f", edfhdr->edfparam[signalslist[i]].phys_min * signalcomp[i]->polarity);
-    convert_trailing_zeros_to_spaces(scratchpad);
-    if(scratchpad[7]=='.')
+    snprintf(scratchpad_4096, 256, "%f", edfhdr->edfparam[signalslist[i]].phys_min * signalcomp[i]->polarity);
+    convert_trailing_zeros_to_spaces(scratchpad_4096);
+    if(scratchpad_4096[7]=='.')
     {
-      scratchpad[7] = ' ';
+      scratchpad_4096[7] = ' ';
     }
-    scratchpad[8] = 0;
-    fprintf(outputfile, "%s", scratchpad);
+    scratchpad_4096[8] = 0;
+    fprintf(outputfile, "%s", scratchpad_4096);
   }
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
@@ -849,20 +849,20 @@ void UI_ExportFilteredSignalsWindow::StartExport()
   {
     if((((int)(edfhdr->edfparam[signalslist[i]].phys_max * signalcomp[i]->polarity)) < -9999999) && (signalcomp[i]->polarity == -1))
     {
-      snprintf(str, 1024,
+      snprintf(str1_1024, 1024,
                "signal %i has been set to \"inverted\" but the physical maximum field has no free space left to write the minus sign",
                i + 1);
-      QMessageBox::critical(myobjectDialog, "Error", str);
+      QMessageBox::critical(myobjectDialog, "Error", str1_1024);
       goto END_4;
     }
-    snprintf(scratchpad, 256, "%f", edfhdr->edfparam[signalslist[i]].phys_max * signalcomp[i]->polarity);
-    convert_trailing_zeros_to_spaces(scratchpad);
-    if(scratchpad[7]=='.')
+    snprintf(scratchpad_4096, 256, "%f", edfhdr->edfparam[signalslist[i]].phys_max * signalcomp[i]->polarity);
+    convert_trailing_zeros_to_spaces(scratchpad_4096);
+    if(scratchpad_4096[7]=='.')
     {
-      scratchpad[7] = ' ';
+      scratchpad_4096[7] = ' ';
     }
-    scratchpad[8] = 0;
-    fprintf(outputfile, "%s", scratchpad);
+    scratchpad_4096[8] = 0;
+    fprintf(outputfile, "%s", scratchpad_4096);
   }
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
@@ -896,11 +896,11 @@ void UI_ExportFilteredSignalsWindow::StartExport()
   {
 //    fprintf(outputfile, "%s", edfhdr->edfparam[signalslist[i]].prefilter);
 
-    strlcpy(scratchpad, edfhdr->edfparam[signalslist[i]].prefilter, 4096);
-    strlcat(scratchpad, "                                                                                ", 4096);
-    for(p = strlen(scratchpad) - 1; p>=0; p--)
+    strlcpy(scratchpad_4096, edfhdr->edfparam[signalslist[i]].prefilter, 4096);
+    strlcat(scratchpad_4096, "                                                                                ", 4096);
+    for(p = strlen(scratchpad_4096) - 1; p>=0; p--)
     {
-      if(scratchpad[p]!=' ')  break;
+      if(scratchpad_4096[p]!=' ')  break;
     }
     p++;
     if(p) p++;
@@ -909,25 +909,25 @@ void UI_ExportFilteredSignalsWindow::StartExport()
     {
       if(signalcomp[i]->filter[j]->is_LPF == 1)
       {
-        p += snprintf(scratchpad + p, 4096 - p, "LP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "LP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
       }
 
       if(signalcomp[i]->filter[j]->is_LPF == 0)
       {
-        p += snprintf(scratchpad + p, 4096 - p, "HP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "HP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
       }
 
       for(k=(p-1); k>0; k--)
       {
-        if(scratchpad[k]!='0')  break;
+        if(scratchpad_4096[k]!='0')  break;
       }
 
-      if(scratchpad[k]=='.')  scratchpad[k] = 0;
-      else  scratchpad[k+1] = 0;
+      if(scratchpad_4096[k]=='.')  scratchpad_4096[k] = 0;
+      else  scratchpad_4096[k+1] = 0;
 
-      strlcat(scratchpad, "Hz ", 4096);
+      strlcat(scratchpad_4096, "Hz ", 4096);
 
-      p = strlen(scratchpad);
+      p = strlen(scratchpad_4096);
 
       if(p>80)  break;
     }
@@ -942,55 +942,55 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
       if(type == 0)
       {
-        p += snprintf(scratchpad + p, 4096 -p, "HP:%f", frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 -p, "HP:%f", frequency);
       }
 
       if(type == 1)
       {
-        p += snprintf(scratchpad + p, 4096 -p, "LP:%f", frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 -p, "LP:%f", frequency);
       }
 
       if(type == 2)
       {
-        p += snprintf(scratchpad + p, 4096 -p, "N:%f", frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 -p, "N:%f", frequency);
       }
 
       if(type == 3)
       {
-        p += snprintf(scratchpad + p, 4096 -p, "BP:%f", frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 -p, "BP:%f", frequency);
       }
 
       if(type == 4)
       {
-        p += snprintf(scratchpad + p, 4096 -p, "BS:%f", frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 -p, "BS:%f", frequency);
       }
 
       for(k=(p-1); k>0; k--)
       {
-        if(scratchpad[k]!='0')  break;
+        if(scratchpad_4096[k]!='0')  break;
       }
 
-      if(scratchpad[k]=='.')  scratchpad[k] = 0;
-      else  scratchpad[k+1] = 0;
+      if(scratchpad_4096[k]=='.')  scratchpad_4096[k] = 0;
+      else  scratchpad_4096[k+1] = 0;
 
-      p = strlen(scratchpad);
+      p = strlen(scratchpad_4096);
 
       if((type == 3) || (type == 4))
       {
-        p += snprintf(scratchpad + p, 4096 -p, "-%f", frequency2);
+        p += snprintf(scratchpad_4096 + p, 4096 -p, "-%f", frequency2);
 
         for(k=(p-1); k>0; k--)
         {
-          if(scratchpad[k]!='0')  break;
+          if(scratchpad_4096[k]!='0')  break;
         }
 
-        if(scratchpad[k]=='.')  scratchpad[k] = 0;
-        else  scratchpad[k+1] = 0;
+        if(scratchpad_4096[k]=='.')  scratchpad_4096[k] = 0;
+        else  scratchpad_4096[k+1] = 0;
       }
 
-      strlcat(scratchpad, "Hz ", 4096);
+      strlcat(scratchpad_4096, "Hz ", 4096);
 
-      p = strlen(scratchpad);
+      p = strlen(scratchpad_4096);
 
       if(p>80)  break;
     }
@@ -999,40 +999,40 @@ void UI_ExportFilteredSignalsWindow::StartExport()
     {
       if(signalcomp[i]->ravg_filter_type[j] == 0)
       {
-        p += snprintf(scratchpad + p, 4096 - p, "HP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "HP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
       }
 
       if(signalcomp[i]->ravg_filter_type[j] == 1)
       {
-        p += snprintf(scratchpad + p, 4096 - p, "LP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "LP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
       }
 
-      p = strlen(scratchpad);
+      p = strlen(scratchpad_4096);
 
       if(p>80)  break;
     }
 
     for(j=0; j<signalcomp[i]->fir_filter_cnt; j++)
     {
-      p += snprintf(scratchpad + p, 4096 - p, "FIR ");
+      p += snprintf(scratchpad_4096 + p, 4096 - p, "FIR ");
     }
 
     if(signalcomp[i]->ecg_filter != NULL)
     {
-      p += snprintf(scratchpad + p, 4096 - p, "ECG:HR ");
+      p += snprintf(scratchpad_4096 + p, 4096 - p, "ECG:HR ");
     }
 
     if(signalcomp[i]->zratio_filter != NULL)
     {
-      p += snprintf(scratchpad + p, 4096 - p, "Z-ratio ");
+      p += snprintf(scratchpad_4096 + p, 4096 - p, "Z-ratio ");
     }
 
     for(;p<81; p++)
     {
-      scratchpad[p] = ' ';
+      scratchpad_4096[p] = ' ';
     }
 
-    if(fwrite(scratchpad, 80, 1, outputfile)!=1)
+    if(fwrite(scratchpad_4096, 80, 1, outputfile)!=1)
     {
       QMessageBox::critical(myobjectDialog, "Error", "Write error (2).");
       goto END_4;
@@ -1179,13 +1179,13 @@ void UI_ExportFilteredSignalsWindow::StartExport()
 
           annot_ptr = edfplus_annotation_get_item(&new_annot_list, annot_cnt++);
 
-          len = snprintf(scratchpad, 256, "%+i.%07i",
+          len = snprintf(scratchpad_4096, 256, "%+i.%07i",
           (int)(annot_ptr->onset / TIME_FIXP_SCALING),
           (int)(annot_ptr->onset % TIME_FIXP_SCALING));
 
           for(j=0; j<7; j++)
           {
-            if(scratchpad[len - j - 1] != '0')
+            if(scratchpad_4096[len - j - 1] != '0')
             {
               break;
             }
@@ -1201,7 +1201,7 @@ void UI_ExportFilteredSignalsWindow::StartExport()
             }
           }
 
-          if(fwrite(scratchpad, len, 1, outputfile) != 1)
+          if(fwrite(scratchpad_4096, len, 1, outputfile) != 1)
           {
             progress.reset();
             QMessageBox::critical(myobjectDialog, "Error", "Write error (5).");
@@ -1286,8 +1286,8 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
       order,
       n_taps;
 
-  char txtbuf[2048]="",
-       str[64]="";
+  char txtbuf_2048[2048]="",
+       str1_64[64]="";
 
   double frequency,
          frequency2,
@@ -1308,31 +1308,31 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
   {
     if(mainwindow->signalcomp[i]->edfhdr != edfhdr)  continue;
 
-    txtbuf[0] = 0;
+    txtbuf_2048[0] = 0;
 
     if(mainwindow->signalcomp[i]->alias[0] != 0)
     {
-      strlcpy(txtbuf, "alias: ", 2048);
-      strlcat(txtbuf, mainwindow->signalcomp[i]->alias, 2048);
-      strlcat(txtbuf, "   ", 2048);
+      strlcpy(txtbuf_2048, "alias: ", 2048);
+      strlcat(txtbuf_2048, mainwindow->signalcomp[i]->alias, 2048);
+      strlcat(txtbuf_2048, "   ", 2048);
     }
 
     for(j=0; j<mainwindow->signalcomp[i]->num_of_signals; j++)
     {
-      snprintf(str, 64, "%+f", mainwindow->signalcomp[i]->factor[j]);
+      snprintf(str1_64, 64, "%+f", mainwindow->signalcomp[i]->factor[j]);
 
-      remove_trailing_zeros(str);
+      remove_trailing_zeros(str1_64);
 
-      snprintf(txtbuf + strlen(txtbuf), 2048 - strlen(txtbuf), "%sx %s",
-              str,
+      snprintf(txtbuf_2048 + strlen(txtbuf_2048), 2048 - strlen(txtbuf_2048), "%sx %s",
+              str1_64,
               mainwindow->signalcomp[i]->edfhdr->edfparam[mainwindow->signalcomp[i]->edfsignal[j]].label);
 
-      remove_trailing_spaces(txtbuf);
+      remove_trailing_spaces(txtbuf_2048);
 
-      strlcat(txtbuf, "   ", 2048);
+      strlcat(txtbuf_2048, "   ", 2048);
     }
 
-    signalItem = new QStandardItem(txtbuf);
+    signalItem = new QStandardItem(txtbuf_2048);
 
     switch(mainwindow->signalcomp[i]->color)
     {
@@ -1401,47 +1401,47 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
 
     if(mainwindow->signalcomp[i]->spike_filter)
     {
-      snprintf(txtbuf, 2048, "Spike: %.8f", mainwindow->signalcomp[i]->spike_filter_velocity);
+      snprintf(txtbuf_2048, 2048, "Spike: %.8f", mainwindow->signalcomp[i]->spike_filter_velocity);
 
-      remove_trailing_zeros(txtbuf);
+      remove_trailing_zeros(txtbuf_2048);
 
-      snprintf(txtbuf + strlen(txtbuf), 2048 - strlen(txtbuf), " %s/0.5mSec.  Hold-off: %i mSec.",
+      snprintf(txtbuf_2048 + strlen(txtbuf_2048), 2048 - strlen(txtbuf_2048), " %s/0.5mSec.  Hold-off: %i mSec.",
               mainwindow->signalcomp[i]->physdimension,
               mainwindow->signalcomp[i]->spike_filter_holdoff);
 
-      filterItem->appendRow(new QStandardItem(txtbuf));
+      filterItem->appendRow(new QStandardItem(txtbuf_2048));
     }
 
     for(j=0; j<mainwindow->signalcomp[i]->filter_cnt; j++)
     {
       if(mainwindow->signalcomp[i]->filter[j]->is_LPF == 1)
       {
-        snprintf(txtbuf, 2048, "LPF: %fHz", mainwindow->signalcomp[i]->filter[j]->cutoff_frequency);
+        snprintf(txtbuf_2048, 2048, "LPF: %fHz", mainwindow->signalcomp[i]->filter[j]->cutoff_frequency);
       }
 
       if(mainwindow->signalcomp[i]->filter[j]->is_LPF == 0)
       {
-        snprintf(txtbuf, 2048, "HPF: %fHz", mainwindow->signalcomp[i]->filter[j]->cutoff_frequency);
+        snprintf(txtbuf_2048, 2048, "HPF: %fHz", mainwindow->signalcomp[i]->filter[j]->cutoff_frequency);
       }
 
-      remove_trailing_zeros(txtbuf);
+      remove_trailing_zeros(txtbuf_2048);
 
-      filterItem->appendRow(new QStandardItem(txtbuf));
+      filterItem->appendRow(new QStandardItem(txtbuf_2048));
     }
 
     for(j=0; j<mainwindow->signalcomp[i]->ravg_filter_cnt; j++)
     {
       if(mainwindow->signalcomp[i]->ravg_filter_type[j] == 0)
       {
-        snprintf(txtbuf, 2048, "highpass moving average %i smpls", mainwindow->signalcomp[i]->ravg_filter[j]->size);
+        snprintf(txtbuf_2048, 2048, "highpass moving average %i smpls", mainwindow->signalcomp[i]->ravg_filter[j]->size);
       }
 
       if(mainwindow->signalcomp[i]->ravg_filter_type[j] == 1)
       {
-        snprintf(txtbuf, 2048, "lowpass moving average %i smpls", mainwindow->signalcomp[i]->ravg_filter[j]->size);
+        snprintf(txtbuf_2048, 2048, "lowpass moving average %i smpls", mainwindow->signalcomp[i]->ravg_filter[j]->size);
       }
 
-      filterItem->appendRow(new QStandardItem(txtbuf));
+      filterItem->appendRow(new QStandardItem(txtbuf_2048));
     }
 
     for(j=0; j<mainwindow->signalcomp[i]->fidfilter_cnt; j++)
@@ -1462,17 +1462,17 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
       {
         if(model == 0)
         {
-          snprintf(txtbuf, 2048, "highpass Butterworth %fHz %ith order", frequency, order);
+          snprintf(txtbuf_2048, 2048, "highpass Butterworth %fHz %ith order", frequency, order);
         }
 
         if(model == 1)
         {
-          snprintf(txtbuf, 2048, "highpass Chebyshev %fHz %ith order %fdB ripple", frequency, order, ripple);
+          snprintf(txtbuf_2048, 2048, "highpass Chebyshev %fHz %ith order %fdB ripple", frequency, order, ripple);
         }
 
         if(model == 2)
         {
-          snprintf(txtbuf, 2048, "highpass Bessel %fHz %ith order", frequency, order);
+          snprintf(txtbuf_2048, 2048, "highpass Bessel %fHz %ith order", frequency, order);
         }
       }
 
@@ -1480,40 +1480,40 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
       {
         if(model == 0)
         {
-          snprintf(txtbuf, 2048, "lowpass Butterworth %fHz %ith order", frequency, order);
+          snprintf(txtbuf_2048, 2048, "lowpass Butterworth %fHz %ith order", frequency, order);
         }
 
         if(model == 1)
         {
-          snprintf(txtbuf, 2048, "lowpass Chebyshev %fHz %ith order %fdB ripple", frequency, order, ripple);
+          snprintf(txtbuf_2048, 2048, "lowpass Chebyshev %fHz %ith order %fdB ripple", frequency, order, ripple);
         }
 
         if(model == 2)
         {
-          snprintf(txtbuf, 2048, "lowpass Bessel %fHz %ith order", frequency, order);
+          snprintf(txtbuf_2048, 2048, "lowpass Bessel %fHz %ith order", frequency, order);
         }
       }
 
       if(type == 2)
       {
-        snprintf(txtbuf, 2048, "notch %fHz Q-factor %i", frequency, order);
+        snprintf(txtbuf_2048, 2048, "notch %fHz Q-factor %i", frequency, order);
       }
 
       if(type == 3)
       {
         if(model == 0)
         {
-          snprintf(txtbuf, 2048, "bandpass Butterworth %f-%fHz %ith order", frequency, frequency2, order);
+          snprintf(txtbuf_2048, 2048, "bandpass Butterworth %f-%fHz %ith order", frequency, frequency2, order);
         }
 
         if(model == 1)
         {
-          snprintf(txtbuf, 2048, "bandpass Chebyshev %f-%fHz %ith order %fdB ripple", frequency, frequency2, order, ripple);
+          snprintf(txtbuf_2048, 2048, "bandpass Chebyshev %f-%fHz %ith order %fdB ripple", frequency, frequency2, order, ripple);
         }
 
         if(model == 2)
         {
-          snprintf(txtbuf, 2048, "bandpass Bessel %f-%fHz %ith order", frequency, frequency2, order);
+          snprintf(txtbuf_2048, 2048, "bandpass Bessel %f-%fHz %ith order", frequency, frequency2, order);
         }
       }
 
@@ -1521,23 +1521,23 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
       {
         if(model == 0)
         {
-          snprintf(txtbuf, 2048, "bandstop Butterworth %f-%fHz %ith order", frequency, frequency2, order);
+          snprintf(txtbuf_2048, 2048, "bandstop Butterworth %f-%fHz %ith order", frequency, frequency2, order);
         }
 
         if(model == 1)
         {
-          snprintf(txtbuf, 2048, "bandstop Chebyshev %f-%fHz %ith order %fdB ripple", frequency, frequency2, order, ripple);
+          snprintf(txtbuf_2048, 2048, "bandstop Chebyshev %f-%fHz %ith order %fdB ripple", frequency, frequency2, order, ripple);
         }
 
         if(model == 2)
         {
-          snprintf(txtbuf, 2048, "bandstop Bessel %f-%fHz %ith order", frequency, frequency2, order);
+          snprintf(txtbuf_2048, 2048, "bandstop Bessel %f-%fHz %ith order", frequency, frequency2, order);
         }
       }
 
-      remove_trailing_zeros(txtbuf);
+      remove_trailing_zeros(txtbuf_2048);
 
-      filterItem->appendRow(new QStandardItem(txtbuf));
+      filterItem->appendRow(new QStandardItem(txtbuf_2048));
     }
 
     for(j=0; j<mainwindow->signalcomp[i]->fir_filter_cnt; j++)
@@ -1546,9 +1546,9 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
 
       if(!strlen(mainwindow->signalcomp[i]->fir_filter[j]->label))
       {
-        snprintf(txtbuf, 2048, "Custom FIR filter with %i taps", n_taps);
+        snprintf(txtbuf_2048, 2048, "Custom FIR filter with %i taps", n_taps);
 
-        firfilterItem = new QStandardItem(txtbuf);
+        firfilterItem = new QStandardItem(txtbuf_2048);
       }
       else
       {
@@ -1559,9 +1559,9 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
 
       for(k=0; k<n_taps; k++)
       {
-        snprintf(txtbuf, 2048, " %.24f ", fir_filter_tap(k, mainwindow->signalcomp[i]->fir_filter[j]));
+        snprintf(txtbuf_2048, 2048, " %.24f ", fir_filter_tap(k, mainwindow->signalcomp[i]->fir_filter[j]));
 
-        firfilterItem->appendRow(new QStandardItem(txtbuf));
+        firfilterItem->appendRow(new QStandardItem(txtbuf_2048));
       }
     }
 
@@ -1586,24 +1586,24 @@ void UI_ExportFilteredSignalsWindow::populate_tree_view()
 
     if(mainwindow->signalcomp[i]->ecg_filter != NULL)
     {
-      snprintf(txtbuf, 2048, "ECG heartrate detection");
+      snprintf(txtbuf_2048, 2048, "ECG heartrate detection");
 
-      filterItem->appendRow(new QStandardItem(txtbuf));
+      filterItem->appendRow(new QStandardItem(txtbuf_2048));
     }
 
     if(mainwindow->signalcomp[i]->plif_ecg_filter != NULL)
     {
-      snprintf(txtbuf, 2048, "Powerline interference removal: %iHz",
+      snprintf(txtbuf_2048, 2048, "Powerline interference removal: %iHz",
               (mainwindow->signalcomp[i]->plif_ecg_subtract_filter_plf * 10) + 50);
 
-      filterItem->appendRow(new QStandardItem(txtbuf));
+      filterItem->appendRow(new QStandardItem(txtbuf_2048));
     }
 
     if(mainwindow->signalcomp[i]->zratio_filter != NULL)
     {
-      snprintf(txtbuf, 2048, "Z-ratio  cross-over frequency is %.1f Hz", mainwindow->signalcomp[i]->zratio_crossoverfreq);
+      snprintf(txtbuf_2048, 2048, "Z-ratio  cross-over frequency is %.1f Hz", mainwindow->signalcomp[i]->zratio_crossoverfreq);
 
-      filterItem->appendRow(new QStandardItem(txtbuf));
+      filterItem->appendRow(new QStandardItem(txtbuf_2048));
     }
   }
 

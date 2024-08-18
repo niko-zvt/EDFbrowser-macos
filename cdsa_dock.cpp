@@ -31,7 +31,7 @@
 
 UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, cdsa_dock_param_t par)
 {
-  char str[1024]={""};
+  char str1_1024[1024]={""};
 
   QLabel *cdsa_label,
          *ruler_label,
@@ -52,7 +52,7 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, cdsa_dock_param_t par)
 
   sigcomp_uid = param.signalcomp->uid;
 
-  snprintf(str, 1024, "Color Density Spectral Array   %s", param.signalcomp->signallabel);
+  snprintf(str1_1024, 1024, "Color Density Spectral Array   %s", param.signalcomp->signallabel);
 
   frame = new QFrame;
   frame->setFrameStyle(QFrame::NoFrame);
@@ -106,7 +106,7 @@ UI_cdsa_dock::UI_cdsa_dock(QWidget *w_parent, cdsa_dock_param_t par)
   grid_layout->addWidget(color_indic, 0, 2);
   grid_layout->addWidget(color_indic_label, 1, 2);
 
-  cdsa_dock = new QDockWidget(str, mainwindow);
+  cdsa_dock = new QDockWidget(str1_1024, mainwindow);
   cdsa_dock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
   cdsa_dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
   cdsa_dock->setAttribute(Qt::WA_DeleteOnClose);
@@ -309,7 +309,7 @@ void simple_tracking_indicator::paintEvent(QPaintEvent *)
 {
   int i, w, h, pos_x, step=0;
 
-  char str[128]={""};
+  char str1_128[128]={""};
 
   w = width();
   h = height();
@@ -346,9 +346,9 @@ void simple_tracking_indicator::paintEvent(QPaintEvent *)
 
       painter.drawLine(pos_x, 0, pos_x, h);
 
-      snprintf(str, 128, "%ih", i);
+      snprintf(str1_128, 128, "%ih", i);
 
-      painter.drawText(pos_x + 4, h - 2, str);
+      painter.drawText(pos_x + 4, h - 2, str1_128);
     }
   }
 
@@ -445,7 +445,7 @@ void simple_color_index::paintEvent(QPaintEvent *)
 
   double color_idx_per_pixel;
 
-  char str[32]={""};
+  char str1_32[32]={""};
 
   w = width();
   h = height();
@@ -515,20 +515,20 @@ void simple_color_index::paintEvent(QPaintEvent *)
 
   if(log)
   {
-    snprintf(str, 32, "%i", max_pwr);
+    snprintf(str1_32, 32, "%i", max_pwr);
 
-    painter.drawText(10 + (15 * w_scaling), 15 * h_scaling, str);
+    painter.drawText(10 + (15 * w_scaling), 15 * h_scaling, str1_32);
 
     for(i=1; i<7; i++)
     {
-      snprintf(str, 32, "%.1f", (((max_pwr - min_pwr) / 7.0) * i) + min_pwr);
+      snprintf(str1_32, 32, "%.1f", (((max_pwr - min_pwr) / 7.0) * i) + min_pwr);
 
-      painter.drawText(10 + (15 * w_scaling), h - ((4.0 * h_scaling) + (i * ((h - (17.0 * h_scaling)) / 7.0))), str);
+      painter.drawText(10 + (15 * w_scaling), h - ((4.0 * h_scaling) + (i * ((h - (17.0 * h_scaling)) / 7.0))), str1_32);
     }
 
-    snprintf(str, 32, "%i", min_pwr);
+    snprintf(str1_32, 32, "%i", min_pwr);
 
-    painter.drawText(10 + (15 * w_scaling), h - (5 * h_scaling), str);
+    painter.drawText(10 + (15 * w_scaling), h - (5 * h_scaling), str1_32);
   }
   else
   {
@@ -538,18 +538,18 @@ void simple_color_index::paintEvent(QPaintEvent *)
     {
       for(i=0; i<8; i++)
       {
-        snprintf(str, 32, "%.1e", ((max_volt * max_volt) / 7.0) * i);
+        snprintf(str1_32, 32, "%.1e", ((max_volt * max_volt) / 7.0) * i);
 
-        painter.drawText(10 + (15 * w_scaling), h - ((4.0 * h_scaling) + (i * ((h - (17.0 * h_scaling)) / 7.0))), str);
+        painter.drawText(10 + (15 * w_scaling), h - ((4.0 * h_scaling) + (i * ((h - (17.0 * h_scaling)) / 7.0))), str1_32);
       }
     }
     else
     {
       for(i=0; i<8; i++)
       {
-        snprintf(str, 32, "%.1e", (max_volt / 7.0) * i);
+        snprintf(str1_32, 32, "%.1e", (max_volt / 7.0) * i);
 
-        painter.drawText(10 + (15 * w_scaling), h - ((4.0 * h_scaling) + (i * ((h - (17.0 * h_scaling)) / 7.0))), str);
+        painter.drawText(10 + (15 * w_scaling), h - ((4.0 * h_scaling) + (i * ((h - (17.0 * h_scaling)) / 7.0))), str1_32);
       }
     }
   }
@@ -621,7 +621,7 @@ void simple_ruler_indicator::paintEvent(QPaintEvent *)
 
   double pixel_per_unit;
 
-  char str[64]={""};
+  char str1_64[64]={""};
 
   w = width();
   h = height();
@@ -687,9 +687,9 @@ void simple_ruler_indicator::paintEvent(QPaintEvent *)
     {
       painter.drawLine(w - 4, h - (int)((pixel_per_unit * i) + 0.5), w - 13, h - (int)((pixel_per_unit * i) + 0.5));
 
-      snprintf(str, 64, "%i", min + i);
+      snprintf(str1_64, 64, "%i", min + i);
 
-      painter.drawText(QRectF(2, h - (int)((pixel_per_unit * i) + 0.5) - (9 * h_scaling), 40 * w_scaling, 25 * h_scaling), Qt::AlignRight | Qt::AlignHCenter, str);
+      painter.drawText(QRectF(2, h - (int)((pixel_per_unit * i) + 0.5) - (9 * h_scaling), 40 * w_scaling, 25 * h_scaling), Qt::AlignRight | Qt::AlignHCenter, str1_64);
     }
   }
 }

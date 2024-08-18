@@ -65,9 +65,9 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
             smpls_preamble[MAXSIGNALS];
 
   char path[MAX_PATH_LENGTH]={""},
-       scratchpad[4096]={""},
-       datrecduration[32]={""},
-       str[1024]={""},
+       scratchpad_4096[4096]={""},
+       datrecduration_32[32]={""},
+       str1_1024[1024]={""},
        *viewbuf=NULL;
 
   double frequency,
@@ -158,7 +158,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
   }
 
   fseeko(signalcomp[n]->edfhdr->file_hdl, 244LL, SEEK_SET);
-  if(fread(datrecduration, 8, 1, signalcomp[n]->edfhdr->file_hdl)!=1)
+  if(fread(datrecduration_32, 8, 1, signalcomp[n]->edfhdr->file_hdl)!=1)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading from inputfile.");
     messagewindow.exec();
@@ -239,11 +239,11 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   if(integer_sf)
   {
-    snprintf(datrecduration, 32, "%f", 1.0 / smpl_rate_divider);
+    snprintf(datrecduration_32, 32, "%f", 1.0 / smpl_rate_divider);
 
-    remove_trailing_zeros(datrecduration);
+    remove_trailing_zeros(datrecduration_32);
 
-    strlcat(datrecduration, "        ", 32);
+    strlcat(datrecduration_32, "        ", 32);
 
     duration = TIME_FIXP_SCALING / smpl_rate_divider;
 
@@ -325,7 +325,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     fprintf(outputfile, "\xff" "BIOSEMI");
     if(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->edfplus || mainwindow->edfheaderlist[mainwindow->sel_viewtime]->bdfplus)
     {
-      if(fread(scratchpad, 80, 1, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->file_hdl)!=1)
+      if(fread(scratchpad_4096, 80, 1, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->file_hdl)!=1)
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading from inputfile.");
         messagewindow.exec();
@@ -333,7 +333,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
         return;
       }
 
-      if(fwrite(scratchpad, 80, 1, outputfile)!=1)
+      if(fwrite(scratchpad_4096, 80, 1, outputfile)!=1)
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
         messagewindow.exec();
@@ -344,7 +344,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     else
     {
       fprintf(outputfile, "X X X X ");
-      if(fread(scratchpad, 80, 1, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->file_hdl)!=1)
+      if(fread(scratchpad_4096, 80, 1, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->file_hdl)!=1)
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading from inputfile.");
         messagewindow.exec();
@@ -352,7 +352,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
         return;
       }
 
-      if(fwrite(scratchpad, 72, 1, outputfile)!=1)
+      if(fwrite(scratchpad_4096, 72, 1, outputfile)!=1)
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
         messagewindow.exec();
@@ -397,7 +397,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
     if(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->edfplus || mainwindow->edfheaderlist[mainwindow->sel_viewtime]->bdfplus)
     {
-      if(fread(scratchpad, 80, 1, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->file_hdl)!=1)
+      if(fread(scratchpad_4096, 80, 1, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->file_hdl)!=1)
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading from inputfile.");
         messagewindow.exec();
@@ -405,9 +405,9 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
         return;
       }
 
-      if(scratchpad[10]=='X')
+      if(scratchpad_4096[10]=='X')
       {
-        if(fwrite(scratchpad + 12, 58, 1, outputfile)!=1)
+        if(fwrite(scratchpad_4096 + 12, 58, 1, outputfile)!=1)
         {
           QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
           messagewindow.exec();
@@ -417,7 +417,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
       }
       else
       {
-        if(fwrite(scratchpad + 22, 58, 1, outputfile)!=1)
+        if(fwrite(scratchpad_4096 + 22, 58, 1, outputfile)!=1)
         {
           QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
           messagewindow.exec();
@@ -430,7 +430,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     {
       fprintf(outputfile, "X X X ");
 
-      if(fread(scratchpad, 80, 1, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->file_hdl)!=1)
+      if(fread(scratchpad_4096, 80, 1, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->file_hdl)!=1)
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading from inputfile.");
         messagewindow.exec();
@@ -438,7 +438,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
         return;
       }
 
-      if(fwrite(scratchpad + 28, 52, 1, outputfile)!=1)
+      if(fwrite(scratchpad_4096 + 28, 52, 1, outputfile)!=1)
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
         messagewindow.exec();
@@ -449,7 +449,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
   }
   else
   {
-    if(fread(scratchpad, 160, 1, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->file_hdl)!=1)
+    if(fread(scratchpad_4096, 160, 1, mainwindow->edfheaderlist[mainwindow->sel_viewtime]->file_hdl)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading from inputfile.");
       messagewindow.exec();
@@ -459,7 +459,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
     fprintf(outputfile, "\xff" "BIOSEMI");
 
-    if(fwrite(scratchpad, 160, 1, outputfile)!=1)
+    if(fwrite(scratchpad_4096, 160, 1, outputfile)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
       messagewindow.exec();
@@ -504,7 +504,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   fprintf(outputfile, "%-8i", records);
 
-  if(fwrite(datrecduration, 8, 1, outputfile)!=1)
+  if(fwrite(datrecduration_32, 8, 1, outputfile)!=1)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
     messagewindow.exec();
@@ -516,9 +516,9 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   for(i=0; i<signalcomps; i++)
   {
-    strlcpy(scratchpad, signalcomp[i]->signallabel, 4096);
-    strlcat(scratchpad, "                ", 4096);
-    if(fwrite(scratchpad, 16, 1, outputfile)!=1)
+    strlcpy(scratchpad_4096, signalcomp[i]->signallabel, 4096);
+    strlcat(scratchpad_4096, "                ", 4096);
+    if(fwrite(scratchpad_4096, 16, 1, outputfile)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
       messagewindow.exec();
@@ -556,9 +556,9 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   for(i=0; i<signalcomps; i++)
   {
-    strlcpy(scratchpad, signalcomp[i]->physdimension, 4096);
-    strlcat(scratchpad, "        ", 4096);
-    if(fwrite(scratchpad, 8, 1, outputfile)!=1)
+    strlcpy(scratchpad_4096, signalcomp[i]->physdimension, 4096);
+    strlcat(scratchpad_4096, "        ", 4096);
+    if(fwrite(scratchpad_4096, 8, 1, outputfile)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
       messagewindow.exec();
@@ -577,7 +577,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     if((signalcomp[i]->ecg_filter == NULL) && (signalcomp[i]->zratio_filter == NULL))
     {
       fseeko(signalcomp[i]->edfhdr->file_hdl, (long long)((signalcomp[i]->edfsignal[0] * 8) + (104 * signalcomp[i]->edfhdr->edfsignals) + 256), SEEK_SET);
-      if(fread(scratchpad, 8, 1, signalcomp[i]->edfhdr->file_hdl)!=1)
+      if(fread(scratchpad_4096, 8, 1, signalcomp[i]->edfhdr->file_hdl)!=1)
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading from inputfile.");
         messagewindow.exec();
@@ -586,32 +586,32 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
       }
       if(signalcomp[i]->polarity == -1)
       {
-        if(scratchpad[0] == '+')
+        if(scratchpad_4096[0] == '+')
         {
-          scratchpad[0] = '-';
+          scratchpad_4096[0] = '-';
         }
-        else if(scratchpad[0] == '-')
+        else if(scratchpad_4096[0] == '-')
           {
             for(j=0; j<7; j++)
             {
-              scratchpad[j] = scratchpad[j+1];
+              scratchpad_4096[j] = scratchpad_4096[j+1];
             }
-            scratchpad[7] = ' ';
+            scratchpad_4096[7] = ' ';
           }
           else
           {
-            if(scratchpad[7] != ' ')
+            if(scratchpad_4096[7] != ' ')
             {
               for(j=0; j<8; j++)
               {
-                if(scratchpad[j] == '.')  break;
+                if(scratchpad_4096[j] == '.')  break;
               }
               if(j == 8)
               {
-                snprintf(str, 1024,
+                snprintf(str1_1024, 1024,
                          "signal %i has been set to \"inverted\" but the physical minimum field has no free space left to write the minus sign",
                          i + 1);
-                QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+                QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_1024);
                 messagewindow.exec();
                 fclose(outputfile);
                 return;
@@ -619,12 +619,12 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
             }
             for(j=7; j>0; j--)
             {
-              scratchpad[j] = scratchpad[j-1];
+              scratchpad_4096[j] = scratchpad_4096[j-1];
             }
-            scratchpad[0] = '-';
+            scratchpad_4096[0] = '-';
           }
       }
-      if(fwrite(scratchpad, 8, 1, outputfile)!=1)
+      if(fwrite(scratchpad_4096, 8, 1, outputfile)!=1)
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
         messagewindow.exec();
@@ -672,7 +672,7 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     if((signalcomp[i]->ecg_filter == NULL) && (signalcomp[i]->zratio_filter == NULL))
     {
       fseeko(signalcomp[i]->edfhdr->file_hdl, (long long)((signalcomp[i]->edfsignal[0] * 8) + (112 * signalcomp[i]->edfhdr->edfsignals) + 256), SEEK_SET);
-      if(fread(scratchpad, 8, 1, signalcomp[i]->edfhdr->file_hdl)!=1)
+      if(fread(scratchpad_4096, 8, 1, signalcomp[i]->edfhdr->file_hdl)!=1)
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading from inputfile.");
         messagewindow.exec();
@@ -681,32 +681,32 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
       }
       if(signalcomp[i]->polarity == -1)
       {
-        if(scratchpad[0] == '+')
+        if(scratchpad_4096[0] == '+')
         {
-          scratchpad[0] = '-';
+          scratchpad_4096[0] = '-';
         }
-        else if(scratchpad[0] == '-')
+        else if(scratchpad_4096[0] == '-')
           {
             for(j=0; j<7; j++)
             {
-              scratchpad[j] = scratchpad[j+1];
+              scratchpad_4096[j] = scratchpad_4096[j+1];
             }
-            scratchpad[7] = ' ';
+            scratchpad_4096[7] = ' ';
           }
           else
           {
-            if(scratchpad[7] != ' ')
+            if(scratchpad_4096[7] != ' ')
             {
               for(j=0; j<8; j++)
               {
-                if(scratchpad[j] == '.')  break;
+                if(scratchpad_4096[j] == '.')  break;
               }
               if(j == 8)
               {
-                snprintf(str, 1024,
+                snprintf(str1_1024, 1024,
                          "signal %i has been set to \"inverted\" but the physical maximum field has no free space left to write the minus sign",
                          i + 1);
-                QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+                QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_1024);
                 messagewindow.exec();
                 fclose(outputfile);
                 return;
@@ -714,12 +714,12 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
             }
             for(j=7; j>0; j--)
             {
-              scratchpad[j] = scratchpad[j-1];
+              scratchpad_4096[j] = scratchpad_4096[j-1];
             }
-            scratchpad[0] = '-';
+            scratchpad_4096[0] = '-';
           }
       }
-      if(fwrite(scratchpad, 8, 1, outputfile)!=1)
+      if(fwrite(scratchpad_4096, 8, 1, outputfile)!=1)
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
         messagewindow.exec();
@@ -833,53 +833,53 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
   for(i=0; i<signalcomps; i++)
   {
-    strlcpy(scratchpad, signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].prefilter, 4096);
-    strlcat(scratchpad, "                                                                                ", 4096);
-    for(p = strlen(scratchpad) - 1; p>=0; p--)
+    strlcpy(scratchpad_4096, signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[0]].prefilter, 4096);
+    strlcat(scratchpad_4096, "                                                                                ", 4096);
+    for(p = strlen(scratchpad_4096) - 1; p>=0; p--)
     {
-      if(scratchpad[p]!=' ')  break;
+      if(scratchpad_4096[p]!=' ')  break;
     }
     p++;
     if(p) p++;
 
     if(signalcomp[i]->spike_filter)
     {
-      p += snprintf(scratchpad + p, 4096 - p, "Spike:%f", signalcomp[i]->spike_filter->velocity);
+      p += snprintf(scratchpad_4096 + p, 4096 - p, "Spike:%f", signalcomp[i]->spike_filter->velocity);
 
       for(k=(p-1); k>0; k--)
       {
-        if(scratchpad[k]!='0')  break;
+        if(scratchpad_4096[k]!='0')  break;
       }
 
-      if(scratchpad[k]=='.')  scratchpad[k] = 0;
-      else  scratchpad[k+1] = 0;
+      if(scratchpad_4096[k]=='.')  scratchpad_4096[k] = 0;
+      else  scratchpad_4096[k+1] = 0;
 
-      p = strlen(scratchpad);
+      p = strlen(scratchpad_4096);
     }
 
     for(j=0; j<signalcomp[i]->filter_cnt; j++)
     {
       if(signalcomp[i]->filter[j]->is_LPF == 1)
       {
-        p += snprintf(scratchpad + p, 4096 - p, "LP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "LP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
       }
 
       if(signalcomp[i]->filter[j]->is_LPF == 0)
       {
-        p += snprintf(scratchpad + p, 4096 - p, "HP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "HP:%f", signalcomp[i]->filter[j]->cutoff_frequency);
       }
 
       for(k=(p-1); k>0; k--)
       {
-        if(scratchpad[k]!='0')  break;
+        if(scratchpad_4096[k]!='0')  break;
       }
 
-      if(scratchpad[k]=='.')  scratchpad[k] = 0;
-      else  scratchpad[k+1] = 0;
+      if(scratchpad_4096[k]=='.')  scratchpad_4096[k] = 0;
+      else  scratchpad_4096[k+1] = 0;
 
-      strlcat(scratchpad, "Hz ", 4096);
+      strlcat(scratchpad_4096, "Hz ", 4096);
 
-      p = strlen(scratchpad);
+      p = strlen(scratchpad_4096);
 
       if(p>80)  break;
     }
@@ -894,55 +894,55 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
 
       if(type == 0)
       {
-        p += snprintf(scratchpad + p, 4096 - p, "HP:%f", frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "HP:%f", frequency);
       }
 
       if(type == 1)
       {
-        p += snprintf(scratchpad + p, 4096 - p, "LP:%f", frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "LP:%f", frequency);
       }
 
       if(type == 2)
       {
-        p += snprintf(scratchpad + p, 4096 - p, "N:%f", frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "N:%f", frequency);
       }
 
       if(type == 3)
       {
-        p += snprintf(scratchpad + p, 4096 - p, "BP:%f", frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "BP:%f", frequency);
       }
 
       if(type == 4)
       {
-        p += snprintf(scratchpad + p, 4096 - p, "BS:%f", frequency);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "BS:%f", frequency);
       }
 
       for(k=(p-1); k>0; k--)
       {
-        if(scratchpad[k]!='0')  break;
+        if(scratchpad_4096[k]!='0')  break;
       }
 
-      if(scratchpad[k]=='.')  scratchpad[k] = 0;
-      else  scratchpad[k+1] = 0;
+      if(scratchpad_4096[k]=='.')  scratchpad_4096[k] = 0;
+      else  scratchpad_4096[k+1] = 0;
 
-      p = strlen(scratchpad);
+      p = strlen(scratchpad_4096);
 
       if((type == 3) || (type == 4))
       {
-        p += snprintf(scratchpad + p, 4096 - p, "-%f", frequency2);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "-%f", frequency2);
 
         for(k=(p-1); k>0; k--)
         {
-          if(scratchpad[k]!='0')  break;
+          if(scratchpad_4096[k]!='0')  break;
         }
 
-        if(scratchpad[k]=='.')  scratchpad[k] = 0;
-        else  scratchpad[k+1] = 0;
+        if(scratchpad_4096[k]=='.')  scratchpad_4096[k] = 0;
+        else  scratchpad_4096[k+1] = 0;
       }
 
-      strlcat(scratchpad, "Hz ", 4096);
+      strlcat(scratchpad_4096, "Hz ", 4096);
 
-      p = strlen(scratchpad);
+      p = strlen(scratchpad_4096);
 
       if(p>80)  break;
     }
@@ -951,40 +951,40 @@ void print_screen_to_bdf(UI_Mainwindow *mainwindow)
     {
       if(signalcomp[i]->ravg_filter_type[j] == 0)
       {
-        p += snprintf(scratchpad + p, 4096 - p, "HP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "HP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
       }
 
       if(signalcomp[i]->ravg_filter_type[j] == 1)
       {
-        p += snprintf(scratchpad + p, 4096 - p, "LP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
+        p += snprintf(scratchpad_4096 + p, 4096 - p, "LP:%iSmpls ", signalcomp[i]->ravg_filter[j]->size);
       }
 
-      p = strlen(scratchpad);
+      p = strlen(scratchpad_4096);
 
       if(p>80)  break;
     }
 
     for(j=0; j<signalcomp[i]->fir_filter_cnt; j++)
     {
-      p += snprintf(scratchpad + p, 4096 - p, "FIR ");
+      p += snprintf(scratchpad_4096 + p, 4096 - p, "FIR ");
     }
 
     if(signalcomp[i]->ecg_filter != NULL)
     {
-      p += snprintf(scratchpad + p, 4096 - p, "ECG:HR ");
+      p += snprintf(scratchpad_4096 + p, 4096 - p, "ECG:HR ");
     }
 
     if(signalcomp[i]->zratio_filter != NULL)
     {
-      p += snprintf(scratchpad + p, 4096 - p, "Z-ratio ");
+      p += snprintf(scratchpad_4096 + p, 4096 - p, "Z-ratio ");
     }
 
     for(;p<81; p++)
     {
-      scratchpad[p] = ' ';
+      scratchpad_4096[p] = ' ';
     }
 
-    if(fwrite(scratchpad, 80, 1, outputfile)!=1)
+    if(fwrite(scratchpad_4096, 80, 1, outputfile)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while writing to outputfile.");
       messagewindow.exec();

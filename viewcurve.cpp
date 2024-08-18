@@ -1296,7 +1296,7 @@ void ViewCurve::print_to_pdf(int paper_sz)
 {
   int border_sz=500;
 
-  char path[MAX_PATH_LENGTH];
+  char path[MAX_PATH_LENGTH]={""};
 
 
   if(!mainwindow->files_open)  return;
@@ -1434,14 +1434,14 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
       maximum,
       stat_zero_crossing=0;
 
-  char *viewbuf;
+  char *viewbuf=NULL;
 
   unsigned long long s, s2, total_samples_processed;
 
   double dig_value=0,
          f_tmp=0;
 
-  sigcompblck_t **signalcomp;
+  sigcompblck_t **signalcomp=NULL;
 
   union {
           unsigned int one;

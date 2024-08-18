@@ -34,7 +34,7 @@
 
 UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, sigcompblck_t *signal_comp, int numb, struct cdsa_dock_param_struct *p_par)
 {
-  char str[1024]="";
+  char str1_1024[1024]="";
 
   myobjectDialog = NULL;
 
@@ -63,12 +63,12 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, sigcompblck_t *signal_comp, in
     return;
   }
 
-  snprintf(str, 1024, "Color Density Spectral Array   %s", signalcomp->signallabel);
+  snprintf(str1_1024, 1024, "Color Density Spectral Array   %s", signalcomp->signallabel);
 
   myobjectDialog = new QDialog;
 
   myobjectDialog->setMinimumSize(350 * mainwindow->w_scaling, 400 * mainwindow->h_scaling);
-  myobjectDialog->setWindowTitle(str);
+  myobjectDialog->setWindowTitle(str1_1024);
   myobjectDialog->setModal(true);
   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
   myobjectDialog->setSizeGripEnabled(true);
@@ -134,31 +134,31 @@ UI_cdsa_window::UI_cdsa_window(QWidget *w_parent, sigcompblck_t *signal_comp, in
   max_hz_spinbox->setValue(mainwindow->cdsa_max_hz);
   max_hz_spinbox->setToolTip("Highest frequency output (bin) of the FFT that will be used to display the CDSA");
 
-  strlcpy(str, " ", 128);
-  strlcat(str, signalcomp->edfparam_0->physdimension, 128);
-  remove_trailing_spaces(str);
+  strlcpy(str1_1024, " ", 128);
+  strlcat(str1_1024, signalcomp->edfparam_0->physdimension, 128);
+  remove_trailing_spaces(str1_1024);
 
   max_voltage_spinbox = new QDoubleSpinBox;
-  max_voltage_spinbox->setSuffix(str);
+  max_voltage_spinbox->setSuffix(str1_1024);
   max_voltage_spinbox->setDecimals(7);
   max_voltage_spinbox->setMinimum(0.0000001);
   max_voltage_spinbox->setMaximum(100000.0);
   max_voltage_spinbox->setValue(mainwindow->cdsa_max_voltage);
   max_voltage_spinbox->setToolTip("The highest level that can be displayed (white). Higher levels will clip to white");
 
-  strlcpy(str, " dB", 128);
-  strlcat(str, signalcomp->edfparam_0->physdimension, 128);
-  remove_trailing_spaces(str);
+  strlcpy(str1_1024, " dB", 128);
+  strlcat(str1_1024, signalcomp->edfparam_0->physdimension, 128);
+  remove_trailing_spaces(str1_1024);
 
   max_pwr_spinbox = new QSpinBox;
-  max_pwr_spinbox->setSuffix(str);
+  max_pwr_spinbox->setSuffix(str1_1024);
   max_pwr_spinbox->setMinimum(-160);
   max_pwr_spinbox->setMaximum(160);
   max_pwr_spinbox->setValue(mainwindow->cdsa_max_pwr);
   max_pwr_spinbox->setToolTip("The highest level that can be displayed (white). Higher levels will clip to white");
 
   min_pwr_spinbox = new QSpinBox;
-  min_pwr_spinbox->setSuffix(str);
+  min_pwr_spinbox->setSuffix(str1_1024);
   min_pwr_spinbox->setMinimum(-160);
   min_pwr_spinbox->setMaximum(160);
   min_pwr_spinbox->setValue(mainwindow->cdsa_min_pwr);
@@ -372,7 +372,7 @@ void UI_cdsa_window::start_button_clicked()
          *smplbuf=NULL,
          log_minimum_offset=0;
 
-  char str[1024]={""},
+  char str1_1024[1024]={""},
        path[MAX_PATH_LENGTH]={""};
 
   fft_wrap_setting_t *dft;
@@ -630,9 +630,9 @@ void UI_cdsa_window::start_button_clicked()
     get_filename_from_path(path + len, signalcomp->edfhdr->filename, MAX_PATH_LENGTH - len);
     remove_extension_from_filename(path);
     strlcat(path, "_", MAX_PATH_LENGTH);
-    strlcpy(str, signalcomp->signallabel, 1024);
-    trim_spaces(str);
-    strlcat(path, str, MAX_PATH_LENGTH);
+    strlcpy(str1_1024, signalcomp->signallabel, 1024);
+    trim_spaces(str1_1024);
+    strlcat(path, str1_1024, MAX_PATH_LENGTH);
     strlcat(path, "_data.txt", MAX_PATH_LENGTH);
 
     strlcpy(path, QFileDialog::getSaveFileName(0, "Export data", QString::fromLocal8Bit(path), "Text/CSV files (*.txt *.TXT *.csv *.CSV)").toLocal8Bit().data(), MAX_PATH_LENGTH);
@@ -766,9 +766,9 @@ void UI_cdsa_window::start_button_clicked()
     err = run_flt_blck_rd(fbr, i * smpls_in_segment);
     if(err)
     {
-      snprintf(str, 1024, "Internal error (-3)  run_flt_blck_rd() error: %i file: %s line %i", err, __FILE__, __LINE__);
+      snprintf(str1_1024, 1024, "Internal error (-3)  run_flt_blck_rd() error: %i file: %s line %i", err, __FILE__, __LINE__);
       progress.reset();
-      QMessageBox::critical(myobjectDialog, "Error", str, QMessageBox::Close);
+      QMessageBox::critical(myobjectDialog, "Error", str1_1024, QMessageBox::Close);
       if(dat_f)
       {
         fclose(dat_f);

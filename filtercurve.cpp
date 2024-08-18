@@ -78,7 +78,7 @@ void FilterCurve::paintEvent(QPaintEvent *)
          rasterstep,
          horizontal_marker_ratio;
 
-  char str[128]={""};
+  char str1_128[128]={""};
 
   w = width();
   h = height();
@@ -160,13 +160,13 @@ void FilterCurve::paintEvent(QPaintEvent *)
 
       if(h_val_enabled & (!(i%2)))
       {
-        snprintf(str, 128, "%f", i * ((h_range_end - h_range_start) / h_rastersize));
+        snprintf(str1_128, 128, "%f", i * ((h_range_end - h_range_start) / h_rastersize));
 
-        remove_trailing_zeros(str);
+        remove_trailing_zeros(str1_128);
 
         painter.setPen(SignalColor1);
 
-        painter.drawText(i * rasterstep + 5, h - 5, str);
+        painter.drawText(i * rasterstep + 5, h - 5, str1_128);
       }
     }
   }
@@ -186,13 +186,13 @@ void FilterCurve::paintEvent(QPaintEvent *)
 
       if(v_val_enabled & (i%2))
       {
-        snprintf(str, 128, "%f", v_range_start + (i * ((v_range_end - v_range_start) / v_rastersize)));
+        snprintf(str1_128, 128, "%f", v_range_start + (i * ((v_range_end - v_range_start) / v_rastersize)));
 
-        remove_trailing_zeros(str);
+        remove_trailing_zeros(str1_128);
 
         painter.setPen(SignalColor1);
 
-        painter.drawText(5, (i * rasterstep) - 5, str);
+        painter.drawText(5, (i * rasterstep) - 5, str1_128);
       }
     }
   }

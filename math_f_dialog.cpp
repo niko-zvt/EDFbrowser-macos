@@ -167,9 +167,9 @@ void UI_MATH_func_dialog::apply_button_clicked()
 {
   int i, s, n, functype=MATH_FUNC_NONE, before=0;
 
-  char str[1024]="";
+  char str1_1024[1024]="";
 
-  QListWidgetItem *item;
+  QListWidgetItem *item=NULL;
 
   QList<QListWidgetItem *> selectedlist;
 
@@ -215,8 +215,8 @@ void UI_MATH_func_dialog::apply_button_clicked()
     if(((mainwindow->signalcomp[s]->math_func_cnt_before >= MAXMATHFUNCS) && before) ||
        ((mainwindow->signalcomp[s]->math_func_cnt_after >= MAXMATHFUNCS) && (!before)))
     {
-      snprintf(str, 1024, "The maximum number of math functions has been reached for signal %s", mainwindow->signalcomp[s]->signallabel);
-      QMessageBox::critical(mathdialog, "Error", str);
+      snprintf(str1_1024, 1024, "The maximum number of math functions has been reached for signal %s", mainwindow->signalcomp[s]->signallabel);
+      QMessageBox::critical(mathdialog, "Error", str1_1024);
       break;
     }
 

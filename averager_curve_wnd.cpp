@@ -42,7 +42,7 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(sigcompblck_t *signal_comp, QWidget
                                              char *annotation,
                                              int avg__period)
 {
-  char str[1024]={""};
+  char str1_1024[1024]={""};
 
   averager_curve_dialog_is_destroyed = 0;
 
@@ -83,9 +83,9 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(sigcompblck_t *signal_comp, QWidget
   averager_curve_dialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
   averager_curve_dialog->setWindowIcon(QIcon(":/images/edf.png"));
 
-  strlcpy(str, "Averaging  ", 1024);
-  strlcat(str, signalcomp->signallabel, 1024);
-  averager_curve_dialog->setWindowTitle(str);
+  strlcpy(str1_1024, "Averaging  ", 1024);
+  strlcat(str1_1024, signalcomp->signallabel, 1024);
+  averager_curve_dialog->setWindowTitle(str1_1024);
 
   curve1 = new SignalCurve;
   curve1->setSignalColor(Qt::green);
@@ -100,8 +100,8 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(sigcompblck_t *signal_comp, QWidget
   curve1->setMarker1Color(Qt::yellow);
   curve1->create_button("to EDF/BDF");
 
-  snprintf(str, 1024, "Averaging %.32s  %i triggers \"%s\"", signalcomp->signallabel, avg_cnt, avg_annotation);
-  curve1->setUpperLabel1(str);
+  snprintf(str1_1024, 1024, "Averaging %.32s  %i triggers \"%s\"", signalcomp->signallabel, avg_cnt, avg_annotation);
+  curve1->setUpperLabel1(str1_1024);
 
   flywheel1 = new UI_Flywheel;
 

@@ -140,7 +140,7 @@ void UI_rename_annots_dialog::delete_all_func()
 {
   int backup = 0;
 
-  char str[4096]="";
+  char str1_4096[4096]="";
 
   edfhdrblck_t *hdr;
 
@@ -169,9 +169,9 @@ void UI_rename_annots_dialog::delete_all_func()
 
     mainwindow->save_act->setEnabled(true);
 
-    snprintf(str, 4096, "Deleted %i annotations.", replacements_cnt);
+    snprintf(str1_4096, 4096, "Deleted %i annotations.", replacements_cnt);
 
-    QMessageBox::information(rename_dialog, "Ready", str);
+    QMessageBox::information(rename_dialog, "Ready", str1_4096);
   }
   else
   {
@@ -198,7 +198,7 @@ void UI_rename_annots_dialog::rename_all_func()
 {
   int backup = 0;
 
-  char str[4096]="";
+  char str1_4096[4096]="";
 
   edfhdrblck_t *hdr;
 
@@ -233,9 +233,9 @@ void UI_rename_annots_dialog::rename_all_func()
 
     mainwindow->save_act->setEnabled(true);
 
-    snprintf(str, 4096, "Renamed %i annotations.", replacements_cnt);
+    snprintf(str1_4096, 4096, "Renamed %i annotations.", replacements_cnt);
 
-    QMessageBox::information(rename_dialog, "Ready", str);
+    QMessageBox::information(rename_dialog, "Ready", str1_4096);
   }
   else
   {

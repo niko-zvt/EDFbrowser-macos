@@ -48,7 +48,7 @@ int edfplus_annotation_get_tal_timestamp_digit_cnt(edfhdrblck_t *hdr)
 {
   int timestamp_digits;
 
-  char scratchpad[256];
+  char scratchpad_256[256]={""};
 
   long long time;
 
@@ -61,9 +61,9 @@ int edfplus_annotation_get_tal_timestamp_digit_cnt(edfhdrblck_t *hdr)
   time = (hdr->datarecords * hdr->long_data_record_duration) / TIME_FIXP_SCALING;
 
 #ifdef _WIN32
-  timestamp_digits = __mingw_snprintf(scratchpad, 256, "%lli", time);
+  timestamp_digits = __mingw_snprintf(scratchpad_256, 256, "%lli", time);
 #else
-  timestamp_digits = snprintf(scratchpad, 256, "%lli", time);
+  timestamp_digits = snprintf(scratchpad_256, 256, "%lli", time);
 #endif
 
   return timestamp_digits;

@@ -619,8 +619,7 @@ void UI_ImportAnnotationswindow::TabChanged(int index)
 
 void UI_ImportAnnotationswindow::DCEventSignalChanged(int index)
 {
-  char scratchpad[64];
-
+  char scratchpad_64[64];
 
   if((index < 0) || (!mainwindow->signalcomps))
   {
@@ -629,10 +628,10 @@ void UI_ImportAnnotationswindow::DCEventSignalChanged(int index)
     return;
   }
 
-  strlcpy(scratchpad, " ", 64);
-  strlcat(scratchpad, mainwindow->signalcomp[index]->physdimension, 64);
+  strlcpy(scratchpad_64, " ", 64);
+  strlcat(scratchpad_64, mainwindow->signalcomp[index]->physdimension, 64);
 
-  DCEventTriggerLevelSpinBox->setSuffix(scratchpad);
+  DCEventTriggerLevelSpinBox->setSuffix(scratchpad_64);
 }
 
 
@@ -642,7 +641,7 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
       input_format,
       error=0;
 
-  char str[4096]={""};
+  char str1_4096[4096]={""};
 
   mal_formatted_lines = 0;
 
@@ -722,13 +721,13 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
   {
     if((input_format == ASCIICSV_FORMAT) && (mal_formatted_lines > 0))
     {
-      snprintf(str, 4096, "One or more lines were skipped because they were malformatted:\n"
+      snprintf(str1_4096, 4096, "One or more lines were skipped because they were malformatted:\n"
                    "line(s):");
       for(i=0; i<mal_formatted_lines; i++)
       {
-        snprintf(str + strlen(str), 4096 - strlen(str)," %i,", mal_formatted_line_nrs[i]);
+        snprintf(str1_4096 + strlen(str1_4096), 4096 - strlen(str1_4096)," %i,", mal_formatted_line_nrs[i]);
       }
-      QMessageBox messagewindow(QMessageBox::Information, "Ready", str);
+      QMessageBox messagewindow(QMessageBox::Information, "Ready", str1_4096);
       messagewindow.exec();
     }
     else
@@ -764,11 +763,11 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
             filesize,
             sampletime;
 
-  char path[MAX_PATH_LENGTH],
-       last_description_aux[256]={""},
-       aux_str[256]={""};
+  char path[MAX_PATH_LENGTH]={""},
+       last_description_256_aux_256[256]={""},
+       aux_str_256[256]={""};
 
-  unsigned char a_buf[128];
+  unsigned char a_buf_128[128]={""};
 
   annotblck_t annotation;
 
@@ -857,32 +856,32 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
 
     skip = 0;
 
-    if(fread(a_buf, 2, 1, inputfile) != 1)
+    if(fread(a_buf_128, 2, 1, inputfile) != 1)
     {
       break;
     }
 
-    if(*((unsigned short *)a_buf) == 0)  // end of file
+    if(*((unsigned short *)a_buf_128) == 0)  // end of file
     {
       break;
     }
 
-    annot_code = a_buf[1] >> 2;
+    annot_code = a_buf_128[1] >> 2;
 
     if(annot_code == 59)  /* SKIP */
     {
-      if(fread(a_buf, 4, 1, inputfile) != 1)
+      if(fread(a_buf_128, 4, 1, inputfile) != 1)
       {
         break;
       }
 
-      tc += (*((unsigned short *)a_buf) << 16);
+      tc += (*((unsigned short *)a_buf_128) << 16);
 
-      tc += *((unsigned short *)(a_buf + 2));
+      tc += *((unsigned short *)(a_buf_128 + 2));
     }
     else if(annot_code == 63)  /* AUX */
       {
-        skip = *((unsigned short *)a_buf) & 0x3ff;
+        skip = *((unsigned short *)a_buf_128) & 0x3ff;
 
         len = skip;
         if(len > 255)  len = 255;
@@ -891,20 +890,20 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
 
         skip -= len;
 
-        if(fread(aux_str, len, 1, inputfile) != 1)
+        if(fread(aux_str_256, len, 1, inputfile) != 1)
         {
           break;
         }
 
-        aux_str[len] = 0;
+        aux_str_256[len] = 0;
 
         if(len && import_aux_info)
         {
-          if((!ignore_consecutive) || (strcmp(aux_str, last_description_aux)))
+          if((!ignore_consecutive) || (strcmp(aux_str_256, last_description_256_aux_256)))
           {
             memset(&annotation, 0, sizeof(annotblck_t));
             annotation.onset = (long long)tc * sampletime;
-            strncpy(annotation.description, aux_str, MAX_ANNOTATION_LEN);
+            strncpy(annotation.description, aux_str_256, MAX_ANNOTATION_LEN);
 
             annotation.description[MAX_ANNOTATION_LEN] = 0;
 
@@ -921,13 +920,13 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
 
             total_annots++;
 
-            strlcpy(last_description_aux, aux_str, 256);
+            strlcpy(last_description_256_aux_256, aux_str_256, 256);
           }
         }
       }
       else if((annot_code >= 0) && (annot_code <= ACMAX))
         {
-          tc += *((unsigned short *)a_buf) & 0x3ff;
+          tc += *((unsigned short *)a_buf_128) & 0x3ff;
 
           if(import_std_annots)
           {
@@ -990,9 +989,9 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       ignore_consecutive=0;
 
   char path[MAX_PATH_LENGTH]={""},
-       last_description[256]={""},
+       last_description_256[256]={""},
        result[XML_STRBUFLEN]={""},
-       duration[32]={""};
+       duration_str_32[32]={""};
 
   long long onset=0LL,
             l_temp,
@@ -1150,15 +1149,15 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
         return 1;
       }
 
-      strlcpy(duration, result, 32);
-      duration[19] = 0;
-      if((!(is_number(duration))) && (duration[0] != '-'))
+      strlcpy(duration_str_32, result, 32);
+      duration_str_32[19] = 0;
+      if((!(is_number(duration_str_32))) && (duration_str_32[0] != '-'))
       {
-        remove_trailing_zeros(duration);
+        remove_trailing_zeros(duration_str_32);
       }
       else
       {
-        duration[0] = 0;
+        duration_str_32[0] = 0;
       }
 
       xml_go_up(xml_hdl);
@@ -1179,7 +1178,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       return 1;
     }
 
-    if((!ignore_consecutive) || (strcmp(result, last_description)))
+    if((!ignore_consecutive) || (strcmp(result, last_description_256)))
     {
       memset(&annotation, 0, sizeof(annotblck_t));
       annotation.onset = onset;
@@ -1190,8 +1189,8 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
       }
       annotation.description[MAX_ANNOTATION_LEN] = 0;
       trim_spaces(annotation.description);
-      strlcpy(annotation.duration, duration, 20);
-      annotation.long_duration = edfplus_annotation_get_long_from_number(duration);
+      strlcpy(annotation.duration, duration_str_32, 20);
+      annotation.long_duration = edfplus_annotation_get_long_from_number(duration_str_32);
       annotation.edfhdr = mainwindow->edfheaderlist[0];
       if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
       {
@@ -1202,7 +1201,7 @@ int UI_ImportAnnotationswindow::import_from_xml(void)
         return 1;
       }
 
-      strlcpy(last_description, result, 256);
+      strlcpy(last_description_256, result, 256);
     }
 
     xml_go_up(xml_hdl);
@@ -1241,16 +1240,16 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
       txt_encoding=0;
 
   char path[MAX_PATH_LENGTH]={""},
-       line[4096]={""},
-       str[4096]={""},
+       line_4096[4096]={""},
+       str1_4096[4096]={""},
        separator[2]=";",
-       description[256]={""},
-       last_description[256]={""},
-       duration[32]={""},
+       description_256[256]={""},
+       last_description_256[256]={""},
+       duration_str_32[32]={""},
        *charpntr=NULL,
        *saveptr=NULL,
-       tmp_str[4096]={""},
-       filechooser_filter_str[4096]={""};
+       str2_4096[4096]={""},
+       filechooser_filter_str_4096[4096]={""};
 
   long long onset=0LL,
             last_onset=0LL;
@@ -1264,53 +1263,53 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   {
     manualdescription = 1;
 
-    strlcpy(description, DescriptionLineEdit->text().toUtf8().data(), 256);
+    strlcpy(description_256, DescriptionLineEdit->text().toUtf8().data(), 256);
   }
   else
   {
     manualdescription = 0;
   }
 
-  strlcpy(str, SeparatorLineEdit->text().toLatin1().data(), 4096);
+  strlcpy(str1_4096, SeparatorLineEdit->text().toLatin1().data(), 4096);
 
-  if(!strcmp(str, "tab"))
+  if(!strcmp(str1_4096, "tab"))
   {
     separator[0] = '\t';
   }
   else
   {
-    if(strlen(str)!=1)
+    if(strlen(str1_4096)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator must be one character or \"tab\".");
       messagewindow.exec();
       return 1;
     }
 
-    if((str[0]<32)||(str[0]>126))
+    if((str1_4096[0]<32)||(str1_4096[0]>126))
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character is not a valid ASCII character.");
       messagewindow.exec();
       return 1;
     }
 
-    if(str[0]=='.')
+    if(str1_4096[0]=='.')
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character cannot be a dot.");
       messagewindow.exec();
       return 1;
     }
 
-    if((str[0]>='0')&&(str[0]<='9'))
+    if((str1_4096[0]>='0')&&(str1_4096[0]<='9'))
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Separator character cannot be a number.");
       messagewindow.exec();
       return 1;
     }
 
-    separator[0] = str[0];
+    separator[0] = str1_4096[0];
   }
 
-  strlcpy(mainwindow->import_annotations_var->separator, str, 4);
+  strlcpy(mainwindow->import_annotations_var->separator, str1_4096, 4);
 
   startline = DatastartSpinbox->value();
 
@@ -1433,16 +1432,16 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   if(mainwindow->import_annotations_var->csv_equal_filename)
   {
-    get_filename_from_path(tmp_str, mainwindow->edfheaderlist[0]->filename, 4096);
+    get_filename_from_path(str2_4096, mainwindow->edfheaderlist[0]->filename, 4096);
 
-    remove_extension_from_filename(tmp_str);
+    remove_extension_from_filename(str2_4096);
 
-//     snprintf(filechooser_filter_str, 4096, "CSV file (%.1000s.csv);;TSV file (%.1000s.tsv);;TXT file (%.1000s.txt)",
-//              tmp_str, tmp_str, tmp_str);
+//     snprintf(filechooser_filter_str_4096, 4096, "CSV file (%.1000s.csv);;TSV file (%.1000s.tsv);;TXT file (%.1000s.txt)",
+//              str2_4096, str2_4096, str2_4096);
 
-    snprintf(filechooser_filter_str, 4096, "ASCII files (%.1000s.*)", tmp_str);
+    snprintf(filechooser_filter_str_4096, 4096, "ASCII files (%.1000s.*)", str2_4096);
 
-    strlcpy(path, QFileDialog::getOpenFileName(0, "Open ASCII file", QString::fromLocal8Bit(mainwindow->recent_opendir), filechooser_filter_str).toLocal8Bit().data(), MAX_PATH_LENGTH);
+    strlcpy(path, QFileDialog::getOpenFileName(0, "Open ASCII file", QString::fromLocal8Bit(mainwindow->recent_opendir), filechooser_filter_str_4096).toLocal8Bit().data(), MAX_PATH_LENGTH);
   }
   else
   {
@@ -1526,18 +1525,18 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   {
     if(line_nr == 0x7fffffff)  break;
 
-    if(fgets(line, 4096, inputfile) == NULL)
+    if(fgets(line_4096, 4096, inputfile) == NULL)
     {
       break;
     }
 
     if(line_nr < startline)  continue;
 
-    len = strlen(line);
+    len = strlen(line_4096);
 
-    if(line[len-1] == '\n')
+    if(line_4096[len-1] == '\n')
     {
-      line[len-1] = 0;
+      line_4096[len-1] = 0;
 
       if(--len == 0)
       {
@@ -1545,9 +1544,9 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
       }
     }
 
-    if(line[len-1] == '\r')
+    if(line_4096[len-1] == '\r')
     {
-      line[len-1] = 0;
+      line_4096[len-1] = 0;
 
       if(--len == 0)
       {
@@ -1558,13 +1557,13 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
     onset_is_set = 0;
     descr_is_set = 0;
     duration_is_set = 0;
-    duration[0] = 0;
+    duration_str_32[0] = 0;
 
     for(column=0; column<32; column++)
     {
       if(column == 0)
       {
-        charpntr = strtok_r_e(line, separator, &saveptr);
+        charpntr = strtok_r_e(line_4096, separator, &saveptr);
       }
       else
       {
@@ -1592,15 +1591,15 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
           {
             if(!strlen(charpntr))  continue;
 #ifdef IMPORT_ANNOTS_DEBUG
-            printf("  description: ->%s<-", charpntr);
+            printf("  description_256: ->%s<-", charpntr);
 #endif
-            strlcpy(description, charpntr, max_descr_length);
+            strlcpy(description_256, charpntr, max_descr_length);
             if(txt_encoding == 1)
             {
-              latin1_to_utf8(description, max_descr_length);
+              latin1_to_utf8(description_256, max_descr_length);
             }
-            str_replace_ctrl_chars(description, '.');
-            trim_spaces(description);
+            str_replace_ctrl_chars(description_256, '.');
+            trim_spaces(description_256);
             descr_is_set = 1;
           }
           else if(column == duration_stop_column)
@@ -1608,9 +1607,9 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 #ifdef IMPORT_ANNOTS_DEBUG
               printf("  duration: ->%s<-", charpntr);
 #endif
-              strlcpy(duration, charpntr, 32);
-              trim_spaces(duration);
-              duration[19] = 0;
+              strlcpy(duration_str_32, charpntr, 32);
+              trim_spaces(duration_str_32);
+              duration_str_32[19] = 0;
               duration_is_set = 1;
             }
       }
@@ -1620,17 +1619,17 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 #endif
     if(onset_is_set && (descr_is_set || manualdescription))
     {
-      if((!ignore_consecutive) || strcmp(description, last_description))
+      if((!ignore_consecutive) || strcmp(description_256, last_description_256))
       {
         memset(&annotation, 0, sizeof(annotblck_t));
         annotation.onset = onset;
-        strncpy(annotation.description, description, MAX_ANNOTATION_LEN);
+        strncpy(annotation.description, description_256, MAX_ANNOTATION_LEN);
         annotation.description[MAX_ANNOTATION_LEN] = 0;
         if((use_duration || use_stoptime) && duration_is_set)
         {
-          if((!(is_number(duration))) && (duration[0] != '-'))
+          if((!(is_number(duration_str_32))) && (duration_str_32[0] != '-'))
           {
-            annotation.long_duration = edfplus_annotation_get_long_from_number(duration);
+            annotation.long_duration = edfplus_annotation_get_long_from_number(duration_str_32);
 
             if(use_stoptime)
             {
@@ -1649,21 +1648,21 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
                   if(tmp_len < 18)
                   {
                     snprintf(annotation.duration + tmp_len, 20 - tmp_len, ".%07i", (int)(annotation.long_duration % TIME_FIXP_SCALING));
-                    remove_trailing_zeros(duration);
+                    remove_trailing_zeros(duration_str_32);
                   }
                 }
               }
             }
             else  /* use duration */
             {
-              remove_trailing_zeros(duration);
-              if(duration[0] == '+')
+              remove_trailing_zeros(duration_str_32);
+              if(duration_str_32[0] == '+')
               {
-                strlcpy(annotation.duration, duration + 1, 20);
+                strlcpy(annotation.duration, duration_str_32 + 1, 20);
               }
               else
               {
-                strlcpy(annotation.duration, duration, 20);
+                strlcpy(annotation.duration, duration_str_32, 20);
               }
             }
           }
@@ -1678,7 +1677,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
           return 1;
         }
 
-        strlcpy(last_description, description, 256);
+        strlcpy(last_description_256, description_256, 256);
       }
     }
     else
@@ -1703,8 +1702,8 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
   int i,
       annotlist_size;
 
-  char path[MAX_PATH_LENGTH],
-       str[2048];
+  char path[MAX_PATH_LENGTH]={""},
+       str1_2048[2048]={""};
 
   long long starttime_diff;
 
@@ -1712,7 +1711,7 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   edfhdrblck_t *edfhdr=NULL;
 
-  annotblck_t *annotation;
+  annotblck_t *annotation=NULL;
 
 
   strlcpy(path, QFileDialog::getOpenFileName(0, "Open EDF+/BDF+ file", QString::fromLocal8Bit(mainwindow->recent_opendir), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF )").toLocal8Bit().data(), MAX_PATH_LENGTH);
@@ -1734,13 +1733,11 @@ int UI_ImportAnnotationswindow::import_from_edfplus(void)
 
   rewind(inputfile);
 
-  str[0] = 0;
-
-  edfhdr = check_edf_file(inputfile, str, 2048, 0, 1);
+  edfhdr = check_edf_file(inputfile, str1_2048, 2048, 0, 1);
   if(edfhdr==NULL)
   {
-    strlcat(str, "\n File is not a valid EDF or BDF file.", 2048);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+    strlcat(str1_2048, "\n File is not a valid EDF or BDF file.", 2048);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
     messagewindow.exec();
     fclose(inputfile);
     return 1;
@@ -1838,9 +1835,9 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
       edfformat,
       annotations_found=0;
 
-  char scratchpad[256],
-       last_description[256],
-       *buf;
+  char scratchpad_256[256]={""},
+       last_description_256[256],
+       *buf=NULL;
 
   long long datrecs,
             trigger_datrec,
@@ -1862,7 +1859,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
   sigcompblck_t *signalcomp;
 
 
-  last_description[0] = 0;
+  last_description_256[0] = 0;
 
   if(IgnoreConsecutiveCheckBox->checkState() == Qt::Checked)
   {
@@ -2081,14 +2078,14 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
             {
               if(tmp_value < triggervalue)
               {
-                snprintf(scratchpad, 256, "Trigger ID=%i", eventcode);
+                snprintf(scratchpad_256, 256, "Trigger ID=%i", eventcode);
 
-                if((!ignore_consecutive) || (strcmp(scratchpad, last_description)))
+                if((!ignore_consecutive) || (strcmp(scratchpad_256, last_description_256)))
                 {
                   memset(&annotation, 0, sizeof(annotblck_t));
                   annotation.onset = ((trigger_datrec * signalcomp->edfhdr->long_data_record_duration) + (trigger_sample * time_per_sample));
                   annotation.edfhdr = signalcomp->edfhdr;
-                  strncpy(annotation.description, scratchpad, MAX_ANNOTATION_LEN);
+                  strncpy(annotation.description, scratchpad_256, MAX_ANNOTATION_LEN);
                   annotation.description[MAX_ANNOTATION_LEN] = 0;
                   if(edfplus_annotation_add_item(&mainwindow->edfheaderlist[0]->annot_list, annotation))
                   {
@@ -2101,7 +2098,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
 
                   annotations_found++;
 
-                  strlcpy(last_description, scratchpad, 256);
+                  strlcpy(last_description_256, scratchpad_256, 256);
                 }
               }
 
@@ -2182,16 +2179,16 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
 
   long long l_temp, onset=0LL, utc_time=0LL;
 
-  char scratchpad[64];
+  char scratchpad_64[64]={""};
 
   date_time_t date_time;
 
-  strncpy(scratchpad, str, 30);
-  scratchpad[30] = 0;
+  strncpy(scratchpad_64, str, 30);
+  scratchpad_64[30] = 0;
 
   if(onset_format == CVS_ONSET_TIME_FMT_RELATIVE)
   {
-    onset = atoll_x(scratchpad, TIME_FIXP_SCALING);
+    onset = atoll_x(scratchpad_64, TIME_FIXP_SCALING);
     *onset_time = onset;
 
     return 0;
@@ -2199,14 +2196,14 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
 
   if(onset_format == CVS_ONSET_TIME_FMT_ABS_TIME)
   {
-    if(strlen(scratchpad) > 6)
+    if(strlen(scratchpad_64) > 6)
     {
-      if((scratchpad[2] == ':') && (scratchpad[5] == ':'))
+      if((scratchpad_64[2] == ':') && (scratchpad_64[5] == ':'))
       {
-        scratchpad[8] = 0;
-        onset = atoi(scratchpad) * 3600LL;
-        onset += (atoi(scratchpad + 3) * 60LL);
-        onset += (long long)(atoi(scratchpad + 6));
+        scratchpad_64[8] = 0;
+        onset = atoi(scratchpad_64) * 3600LL;
+        onset += (atoi(scratchpad_64 + 3) * 60LL);
+        onset += (long long)(atoi(scratchpad_64 + 6));
         onset *= TIME_FIXP_SCALING;
         onset -= mainwindow->edfheaderlist[0]->starttime_hr;
 
@@ -2221,14 +2218,14 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         return 0;
       }
     }
-    if(strlen(scratchpad) > 5)
+    if(strlen(scratchpad_64) > 5)
     {
-      if((scratchpad[1] == ':') && (scratchpad[4] == ':'))
+      if((scratchpad_64[1] == ':') && (scratchpad_64[4] == ':'))
       {
-        scratchpad[7] = 0;
-        onset = atoi(scratchpad) * 3600LL;
-        onset += (atoi(scratchpad + 2) * 60LL);
-        onset += (long long)(atoi(scratchpad + 5));
+        scratchpad_64[7] = 0;
+        onset = atoi(scratchpad_64) * 3600LL;
+        onset += (atoi(scratchpad_64 + 2) * 60LL);
+        onset += (long long)(atoi(scratchpad_64 + 5));
         onset *= TIME_FIXP_SCALING;
         onset -= mainwindow->edfheaderlist[0]->starttime_hr;
 
@@ -2247,25 +2244,25 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
 
   if(onset_format == CVS_ONSET_TIME_FMT_ABS_TIME_SUBSEC)
   {
-    if(strlen(scratchpad) > 8)
+    if(strlen(scratchpad_64) > 8)
     {
-      if((scratchpad[2] == ':') && (scratchpad[5] == ':') && ((scratchpad[8] == '.') || (scratchpad[8] == ',')))
+      if((scratchpad_64[2] == ':') && (scratchpad_64[5] == ':') && ((scratchpad_64[8] == '.') || (scratchpad_64[8] == ',')))
       {
         for(digits=0; digits<32; digits++)
         {
-          if((scratchpad[9 + digits] < '0') || (scratchpad[9 + digits] > '9'))
+          if((scratchpad_64[9 + digits] < '0') || (scratchpad_64[9 + digits] > '9'))
           {
             break;
           }
         }
-        scratchpad[9 + digits] = 0;
-        onset = atoi(scratchpad) * 3600LL;
-        onset += (atoi(scratchpad + 3) * 60LL);
-        onset += (long long)(atoi(scratchpad + 6));
+        scratchpad_64[9 + digits] = 0;
+        onset = atoi(scratchpad_64) * 3600LL;
+        onset += (atoi(scratchpad_64 + 3) * 60LL);
+        onset += (long long)(atoi(scratchpad_64 + 6));
         onset *= TIME_FIXP_SCALING;
         if(digits)
         {
-          l_temp = (atoi(scratchpad + 9) * TIME_FIXP_SCALING);
+          l_temp = (atoi(scratchpad_64 + 9) * TIME_FIXP_SCALING);
           for(; digits>0; digits--)
           {
             l_temp /= 10LL;
@@ -2284,25 +2281,25 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
         return 0;
       }
     }
-    if(strlen(scratchpad) > 7)
+    if(strlen(scratchpad_64) > 7)
     {
-      if((scratchpad[1] == ':') && (scratchpad[4] == ':') && ((scratchpad[7] == '.') || (scratchpad[7] == ',')))
+      if((scratchpad_64[1] == ':') && (scratchpad_64[4] == ':') && ((scratchpad_64[7] == '.') || (scratchpad_64[7] == ',')))
       {
         for(digits=0; digits<32; digits++)
         {
-          if((scratchpad[8 + digits] < '0') || (scratchpad[8 + digits] > '9'))
+          if((scratchpad_64[8 + digits] < '0') || (scratchpad_64[8 + digits] > '9'))
           {
             break;
           }
         }
-        scratchpad[8 + digits] = 0;
-        onset = atoi(scratchpad) * 3600LL;
-        onset += (atoi(scratchpad + 2) * 60LL);
-        onset += (long long)(atoi(scratchpad + 5));
+        scratchpad_64[8 + digits] = 0;
+        onset = atoi(scratchpad_64) * 3600LL;
+        onset += (atoi(scratchpad_64 + 2) * 60LL);
+        onset += (long long)(atoi(scratchpad_64 + 5));
         onset *= TIME_FIXP_SCALING;
         if(digits)
         {
-          l_temp = (atoi(scratchpad + 8) * TIME_FIXP_SCALING);
+          l_temp = (atoi(scratchpad_64 + 8) * TIME_FIXP_SCALING);
           for(; digits>0; digits--)
           {
             l_temp /= 10LL;
@@ -2325,17 +2322,17 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
 
   if(onset_format == CVS_ONSET_TIME_FMT_ABS_DATETIME)
   {
-    if(strlen(scratchpad) > 17)
+    if(strlen(scratchpad_64) > 17)
     {
-      if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':'))
+      if((scratchpad_64[4] == '-') && (scratchpad_64[7] == '-') && (scratchpad_64[13] == ':') && (scratchpad_64[16] == ':'))
       {
-        scratchpad[19] = 0;
-        date_time.year = atoi(scratchpad);
-        date_time.month = atoi(scratchpad + 5);
-        date_time.day = atoi(scratchpad + 8);
-        date_time.hour = atoi(scratchpad + 11);
-        date_time.minute = atoi(scratchpad + 14);
-        date_time.second = atoi(scratchpad + 17);
+        scratchpad_64[19] = 0;
+        date_time.year = atoi(scratchpad_64);
+        date_time.month = atoi(scratchpad_64 + 5);
+        date_time.day = atoi(scratchpad_64 + 8);
+        date_time.hour = atoi(scratchpad_64 + 11);
+        date_time.minute = atoi(scratchpad_64 + 14);
+        date_time.second = atoi(scratchpad_64 + 17);
         date_time_to_utc(&utc_time, date_time);
         onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
         onset *= TIME_FIXP_SCALING;
@@ -2349,30 +2346,30 @@ int UI_ImportAnnotationswindow::get_onset_time_from_ascii(const char *str, long 
 
   if(onset_format == CVS_ONSET_TIME_FMT_ABS_DATETIME_SUBSEC)
   {
-    if(strlen(scratchpad) > 19)
+    if(strlen(scratchpad_64) > 19)
     {
-      if((scratchpad[4] == '-') && (scratchpad[7] == '-') && (scratchpad[13] == ':') && (scratchpad[16] == ':') && ((scratchpad[19] == ',') || (scratchpad[19] == '.')))
+      if((scratchpad_64[4] == '-') && (scratchpad_64[7] == '-') && (scratchpad_64[13] == ':') && (scratchpad_64[16] == ':') && ((scratchpad_64[19] == ',') || (scratchpad_64[19] == '.')))
       {
         for(digits=0; digits<32; digits++)
         {
-          if((scratchpad[20 + digits] < '0') || (scratchpad[20 + digits] > '9'))
+          if((scratchpad_64[20 + digits] < '0') || (scratchpad_64[20 + digits] > '9'))
           {
             break;
           }
         }
-        scratchpad[20 + digits] = 0;
-        date_time.year = atoi(scratchpad);
-        date_time.month = atoi(scratchpad + 5);
-        date_time.day = atoi(scratchpad + 8);
-        date_time.hour = atoi(scratchpad + 11);
-        date_time.minute = atoi(scratchpad + 14);
-        date_time.second = atoi(scratchpad + 17);
+        scratchpad_64[20 + digits] = 0;
+        date_time.year = atoi(scratchpad_64);
+        date_time.month = atoi(scratchpad_64 + 5);
+        date_time.day = atoi(scratchpad_64 + 8);
+        date_time.hour = atoi(scratchpad_64 + 11);
+        date_time.minute = atoi(scratchpad_64 + 14);
+        date_time.second = atoi(scratchpad_64 + 17);
         date_time_to_utc(&utc_time, date_time);
         onset = utc_time - mainwindow->edfheaderlist[0]->utc_starttime;
         onset *= TIME_FIXP_SCALING;
         if(digits)
         {
-          l_temp = (atoi(scratchpad + 20) * TIME_FIXP_SCALING);
+          l_temp = (atoi(scratchpad_64 + 20) * TIME_FIXP_SCALING);
           for(; digits>0; digits--)
           {
             l_temp /= 10LL;

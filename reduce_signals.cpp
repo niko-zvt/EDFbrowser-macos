@@ -462,8 +462,8 @@ void UI_ReduceSignalsWindow::SelectFileButton()
   long long seconds,
             milliSec;
 
-  char txt_string[2048],
-       str[256];
+  char str1_2048[2048]={""},
+       str2_256[256]={""};
 
   label1->clear();
   label4->clear();
@@ -517,8 +517,8 @@ void UI_ReduceSignalsWindow::SelectFileButton()
   inputfile = edfhdr->file_hdl;
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Cannot open file %s for reading.", inputpath);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(txt_string));
+    snprintf(str1_2048, 2048, "Cannot open file %s for reading.", inputpath);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(str1_2048));
     messagewindow.exec();
 
     inputpath[0] = 0;
@@ -573,11 +573,11 @@ void UI_ReduceSignalsWindow::SelectFileButton()
       {
         if(!(edfhdr->edfparam[i].smp_per_record % j))
         {
-          snprintf(str, 256, "%i  (", j);
-          convert_to_metric_suffix(str + strlen(str), edfhdr->edfparam[i].sf_f / j, 3, 256 - strlen(str));
-          remove_trailing_zeros(str);
-          strlcat(str, "Hz)", 256);
-          ((QComboBox *)(SignalsTablewidget->cellWidget(i, 1)))->addItem(str, QVariant(j));
+          snprintf(str2_256, 256, "%i  (", j);
+          convert_to_metric_suffix(str2_256 + strlen(str2_256), edfhdr->edfparam[i].sf_f / j, 3, 256 - strlen(str2_256));
+          remove_trailing_zeros(str2_256);
+          strlcat(str2_256, "Hz)", 256);
+          ((QComboBox *)(SignalsTablewidget->cellWidget(i, 1)))->addItem(str2_256, QVariant(j));
         }
       }
     }
@@ -635,13 +635,13 @@ void UI_ReduceSignalsWindow::SelectFileButton()
   milliSec /= 10000LL;
   if(days)
   {
-    snprintf(txt_string, 2048, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(str1_2048, 2048, "%id %i:%02i:%02i.%03i", days, (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
   else
   {
-    snprintf(txt_string, 2048, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
+    snprintf(str1_2048, 2048, "%i:%02i:%02i.%03i", (int)(seconds / 3600), (int)((seconds % 3600) / 60), (int)(seconds % 60), (int)milliSec);
   }
-  label5->setText(txt_string);
+  label5->setText(str1_2048);
 }
 
 

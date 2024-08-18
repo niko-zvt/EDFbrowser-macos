@@ -197,7 +197,7 @@ void UI_AveragerWindow::startButtonClicked()
       progress_steps;
 
   char str[MAX_ANNOTATION_LEN + 1],
-       scratchpad[1024];
+       scratchpad_1024[1024];
 
   double avg_max_value,
          avg_min_value;
@@ -236,8 +236,8 @@ void UI_AveragerWindow::startButtonClicked()
 
   if(itemCnt > MAXAVERAGECURVEDIALOGS)
   {
-    snprintf(scratchpad, 1024, "You cannot select more than %i signals.", MAXAVERAGECURVEDIALOGS);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
+    snprintf(scratchpad_1024, 1024, "You cannot select more than %i signals.", MAXAVERAGECURVEDIALOGS);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad_1024);
     messagewindow.exec();
     return;
   }
@@ -426,14 +426,14 @@ void UI_AveragerWindow::startButtonClicked()
 
     if(!avg_cnt)
     {
-      snprintf(scratchpad, 1024,
+      snprintf(scratchpad_1024, 1024,
                "The selected annotation/trigger \"%s\" is not found in the selected timewindow\n"
                "%i:%02i:%02i - %i:%02i:%02i",
                annot_str,
                timeEdit1->time().hour(), timeEdit1->time().minute(), timeEdit1->time().second(),
                timeEdit2->time().hour(), timeEdit2->time().minute(), timeEdit2->time().second());
 
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad_1024);
       messagewindow.exec();
 
       free(avgbuf);

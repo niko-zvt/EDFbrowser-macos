@@ -45,7 +45,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 {
   int i;
 
-  char str[512]="";
+  char str1_512[512]="";
 
   mainwindow = (UI_Mainwindow *)w_parent;
 
@@ -740,8 +740,8 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
     hlayout_tmp->addWidget(lineedit7_1[i]);
     hlayout_tmp->addWidget(checkbox7_8[i]);
     hlayout_tmp->addStretch(1000);
-    snprintf(str, 512, "Button %i", i + 1);
-    flayout7_1->addRow(str, hlayout_tmp);
+    snprintf(str1_512, 512, "Button %i", i + 1);
+    flayout7_1->addRow(str1_512, hlayout_tmp);
     flayout7_1->labelForField(hlayout_tmp)->setToolTip("If enabled, it creates a button to quickly create a predefined annotation");
   }
 
@@ -1985,7 +1985,7 @@ void UI_OptionsDialog::ApplyButton2Clicked()
 {
   int i, row;
 
-  char str[256];
+  char str1_256[256]={""};
 
   for(row = 1; row < MAXSPECTRUMMARKERS; row++)
   {
@@ -1993,9 +1993,9 @@ void UI_OptionsDialog::ApplyButton2Clicked()
     {
       if(((QDoubleSpinBox *)(colorBarTable->cellWidget(row - 1, 1)))->value() >= ((QDoubleSpinBox *)(colorBarTable->cellWidget(row, 1)))->value())
       {
-        snprintf(str, 256, "Row %i must have a higher frequency than row %i", row + 1, row);
+        snprintf(str1_256, 256, "Row %i must have a higher frequency than row %i", row + 1, row);
 
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", str);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_256);
         messagewindow.exec();
 
         return;
@@ -3217,7 +3217,7 @@ void UI_OptionsDialog::saveColorSchemaButtonClicked()
 
 //   for(i=0; i<MAX_MC_ANNOT_OV_COLORS; i++)
 //   {
-//     xml_strlcpy_encode_entity(str, mainwindow->mc_annot_ov_name_predefined[i], 1024);
+//     xml_strlcpy_encode_entity(str1_512, mainwindow->mc_annot_ov_name_predefined[i], 1024);
 //
 //     fprintf(colorfile, "  <mc_annot_ov_name_predefined>%s</mc_annot_ov_name_predefined>\n", str);
 //   }
@@ -3274,7 +3274,7 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
   int i;
 
   char path[MAX_PATH_LENGTH]={""},
-       scratchpad[2048]={""},
+       scratchpad_2048[2048]={""},
        result[XML_STRBUFLEN]={""};
 
   xml_hdl_t *xml_hdl=NULL;
@@ -3292,8 +3292,8 @@ void UI_OptionsDialog::loadColorSchemaButtonClicked()
   xml_hdl = xml_get_handle(path);
   if(xml_hdl==NULL)
   {
-    snprintf(scratchpad, 2048, "Cannot open colorschema:\n%s", path);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(scratchpad));
+    snprintf(scratchpad_2048, 2048, "Cannot open colorschema:\n%s", path);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(scratchpad_2048));
     messagewindow.exec();
     return;
   }
@@ -4096,16 +4096,16 @@ void UI_OptionsDialog::loadColorSchema_ECG()
 
 void UI_OptionsDialog::lineedit4_1_changed(const QString qstr)
 {
-  char str[32];
+  char str1_32[32];
 
-  strlcpy(str, qstr.toUtf8().data(), 32);
-  str_replace_ctrl_chars(str, '!');
-  utf8_set_byte_len(str ,31);
-  trim_spaces(str);
+  strlcpy(str1_32, qstr.toUtf8().data(), 32);
+  str_replace_ctrl_chars(str1_32, '!');
+  utf8_set_byte_len(str1_32 ,31);
+  trim_spaces(str1_32);
 
   if(strlen(mainwindow->ecg_qrs_rpeak_descr))
   {
-    strlcpy(mainwindow->ecg_qrs_rpeak_descr, str, 32);
+    strlcpy(mainwindow->ecg_qrs_rpeak_descr, str1_32, 32);
   }
   else
   {

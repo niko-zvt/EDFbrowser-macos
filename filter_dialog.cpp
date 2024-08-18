@@ -47,7 +47,7 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
 {
   int i;
 
-  char str[256]="";
+  char str1_256[256]="";
 
   filter_spec = NULL;
 
@@ -162,17 +162,17 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
     item = new QListWidgetItem;
     if(mainwindow->signalcomp[i]->alias[0] != 0)
     {
-      strlcpy(str, mainwindow->signalcomp[i]->alias, 256);
+      strlcpy(str1_256, mainwindow->signalcomp[i]->alias, 256);
     }
     else
     {
-      strlcpy(str, mainwindow->signalcomp[i]->signallabel, 256);
+      strlcpy(str1_256, mainwindow->signalcomp[i]->signallabel, 256);
     }
 
-    snprintf(str + strlen(str), 256 - strlen(str), "  (%f Hz)",
+    snprintf(str1_256 + strlen(str1_256), 256 - strlen(str1_256), "  (%f Hz)",
              mainwindow->signalcomp[i]->edfparam_0->sf_f);
-    remove_trailing_zeros(str);
-    item->setText(str);
+    remove_trailing_zeros(str1_256);
+    item->setText(str1_256);
     item->setData(Qt::UserRole, QVariant(i));
     signals_list->addItem(item);
   }
@@ -520,8 +520,7 @@ void UI_FilterDialog::orderboxvaluechanged(int order)
   int type,
       model;
 
-  char str[256];
-
+  char str1_256[256]={""};
 
   type = typebox->currentIndex();
 
@@ -529,9 +528,9 @@ void UI_FilterDialog::orderboxvaluechanged(int order)
 
   if(type == FILTERTYPE_NOTCH)
   {
-    snprintf(str, 256, "%f Hz", freq1box->value() / orderbox->value());
-    remove_trailing_zeros(str);
-    ordervaluelabel->setText(str);
+    snprintf(str1_256, 256, "%f Hz", freq1box->value() / orderbox->value());
+    remove_trailing_zeros(str1_256);
+    ordervaluelabel->setText(str1_256);
     ordervaluelabel->setVisible(true);
 
     last_qfactor = order;
@@ -590,7 +589,7 @@ void UI_FilterDialog::orderboxvaluechanged(int order)
 
 void UI_FilterDialog::filtertypeboxvaluechanged(int type)
 {
-  char str[256];
+  char str1_256[256]={""};
 
   QObject::disconnect(orderbox, SIGNAL(valueChanged(int)),        this, SLOT(orderboxvaluechanged(int)));
   QObject::disconnect(modelbox, SIGNAL(currentIndexChanged(int)), this, SLOT(filtermodelboxvaluechanged(int)));
@@ -606,9 +605,9 @@ void UI_FilterDialog::filtertypeboxvaluechanged(int type)
     orderbox->setValue(last_qfactor);
     orderbox->setVisible(true);
     orderlabel->setText("-3 dB bandwidth:");
-    snprintf(str, 256, "%f Hz", freq1box->value() / orderbox->value());
-    remove_trailing_zeros(str);
-    ordervaluelabel->setText(str);
+    snprintf(str1_256, 256, "%f Hz", freq1box->value() / orderbox->value());
+    remove_trailing_zeros(str1_256);
+    ordervaluelabel->setText(str1_256);
     ordervaluelabel->setVisible(true);
     modelbox->clear();
     modelbox->addItem("Resonator");
@@ -738,7 +737,7 @@ void UI_FilterDialog::filtertypeboxvaluechanged(int type)
 
 void UI_FilterDialog::freq1boxvaluechanged(double)
 {
-  char str[256];
+  char str1_256[256]={""};
 
 //   if(freq2box->value() < (value * 1.12))
 //   {
@@ -747,9 +746,9 @@ void UI_FilterDialog::freq1boxvaluechanged(double)
 
   if(typebox->currentIndex() == FILTERTYPE_NOTCH)
   {
-    snprintf(str, 256, "%f Hz", freq1box->value() / orderbox->value());
-    remove_trailing_zeros(str);
-    ordervaluelabel->setText(str);
+    snprintf(str1_256, 256, "%f Hz", freq1box->value() / orderbox->value());
+    remove_trailing_zeros(str1_256);
+    ordervaluelabel->setText(str1_256);
   }
 
   updatecurve();
@@ -1013,15 +1012,15 @@ void UI_FilterDialog::selected_signals_changed()
 {
   int n;
 
-  char str[128]={""};
+  char str1_128[128]={""};
 
   QList<QListWidgetItem *> selectedlist = signals_list->selectedItems();
 
   n = selectedlist.size();
 
-  snprintf(str, 128, "Selected signals: %i", n);
+  snprintf(str1_128, 128, "Selected signals: %i", n);
 
-  listlabel->setText(str);
+  listlabel->setText(str1_128);
 }
 
 

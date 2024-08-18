@@ -39,8 +39,8 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
       error;
 
   char *edf_hdr=NULL,
-       scratchpad[128],
-       scratchpad2[64];
+       scratchpad_128[128],
+       scratchpad_64[64];
 
   long long l_tmp,
             l_tmp2;
@@ -87,14 +87,14 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
 /**************************** VERSION ***************************************/
 
-  strncpy(scratchpad, edf_hdr, 8);
-  scratchpad[8] = 0;
+  strncpy(scratchpad_128, edf_hdr, 8);
+  scratchpad_128[8] = 0;
 
-  if(((signed char *)scratchpad)[0]==-1)   // BDF-file
+  if(((signed char *)scratchpad_128)[0]==-1)   // BDF-file
   {
     for(i=1; i<8; i++)
     {
-      if((scratchpad[i]<32)||(scratchpad[i]>126))
+      if((scratchpad_128[i]<32)||(scratchpad_128[i]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of version field is not a valid 7-bit ASCII character.",
         i + 1);
@@ -104,11 +104,11 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
       }
     }
 
-    if(strcmp(scratchpad + 1, "BIOSEMI"))
+    if(strcmp(scratchpad_128 + 1, "BIOSEMI"))
     {
       snprintf(txt_string, txt_len, "Error, header has unknown version: \".%s\",\n"
             "expected \".BIOSEMI\"",
-            scratchpad + 1);
+            scratchpad_128 + 1);
       free(edf_hdr);
       free(edfhdr);
       return NULL;
@@ -120,7 +120,7 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
   {
     for(i=0; i<8; i++)
     {
-      if((scratchpad[i]<32)||(scratchpad[i]>126))
+      if((scratchpad_128[i]<32)||(scratchpad_128[i]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of version field is not a valid 7-bit ASCII character.",
         i + 1);
@@ -130,11 +130,11 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
       }
     }
 
-    if(strcmp(scratchpad, "0       "))
+    if(strcmp(scratchpad_128, "0       "))
     {
       snprintf(txt_string, txt_len, "Error, header has unknown version: \"%s\",\n"
             "expected \"0       \"",
-            scratchpad);
+            scratchpad_128);
       free(edf_hdr);
       free(edfhdr);
       return NULL;
@@ -149,11 +149,11 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
 /********************* PATIENTNAME *********************************************/
 
-  strncpy(scratchpad, edf_hdr + 8, 80);
-  scratchpad[80] = 0;
+  strncpy(scratchpad_128, edf_hdr + 8, 80);
+  scratchpad_128[80] = 0;
   for(i=0; i<80; i++)
   {
-    if((((unsigned char *)scratchpad)[i]<32)||(((unsigned char *)scratchpad)[i]>126))
+    if((((unsigned char *)scratchpad_128)[i]<32)||(((unsigned char *)scratchpad_128)[i]>126))
     {
       snprintf(txt_string, txt_len, "Error, %ith character of local patient identification field is not a valid 7-bit ASCII character.\n"
                           "You can repair the file with the header editor, have a look at the manual for the details.",
@@ -169,11 +169,11 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
 /********************* RECORDING *********************************************/
 
-  strncpy(scratchpad, edf_hdr + 88, 80);
-  scratchpad[80] = 0;
+  strncpy(scratchpad_128, edf_hdr + 88, 80);
+  scratchpad_128[80] = 0;
   for(i=0; i<80; i++)
   {
-    if((((unsigned char *)scratchpad)[i]<32)||(((unsigned char *)scratchpad)[i]>126))
+    if((((unsigned char *)scratchpad_128)[i]<32)||(((unsigned char *)scratchpad_128)[i]>126))
     {
       snprintf(txt_string, txt_len, "Error, %ith character of local recording identification field is not a valid 7-bit ASCII character.\n"
                           "You can repair the file with the header editor, have a look at the manual for the details.",
@@ -189,11 +189,11 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
 /********************* STARTDATE *********************************************/
 
-  strncpy(scratchpad, edf_hdr + 168, 8);
-  scratchpad[8] = 0;
+  strncpy(scratchpad_128, edf_hdr + 168, 8);
+  scratchpad_128[8] = 0;
   for(i=0; i<8; i++)
   {
-    if((scratchpad[i]<32)||(scratchpad[i]>126))
+    if((scratchpad_128[i]<32)||(scratchpad_128[i]>126))
     {
       snprintf(txt_string, txt_len, "Error, %ith character of startdate field is not a valid 7-bit ASCII character.",
       i + 1);
@@ -220,48 +220,48 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
   if((edf_hdr[172]<48)||(edf_hdr[172]>57))      error = 1;
   if((edf_hdr[174]<48)||(edf_hdr[174]>57))      error = 1;
   if((edf_hdr[175]<48)||(edf_hdr[175]>57))      error = 1;
-  strncpy(scratchpad, edf_hdr + 168, 8);
+  strncpy(scratchpad_128, edf_hdr + 168, 8);
 
   if(error)
   {
-    scratchpad[8] = 0;
+    scratchpad_128[8] = 0;
     snprintf(txt_string, txt_len, "Error, startdate of recording is invalid: \"%s\",\n"
            "expected \"dd.mm.yy\"",
-           scratchpad);
+           scratchpad_128);
     free(edf_hdr);
     return NULL;
   }
 
-  scratchpad[2] = 0;
-  scratchpad[5] = 0;
-  scratchpad[8] = 0;
+  scratchpad_128[2] = 0;
+  scratchpad_128[5] = 0;
+  scratchpad_128[8] = 0;
 
-  if((atoi(scratchpad)<1)||(atoi(scratchpad)>31))
+  if((atoi(scratchpad_128)<1)||(atoi(scratchpad_128)>31))
   {
-    strncpy(scratchpad, edf_hdr + 168, 8);
-    scratchpad[8] = 0;
+    strncpy(scratchpad_128, edf_hdr + 168, 8);
+    scratchpad_128[8] = 0;
     snprintf(txt_string, txt_len, "Error, startdate of recording is invalid: \"%s\",\n"
            "expected \"dd.mm.yy\" where \"dd\" should be more than 00 and less than 32",
-           scratchpad);
+           scratchpad_128);
     free(edf_hdr);
     return NULL;
   }
 
-  if((atoi(scratchpad+3)<1)||(atoi(scratchpad+3)>12))
+  if((atoi(scratchpad_128+3)<1)||(atoi(scratchpad_128+3)>12))
   {
-    strncpy(scratchpad, edf_hdr + 168, 8);
-    scratchpad[8] = 0;
+    strncpy(scratchpad_128, edf_hdr + 168, 8);
+    scratchpad_128[8] = 0;
     snprintf(txt_string, txt_len, "Error, startdate of recording is invalid: \"%s\",\n"
            "expected \"dd.mm.yy\" where \"mm\" should be more than 00 and less than 13",
-           scratchpad);
+           scratchpad_128);
     free(edf_hdr);
     free(edfhdr);
     return NULL;
   }
 
-  date_time.day = atoi(scratchpad);
-  date_time.month = atoi(scratchpad + 3);
-  date_time.year = atoi(scratchpad + 6);
+  date_time.day = atoi(scratchpad_128);
+  date_time.month = atoi(scratchpad_128 + 3);
+  date_time.year = atoi(scratchpad_128 + 6);
   if(date_time.year>84)
   {
     date_time.year += 1900;
@@ -273,11 +273,11 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
 /********************* STARTTIME *********************************************/
 
-  strncpy(scratchpad, edf_hdr + 176, 8);
-  scratchpad[8] = 0;
+  strncpy(scratchpad_128, edf_hdr + 176, 8);
+  scratchpad_128[8] = 0;
   for(i=0; i<8; i++)
   {
-    if((scratchpad[i]<32)||(scratchpad[i]>126))
+    if((scratchpad_128[i]<32)||(scratchpad_128[i]>126))
     {
       snprintf(txt_string, txt_len, "Error, %ith character of starttime field is not a valid 7-bit ASCII character.",
       i + 1);
@@ -305,81 +305,81 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
   if((edf_hdr[182]<48)||(edf_hdr[182]>57))      error = 1;
   if((edf_hdr[183]<48)||(edf_hdr[183]>57))      error = 1;
 
-  strncpy(scratchpad, edf_hdr + 176, 8);
+  strncpy(scratchpad_128, edf_hdr + 176, 8);
 
   if(error)
   {
-    strncpy(scratchpad, edf_hdr + 176, 8);
-    scratchpad[8] = 0;
+    strncpy(scratchpad_128, edf_hdr + 176, 8);
+    scratchpad_128[8] = 0;
     snprintf(txt_string, txt_len, "Error, starttime of recording is invalid: \"%s\",\n"
            "expected \"hh.mm.ss\"",
-           scratchpad);
+           scratchpad_128);
     free(edf_hdr);
     free(edfhdr);
     return NULL;
   }
 
-  scratchpad[2] = 0;
-  scratchpad[5] = 0;
-  scratchpad[8] = 0;
+  scratchpad_128[2] = 0;
+  scratchpad_128[5] = 0;
+  scratchpad_128[8] = 0;
 
-  if(atoi(scratchpad)>23)
+  if(atoi(scratchpad_128)>23)
   {
-    strncpy(scratchpad, edf_hdr + 176, 8);
-    scratchpad[8] = 0;
+    strncpy(scratchpad_128, edf_hdr + 176, 8);
+    scratchpad_128[8] = 0;
     snprintf(txt_string, txt_len, "Error, starttime of recording is invalid: \"%s\",\n"
            "expected \"hh.mm.ss\" where \"hh\" should be less than 24",
-           scratchpad);
+           scratchpad_128);
     free(edf_hdr);
     free(edfhdr);
     return NULL;
   }
 
-  if(atoi(scratchpad+3)>59)
+  if(atoi(scratchpad_128+3)>59)
   {
-    strncpy(scratchpad, edf_hdr + 176, 8);
-    scratchpad[8] = 0;
+    strncpy(scratchpad_128, edf_hdr + 176, 8);
+    scratchpad_128[8] = 0;
     snprintf(txt_string, txt_len, "Error, starttime of recording is invalid: \"%s\",\n"
            "expected \"hh.mm.ss\" where \"mm\" should be less than 60",
-           scratchpad);
+           scratchpad_128);
     free(edf_hdr);
     free(edfhdr);
     return NULL;
   }
 
-  if(atoi(scratchpad+6)>59)
+  if(atoi(scratchpad_128+6)>59)
   {
-    strncpy(scratchpad, edf_hdr + 176, 8);
-    scratchpad[8] = 0;
+    strncpy(scratchpad_128, edf_hdr + 176, 8);
+    scratchpad_128[8] = 0;
     snprintf(txt_string, txt_len, "Error, starttime of recording is invalid: \"%s\",\n"
            "expected \"hh.mm.ss\" where \"ss\" should be less than 60",
-           scratchpad);
+           scratchpad_128);
     free(edf_hdr);
     free(edfhdr);
     return NULL;
   }
 
-  date_time.hour = atoi(scratchpad);
-  date_time.minute = atoi(scratchpad + 3);
-  date_time.second = atoi(scratchpad + 6);
+  date_time.hour = atoi(scratchpad_128);
+  date_time.minute = atoi(scratchpad_128 + 3);
+  date_time.second = atoi(scratchpad_128 + 6);
 
   date_time_to_utc(&edfhdr->utc_starttime, date_time);
 
   edfhdr->utc_starttime_hr = edfhdr->utc_starttime * TIME_FIXP_SCALING;
 
-  edfhdr->starttime_hr = 3600 * atoi(scratchpad);
-  edfhdr->starttime_hr += 60 * atoi(scratchpad + 3);
-  edfhdr->starttime_hr += atoi(scratchpad + 6);
+  edfhdr->starttime_hr = 3600 * atoi(scratchpad_128);
+  edfhdr->starttime_hr += 60 * atoi(scratchpad_128 + 3);
+  edfhdr->starttime_hr += atoi(scratchpad_128 + 6);
 
   edfhdr->starttime_hr *= TIME_FIXP_SCALING;
 
 /***************** NUMBER OF SIGNALS IN HEADER *******************************/
 
-  strncpy(scratchpad, edf_hdr + 252, 4);
-  scratchpad[4] = 0;
+  strncpy(scratchpad_128, edf_hdr + 252, 4);
+  scratchpad_128[4] = 0;
   for(i=0; i<4; i++)
   {
-    if((scratchpad[i]<32)||(scratchpad[i]>126))
+    if((scratchpad_128[i]<32)||(scratchpad_128[i]>126))
     {
       snprintf(txt_string, txt_len, "Error, %ith character of number of signals field is not a valid 7-bit ASCII character.",
       i + 1);
@@ -389,15 +389,15 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
     }
   }
 
-  if(is_integer_number(scratchpad))
+  if(is_integer_number(scratchpad_128))
   {
     snprintf(txt_string, txt_len, "Error, number of signals field is invalid: \"%s\".",
-           scratchpad);
+           scratchpad_128);
     free(edf_hdr);
     free(edfhdr);
     return NULL;
   }
-  edfhdr->edfsignals = atoi(scratchpad);
+  edfhdr->edfsignals = atoi(scratchpad_128);
   if(edfhdr->edfsignals<1)
   {
     snprintf(txt_string, txt_len, "Error, number of signals is %i, expected >0.",
@@ -419,12 +419,12 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
 /***************** NUMBER OF BYTES IN HEADER *******************************/
 
-  strncpy(scratchpad, edf_hdr + 184, 8);
-  scratchpad[8] = 0;
+  strncpy(scratchpad_128, edf_hdr + 184, 8);
+  scratchpad_128[8] = 0;
 
   for(i=0; i<8; i++)
   {
-    if((scratchpad[i]<32)||(scratchpad[i]>126))
+    if((scratchpad_128[i]<32)||(scratchpad_128[i]>126))
     {
       snprintf(txt_string, txt_len, "Error, %ith character of number of bytes in header field is not a valid 7-bit ASCII character.",
       i + 1);
@@ -434,16 +434,16 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
     }
   }
 
-  if(is_integer_number(scratchpad))
+  if(is_integer_number(scratchpad_128))
   {
     snprintf(txt_string, txt_len, "Error, number of bytes in header field is invalid: \"%s\".",
-           scratchpad);
+           scratchpad_128);
     free(edf_hdr);
     free(edfhdr);
     return NULL;
   }
 
-  n  = atoi(scratchpad);
+  n  = atoi(scratchpad_128);
   if((edfhdr->edfsignals * 256 + 256)!=n)
   {
     snprintf(txt_string, txt_len, "Error, number of bytes in header does not match: %i,\n"
@@ -458,12 +458,12 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
   edfhdr->edfplus = 0;
   edfhdr->discontinuous = 0;
-  strncpy(scratchpad, edf_hdr + 192, 44);
-  scratchpad[44] = 0;
+  strncpy(scratchpad_128, edf_hdr + 192, 44);
+  scratchpad_128[44] = 0;
 
   for(i=0; i<44; i++)
   {
-    if((scratchpad[i]<32)||(scratchpad[i]>126))
+    if((scratchpad_128[i]<32)||(scratchpad_128[i]>126))
     {
       snprintf(txt_string, txt_len, "Error, %ith character of reserved field is not a valid 7-bit ASCII character.",
       i + 1);
@@ -475,17 +475,17 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
   if(edfhdr->edf)
   {
-    if(!strcmp(scratchpad, "EDF+C                                       "))
+    if(!strcmp(scratchpad_128, "EDF+C                                       "))
     {
       edfhdr->edfplus = 1;
       edfhdr->discontinuous = 0;
     }
-    else if(!strcmp(scratchpad, "EDF+D                                       "))
+    else if(!strcmp(scratchpad_128, "EDF+D                                       "))
       {
         edfhdr->edfplus = 1;
         edfhdr->discontinuous = 1;
       }
-      else if(strcmp(scratchpad, "                                            "))
+      else if(strcmp(scratchpad_128, "                                            "))
       {
         snprintf(txt_string, txt_len, "Error, reserved field contains unrecognized data:\n"
                                       " \n"
@@ -493,7 +493,7 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
                                       " \n"
                                       "You can fix this by using the EDF header editor.\n"
                                       "Have a look at the manual for details.",
-                                      scratchpad);
+                                      scratchpad_128);
         free(edf_hdr);
         free(edfhdr);
         return NULL;
@@ -502,22 +502,22 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
   if(edfhdr->bdf)
   {
-    if(!strcmp(scratchpad, "BDF+C                                       "))
+    if(!strcmp(scratchpad_128, "BDF+C                                       "))
     {
       edfhdr->bdfplus = 1;
       edfhdr->discontinuous = 0;
     }
-    else if(!strcmp(scratchpad, "BDF+D                                       "))
+    else if(!strcmp(scratchpad_128, "BDF+D                                       "))
       {
         edfhdr->bdfplus = 1;
         edfhdr->discontinuous = 1;
       }
-      else if(!strcmp(scratchpad, "24BIT                                       "))
+      else if(!strcmp(scratchpad_128, "24BIT                                       "))
         {
           edfhdr->bdfplus = 0;
           edfhdr->discontinuous = 0;
         }
-        else if(strcmp(scratchpad, "                                            "))
+        else if(strcmp(scratchpad_128, "                                            "))
           {
             snprintf(txt_string, txt_len, "Error, reserved field contains unrecognized data:\n"
                                           " \n"
@@ -525,7 +525,7 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
                                           " \n"
                                           "You can fix this by using the EDF header editor.\n"
                                           "Have a look at the manual for details.",
-                                          scratchpad);
+                                          scratchpad_128);
             free(edf_hdr);
             free(edfhdr);
             return NULL;
@@ -537,12 +537,12 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
 /********************* NUMBER OF DATARECORDS *************************************/
 
-  strncpy(scratchpad, edf_hdr + 236, 8);
-  scratchpad[8] = 0;
+  strncpy(scratchpad_128, edf_hdr + 236, 8);
+  scratchpad_128[8] = 0;
 
   for(i=0; i<8; i++)
   {
-    if((scratchpad[i]<32)||(scratchpad[i]>126))
+    if((scratchpad_128[i]<32)||(scratchpad_128[i]>126))
     {
       snprintf(txt_string, txt_len, "Error, %ith character of number of datarecords field is not a valid ASCII character.",
       i + 1);
@@ -552,17 +552,17 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
     }
   }
 
-  if(is_integer_number(scratchpad))
+  if(is_integer_number(scratchpad_128))
   {
     snprintf(txt_string, txt_len, "Error, number of datarecords field is invalid: \"%s\".\n"
                         "You can repair the file with the header editor, have a look at the manual for the details.",
-           scratchpad);
+           scratchpad_128);
     free(edf_hdr);
     free(edfhdr);
     return NULL;
   }
 
-  edfhdr->datarecords = atoi(scratchpad);
+  edfhdr->datarecords = atoi(scratchpad_128);
   if(live_stream == 0)
   {
     if(edfhdr->datarecords<1)
@@ -584,12 +584,12 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
 /********************* DATARECORD DURATION *************************************/
 
-  strncpy(scratchpad, edf_hdr + 244, 8);
-  scratchpad[8] = 0;
+  strncpy(scratchpad_128, edf_hdr + 244, 8);
+  scratchpad_128[8] = 0;
 
   for(i=0; i<8; i++)
   {
-    if((scratchpad[i]<32)||(scratchpad[i]>126))
+    if((scratchpad_128[i]<32)||(scratchpad_128[i]>126))
     {
       snprintf(txt_string, txt_len, "Error, %ith character of recordduration field is not a valid 7-bit ASCII character.",
       i + 1);
@@ -599,16 +599,16 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
     }
   }
 
-  if(is_number(scratchpad))
+  if(is_number(scratchpad_128))
   {
     snprintf(txt_string, txt_len, "Error, record duration field is invalid: \"%s\".",
-            scratchpad);
+            scratchpad_128);
     free(edf_hdr);
     free(edfhdr);
     return NULL;
   }
 
-  edfhdr->data_record_duration = atof(scratchpad);
+  edfhdr->data_record_duration = atof(scratchpad_128);
   if(dblcmp(edfhdr->data_record_duration, 0) == 0)
   {
     edfhdr->data_record_duration = 0;
@@ -627,7 +627,7 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
       return NULL;
     }
 
-    edfhdr->long_data_record_duration = get_long_duration(scratchpad);
+    edfhdr->long_data_record_duration = get_long_duration(scratchpad_128);
 
     edfhdr->recording_duration_hr = edfhdr->long_data_record_duration * edfhdr->datarecords;
 
@@ -671,10 +671,10 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
   edfhdr->nr_annot_chns = 0;
   for(i=0; i<edfhdr->edfsignals; i++)
   {
-    strncpy(scratchpad, edf_hdr + 256 + (i * 16), 16);
+    strncpy(scratchpad_128, edf_hdr + 256 + (i * 16), 16);
     for(j=0; j<16; j++)
     {
-      if((scratchpad[j]<32)||(scratchpad[j]>126))
+      if((scratchpad_128[j]<32)||(scratchpad_128[j]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of label field of signal %i is not a valid 7-bit ASCII character.\n"
                             "You can repair the file with the header editor, have a look at the manual for the details.",
@@ -686,7 +686,7 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
         return NULL;
       }
     }
-    if(!strncmp(scratchpad, "EDF Annotations ", 16))
+    if(!strncmp(scratchpad_128, "EDF Annotations ", 16))
     {
       if(edfhdr->edfplus)
       {
@@ -696,10 +696,10 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
       }
       else
       {
-        scratchpad[3] = '_';
+        scratchpad_128[3] = '_';
       }
     }
-    if(!strncmp(scratchpad, "BDF Annotations ", 16))
+    if(!strncmp(scratchpad_128, "BDF Annotations ", 16))
     {
       if(edfhdr->bdfplus)
       {
@@ -709,10 +709,10 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
       }
       else
       {
-        scratchpad[3] = '_';
+        scratchpad_128[3] = '_';
       }
     }
-    memcpy(edfhdr->edfparam[i].label, scratchpad, 16);
+    memcpy(edfhdr->edfparam[i].label, scratchpad_128, 16);
     edfhdr->edfparam[i].label[16] = 0;
   }
   if(edfhdr->edfplus&&(!edfhdr->nr_annot_chns))
@@ -758,10 +758,10 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
-    strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 16) + (i * 80), 80);
+    strncpy(scratchpad_128, edf_hdr + 256 + (edfhdr->edfsignals * 16) + (i * 80), 80);
     for(j=0; j<80; j++)
     {
-      if((scratchpad[j]<32)||(scratchpad[j]>126))
+      if((scratchpad_128[j]<32)||(scratchpad_128[j]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of transducer type field of signal %i is not a valid 7-bit ASCII character.\n"
                             "You can repair the file with the header editor, have a look at the manual for the details.",
@@ -818,10 +818,10 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
-    strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 96) + (i * 8), 8);
+    strncpy(scratchpad_128, edf_hdr + 256 + (edfhdr->edfsignals * 96) + (i * 8), 8);
     for(j=0; j<8; j++)
     {
-      if((scratchpad[j]<32)||(scratchpad[j]>126))
+      if((scratchpad_128[j]<32)||(scratchpad_128[j]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of physical dimension field of signal %i is not a valid 7-bit ASCII character.\n"
                             "You can repair the file with the header editor, have a look at the manual for the details.",
@@ -841,12 +841,12 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
-    strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 104) + (i * 8), 8);
-    scratchpad[8] = 0;
+    strncpy(scratchpad_128, edf_hdr + 256 + (edfhdr->edfsignals * 104) + (i * 8), 8);
+    scratchpad_128[8] = 0;
 
     for(j=0; j<8; j++)
     {
-      if((scratchpad[j]<32)||(scratchpad[j]>126))
+      if((scratchpad_128[j]<32)||(scratchpad_128[j]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of physical minimum field of signal %i is not a valid 7-bit ASCII character.",
         j + 1,
@@ -858,31 +858,31 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
       }
     }
 
-    if(is_number(scratchpad))
+    if(is_number(scratchpad_128))
     {
       snprintf(txt_string, txt_len, "Error, physical minimum field of signal %i is invalid: \"%s\".\n"
                           "You can try to repair the file with the header editor, check the manual for the procedure.",
              i + 1,
-             scratchpad);
+             scratchpad_128);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
       return NULL;
     }
 
-    edfhdr->edfparam[i].phys_min = atof(scratchpad);
+    edfhdr->edfparam[i].phys_min = atof(scratchpad_128);
   }
 
 /**************************** PHYSICAL MAXIMUMS *************************************/
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
-    strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 112) + (i * 8), 8);
-    scratchpad[8] = 0;
+    strncpy(scratchpad_128, edf_hdr + 256 + (edfhdr->edfsignals * 112) + (i * 8), 8);
+    scratchpad_128[8] = 0;
 
     for(j=0; j<8; j++)
     {
-      if((scratchpad[j]<32)||(scratchpad[j]>126))
+      if((scratchpad_128[j]<32)||(scratchpad_128[j]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of physical maximum field of signal %i is not a valid 7-bit ASCII character.",
         j + 1,
@@ -894,19 +894,19 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
       }
     }
 
-    if(is_number(scratchpad))
+    if(is_number(scratchpad_128))
     {
       snprintf(txt_string, txt_len, "Error, physical maximum field of signal %i is invalid: \"%s\".\n"
                           "You can try to repair the file with the header editor, check the manual for the procedure.",
              i + 1,
-             scratchpad);
+             scratchpad_128);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
       return NULL;
     }
 
-    edfhdr->edfparam[i].phys_max = atof(scratchpad);
+    edfhdr->edfparam[i].phys_max = atof(scratchpad_128);
     if(edfhdr->edfparam[i].phys_max==edfhdr->edfparam[i].phys_min)
     {
       snprintf(txt_string, txt_len, "Error, physical maximum of signal %i is equal to physical minimum\n"
@@ -923,12 +923,12 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
-    strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 120) + (i * 8), 8);
-    scratchpad[8] = 0;
+    strncpy(scratchpad_128, edf_hdr + 256 + (edfhdr->edfsignals * 120) + (i * 8), 8);
+    scratchpad_128[8] = 0;
 
     for(j=0; j<8; j++)
     {
-      if((scratchpad[j]<32)||(scratchpad[j]>126))
+      if((scratchpad_128[j]<32)||(scratchpad_128[j]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of digital minimum field of signal %i is not a valid 7-bit ASCII character.",
         j + 1,
@@ -940,19 +940,19 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
       }
     }
 
-    if(is_integer_number(scratchpad))
+    if(is_integer_number(scratchpad_128))
     {
       snprintf(txt_string, txt_len, "Error, digital minimum field of signal %i is invalid: \"%s\".\n"
                           "You can repair the file with the header editor, have a look at the manual for the details.",
              i + 1,
-             scratchpad);
+             scratchpad_128);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
       return NULL;
     }
 
-    n = atoi(scratchpad);
+    n = atoi(scratchpad_128);
     if(edfhdr->edfplus)
     {
       if(edfhdr->edfparam[i].annotation)
@@ -1022,12 +1022,12 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
-    strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 128) + (i * 8), 8);
-    scratchpad[8] = 0;
+    strncpy(scratchpad_128, edf_hdr + 256 + (edfhdr->edfsignals * 128) + (i * 8), 8);
+    scratchpad_128[8] = 0;
 
     for(j=0; j<8; j++)
     {
-      if((scratchpad[j]<32)||(scratchpad[j]>126))
+      if((scratchpad_128[j]<32)||(scratchpad_128[j]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of digital maximum field of signal %i is not a valid 7-bit ASCII character.",
         j + 1,
@@ -1039,19 +1039,19 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
       }
     }
 
-    if(is_integer_number(scratchpad))
+    if(is_integer_number(scratchpad_128))
     {
       snprintf(txt_string, txt_len, "Error, digital maximum field of signal %i is invalid: \"%s\".\n"
                           "You can repair the file with the header editor, have a look at the manual for the details.",
              i + 1,
-             scratchpad);
+             scratchpad_128);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
       return NULL;
     }
 
-    n = atoi(scratchpad);
+    n = atoi(scratchpad_128);
     if(edfhdr->edfplus)
     {
       if(edfhdr->edfparam[i].annotation)
@@ -1131,10 +1131,10 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
-    strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 136) + (i * 80), 80);
+    strncpy(scratchpad_128, edf_hdr + 256 + (edfhdr->edfsignals * 136) + (i * 80), 80);
     for(j=0; j<80; j++)
     {
-      if((scratchpad[j]<32)||(scratchpad[j]>126))
+      if((scratchpad_128[j]<32)||(scratchpad_128[j]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of prefilter field of signal %i is not a valid 7-bit ASCII character.\n"
                             "You can repair the file with the header editor, have a look at the manual for the details.",
@@ -1193,12 +1193,12 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
-    strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 216) + (i * 8), 8);
-    scratchpad[8] = 0;
+    strncpy(scratchpad_128, edf_hdr + 256 + (edfhdr->edfsignals * 216) + (i * 8), 8);
+    scratchpad_128[8] = 0;
 
     for(j=0; j<8; j++)
     {
-      if((scratchpad[j]<32)||(scratchpad[j]>126))
+      if((scratchpad_128[j]<32)||(scratchpad_128[j]>126))
       {
         snprintf(txt_string, txt_len, "Error, %ith character of number of samples field of signal %i is not a valid 7-bit ASCII character.",
         j + 1,
@@ -1210,18 +1210,18 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
       }
     }
 
-    if(is_integer_number(scratchpad))
+    if(is_integer_number(scratchpad_128))
     {
       snprintf(txt_string, txt_len, "Error, number of samples in datarecord field of signal %i is invalid: \"%s\".",
              i + 1,
-             scratchpad);
+             scratchpad_128);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
       return NULL;
     }
 
-    n = atoi(scratchpad);
+    n = atoi(scratchpad_128);
     if(n<1)
     {
       snprintf(txt_string, txt_len, "Error, number of samples in datarecord of signal %i is out of range: %i,\nshould be >0",
@@ -1308,12 +1308,12 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
 
   for(i=0; i<edfhdr->edfsignals; i++)
   {
-    strncpy(scratchpad, edf_hdr + 256 + (edfhdr->edfsignals * 224) + (i * 32), 32);
+    strncpy(scratchpad_128, edf_hdr + 256 + (edfhdr->edfsignals * 224) + (i * 32), 32);
     if(edfhdr->edf || edfhdr->bdfplus)
     {
       for(j=0; j<32; j++)
       {
-        if(scratchpad[j] != ' ')
+        if(scratchpad_128[j] != ' ')
         {
           snprintf(txt_string, txt_len, "Error, %ith character of reserved field of signal %i is not a space.\n"
                                         "You can repair the file with the header editor, have a look at the manual for the details.",
@@ -1330,7 +1330,7 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
     {
       for(j=0; j<32; j++)
       {
-        if((scratchpad[j] < 32) || (scratchpad[j] > 126))
+        if((scratchpad_128[j] < 32) || (scratchpad_128[j] > 126))
         {
           snprintf(txt_string, txt_len, "Error, %ith character of reserved field of signal %i is not a valid 7-bit ASCII character.\n"
                                         "You can repair the file with the header editor, have a look at the manual for the details.",
@@ -1353,11 +1353,11 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
   {
     error = 0;
     dotposition = 0;
-    strncpy(scratchpad, edf_hdr + 8, 80);
-    scratchpad[80] = 0;
+    strncpy(scratchpad_128, edf_hdr + 8, 80);
+    scratchpad_128[80] = 0;
     for(i=0; i<80; i++)
     {
-      if(scratchpad[i]==' ')
+      if(scratchpad_128[i]==' ')
       {
         dotposition = i;
         break;
@@ -1365,47 +1365,47 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
     }
     dotposition++;
     if((dotposition>73)||(dotposition<2))  error = 1;
-    if(scratchpad[dotposition + 2]!='X')
+    if(scratchpad_128[dotposition + 2]!='X')
     {
       if(dotposition>65)  error = 1;
     }
-    if((scratchpad[dotposition]!='M')&&(scratchpad[dotposition]!='F')&&(scratchpad[dotposition]!='X'))  error = 1;
+    if((scratchpad_128[dotposition]!='M')&&(scratchpad_128[dotposition]!='F')&&(scratchpad_128[dotposition]!='X'))  error = 1;
     dotposition++;
-    if(scratchpad[dotposition]!=' ')  error = 1;
-    if(scratchpad[dotposition + 1]=='X')
+    if(scratchpad_128[dotposition]!=' ')  error = 1;
+    if(scratchpad_128[dotposition + 1]=='X')
     {
-      if(scratchpad[dotposition + 2]!=' ')  error = 1;
-      if(scratchpad[dotposition + 3]==' ')  error = 1;
+      if(scratchpad_128[dotposition + 2]!=' ')  error = 1;
+      if(scratchpad_128[dotposition + 3]==' ')  error = 1;
     }
     else
     {
-      if(scratchpad[dotposition + 12]!=' ')  error = 1;
-      if(scratchpad[dotposition + 13]==' ')  error = 1;
+      if(scratchpad_128[dotposition + 12]!=' ')  error = 1;
+      if(scratchpad_128[dotposition + 13]==' ')  error = 1;
       dotposition++;
-      strncpy(scratchpad2, scratchpad + dotposition, 11);
-      scratchpad2[11] = 0;
-      if((scratchpad2[2]!='-')||(scratchpad2[6]!='-'))  error = 1;
-      scratchpad2[2] = 0;
-      scratchpad2[6] = 0;
-      if((scratchpad2[0]<48)||(scratchpad2[0]>57))  error = 1;
-      if((scratchpad2[1]<48)||(scratchpad2[1]>57))  error = 1;
-      if((scratchpad2[7]<48)||(scratchpad2[7]>57))  error = 1;
-      if((scratchpad2[8]<48)||(scratchpad2[8]>57))  error = 1;
-      if((scratchpad2[9]<48)||(scratchpad2[9]>57))  error = 1;
-      if((scratchpad2[10]<48)||(scratchpad2[10]>57))  error = 1;
-      if((atoi(scratchpad2)<1)||(atoi(scratchpad2)>31))  error = 1;
-      if(strcmp(scratchpad2 + 3, "JAN"))
-        if(strcmp(scratchpad2 + 3, "FEB"))
-          if(strcmp(scratchpad2 + 3, "MAR"))
-            if(strcmp(scratchpad2 + 3, "APR"))
-              if(strcmp(scratchpad2 + 3, "MAY"))
-                if(strcmp(scratchpad2 + 3, "JUN"))
-                  if(strcmp(scratchpad2 + 3, "JUL"))
-                    if(strcmp(scratchpad2 + 3, "AUG"))
-                      if(strcmp(scratchpad2 + 3, "SEP"))
-                        if(strcmp(scratchpad2 + 3, "OCT"))
-                          if(strcmp(scratchpad2 + 3, "NOV"))
-                            if(strcmp(scratchpad2 + 3, "DEC"))
+      strncpy(scratchpad_64, scratchpad_128 + dotposition, 11);
+      scratchpad_64[11] = 0;
+      if((scratchpad_64[2]!='-')||(scratchpad_64[6]!='-'))  error = 1;
+      scratchpad_64[2] = 0;
+      scratchpad_64[6] = 0;
+      if((scratchpad_64[0]<48)||(scratchpad_64[0]>57))  error = 1;
+      if((scratchpad_64[1]<48)||(scratchpad_64[1]>57))  error = 1;
+      if((scratchpad_64[7]<48)||(scratchpad_64[7]>57))  error = 1;
+      if((scratchpad_64[8]<48)||(scratchpad_64[8]>57))  error = 1;
+      if((scratchpad_64[9]<48)||(scratchpad_64[9]>57))  error = 1;
+      if((scratchpad_64[10]<48)||(scratchpad_64[10]>57))  error = 1;
+      if((atoi(scratchpad_64)<1)||(atoi(scratchpad_64)>31))  error = 1;
+      if(strcmp(scratchpad_64 + 3, "JAN"))
+        if(strcmp(scratchpad_64 + 3, "FEB"))
+          if(strcmp(scratchpad_64 + 3, "MAR"))
+            if(strcmp(scratchpad_64 + 3, "APR"))
+              if(strcmp(scratchpad_64 + 3, "MAY"))
+                if(strcmp(scratchpad_64 + 3, "JUN"))
+                  if(strcmp(scratchpad_64 + 3, "JUL"))
+                    if(strcmp(scratchpad_64 + 3, "AUG"))
+                      if(strcmp(scratchpad_64 + 3, "SEP"))
+                        if(strcmp(scratchpad_64 + 3, "OCT"))
+                          if(strcmp(scratchpad_64 + 3, "NOV"))
+                            if(strcmp(scratchpad_64 + 3, "DEC"))
                               error = 1;
     }
 
@@ -1528,48 +1528,48 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
   if(edfhdr->edfplus || edfhdr->bdfplus)
   {
     error = 0;
-    strncpy(scratchpad, edf_hdr + 88, 80);
-    scratchpad[80] = 0;
-    if(strncmp(scratchpad, "Startdate ", 10))  error = 1;
+    strncpy(scratchpad_128, edf_hdr + 88, 80);
+    scratchpad_128[80] = 0;
+    if(strncmp(scratchpad_128, "Startdate ", 10))  error = 1;
 
     edfhdr->plus_startdate_offset = 10;
 
-    if(scratchpad[10]=='X')
+    if(scratchpad_128[10]=='X')
     {
-      if(scratchpad[11]!=' ')  error = 1;
-      if(scratchpad[12]==' ')  error = 1;
+      if(scratchpad_128[11]!=' ')  error = 1;
+      if(scratchpad_128[12]==' ')  error = 1;
       p = 12;
     }
     else
     {
-      if(scratchpad[21]!=' ')  error = 1;
-      if(scratchpad[22]==' ')  error = 1;
+      if(scratchpad_128[21]!=' ')  error = 1;
+      if(scratchpad_128[22]==' ')  error = 1;
       p = 22;
-      strncpy(scratchpad2, scratchpad + 10, 11);
-      scratchpad2[11] = 0;
-      if((scratchpad2[2]!='-')||(scratchpad2[6]!='-'))  error = 1;
-      scratchpad2[2] = 0;
-      scratchpad2[6] = 0;
-      if((scratchpad2[0]<48)||(scratchpad2[0]>57))  error = 1;
-      if((scratchpad2[1]<48)||(scratchpad2[1]>57))  error = 1;
-      if((scratchpad2[7]<48)||(scratchpad2[7]>57))  error = 1;
-      if((scratchpad2[8]<48)||(scratchpad2[8]>57))  error = 1;
-      if((scratchpad2[9]<48)||(scratchpad2[9]>57))  error = 1;
-      if((scratchpad2[10]<48)||(scratchpad2[10]>57))  error = 1;
-      if((atoi(scratchpad2)<1)||(atoi(scratchpad2)>31))  error = 1;
+      strncpy(scratchpad_64, scratchpad_128 + 10, 11);
+      scratchpad_64[11] = 0;
+      if((scratchpad_64[2]!='-')||(scratchpad_64[6]!='-'))  error = 1;
+      scratchpad_64[2] = 0;
+      scratchpad_64[6] = 0;
+      if((scratchpad_64[0]<48)||(scratchpad_64[0]>57))  error = 1;
+      if((scratchpad_64[1]<48)||(scratchpad_64[1]>57))  error = 1;
+      if((scratchpad_64[7]<48)||(scratchpad_64[7]>57))  error = 1;
+      if((scratchpad_64[8]<48)||(scratchpad_64[8]>57))  error = 1;
+      if((scratchpad_64[9]<48)||(scratchpad_64[9]>57))  error = 1;
+      if((scratchpad_64[10]<48)||(scratchpad_64[10]>57))  error = 1;
+      if((atoi(scratchpad_64)<1)||(atoi(scratchpad_64)>31))  error = 1;
       r = 0;
-      if(!strcmp(scratchpad2 + 3, "JAN"))  r = 1;
-        else if(!strcmp(scratchpad2 + 3, "FEB"))  r = 2;
-          else if(!strcmp(scratchpad2 + 3, "MAR"))  r = 3;
-            else if(!strcmp(scratchpad2 + 3, "APR"))  r = 4;
-              else if(!strcmp(scratchpad2 + 3, "MAY"))  r = 5;
-                else if(!strcmp(scratchpad2 + 3, "JUN"))  r = 6;
-                  else if(!strcmp(scratchpad2 + 3, "JUL"))  r = 7;
-                    else if(!strcmp(scratchpad2 + 3, "AUG"))  r = 8;
-                      else if(!strcmp(scratchpad2 + 3, "SEP"))  r = 9;
-                        else if(!strcmp(scratchpad2 + 3, "OCT"))  r = 10;
-                          else if(!strcmp(scratchpad2 + 3, "NOV"))  r = 11;
-                            else if(!strcmp(scratchpad2 + 3, "DEC"))  r = 12;
+      if(!strcmp(scratchpad_64 + 3, "JAN"))  r = 1;
+        else if(!strcmp(scratchpad_64 + 3, "FEB"))  r = 2;
+          else if(!strcmp(scratchpad_64 + 3, "MAR"))  r = 3;
+            else if(!strcmp(scratchpad_64 + 3, "APR"))  r = 4;
+              else if(!strcmp(scratchpad_64 + 3, "MAY"))  r = 5;
+                else if(!strcmp(scratchpad_64 + 3, "JUN"))  r = 6;
+                  else if(!strcmp(scratchpad_64 + 3, "JUL"))  r = 7;
+                    else if(!strcmp(scratchpad_64 + 3, "AUG"))  r = 8;
+                      else if(!strcmp(scratchpad_64 + 3, "SEP"))  r = 9;
+                        else if(!strcmp(scratchpad_64 + 3, "OCT"))  r = 10;
+                          else if(!strcmp(scratchpad_64 + 3, "NOV"))  r = 11;
+                            else if(!strcmp(scratchpad_64 + 3, "DEC"))  r = 12;
                               else error = 1;
     }
 
@@ -1581,10 +1581,10 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
         error = 1;
         break;
       }
-      if(scratchpad[i]==' ')
+      if(scratchpad_128[i]==' ')
       {
         n++;
-        if(scratchpad[i + 1]==' ')
+        if(scratchpad_128[i + 1]==' ')
         {
           error = 1;
           break;
@@ -1616,14 +1616,14 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
     {
       error = 0;
 
-      strncpy(scratchpad, edf_hdr + 168, 8);
-      scratchpad[2] = 0;
-      scratchpad[5] = 0;
-      scratchpad[8] = 0;
+      strncpy(scratchpad_128, edf_hdr + 168, 8);
+      scratchpad_128[2] = 0;
+      scratchpad_128[5] = 0;
+      scratchpad_128[8] = 0;
 
-      if(atoi(scratchpad)!=atoi(scratchpad2))  error = 1;
-      if(atoi(scratchpad+3)!=r)  error = 1;
-      if(atoi(scratchpad+6)!=atoi(scratchpad2+9))  error = 1;
+      if(atoi(scratchpad_128)!=atoi(scratchpad_64))  error = 1;
+      if(atoi(scratchpad_128+3)!=r)  error = 1;
+      if(atoi(scratchpad_128+6)!=atoi(scratchpad_64+9))  error = 1;
       if(error)
       {
         if(edfhdr->edfplus)
@@ -1646,7 +1646,7 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
         return NULL;
       }
 
-      date_time.year = atoi(scratchpad2 + 7);
+      date_time.year = atoi(scratchpad_64 + 7);
 
       if(date_time.year<1985)
       {
