@@ -225,14 +225,14 @@ void UI_RAW2EDFapp::gobuttonpressed()
       big_endian,
       odd_even=0;
 
-  char str[1024],
-       path[MAX_PATH_LENGTH];
+  char str1_1024[1024]={""},
+       path[MAX_PATH_LENGTH]={""};
 
   double phys_max;
 
   long long d_offset;
 
-  FILE *inputfile;
+  FILE *inputfile=NULL;
 
 
   sf = SamplefreqSpinbox->value();
@@ -430,9 +430,9 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
   for(i=0; i<chns; i++)
   {
-    snprintf(str, 1024, "ch. %i", i + 1);
+    snprintf(str1_1024, 1024, "ch. %i", i + 1);
 
-    if(edf_set_label(hdl, i, str))
+    if(edf_set_label(hdl, i, str1_1024))
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "edf_set_label()");
       messagewindow.exec();
@@ -801,8 +801,8 @@ END_1:
   QApplication::restoreOverrideCursor();
   raw2edfDialog->setEnabled(true);
 
-  snprintf(str, 1024, "A new EDF file has been created:\n\n%.980s", path);
-  QMessageBox messagewindow(QMessageBox::Information, "Ready", str);
+  snprintf(str1_1024, 1024, "A new EDF file has been created:\n\n%.980s", path);
+  QMessageBox messagewindow(QMessageBox::Information, "Ready", str1_1024);
   messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
   messagewindow.exec();
 }
@@ -811,10 +811,10 @@ END_1:
 
 void UI_RAW2EDFapp::savebuttonpressed()
 {
-  char path[MAX_PATH_LENGTH],
-       str[128];
+  char path[MAX_PATH_LENGTH]={""},
+       str1_128[128]={""};
 
-  FILE *outputfile;
+  FILE *outputfile=NULL;
 
 
   raw2edf_var->sf = SamplefreqSpinbox->value();
@@ -883,9 +883,9 @@ void UI_RAW2EDFapp::savebuttonpressed()
 
   fprintf(outputfile, "  <skipbytes>%i</skipbytes>\n", raw2edf_var->skipbytes);
 
-  xml_strlcpy_encode_entity(str, raw2edf_var->phys_dim, 128);
+  xml_strlcpy_encode_entity(str1_128, raw2edf_var->phys_dim, 128);
 
-  fprintf(outputfile, "  <phys_dim>%s</phys_dim>\n", str);
+  fprintf(outputfile, "  <phys_dim>%s</phys_dim>\n", str1_128);
 
   fprintf(outputfile, "</" PROGRAM_NAME "_raw2edf_template>\n");
 
@@ -896,10 +896,10 @@ void UI_RAW2EDFapp::savebuttonpressed()
 void UI_RAW2EDFapp::loadbuttonpressed()
 {
 
-  char path[MAX_PATH_LENGTH],
-       result[XML_STRBUFLEN];
+  char path[MAX_PATH_LENGTH]={""},
+       result[XML_STRBUFLEN]={""};
 
-  xml_hdl_t *xml_hdl;
+  xml_hdl_t *xml_hdl=NULL;
 
   strlcpy(path, QFileDialog::getOpenFileName(0, "Load parameters", QString::fromLocal8Bit(recent_opendir), "Template files (*.template *.TEMPLATE);;All files (*)").toLocal8Bit().data(), MAX_PATH_LENGTH);
 

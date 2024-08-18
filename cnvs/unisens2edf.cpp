@@ -122,9 +122,9 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   short tmp3;
 
-  char path[MAX_PATH_LENGTH],
-       binfilepath[MAX_PATH_LENGTH],
-       outputfilename[MAX_PATH_LENGTH],
+  char path[MAX_PATH_LENGTH]={""},
+       binfilepath[MAX_PATH_LENGTH]={""},
+       outputfilename[MAX_PATH_LENGTH]={""},
        scratchpad_2048[2048]={""},
        str_256[256]={""},
        *buf1=NULL,

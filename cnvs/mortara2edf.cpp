@@ -81,8 +81,8 @@ void UI_MortaraEDFwindow::SelectFileButton()
   int i, j, err, len, buf_len, char_encoding, edf_hdl=-99, datrecs;
 
   char path[MAX_PATH_LENGTH]={""},
-       scratchpad[4096]={""},
-       scratchpad_2[4096]={""};
+       scratchpad1_4096[4096]={""},
+       scratchpad2_4096[4096]={""};
 
   xml_hdl_t *xml_hdl=NULL;
 
@@ -107,13 +107,13 @@ void UI_MortaraEDFwindow::SelectFileButton()
 
   if(xml_hdl == NULL)
   {
-    snprintf(scratchpad, 4096, "Error, cannot open file:\n%s\n", path);
-    textEdit1->append(QString::fromLocal8Bit(scratchpad));
+    snprintf(scratchpad1_4096, 4096, "Error, cannot open file:\n%s\n", path);
+    textEdit1->append(QString::fromLocal8Bit(scratchpad1_4096));
     return;
   }
 
-  snprintf(scratchpad, 4096, "Processing file:\n%s", path);
-  textEdit1->append(QString::fromLocal8Bit(scratchpad));
+  snprintf(scratchpad1_4096, 4096, "Processing file:\n%s", path);
+  textEdit1->append(QString::fromLocal8Bit(scratchpad1_4096));
 
   char_encoding = xml_hdl->encoding;
 
@@ -163,58 +163,58 @@ void UI_MortaraEDFwindow::SelectFileButton()
     err = xml_goto_nth_element_inside(xml_hdl, "CHANNEL", i);
     if(err)
     {
-      snprintf(scratchpad, 4096, "Error, cannot find element \"CHANNEL\" number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, cannot find element \"CHANNEL\" number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
 
-    len = xml_get_attribute_of_element(xml_hdl, "OFFSET", scratchpad, 4096);
+    len = xml_get_attribute_of_element(xml_hdl, "OFFSET", scratchpad1_4096, 4096);
     if(len < 1)
     {
-      snprintf(scratchpad, 4096, "Error, cannot find attribute \"OFFSET\" in channel number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, cannot find attribute \"OFFSET\" in channel number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       return;
     }
-    chan_offset[i] = atoi(scratchpad);
+    chan_offset[i] = atoi(scratchpad1_4096);
     if(chan_offset[i] < 0)
     {
-      snprintf(scratchpad, 4096, "Error, value of attribute \"OFFSET\" in channel number %i is %i\n", i + 1, chan_offset[i]);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, value of attribute \"OFFSET\" in channel number %i is %i\n", i + 1, chan_offset[i]);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
     if(i)
     {
       if(chan_offset[i] != chan_offset[i-1])
       {
-        snprintf(scratchpad, 4096, "Error, value of attribute \"OFFSET\" in channel number %i is not equal to other channels\n", i + 1);
-        textEdit1->append(scratchpad);
+        snprintf(scratchpad1_4096, 4096, "Error, value of attribute \"OFFSET\" in channel number %i is not equal to other channels\n", i + 1);
+        textEdit1->append(scratchpad1_4096);
         goto OUT_EXIT;
       }
     }
 
-    len = xml_get_attribute_of_element(xml_hdl, "BITS", scratchpad, 4096);
+    len = xml_get_attribute_of_element(xml_hdl, "BITS", scratchpad1_4096, 4096);
     if(len < 1)
     {
-      snprintf(scratchpad, 4096, "Error, cannot find attribute \"BITS\" in channel number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, cannot find attribute \"BITS\" in channel number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
-    chan_bits[i] = atoi(scratchpad);
+    chan_bits[i] = atoi(scratchpad1_4096);
 //     if((chan_bits[i] != 8) &&
 //       (chan_bits[i] != 16) &&
 //       (chan_bits[i] != 32))
     if(chan_bits[i] != 16)
     {
-      snprintf(scratchpad, 4096, "Error, value of attribute \"BITS\" in channel number %i is %i\n", i + 1, chan_offset[i]);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, value of attribute \"BITS\" in channel number %i is %i\n", i + 1, chan_offset[i]);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
     if(i)
     {
       if(chan_bits[i] != chan_bits[i-1])
       {
-        snprintf(scratchpad, 4096, "Error, value of attribute \"BITS\" in channel number %i is not equal to other channels\n", i + 1);
-        textEdit1->append(scratchpad);
+        snprintf(scratchpad1_4096, 4096, "Error, value of attribute \"BITS\" in channel number %i is not equal to other channels\n", i + 1);
+        textEdit1->append(scratchpad1_4096);
         goto OUT_EXIT;
       }
     }
@@ -222,77 +222,77 @@ void UI_MortaraEDFwindow::SelectFileButton()
     len = xml_get_attribute_of_element(xml_hdl, "FORMAT", chan_format[i], 17);
     if(len < 1)
     {
-      snprintf(scratchpad, 4096, "Error, cannot find attribute \"FORMAT\" in channel number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, cannot find attribute \"FORMAT\" in channel number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
     chan_format[i][16] = 0;
     if(strcmp(chan_format[i], "SIGNED"))
     {
-      snprintf(scratchpad, 4096, "Error, value of attribute \"FORMAT\" in channel number %i is %s\n", i + 1, chan_format[i]);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, value of attribute \"FORMAT\" in channel number %i is %s\n", i + 1, chan_format[i]);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
 
-    len = xml_get_attribute_of_element(xml_hdl, "UNITS_PER_MV", scratchpad, 4096);
+    len = xml_get_attribute_of_element(xml_hdl, "UNITS_PER_MV", scratchpad1_4096, 4096);
     if(len < 1)
     {
-      snprintf(scratchpad, 4096, "Error, cannot find attribute \"UNITS_PER_MV\" in channel number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, cannot find attribute \"UNITS_PER_MV\" in channel number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
-    chan_units_per_mv[i] = atoi(scratchpad);
+    chan_units_per_mv[i] = atoi(scratchpad1_4096);
     if(chan_units_per_mv[i] < 1)
     {
-      snprintf(scratchpad, 4096, "Error, value of attribute \"UNITS_PER_MV\" in channel number %i is %i\n", i + 1, chan_units_per_mv[i]);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, value of attribute \"UNITS_PER_MV\" in channel number %i is %i\n", i + 1, chan_units_per_mv[i]);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
 
-    len = xml_get_attribute_of_element(xml_hdl, "DURATION", scratchpad, 4096);
+    len = xml_get_attribute_of_element(xml_hdl, "DURATION", scratchpad1_4096, 4096);
     if(len < 1)
     {
-      snprintf(scratchpad, 4096, "Error, cannot find attribute \"DURATION\" in channel number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, cannot find attribute \"DURATION\" in channel number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
-    chan_duration[i] = atoi(scratchpad);
+    chan_duration[i] = atoi(scratchpad1_4096);
     if(chan_duration[i] < 1)
     {
-      snprintf(scratchpad, 4096, "Error, value of attribute \"DURATION\" in channel number %i is %i\n", i + 1, chan_duration[i]);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, value of attribute \"DURATION\" in channel number %i is %i\n", i + 1, chan_duration[i]);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
     if(i)
     {
       if(chan_duration[i] != chan_duration[i-1])
       {
-        snprintf(scratchpad, 4096, "Error, value of attribute \"DURATION\" in channel number %i is not equal to other channels\n", i + 1);
-        textEdit1->append(scratchpad);
+        snprintf(scratchpad1_4096, 4096, "Error, value of attribute \"DURATION\" in channel number %i is not equal to other channels\n", i + 1);
+        textEdit1->append(scratchpad1_4096);
         goto OUT_EXIT;
       }
     }
 
-    len = xml_get_attribute_of_element(xml_hdl, "SAMPLE_FREQ", scratchpad, 4096);
+    len = xml_get_attribute_of_element(xml_hdl, "SAMPLE_FREQ", scratchpad1_4096, 4096);
     if(len < 1)
     {
-      snprintf(scratchpad, 4096, "Error, cannot find attribute \"SAMPLE_FREQ\" in channel number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, cannot find attribute \"SAMPLE_FREQ\" in channel number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
-    chan_sample_freq[i] = atoi(scratchpad);
+    chan_sample_freq[i] = atoi(scratchpad1_4096);
     if(chan_sample_freq[i] < 1)
     {
-      snprintf(scratchpad, 4096, "Error, value of attribute \"SAMPLE_FREQ\" in channel number %i is %i\n", i + 1, chan_sample_freq[i]);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, value of attribute \"SAMPLE_FREQ\" in channel number %i is %i\n", i + 1, chan_sample_freq[i]);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
     if(i)
     {
       if(chan_sample_freq[i] != chan_sample_freq[i-1])
       {
-        snprintf(scratchpad, 4096, "Error, value of attribute \"SAMPLE_FREQ\" in channel number %i is not equal to other channels\n", i + 1);
-        textEdit1->append(scratchpad);
+        snprintf(scratchpad1_4096, 4096, "Error, value of attribute \"SAMPLE_FREQ\" in channel number %i is not equal to other channels\n", i + 1);
+        textEdit1->append(scratchpad1_4096);
         goto OUT_EXIT;
       }
     }
@@ -300,24 +300,24 @@ void UI_MortaraEDFwindow::SelectFileButton()
     len = xml_get_attribute_of_element(xml_hdl, "NAME", chan_name[i], 17);
     if(len < 1)
     {
-      snprintf(scratchpad, 4096, "Error, cannot find attribute \"NAME\" in channel number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, cannot find attribute \"NAME\" in channel number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
     chan_name[i][16] = 0;
 
-    len = xml_get_attribute_of_element(xml_hdl, "ENCODING", scratchpad, 4096);
+    len = xml_get_attribute_of_element(xml_hdl, "ENCODING", scratchpad1_4096, 4096);
     if(len < 1)
     {
-      snprintf(scratchpad, 4096, "Error, cannot find attribute \"ENCODING\" in channel number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, cannot find attribute \"ENCODING\" in channel number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
-    scratchpad[32] = 0;
-    if(strcmp(scratchpad, "BASE64"))
+    scratchpad1_4096[32] = 0;
+    if(strcmp(scratchpad1_4096, "BASE64"))
     {
-      snprintf(scratchpad_2, 4096, "Error, value of attribute \"ENCODING\" in channel number %i is %.4000s\n", i + 1, scratchpad);
-      textEdit1->append(scratchpad_2);
+      snprintf(scratchpad2_4096, 4096, "Error, value of attribute \"ENCODING\" in channel number %i is %.4000s\n", i + 1, scratchpad1_4096);
+      textEdit1->append(scratchpad2_4096);
       goto OUT_EXIT;
     }
 
@@ -347,16 +347,16 @@ void UI_MortaraEDFwindow::SelectFileButton()
     err = xml_goto_nth_element_inside(xml_hdl, "CHANNEL", i);
     if(err)
     {
-      snprintf(scratchpad, 4096, "Error, cannot find element \"CHANNEL\" number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, cannot find element \"CHANNEL\" number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
 
     buf_len = xml_get_attribute_of_element(xml_hdl, "DATA", NULL, 10 * 1000 * 1000);
     if(buf_len < 1)
     {
-      snprintf(scratchpad, 4096, "Error, cannot find attribute \"DATA\" in channel number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, cannot find attribute \"DATA\" in channel number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
 
@@ -376,23 +376,23 @@ void UI_MortaraEDFwindow::SelectFileButton()
     len = xml_get_attribute_of_element(xml_hdl, "DATA", chan_data_in[i], buf_len);
     if(len < 1)
     {
-      snprintf(scratchpad, 4096, "Error, cannot load channel data in channel number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, cannot load channel data in channel number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
 
     chan_decoded_len[i] = base64_dec(chan_data_in[i], chan_data_out[i], buf_len);
     if(chan_decoded_len[i] < 1)
     {
-      snprintf(scratchpad, 4096, "Error, cannot decode data in channel number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, cannot decode data in channel number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
 
     if(chan_decoded_len[i] < 100)
     {
-      snprintf(scratchpad, 4096, "Error, not enough samples in channel number %i\n", i + 1);
-      textEdit1->append(scratchpad);
+      snprintf(scratchpad1_4096, 4096, "Error, not enough samples in channel number %i\n", i + 1);
+      textEdit1->append(scratchpad1_4096);
       goto OUT_EXIT;
     }
 
@@ -400,8 +400,8 @@ void UI_MortaraEDFwindow::SelectFileButton()
     {
       if(chan_decoded_len[i] != chan_decoded_len[i-1])
       {
-        snprintf(scratchpad, 4096, "Error, number of samples in channel number %i is not equal to other channels\n", i + 1);
-        textEdit1->append(scratchpad);
+        snprintf(scratchpad1_4096, 4096, "Error, number of samples in channel number %i is not equal to other channels\n", i + 1);
+        textEdit1->append(scratchpad1_4096);
         goto OUT_EXIT;
       }
     }
@@ -486,16 +486,16 @@ void UI_MortaraEDFwindow::SelectFileButton()
         utf8_to_latin1(subject_name);
       }
 
-      len = xml_get_attribute_of_element(xml_hdl, "GENDER", scratchpad, 128);
+      len = xml_get_attribute_of_element(xml_hdl, "GENDER", scratchpad1_4096, 128);
       if(len < 1)
       {
         textEdit1->append("Warning, subjects' gender not present");
       }
-      if(scratchpad[0] == 'M')
+      if(scratchpad1_4096[0] == 'M')
       {
         subject_sex = 1;
       }
-      else if(scratchpad[0] == 'F')
+      else if(scratchpad1_4096[0] == 'F')
         {
           subject_sex = 0;
         }

@@ -128,10 +128,10 @@ unsigned int fmt_chunk_offset,
              data_chunk_offset,
              tmp;
 
-  char path[MAX_PATH_LENGTH],
-       outputfilename[MAX_PATH_LENGTH],
-       scratchpad[512],
-       *readbuf;
+  char path[MAX_PATH_LENGTH]={""},
+       outputfilename[MAX_PATH_LENGTH]={""},
+       scratchpad_512[512]={""},
+       *readbuf=NULL;
 
   long long blocks,
             leftover,
@@ -188,7 +188,7 @@ unsigned int fmt_chunk_offset,
 
   rewind(inputfile);
 
-  if(fread(scratchpad, 256, 1, inputfile)!=1)
+  if(fread(scratchpad_512, 256, 1, inputfile)!=1)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading from inputfile.");
     messagewindow.exec();
@@ -197,7 +197,7 @@ unsigned int fmt_chunk_offset,
     return;
   }
 
-  if((strncmp(scratchpad, "RIFF", 4)) || (strncmp(scratchpad + 8, "WAVE", 4)))
+  if((strncmp(scratchpad_512, "RIFF", 4)) || (strncmp(scratchpad_512 + 8, "WAVE", 4)))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "File is not a Wave file.");
     messagewindow.exec();
@@ -212,7 +212,7 @@ unsigned int fmt_chunk_offset,
   {
     fseeko(inputfile, (long long)fmt_chunk_offset, SEEK_SET);
 
-    if(fread(scratchpad, 256, 1, inputfile)!=1)
+    if(fread(scratchpad_512, 256, 1, inputfile)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find fmt chunk.");
       messagewindow.exec();
@@ -221,12 +221,12 @@ unsigned int fmt_chunk_offset,
       return;
     }
 
-    if(strncmp(scratchpad, "fmt ", 4) == 0)
+    if(strncmp(scratchpad_512, "fmt ", 4) == 0)
     {
       break;
     }
 
-    tmp = *((unsigned int *)(scratchpad + 4));
+    tmp = *((unsigned int *)(scratchpad_512 + 4));
     if(tmp < 2)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find fmt chunk.");
@@ -244,7 +244,7 @@ unsigned int fmt_chunk_offset,
     fmt_chunk_offset += (tmp + 8);
   }
 
-  if(*((signed short *)(scratchpad + 8)) != 1)
+  if(*((signed short *)(scratchpad_512 + 8)) != 1)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "File contains compressed data.\nCannot convert compressed data.");
     messagewindow.exec();
@@ -253,7 +253,7 @@ unsigned int fmt_chunk_offset,
     return;
   }
 
-  edfsignals = *((unsigned short *)(scratchpad + 10));
+  edfsignals = *((unsigned short *)(scratchpad_512 + 10));
 
   if(edfsignals < 1)
   {
@@ -273,7 +273,7 @@ unsigned int fmt_chunk_offset,
     return;
   }
 
-  sf = *((unsigned int *)(scratchpad + 12));
+  sf = *((unsigned int *)(scratchpad_512 + 12));
 
   if(sf < 1)
   {
@@ -293,7 +293,7 @@ unsigned int fmt_chunk_offset,
     return;
   }
 
-  resolution = *((unsigned short *)(scratchpad + 22));
+  resolution = *((unsigned short *)(scratchpad_512 + 22));
 
   if(resolution < 8)
   {
@@ -342,7 +342,7 @@ unsigned int fmt_chunk_offset,
   {
     fseeko(inputfile, (long long)data_chunk_offset, SEEK_SET);
 
-    if(fread(scratchpad, 256, 1, inputfile)!=1)
+    if(fread(scratchpad_512, 256, 1, inputfile)!=1)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find data chunk.");
       messagewindow.exec();
@@ -351,12 +351,12 @@ unsigned int fmt_chunk_offset,
       return;
     }
 
-    if(strncmp(scratchpad, "data", 4) == 0)
+    if(strncmp(scratchpad_512, "data", 4) == 0)
     {
       break;
     }
 
-    tmp = *((unsigned int *)(scratchpad + 4));
+    tmp = *((unsigned int *)(scratchpad_512 + 4));
     if(tmp < 2)
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot find data chunk.");
@@ -385,7 +385,7 @@ unsigned int fmt_chunk_offset,
     sf /= 10;
   }
 
-  blocks = (long long)(*((int *)(scratchpad + 4)));
+  blocks = (long long)(*((int *)(scratchpad_512 + 4)));
 
   blocks /= (sf * edfsignals * bytes_per_sample);
 
@@ -558,9 +558,9 @@ unsigned int fmt_chunk_offset,
 
   for(i=0; i<edfsignals; i++)
   {
-    snprintf(scratchpad, 512, "channel %i", i + 1);
+    snprintf(scratchpad_512, 512, "channel %i", i + 1);
 
-    edf_set_label(edf_hdl, i, scratchpad);
+    edf_set_label(edf_hdl, i, scratchpad_512);
   }
 
   edf_set_patientname(edf_hdl, PatientnameLineEdit->text().toLatin1().data());

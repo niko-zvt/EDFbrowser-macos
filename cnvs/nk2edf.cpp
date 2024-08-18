@@ -112,14 +112,14 @@ void UI_NK2EDFwindow::SelectFileButton()
       logblock_address,
       read_subevents=0;
 
-  char txt_string[2048],
-       path[MAX_PATH_LENGTH],
-       outputpath[MAX_PATH_LENGTH],
-       logfilepath[MAX_PATH_LENGTH],
-       pntfilepath[MAX_PATH_LENGTH],
+  char str1_2048[2048]={""},
+       path[MAX_PATH_LENGTH]={""},
+       outputpath[MAX_PATH_LENGTH]={""},
+       logfilepath[MAX_PATH_LENGTH]={""},
+       pntfilepath[MAX_PATH_LENGTH]={""},
        *log_buf=NULL,
        *sublog_buf=NULL,
-       scratchpad[256];
+       scratchpad_256[256]={""};
 
 
   pushButton1->setEnabled(false);
@@ -141,8 +141,8 @@ void UI_NK2EDFwindow::SelectFileButton()
   inputfile = fopeno(path, "rb");
   if(inputfile==NULL)
   {
-    snprintf(txt_string, 2048, "cannot open file %s for reading.\n", path);
-    textEdit1->append(QString::fromLocal8Bit(txt_string));
+    snprintf(str1_2048, 2048, "cannot open file %s for reading.\n", path);
+    textEdit1->append(QString::fromLocal8Bit(str1_2048));
     pushButton1->setEnabled(true);
     return;
   }
@@ -150,35 +150,35 @@ void UI_NK2EDFwindow::SelectFileButton()
 /***************** check if the EEG file is valid ******************************/
 
   rewind(inputfile);
-  if(fread(scratchpad, 16, 1, inputfile)!=1)
+  if(fread(scratchpad_256, 16, 1, inputfile)!=1)
   {
     textEdit1->append("error reading .eeg file.\n");
     fclose(inputfile);
     pushButton1->setEnabled(true);
     return;
   }
-  scratchpad[16] = 0;
-  if(check_device(scratchpad))
+  scratchpad_256[16] = 0;
+  if(check_device(scratchpad_256))
   {
-    snprintf(txt_string, 2048, "error, deviceblock has unknown signature: \"%s\"\n", scratchpad);
-    textEdit1->append(txt_string);
+    snprintf(str1_2048, 2048, "error, deviceblock has unknown signature: \"%s\"\n", scratchpad_256);
+    textEdit1->append(str1_2048);
     fclose(inputfile);
     pushButton1->setEnabled(true);
     return;
   }
   fseeko(inputfile, 0x0081LL, SEEK_SET);
-  if(fread(scratchpad, 16, 1, inputfile)!=1)
+  if(fread(scratchpad_256, 16, 1, inputfile)!=1)
   {
     textEdit1->append("error reading .eeg file.\n");
     fclose(inputfile);
     pushButton1->setEnabled(true);
     return;
   }
-  scratchpad[16] = 0;
-  if(check_device(scratchpad))
+  scratchpad_256[16] = 0;
+  if(check_device(scratchpad_256))
   {
-    snprintf(txt_string, 2048, "error, controlblock has unknown signature: \"%s\"\n", scratchpad);
-    textEdit1->append(txt_string);
+    snprintf(str1_2048, 2048, "error, controlblock has unknown signature: \"%s\"\n", scratchpad_256);
+    textEdit1->append(str1_2048);
     fclose(inputfile);
     pushButton1->setEnabled(true);
     return;
@@ -186,8 +186,8 @@ void UI_NK2EDFwindow::SelectFileButton()
   fseeko(inputfile, 0x17feLL, SEEK_SET);
   if(fgetc(inputfile)!=0x01)
   {
-    snprintf(txt_string, 2048, "error, waveformdatablock has wrong signature.\n");
-    textEdit1->append(txt_string);
+    snprintf(str1_2048, 2048, "error, waveformdatablock has wrong signature.\n");
+    textEdit1->append(str1_2048);
     fclose(inputfile);
     pushButton1->setEnabled(true);
     return;
@@ -208,10 +208,10 @@ void UI_NK2EDFwindow::SelectFileButton()
       logfile = fopeno(logfilepath, "rb");
       if(logfile==NULL)
       {
-        snprintf(txt_string, 2048, "Cannot open file %s for reading,\n"
+        snprintf(str1_2048, 2048, "Cannot open file %s for reading,\n"
                             "if there is no .log file you can try to create an EDF file instead of EDF+.\n",
                             logfilepath);
-        textEdit1->append(QString::fromLocal8Bit(txt_string));
+        textEdit1->append(QString::fromLocal8Bit(str1_2048));
         fclose(inputfile);
         pushButton1->setEnabled(true);
         return;
@@ -219,7 +219,7 @@ void UI_NK2EDFwindow::SelectFileButton()
     }
 
     rewind(logfile);
-    if(fread(scratchpad, 16, 1, logfile)!=1)
+    if(fread(scratchpad_256, 16, 1, logfile)!=1)
     {
       textEdit1->append("error reading .log file.\n");
       fclose(logfile);
@@ -227,11 +227,11 @@ void UI_NK2EDFwindow::SelectFileButton()
       pushButton1->setEnabled(true);
       return;
     }
-    scratchpad[16] = 0;
-    if(check_device(scratchpad))
+    scratchpad_256[16] = 0;
+    if(check_device(scratchpad_256))
     {
-      snprintf(txt_string, 2048, "error, .log file has unknown signature: \"%s\"\n", scratchpad);
-      textEdit1->append(QString::fromLocal8Bit(txt_string));
+      snprintf(str1_2048, 2048, "error, .log file has unknown signature: \"%s\"\n", scratchpad_256);
+      textEdit1->append(QString::fromLocal8Bit(str1_2048));
       fclose(logfile);
       fclose(inputfile);
       pushButton1->setEnabled(true);
@@ -366,10 +366,10 @@ void UI_NK2EDFwindow::SelectFileButton()
       pntfile = fopeno(pntfilepath, "rb");
       if(pntfile==NULL)
       {
-        snprintf(txt_string, 2048, "Cannot open file %s for reading,\n"
+        snprintf(str1_2048, 2048, "Cannot open file %s for reading,\n"
                             "if there is no .pnt file you can try to create an EDF file instead of EDF+.\n",
                             pntfilepath);
-        textEdit1->append(QString::fromLocal8Bit(txt_string));
+        textEdit1->append(QString::fromLocal8Bit(str1_2048));
         fclose(logfile);
         fclose(inputfile);
         free(log_buf);
@@ -380,7 +380,7 @@ void UI_NK2EDFwindow::SelectFileButton()
     }
 
     rewind(pntfile);
-    if(fread(scratchpad, 16, 1, pntfile)!=1)
+    if(fread(scratchpad_256, 16, 1, pntfile)!=1)
     {
       textEdit1->append("error reading .pnt file.\n");
       fclose(pntfile);
@@ -391,11 +391,11 @@ void UI_NK2EDFwindow::SelectFileButton()
       pushButton1->setEnabled(true);
       return;
     }
-    scratchpad[16] = 0;
-    if(check_device(scratchpad))
+    scratchpad_256[16] = 0;
+    if(check_device(scratchpad_256))
     {
-      snprintf(txt_string, 2048, "error, .pnt file has unknown signature: \"%s\"\n", scratchpad);
-      textEdit1->append(QString::fromLocal8Bit(txt_string));
+      snprintf(str1_2048, 2048, "error, .pnt file has unknown signature: \"%s\"\n", scratchpad_256);
+      textEdit1->append(QString::fromLocal8Bit(str1_2048));
       fclose(pntfile);
       fclose(logfile);
       fclose(inputfile);
@@ -555,8 +555,8 @@ void UI_NK2EDFwindow::SelectFileButton()
       outputfile = fopeno(outputpath, "wb");
       if(outputfile==NULL)
       {
-        snprintf(txt_string, 2048, "cannot open file %s for writing.\n", outputpath);
-        textEdit1->append(QString::fromLocal8Bit(txt_string));
+        snprintf(str1_2048, 2048, "cannot open file %s for writing.\n", outputpath);
+        textEdit1->append(QString::fromLocal8Bit(str1_2048));
         pushButton1->setEnabled(true);
         fclose(inputfile);
         if(edfplus)
@@ -576,8 +576,8 @@ void UI_NK2EDFwindow::SelectFileButton()
       error = convert_nk2edf(inputfile, outputfile, pntfile, wfmblock_address, edfplus, total_logs, log_buf, read_subevents);
       if(error==0)
       {
-        snprintf(txt_string, 2048, "to %s", outputpath);
-        textEdit1->append(txt_string);
+        snprintf(str1_2048, 2048, "to %s", outputpath);
+        textEdit1->append(str1_2048);
       }
       if(error==1)  textEdit1->append("malloc error.\n");
       if(error==2)  textEdit1->append("read error during conversion.\n");
@@ -627,9 +627,9 @@ void UI_NK2EDFwindow::SelectFileButton()
     free(sublog_buf);
   }
 
-  if(edfplus)  snprintf(txt_string, 2048, "Converted %u waveformblock(s) successfully to EDF+.\n", total_blocks);
-  else  snprintf(txt_string, 2048, "Converted %u waveformblock(s) successfully to EDF.\n", total_blocks);
-  textEdit1->append(txt_string);
+  if(edfplus)  snprintf(str1_2048, 2048, "Converted %u waveformblock(s) successfully to EDF+.\n", total_blocks);
+  else  snprintf(str1_2048, 2048, "Converted %u waveformblock(s) successfully to EDF.\n", total_blocks);
+  textEdit1->append(str1_2048);
 
   pushButton1->setEnabled(true);
 }
@@ -658,9 +658,9 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       progress_steps,
       n_log_processed;
 
-  char *buf,
-       *annotations,
-       scratchpad[256];
+  char *buf=NULL,
+       *annotations=NULL,
+       scratchpad_256[256];
 
 /************************* filter events ******************************************/
 
@@ -687,21 +687,21 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
   {
     error = 0;
     fseeko(pntfile, 0x0604LL, SEEK_SET);
-    if(fread(scratchpad, 10, 1, pntfile)!=1)
+    if(fread(scratchpad_256, 10, 1, pntfile)!=1)
     {
       return 2;
     }
-    scratchpad[10] = 0;
-    latin1_to_ascii(scratchpad, strlen(scratchpad));
+    scratchpad_256[10] = 0;
+    latin1_to_ascii(scratchpad_256, strlen(scratchpad_256));
     for(i=0; i<10; i++)
     {
-      if(scratchpad[i]==0)  break;
-      if(scratchpad[i]==' ')  scratchpad[i] = '_';
+      if(scratchpad_256[i]==0)  break;
+      if(scratchpad_256[i]==' ')  scratchpad_256[i] = '_';
     }
     if(i)
     {
       p = i;
-      if(fwrite(scratchpad, i, 1, outputfile)!=1)
+      if(fwrite(scratchpad_256, i, 1, outputfile)!=1)
       {
         return 3;
       }
@@ -715,14 +715,14 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     p++;
 
     fseeko(pntfile, 0x064aLL, SEEK_SET);
-    if(fread(scratchpad, 6, 1, pntfile)!=1)
+    if(fread(scratchpad_256, 6, 1, pntfile)!=1)
     {
       return 2;
     }
-    if(!strncmp(scratchpad, "Male", 4))  fputc('M', outputfile);
+    if(!strncmp(scratchpad_256, "Male", 4))  fputc('M', outputfile);
     else
     {
-      if(!strncmp(scratchpad, "Female", 6))  fputc('F', outputfile);
+      if(!strncmp(scratchpad_256, "Female", 6))  fputc('F', outputfile);
       else  fputc('X', outputfile);
     }
     p++;
@@ -730,40 +730,40 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     p++;
 
     fseeko(pntfile, 0x0668LL, SEEK_SET);
-    if(fread(scratchpad, 2, 1, pntfile)!=1)
+    if(fread(scratchpad_256, 2, 1, pntfile)!=1)
     {
       return 2;
     }
-    scratchpad[2] = 0;
-    temp = atoi(scratchpad);
+    scratchpad_256[2] = 0;
+    temp = atoi(scratchpad_256);
     if((temp<1)||(temp>31))  error = 1;
     for(i=0; i<2; i++)
     {
-      if((scratchpad[i]<'0')||(scratchpad[i]>'9'))
+      if((scratchpad_256[i]<'0')||(scratchpad_256[i]>'9'))
       {
         error = 1;
         break;
       }
     }
     fseeko(pntfile, 0x0665LL, SEEK_SET);
-    if(fread(scratchpad, 2, 1, pntfile)!=1)
+    if(fread(scratchpad_256, 2, 1, pntfile)!=1)
     {
       return 2;
     }
-    scratchpad[2] = 0;
-    temp = atoi(scratchpad);
+    scratchpad_256[2] = 0;
+    temp = atoi(scratchpad_256);
     if((temp<1)||(temp>12))  error = 1;
     fseeko(pntfile, 0x0660LL, SEEK_SET);
-    if(fread(scratchpad, 4, 1, pntfile)!=1)
+    if(fread(scratchpad_256, 4, 1, pntfile)!=1)
     {
       return 2;
     }
-    scratchpad[4] = 0;
-    temp = atoi(scratchpad);
+    scratchpad_256[4] = 0;
+    temp = atoi(scratchpad_256);
     if((temp<1)||(temp>9999))  error = 1;
     for(i=0; i<4; i++)
     {
-      if((scratchpad[i]<'0')||(scratchpad[i]>'9'))
+      if((scratchpad_256[i]<'0')||(scratchpad_256[i]>'9'))
       {
         error = 1;
         break;
@@ -778,27 +778,27 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     else
     {
       fseeko(pntfile, 0x0668LL, SEEK_SET);
-      if(fread(scratchpad, 2, 1, pntfile)!=1)
+      if(fread(scratchpad_256, 2, 1, pntfile)!=1)
       {
         return 2;
       }
-      scratchpad[2] = 0;
-      temp = atoi(scratchpad);
+      scratchpad_256[2] = 0;
+      temp = atoi(scratchpad_256);
       if((temp<1)||(temp>31))
       {
-        snprintf(scratchpad, 48, "01");
+        snprintf(scratchpad_256, 48, "01");
         error = 1;
       }
       for(i=0; i<2; i++)
       {
-        if((scratchpad[i]<'0')||(scratchpad[i]>'9'))
+        if((scratchpad_256[i]<'0')||(scratchpad_256[i]>'9'))
         {
-          snprintf(scratchpad, 48, "01");
+          snprintf(scratchpad_256, 48, "01");
           error = 1;
           break;
         }
       }
-      if(fwrite(scratchpad, 2, 1, outputfile)!=1)
+      if(fwrite(scratchpad_256, 2, 1, outputfile)!=1)
       {
         return 3;
       }
@@ -806,43 +806,43 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       fputc('-', outputfile);
       p++;
       fseeko(pntfile, 0x0665LL, SEEK_SET);
-      if(fread(scratchpad, 2, 1, pntfile)!=1)
+      if(fread(scratchpad_256, 2, 1, pntfile)!=1)
       {
         return 2;
       }
-      scratchpad[2] = 0;
-      temp = atoi(scratchpad);
+      scratchpad_256[2] = 0;
+      temp = atoi(scratchpad_256);
       switch(temp)
       {
-        case  1 : strlcpy(scratchpad, "JAN", 256);
+        case  1 : strlcpy(scratchpad_256, "JAN", 256);
                   break;
-        case  2 : strlcpy(scratchpad, "FEB", 256);
+        case  2 : strlcpy(scratchpad_256, "FEB", 256);
                   break;
-        case  3 : strlcpy(scratchpad, "MAR", 256);
+        case  3 : strlcpy(scratchpad_256, "MAR", 256);
                   break;
-        case  4 : strlcpy(scratchpad, "APR", 256);
+        case  4 : strlcpy(scratchpad_256, "APR", 256);
                   break;
-        case  5 : strlcpy(scratchpad, "MAY", 256);
+        case  5 : strlcpy(scratchpad_256, "MAY", 256);
                   break;
-        case  6 : strlcpy(scratchpad, "JUN", 256);
+        case  6 : strlcpy(scratchpad_256, "JUN", 256);
                   break;
-        case  7 : strlcpy(scratchpad, "JUL", 256);
+        case  7 : strlcpy(scratchpad_256, "JUL", 256);
                   break;
-        case  8 : strlcpy(scratchpad, "AUG", 256);
+        case  8 : strlcpy(scratchpad_256, "AUG", 256);
                   break;
-        case  9 : strlcpy(scratchpad, "SEP", 256);
+        case  9 : strlcpy(scratchpad_256, "SEP", 256);
                   break;
-        case 10 : strlcpy(scratchpad, "OCT", 256);
+        case 10 : strlcpy(scratchpad_256, "OCT", 256);
                   break;
-        case 11 : strlcpy(scratchpad, "NOV", 256);
+        case 11 : strlcpy(scratchpad_256, "NOV", 256);
                   break;
-        case 12 : strlcpy(scratchpad, "DEC", 256);
+        case 12 : strlcpy(scratchpad_256, "DEC", 256);
                   break;
-        default : strlcpy(scratchpad, "JAN", 256);
+        default : strlcpy(scratchpad_256, "JAN", 256);
                   error = 1;
                   break;
       }
-      if(fwrite(scratchpad, 3, 1, outputfile)!=1)
+      if(fwrite(scratchpad_256, 3, 1, outputfile)!=1)
       {
         return 3;
       }
@@ -850,27 +850,27 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       fputc('-', outputfile);
       p++;
       fseeko(pntfile, 0x0660LL, SEEK_SET);
-      if(fread(scratchpad, 4, 1, pntfile)!=1)
+      if(fread(scratchpad_256, 4, 1, pntfile)!=1)
       {
         return 2;
       }
-      scratchpad[4] = 0;
-      temp = atoi(scratchpad);
+      scratchpad_256[4] = 0;
+      temp = atoi(scratchpad_256);
       if((temp<1)||(temp>9999))
       {
-        snprintf(scratchpad, 48, "1800");
+        snprintf(scratchpad_256, 48, "1800");
         error = 1;
       }
       for(i=0; i<4; i++)
       {
-        if((scratchpad[i]<'0')||(scratchpad[i]>'9'))
+        if((scratchpad_256[i]<'0')||(scratchpad_256[i]>'9'))
         {
-          snprintf(scratchpad, 48, "1800");
+          snprintf(scratchpad_256, 48, "1800");
           error = 1;
           break;
         }
       }
-      if(fwrite(scratchpad, 4, 1, outputfile)!=1)
+      if(fwrite(scratchpad_256, 4, 1, outputfile)!=1)
       {
         return 3;
       }
@@ -881,21 +881,21 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     p++;
 
     fseeko(pntfile, 0x062eLL, SEEK_SET);
-    if(fread(scratchpad, 20, 1, pntfile)!=1)
+    if(fread(scratchpad_256, 20, 1, pntfile)!=1)
     {
       return 2;
     }
-    scratchpad[20] = 0;
-    latin1_to_ascii(scratchpad, strlen(scratchpad));
+    scratchpad_256[20] = 0;
+    latin1_to_ascii(scratchpad_256, strlen(scratchpad_256));
     for(i=0; i<20; i++)
     {
-      if(scratchpad[i]==0)  break;
-      if(scratchpad[i]==' ')  scratchpad[i] = '_';
+      if(scratchpad_256[i]==0)  break;
+      if(scratchpad_256[i]==' ')  scratchpad_256[i] = '_';
     }
     if(i)
     {
       p += i;
-      if(fwrite(scratchpad, i, 1, outputfile)!=1)
+      if(fwrite(scratchpad_256, i, 1, outputfile)!=1)
       {
         return 3;
       }
@@ -917,40 +917,40 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     p = 10;
     error = 0;
     fseeko(pntfile, 0x0046LL, SEEK_SET);
-    if(fread(scratchpad, 2, 1, pntfile)!=1)
+    if(fread(scratchpad_256, 2, 1, pntfile)!=1)
     {
       return 2;
     }
-    scratchpad[2] = 0;
-    temp = atoi(scratchpad);
+    scratchpad_256[2] = 0;
+    temp = atoi(scratchpad_256);
     if((temp<1)||(temp>31))  error = 1;
     for(i=0; i<2; i++)
     {
-      if((scratchpad[i]<'0')||(scratchpad[i]>'9'))
+      if((scratchpad_256[i]<'0')||(scratchpad_256[i]>'9'))
       {
         error = 1;
         break;
       }
     }
     fseeko(pntfile, 0x0044LL, SEEK_SET);
-    if(fread(scratchpad, 2, 1, pntfile)!=1)
+    if(fread(scratchpad_256, 2, 1, pntfile)!=1)
     {
       return 2;
     }
-    scratchpad[2] = 0;
-    temp = atoi(scratchpad);
+    scratchpad_256[2] = 0;
+    temp = atoi(scratchpad_256);
     if((temp<1)||(temp>12))  error = 1;
     fseeko(pntfile, 0x0040LL, SEEK_SET);
-    if(fread(scratchpad, 4, 1, pntfile)!=1)
+    if(fread(scratchpad_256, 4, 1, pntfile)!=1)
     {
       return 2;
     }
-    scratchpad[4] = 0;
-    temp = atoi(scratchpad);
+    scratchpad_256[4] = 0;
+    temp = atoi(scratchpad_256);
     if((temp<1985)||(temp>=2085))  error = 1;
     for(i=0; i<4; i++)
     {
-      if((scratchpad[i]<'0')||(scratchpad[i]>'9'))
+      if((scratchpad_256[i]<'0')||(scratchpad_256[i]>'9'))
       {
         error = 1;
         break;
@@ -965,84 +965,84 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     else
     {
       fseeko(pntfile, 0x0046LL, SEEK_SET);
-      if(fread(scratchpad, 2, 1, pntfile)!=1)
+      if(fread(scratchpad_256, 2, 1, pntfile)!=1)
       {
         return 2;
       }
-      scratchpad[2] = 0;
-      temp = atoi(scratchpad);
-      if((temp<1)||(temp>31))  snprintf(scratchpad, 48, "01");
+      scratchpad_256[2] = 0;
+      temp = atoi(scratchpad_256);
+      if((temp<1)||(temp>31))  snprintf(scratchpad_256, 48, "01");
       for(i=0; i<2; i++)
       {
-        if((scratchpad[i]<'0')||(scratchpad[i]>'9'))
+        if((scratchpad_256[i]<'0')||(scratchpad_256[i]>'9'))
         {
-          snprintf(scratchpad, 48, "01");
+          snprintf(scratchpad_256, 48, "01");
           break;
         }
       }
-      if(fwrite(scratchpad, 2, 1, outputfile)!=1)
+      if(fwrite(scratchpad_256, 2, 1, outputfile)!=1)
       {
         return 3;
       }
       fputc('-', outputfile);
       fseeko(pntfile, 0x0044LL, SEEK_SET);
-      if(fread(scratchpad, 2, 1, pntfile)!=1)
+      if(fread(scratchpad_256, 2, 1, pntfile)!=1)
       {
         return 2;
       }
-      scratchpad[2] = 0;
-      temp = atoi(scratchpad);
+      scratchpad_256[2] = 0;
+      temp = atoi(scratchpad_256);
       switch(temp)
       {
-        case  1 : strlcpy(scratchpad, "JAN", 256);
+        case  1 : strlcpy(scratchpad_256, "JAN", 256);
                   break;
-        case  2 : strlcpy(scratchpad, "FEB", 256);
+        case  2 : strlcpy(scratchpad_256, "FEB", 256);
                   break;
-        case  3 : strlcpy(scratchpad, "MAR", 256);
+        case  3 : strlcpy(scratchpad_256, "MAR", 256);
                   break;
-        case  4 : strlcpy(scratchpad, "APR", 256);
+        case  4 : strlcpy(scratchpad_256, "APR", 256);
                   break;
-        case  5 : strlcpy(scratchpad, "MAY", 256);
+        case  5 : strlcpy(scratchpad_256, "MAY", 256);
                   break;
-        case  6 : strlcpy(scratchpad, "JUN", 256);
+        case  6 : strlcpy(scratchpad_256, "JUN", 256);
                   break;
-        case  7 : strlcpy(scratchpad, "JUL", 256);
+        case  7 : strlcpy(scratchpad_256, "JUL", 256);
                   break;
-        case  8 : strlcpy(scratchpad, "AUG", 256);
+        case  8 : strlcpy(scratchpad_256, "AUG", 256);
                   break;
-        case  9 : strlcpy(scratchpad, "SEP", 256);
+        case  9 : strlcpy(scratchpad_256, "SEP", 256);
                   break;
-        case 10 : strlcpy(scratchpad, "OCT", 256);
+        case 10 : strlcpy(scratchpad_256, "OCT", 256);
                   break;
-        case 11 : strlcpy(scratchpad, "NOV", 256);
+        case 11 : strlcpy(scratchpad_256, "NOV", 256);
                   break;
-        case 12 : strlcpy(scratchpad, "DEC", 256);
+        case 12 : strlcpy(scratchpad_256, "DEC", 256);
                   break;
-        default : strlcpy(scratchpad, "JAN", 256);
+        default : strlcpy(scratchpad_256, "JAN", 256);
                   break;
       }
-      if(fwrite(scratchpad, 3, 1, outputfile)!=1)
+      if(fwrite(scratchpad_256, 3, 1, outputfile)!=1)
       {
         return 3;
       }
       fputc('-', outputfile);
       fseeko(pntfile, 0x0040LL, SEEK_SET);
-      if(fread(scratchpad, 4, 1, pntfile)!=1)
+      if(fread(scratchpad_256, 4, 1, pntfile)!=1)
       {
         return 2;
       }
-      scratchpad[4] = 0;
-      temp = atoi(scratchpad);
-      if((temp<1)||(temp>9999))  snprintf(scratchpad, 48, "1800");
+      scratchpad_256[4] = 0;
+      temp = atoi(scratchpad_256);
+      if((temp<1)||(temp>9999))  snprintf(scratchpad_256, 48, "1800");
       for(i=0; i<4; i++)
       {
-        if((scratchpad[i]<'0')||(scratchpad[i]>'9'))
+        if((scratchpad_256[i]<'0')||(scratchpad_256[i]>'9'))
         {
-          snprintf(scratchpad, 48, "1800");
+          snprintf(scratchpad_256, 48, "1800");
           break;
         }
       }
-      if(fwrite(scratchpad, 4, 1, outputfile)!=1)
+      if(fwrite(scratchpad_256, 4, 1, outputfile)!=1)
       {
         return 3;
       }
@@ -1053,21 +1053,21 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     p++;
 
     fseeko(pntfile, 0x061cLL, SEEK_SET);
-    if(fread(scratchpad, 10, 1, pntfile)!=1)
+    if(fread(scratchpad_256, 10, 1, pntfile)!=1)
     {
       return 2;
     }
-    scratchpad[10] = 0;
-    latin1_to_ascii(scratchpad, strlen(scratchpad));
+    scratchpad_256[10] = 0;
+    latin1_to_ascii(scratchpad_256, strlen(scratchpad_256));
     for(i=0; i<10; i++)
     {
-      if(scratchpad[i]==0)  break;
-      if(scratchpad[i]==' ')  scratchpad[i] = '_';
+      if(scratchpad_256[i]==0)  break;
+      if(scratchpad_256[i]==' ')  scratchpad_256[i] = '_';
     }
     if(i)
     {
       p += i;
-      if(fwrite(scratchpad, i, 1, outputfile)!=1)
+      if(fwrite(scratchpad_256, i, 1, outputfile)!=1)
       {
         return 3;
       }
@@ -1082,21 +1082,21 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     p++;
 
     fseeko(pntfile, 0x06aaLL, SEEK_SET);
-    if(fread(scratchpad, 20, 1, pntfile)!=1)
+    if(fread(scratchpad_256, 20, 1, pntfile)!=1)
     {
       return 2;
     }
-    scratchpad[20] = 0;
-    latin1_to_ascii(scratchpad, strlen(scratchpad));
+    scratchpad_256[20] = 0;
+    latin1_to_ascii(scratchpad_256, strlen(scratchpad_256));
     for(i=0; i<20; i++)
     {
-      if(scratchpad[i]==0)  break;
-      if(scratchpad[i]==' ')  scratchpad[i] = '_';
+      if(scratchpad_256[i]==0)  break;
+      if(scratchpad_256[i]==' ')  scratchpad_256[i] = '_';
     }
     if(i)
     {
       p += i;
-      if(fwrite(scratchpad, i, 1, outputfile)!=1)
+      if(fwrite(scratchpad_256, i, 1, outputfile)!=1)
       {
         return 3;
       }
@@ -1116,18 +1116,18 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
     }
     p += 13;
     rewind(inputfile);
-    if(fread(scratchpad, 16, 1, inputfile)!=1)
+    if(fread(scratchpad_256, 16, 1, inputfile)!=1)
     {
       return 2;
     }
-    scratchpad[16] = 0;
-    latin1_to_ascii(scratchpad, strlen(scratchpad));
+    scratchpad_256[16] = 0;
+    latin1_to_ascii(scratchpad_256, strlen(scratchpad_256));
     for(i=0; i<16; i++)
     {
-      if(scratchpad[i]==0)  break;
-      if(scratchpad[i]==' ')  scratchpad[i] = '_';
+      if(scratchpad_256[i]==0)  break;
+      if(scratchpad_256[i]==' ')  scratchpad_256[i] = '_';
     }
-    if(fwrite(scratchpad, i, 1, outputfile)!=1)
+    if(fwrite(scratchpad_256, i, 1, outputfile)!=1)
     {
       return 3;
     }
@@ -1138,18 +1138,18 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
   else
   {
     fseeko(inputfile, 0x004fLL, SEEK_SET);
-    if(fread(scratchpad, 32, 1, inputfile)!=1)
+    if(fread(scratchpad_256, 32, 1, inputfile)!=1)
     {
       return 2;
     }
-    scratchpad[32] = 0;
-    latin1_to_ascii(scratchpad, strlen(scratchpad));
+    scratchpad_256[32] = 0;
+    latin1_to_ascii(scratchpad_256, strlen(scratchpad_256));
     for(i=0; i<32; i++)
     {
-      if(scratchpad[i]==0)  break;
+      if(scratchpad_256[i]==0)  break;
     }
     p = 80 - i;
-    if(fwrite(scratchpad, i, 1, outputfile)!=1)
+    if(fwrite(scratchpad_256, i, 1, outputfile)!=1)
     {
       return 3;
     }
@@ -1160,18 +1160,18 @@ int UI_NK2EDFwindow::convert_nk2edf(FILE *inputfile, FILE *outputfile, FILE *pnt
       return 3;
     }
     rewind(inputfile);
-    if(fread(scratchpad, 16, 1, inputfile)!=1)
+    if(fread(scratchpad_256, 16, 1, inputfile)!=1)
     {
       return 2;
     }
-    scratchpad[16] = 0;
-    latin1_to_ascii(scratchpad, strlen(scratchpad));
+    scratchpad_256[16] = 0;
+    latin1_to_ascii(scratchpad_256, strlen(scratchpad_256));
     for(i=0; i<16; i++)
     {
-      if(scratchpad[i]==0)  break;
+      if(scratchpad_256[i]==0)  break;
     }
     p = 67 - i;
-    if(fwrite(scratchpad, i, 1, outputfile)!=1)
+    if(fwrite(scratchpad_256, i, 1, outputfile)!=1)
     {
       return 3;
     }
@@ -1456,12 +1456,12 @@ int UI_NK2EDFwindow::read_21e_file(char *e21filepath)
       flag_eleclines=0,
       idx;
 
-  char *electrode_name,
-       electrode_name_buffer[ELECTRODE_NAME_MAXLEN],
-       scratchpad[64],
-       *charpntr;
+  char *electrode_name=NULL,
+       electrode_name_buffer[ELECTRODE_NAME_MAXLEN]={""},
+       scratchpad_64[64]={""},
+       *charpntr=NULL;
 
-  FILE *inputfile;
+  FILE *inputfile=NULL;
 
 
   remove_extension_from_filename(e21filepath);
@@ -1527,15 +1527,15 @@ int UI_NK2EDFwindow::read_21e_file(char *e21filepath)
           {
             if(n > 0)
             {
-              strncpy(scratchpad, electrode_name, 16);
+              strncpy(scratchpad_64, electrode_name, 16);
 
-              strlcat(scratchpad, "                ", 64);
+              strlcat(scratchpad_64, "                ", 64);
 
-              latin1_to_ascii(scratchpad, 16);
+              latin1_to_ascii(scratchpad_64, 16);
 
-              scratchpad[16] = 0;
+              scratchpad_64[16] = 0;
 
-              strlcpy(labels[idx], scratchpad, 17);
+              strlcpy(labels[idx], scratchpad_64, 17);
             }
             else
             {
