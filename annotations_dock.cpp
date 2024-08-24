@@ -1428,7 +1428,7 @@ void UI_Annotationswindow::updateList(int scroll_to_item_requested)
     {
       len = strlen(str1);
 #ifdef Q_OS_WIN32
-      __mingw_snprintf(str + len, MAX_ANNOTATION_LEN + 32 - len, "\ndatarecord: %i\nfile offset: 0x%02llx", annot->datrec, annot->file_offset);
+      __mingw_snprintf(str1 + len, MAX_ANNOTATION_LEN + 32 - len, "\ndatarecord: %i\nfile offset: 0x%02llx", annot->datrec, annot->file_offset);
 #else
       snprintf(str1 + len, MAX_ANNOTATION_LEN + 32 - len, "\ndatarecord: %i\nfile offset: 0x%02llx", annot->datrec, annot->file_offset);
 #endif

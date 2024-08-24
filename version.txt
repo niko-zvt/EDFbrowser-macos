@@ -1,5 +1,5 @@
 
- version 2.11      to be defined
+ version 2.11      August 24, 204
  --------------
 
  - Increased the maximum number of channels from 640 to 4096.
@@ -8,10 +8,9 @@
  - Fix possible random aborts (crash-alike) caused by false positives when
    compile option "fortify source" was enabled in the Qt makespecs by some distributions.
 
- - QRS detector: increased the maximum number of QRS annotations from 262144 to 2^31
-   (as long as the amount of system memory suffice).
+ - QRS detector: increased the maximum number of QRS annotations from 262144 to 2^31.
 
- - Options/Settings: Added an option to select the plotting order (not the position)
+ - Options/Settings: Added an option to select the plotting order (Z-order, not the position)
    of the traces (top to bottom or vice versa).
 
 
