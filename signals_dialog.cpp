@@ -416,7 +416,7 @@ void UI_Signalswindow::DisplayCompButtonClicked()
         {
           newsignalcomp->polarity *= -1;
 
-          newsignalcomp->screen_offset *= -1;
+          newsignalcomp->screen_offset_pix *= -1;
         }
       }
     }
@@ -555,7 +555,7 @@ void UI_Signalswindow::DisplayButtonClicked()
           {
             newsignalcomp->polarity *= -1;
 
-            newsignalcomp->screen_offset *= -1;
+            newsignalcomp->screen_offset_pix *= -1;
           }
         }
       }

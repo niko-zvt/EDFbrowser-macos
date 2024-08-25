@@ -3727,7 +3727,7 @@ void UI_OptionsDialog::update_interface(void)
 
       mainwindow->signalcomp[i]->sensitivity = (mainwindow->signalcomp[i]->edfparam_0->bitvalue / value) / mainwindow->y_pixelsizefactor;
 
-      mainwindow->signalcomp[i]->screen_offset *= (mainwindow->signalcomp[i]->voltpercm / value);
+      mainwindow->signalcomp[i]->screen_offset_pix *= (mainwindow->signalcomp[i]->voltpercm / value);
 
       mainwindow->signalcomp[i]->voltpercm = value;
     }

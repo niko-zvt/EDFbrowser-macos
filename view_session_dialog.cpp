@@ -107,7 +107,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       fir_filter_cnt=0,
       islpf,
       signalcomps,
-      screen_offset,
+      screen_offset_pix,
       order,
       model,
       type,
@@ -484,7 +484,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       view_session_format_error(__FILE__, __LINE__, xml_hdl);
       return;
     }
-    screen_offset = atoi(result);
+    screen_offset_pix = atoi(result);
     xml_go_up(xml_hdl);
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "polarity", 0)))
@@ -691,7 +691,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
     remove_trailing_zeros(composition_txt_2048);
 
-    snprintf(composition_txt_2048 + strlen(composition_txt_2048), 2048 - strlen(composition_txt_2048), "/cm  offset: %f", (double)screen_offset * mainwindow->y_pixelsizefactor * voltpercm);
+    snprintf(composition_txt_2048 + strlen(composition_txt_2048), 2048 - strlen(composition_txt_2048), "/cm  offset: %f", (double)screen_offset_pix * mainwindow->y_pixelsizefactor * voltpercm);
 
     remove_trailing_zeros(composition_txt_2048);
 

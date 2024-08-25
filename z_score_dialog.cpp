@@ -317,7 +317,8 @@ void UI_ZScoreWindow::addTraceButtonClicked()
 
   signalcomp->zratio_crossoverfreq = crossoverSpinbox->value();
 
-  signalcomp->screen_offset = 0.0;
+  signalcomp->screen_offset_pix = 0.0;
+  signalcomp->screen_offset_unit = 0.0;
 
   mainwindow->setup_viewbuf();
 }

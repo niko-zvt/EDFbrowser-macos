@@ -1410,7 +1410,7 @@ UI_Mainwindow::UI_Mainwindow()
     for(j=0; j<MAXSIGNALS; j++)
     {
       zoomhistory->voltpercm[i][j] = 70;
-      zoomhistory->screen_offset[i][j] = 0;
+      zoomhistory->screen_offset_pix[i][j] = 0;
       zoomhistory->sensitivity[i][j] = 0.0475;
     }
   }

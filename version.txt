@@ -1,4 +1,11 @@
 
+ version 2.12      to be defined
+ --------------
+
+ -  When dragging the main window to another screen with a different resolution (dpi),
+    maintain the same offset for traces.
+
+
  version 2.11      August 24, 204
  --------------
 

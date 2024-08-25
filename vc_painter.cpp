@@ -730,7 +730,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                     {
                       if(!strcmp(chp, signalcomp[k]->signallabel))
                       {
-                        baseline = (vertical_distance * (k + 1)) + signalcomp[k]->screen_offset;
+                        baseline = (vertical_distance * (k + 1)) + signalcomp[k]->screen_offset_pix;
 
                         if(annot->selected_in_dock)
                         {
@@ -963,13 +963,13 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
             if(!(j%10))
             {
               snprintf(str1_600, 128, "%+.*f %s", p_decimals,
-                ((sense * j / 5) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor))) * (double)signalcomp[i]->polarity,
+                ((sense * j / 5) + ((signalcomp[i]->screen_offset_pix * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor))) * (double)signalcomp[i]->polarity,
                 signalcomp[i]->physdimension);
 
               painter->drawText(5 * printsize_x_factor, baseline - vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1_600);
 
               snprintf(str1_600, 128, "%+.*f %s", p_decimals,
-                (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor)) - (sense * j / 5)) * (double)signalcomp[i]->polarity,
+                (((signalcomp[i]->screen_offset_pix * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor)) - (sense * j / 5)) * (double)signalcomp[i]->polarity,
                 signalcomp[i]->physdimension);
 
               painter->drawText(5 * printsize_x_factor, baseline + vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1_600);
@@ -1004,7 +1004,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           painter->drawLine(0, baseline - vert_ruler_offset - scroll_h_offset, w, baseline - vert_ruler_offset - scroll_h_offset);
 
           snprintf(str1_600, 128, "%+.*f %s", p_decimals,
-            ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor))) * (double)signalcomp[i]->polarity,
+            ((signalcomp[i]->voltpercm * j) + ((signalcomp[i]->screen_offset_pix * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor))) * (double)signalcomp[i]->polarity,
             signalcomp[i]->physdimension);
 
           painter->drawText(5 * printsize_x_factor, baseline - vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1_600);
@@ -1012,7 +1012,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
           painter->drawLine(0, baseline + vert_ruler_offset - scroll_h_offset, w, baseline + vert_ruler_offset - scroll_h_offset);
 
           snprintf(str1_600, 128, "%+.*f %s", p_decimals,
-            (((signalcomp[i]->screen_offset * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor)) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity,
+            (((signalcomp[i]->screen_offset_pix * signalcomp[i]->voltpercm) / (painter_pixelsizefactor / printsize_y_factor)) - (signalcomp[i]->voltpercm * j)) * (double)signalcomp[i]->polarity,
             signalcomp[i]->physdimension);
 
           painter->drawText(5 * printsize_x_factor, baseline + vert_ruler_offset - (4 * printsize_y_factor) - scroll_h_offset, str1_600);
@@ -1103,7 +1103,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                   {
                     if(!strcmp(chp, signalcomp[k]->signallabel))
                     {
-                      baseline = (vertical_distance * (k + 1)) + signalcomp[k]->screen_offset;
+                      baseline = (vertical_distance * (k + 1)) + signalcomp[k]->screen_offset_pix;
 
                       painter->drawLine(marker_x, baseline + (vertical_distance / 2) - scroll_h_offset, marker_x, baseline - (vertical_distance / 2) - scroll_h_offset);
 
@@ -1614,7 +1614,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     if(signalcomp[i]->hasoffsettracking)
     {
       n = snprintf(str1_600, 128, "offset: %f %s",
-        -signalcomp[i]->screen_offset * mainwindow->y_pixelsizefactor * signalcomp[i]->voltpercm,
+        -signalcomp[i]->screen_offset_pix * mainwindow->y_pixelsizefactor * signalcomp[i]->voltpercm,
         signalcomp[i]->physdimension);
       painter->fillRect((135 * w_scaling) - (mono_font_pixel_width / 2), baseline - (2 * h_scaling) - scroll_h_offset, (n + 1) * mono_font_pixel_width, -15 * h_scaling, backgroundcolor);
       painter->setPen((Qt::GlobalColor)signalcomp[i]->color);

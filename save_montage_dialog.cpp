@@ -168,7 +168,7 @@ void UI_SaveMontagewindow::SaveButtonClicked()
 
       fprintf(mtgfile, "    <voltpercm>%f</voltpercm>\n", mainwindow->signalcomp[i]->voltpercm);
 
-      fprintf(mtgfile, "    <screen_offset>%f</screen_offset>\n", mainwindow->signalcomp[i]->screen_offset);
+      fprintf(mtgfile, "    <screen_offset>%f</screen_offset>\n", mainwindow->signalcomp[i]->screen_offset_pix);
 
       fprintf(mtgfile, "    <polarity>%i</polarity>\n", mainwindow->signalcomp[i]->polarity);
 

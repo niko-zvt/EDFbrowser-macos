@@ -314,7 +314,8 @@ typedef struct
   int hasoffsettracking;
   int hasgaintracking;
   int hasruler;
-  double screen_offset;
+  double screen_offset_pix;
+  double screen_offset_unit;
   double voltpercm;
   char physdimension[9];
   char physdimension_bu[9];
@@ -388,7 +389,7 @@ typedef struct
   long long pagetime[MAXZOOMHISTORY];
   double voltpercm[MAXZOOMHISTORY][MAXSIGNALS];
   double sensitivity[MAXZOOMHISTORY][MAXSIGNALS];
-  double screen_offset[MAXZOOMHISTORY][MAXSIGNALS];
+  double screen_offset_pix[MAXZOOMHISTORY][MAXSIGNALS];
 } zoomhistblck_t;
 
 typedef struct

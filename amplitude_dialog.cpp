@@ -123,7 +123,7 @@ void UI_Userdefined_amplitude_Dialog::okbutton_pressed()
 
     mainwindow->signalcomp[i]->voltpercm = value2;
 
-    mainwindow->signalcomp[i]->screen_offset *= (original_value / value2);
+    mainwindow->signalcomp[i]->screen_offset_pix *= (original_value / value2);
   }
 
   mainwindow->maincurve->drawCurve_stage_1();

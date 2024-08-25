@@ -500,7 +500,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
     newsignalcomp->hascursor2 = 0;
     newsignalcomp->hasoffsettracking = 0;
     newsignalcomp->hasgaintracking = 0;
-    newsignalcomp->screen_offset = 0;
+    newsignalcomp->screen_offset_pix = 0;
     newsignalcomp->math_func_cnt_before = 0;
     newsignalcomp->math_func_cnt_after = 0;
     newsignalcomp->filter_cnt = 0;
@@ -551,7 +551,7 @@ int UI_LoadMontagewindow::LoadButtonClicked()
     {
       return format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
     }
-    newsignalcomp->screen_offset = atof(result);
+    newsignalcomp->screen_offset_pix = atof(result);
     xml_go_up(xml_hdl);
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "polarity", 0)))

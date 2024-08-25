@@ -566,7 +566,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
 
         if((m_y<(baseline-(2*h_scaling)))&&(m_y>( baseline-(2*h_scaling)-mainwindow->mono_font_pixel_height))&&(m_x>(2*w_scaling))&&(m_x<((signallabel_strlen * mainwindow->mono_font_pixel_width) + (5 * w_scaling))))
         {
-          original_screen_offset = signalcomp[i]->screen_offset;
+          original_screen_offset_pix = signalcomp[i]->screen_offset_pix;
           signalcomp[i]->hasoffsettracking = 1;
           signal_nr = i;
           pressed_on_label = i + 1;
@@ -618,7 +618,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
       if((m_y<(baseline-(2*h_scaling)))&&(m_y>( baseline-(2*h_scaling)-mainwindow->mono_font_pixel_height))&&(m_x>(2*w_scaling))&&(m_x<((signallabel_strlen * mainwindow->mono_font_pixel_width) + (5 * w_scaling))))
       {
         original_sensitivity = signalcomp[i]->sensitivity;
-        original_screen_offset = signalcomp[i]->screen_offset;
+        original_screen_offset_pix = signalcomp[i]->screen_offset_pix;
         signalcomp[i]->hasgaintracking = 1;
         use_move_events = 1;
         setMouseTracking(true);
@@ -856,7 +856,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
   //
   //                 baseline = (h * mainwindow->mc_v_scrollarea_ratio) / (signalcomps + 1);
   //                 baseline *= (i + 1);
-  //                 baseline += signalcomp[i]->screen_offset;
+  //                 baseline += signalcomp[i]->screen_offset_pix;
 
                   if(signalcomp[i]->draw_rectangle_sum_cnt < 1)  continue;
 
@@ -903,7 +903,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
             for(i=0; i<signalcomps; i++)
             {
               mainwindow->zoomhistory->voltpercm[mainwindow->zoomhistory->idx][i] = signalcomp[i]->voltpercm;
-              mainwindow->zoomhistory->screen_offset[mainwindow->zoomhistory->idx][i] = signalcomp[i]->screen_offset;
+              mainwindow->zoomhistory->screen_offset_pix[mainwindow->zoomhistory->idx][i] = signalcomp[i]->screen_offset_pix;
               mainwindow->zoomhistory->sensitivity[mainwindow->zoomhistory->idx][i] = signalcomp[i]->sensitivity;
             }
             mainwindow->zoomhistory->idx++;
@@ -931,9 +931,9 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
 
             for(i=0; i<signalcomps; i++)
             {
-              mainwindow->signalcomp[i]->screen_offset *= v_zoomfactor;
-              mainwindow->signalcomp[i]->screen_offset += ((h * mainwindow->mc_v_scrollarea_ratio * (v_zoomfactor - 1) * (double)(i + 1)) / (signalcomps + 1));
-              mainwindow->signalcomp[i]->screen_offset -= (sig_rect_select.y1 * v_zoomfactor) + (scroll_h_offset * (v_zoomfactor - 1));
+              mainwindow->signalcomp[i]->screen_offset_pix *= v_zoomfactor;
+              mainwindow->signalcomp[i]->screen_offset_pix += ((h * mainwindow->mc_v_scrollarea_ratio * (v_zoomfactor - 1) * (double)(i + 1)) / (signalcomps + 1));
+              mainwindow->signalcomp[i]->screen_offset_pix -= (sig_rect_select.y1 * v_zoomfactor) + (scroll_h_offset * (v_zoomfactor - 1));
               mainwindow->signalcomp[i]->voltpercm /= v_zoomfactor;
               mainwindow->signalcomp[i]->sensitivity *= v_zoomfactor;
             }
@@ -1148,7 +1148,7 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
     {
       if(signalcomp[i]->hasoffsettracking)
       {
-        signalcomp[i]->screen_offset = original_screen_offset + delta_y;
+        signalcomp[i]->screen_offset_pix = original_screen_offset_pix + delta_y;
       }
 
       if(signalcomp[i]->hasgaintracking)
@@ -1162,7 +1162,7 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
           signalcomp[i]->voltpercm = signalcomp[i]->edfparam_0->bitvalue / (signalcomp[i]->sensitivity * mainwindow->y_pixelsizefactor);
         }
 
-        signalcomp[i]->screen_offset = original_screen_offset * (signalcomp[i]->sensitivity / original_sensitivity);
+        signalcomp[i]->screen_offset_pix = original_screen_offset_pix * (signalcomp[i]->sensitivity / original_sensitivity);
       }
     }
 
@@ -1759,7 +1759,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
         if(((int)dig_value)>signalcomp[i]->max_dig_value)  signalcomp[i]->max_dig_value = dig_value;
         if(((int)dig_value)<signalcomp[i]->min_dig_value)  signalcomp[i]->min_dig_value = dig_value;
 
-        value = baseline - value + (signalcomp[i]->screen_offset * printsize_y_factor);
+        value = baseline - value + (signalcomp[i]->screen_offset_pix * printsize_y_factor);
 
         if(s>=signalcomp[i]->sample_start)
         {
@@ -2136,11 +2136,11 @@ void drawCurve_stage_1_thread::run()
 
       if(printing)
       {
-        value = baseline - value + (int)(signalcomp->screen_offset * printsize_y_factor);
+        value = baseline - value + (int)(signalcomp->screen_offset_pix * printsize_y_factor);
       }
       else
       {
-        value = baseline - value + signalcomp->screen_offset;
+        value = baseline - value + signalcomp->screen_offset_pix;
       }
 
       if(s>=signalcomp->sample_start)

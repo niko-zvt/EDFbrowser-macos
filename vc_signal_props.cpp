@@ -75,7 +75,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   ScaleBox2->setDecimals(8);
   ScaleBox2->setMaximum(1000000.0);
   ScaleBox2->setMinimum(-1000000.0);
-  ScaleBox2->setValue(-mainwindow->signalcomp[signal_nr]->screen_offset * mainwindow->y_pixelsizefactor * mainwindow->signalcomp[signal_nr]->voltpercm);
+  ScaleBox2->setValue(-mainwindow->signalcomp[signal_nr]->screen_offset_pix * mainwindow->y_pixelsizefactor * mainwindow->signalcomp[signal_nr]->voltpercm);
   ScaleBox2->setSuffix(mainwindow->signalcomp[signal_nr]->physdimension);
   strlcpy(str_32, mainwindow->signalcomp[signal_nr]->physdimension, 32);
   trim_spaces(str_32);
@@ -312,7 +312,7 @@ void ViewCurve::ECGdetectButton()
     newsignalcomp->voltpercm = 5.0;
   }
 
-  newsignalcomp->screen_offset = 55.0 / (mainwindow->y_pixelsizefactor * newsignalcomp->voltpercm);
+  newsignalcomp->screen_offset_pix = 55.0 / (mainwindow->y_pixelsizefactor * newsignalcomp->voltpercm);
 
   mainwindow->setup_viewbuf();
 }
@@ -646,7 +646,7 @@ void ViewCurve::ScaleBox2Changed(double value)
     return;
   }
 
-  mainwindow->signalcomp[signal_nr]->screen_offset = -(value / (mainwindow->y_pixelsizefactor * mainwindow->signalcomp[signal_nr]->voltpercm));
+  mainwindow->signalcomp[signal_nr]->screen_offset_pix = -(value / (mainwindow->y_pixelsizefactor * mainwindow->signalcomp[signal_nr]->voltpercm));
 
   drawCurve_stage_1();
 }
@@ -672,7 +672,7 @@ void ViewCurve::ScaleBoxChanged(double value)
 
   mainwindow->signalcomp[signal_nr]->voltpercm = value;
 
-  mainwindow->signalcomp[signal_nr]->screen_offset *= (original_value / value);
+  mainwindow->signalcomp[signal_nr]->screen_offset_pix *= (original_value / value);
 
   drawCurve_stage_1();
 }

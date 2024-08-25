@@ -159,7 +159,7 @@ void UI_Mainwindow::save_session()
 
     fprintf(pro_file, "    <voltpercm>%f</voltpercm>\n", signalcomp[i]->voltpercm);
 
-    fprintf(pro_file, "    <screen_offset>%f</screen_offset>\n", signalcomp[i]->screen_offset);
+    fprintf(pro_file, "    <screen_offset>%f</screen_offset>\n", signalcomp[i]->screen_offset_pix);
 
     fprintf(pro_file, "    <polarity>%i</polarity>\n", signalcomp[i]->polarity);
 

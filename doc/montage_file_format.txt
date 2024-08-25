@@ -54,7 +54,7 @@ Inside every element "signalcomposition", there must be one element with the nam
 
 The value of this element must be an integer or floating point number. (The example has a value of 0.)
 
-The value represents the vertical offset compared to the baseline.
+The value represents the vertical offset compared to the baseline expressed in screen pixels.
 
 
 

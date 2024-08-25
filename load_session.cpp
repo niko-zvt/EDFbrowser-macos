@@ -362,7 +362,7 @@ int UI_Mainwindow::read_session_file(const char *path_session)
     newsignalcomp->hascursor2 = 0;
     newsignalcomp->hasoffsettracking = 0;
     newsignalcomp->hasgaintracking = 0;
-    newsignalcomp->screen_offset = 0;
+    newsignalcomp->screen_offset_pix = 0;
     newsignalcomp->filter_cnt = 0;
     newsignalcomp->ravg_filter_cnt = 0;
     newsignalcomp->fir_filter_cnt = 0;
@@ -411,7 +411,7 @@ int UI_Mainwindow::read_session_file(const char *path_session)
     {
       return session_format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
     }
-    newsignalcomp->screen_offset = atof(result);
+    newsignalcomp->screen_offset_pix = atof(result);
     xml_go_up(xml_hdl);
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "polarity", 0)))
