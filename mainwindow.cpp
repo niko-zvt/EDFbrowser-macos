@@ -5394,6 +5394,10 @@ void UI_Mainwindow::desktop_resized()
 
 void UI_Mainwindow::set_font_metrics(int starting_up)
 {
+  int i, dpiy_old;
+
+  double dpi_ratio;
+
   QFontMetrics fm(*normfont);
 
   norm_font_pixel_height = fm.height();
@@ -5422,6 +5426,8 @@ void UI_Mainwindow::set_font_metrics(int starting_up)
 
   if(!starting_up)
   {
+    dpiy_old = dpiy;
+
     dpix = maincurve->physicalDpiX();
 
     dpiy = maincurve->physicalDpiY();
@@ -5433,6 +5439,13 @@ void UI_Mainwindow::set_font_metrics(int starting_up)
       y_pixelsizefactor = 2.54 / dpiy;
 
       x_pixelsizefactor = 2.54 / dpix;
+    }
+
+    dpi_ratio = (double)dpiy / (double)dpiy_old;
+
+    for(i=0; i<signalcomps; i++)
+    {
+      signalcomp[i]->screen_offset = dpi_ratio * signalcomp[i]->screen_offset + 0.5;
     }
   }
 }
