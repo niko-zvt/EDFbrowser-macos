@@ -29,8 +29,43 @@
 #include "ishne2edf.h"
 
 
+/*
+ *                      |--------- CRC Domain (header) ----------|
+ * +--------------+-----+------------------+---------------------+----------+
+ * | Magic Number | CRC | fixed-size block | variable-size block | ECG-data |
+ * +--------------+-----+------------------+---------------------+----------+
+ * |      8       |  2  |       512        |         var         |    var   |
+ * +--------------+-----+------------------+---------------------+----------+
+ */
+
 #define ISHNE_MAX_CHNS   (12)
 
+#define MAGICNUMBER_HDROFF        (0)  /* string "ISHNE1.0"  8 bytes */
+#define CRC_HDROFF                (8)  /* CRC-CCITT checksum 2 bytes */
+#define VARLENBLCKSZ_HDROFF      (10)  /* Size (in bytes) of variable length block, integer, 4 bytes */
+#define ECGSMPLSZ_HDROFF         (14)  /* Size (in samples) of ECG, integer, 4 bytes */
+#define VARLENBLCKSTART_HDROFF   (18)  /* Offset of variable length block (in bytes from beginning of file, i.e. 8 + 2 + 512 = 522), integer, 4 bytes */
+#define ECGSMPLBLCKSTART_HDROFF  (22)  /* Offset of ECG block (in bytes from beginning of file), integer, 4 bytes */
+#define FILEVER_HDROFF           (26)  /* Version of the file, short int, 2 bytes */
+#define SUBJ1STNAME_HDROFF       (28)  /* Subject First Name, char[40], 40 bytes */
+#define SUBJLASTNAME_HDROFF      (68)  /* Subject Last Name, char[40], 40 bytes */
+#define SUBJID_HDROFF           (108)  /* Subject ID, char[20], 20 bytes */
+#define SUBJSEX_HDROFF          (128)  /* Subject Sex (0: unknown, 1: male, 2: female), short int, 2 bytes */
+#define SUBJRACE_HDROFF         (130)  /* Subject Race (0: unknown, 1: Caucasian, 2 Black, 3 Oriental, 4-9 Reserved), short int, 2 bytes */
+#define SUBJBIRTHDATE_HDROFF    (132)  /* Date of Birth (European: day, month, year), 3 short int, 6 bytes */
+#define STARTDATE_HDROFF        (138)  /* Date of recording (European), 3 short int, 6 bytes */
+#define CREATEDATE_HDROFF       (144)  /* Date of creation of output file (European), 3 short int, 6 bytes */
+#define STARTTIME_HDROFF        (150)  /* Start time (European: hour [0-23], min, sec), 3 short int, 6 bytes */
+#define NUMLEADS_HDROFF         (156)  /* Number of stored leads, short int, 2 bytes */
+#define LEADSPEC_HDROFF         (158)  /* Lead specification (see included Table), 12 short int, 24 bytes */
+#define LEADQUAL_HDROFF         (182)  /* Lead quality (see included Table), 12 short int, 24 bytes */
+#define AMPRES_HDROFF           (206)  /* Amplitude resolution in integer no. of nV, 12 short int, 24 bytes */
+#define PACEMAKCODE_HDROFF      (230)  /* Pacemaker code (see text for description), short int, 2 bytes */
+#define RECORDERTYPE_HDROFF     (232)  /* Type of recorder (either analog or digital), char[40], 40 bytes */
+#define SMPLRATE_HDROFF         (272)  /* Sampling rate (in hertz), short int, 2 bytes */
+#define PROPECG_HDROFF          (274)  /* Proprietary of ECG (if any), char[80], 80 bytes */
+#define COPYRIGHT_HDROFF        (354)  /* Copyright and restriction of diffusion (if any), char[80], 80 bytes */
+#define RESERV_HDROFF           (434)  /* Reserved, char[88], 88 bytes */
 
 
 UI_IshneEDFwindow::UI_IshneEDFwindow(QWidget *w_parent, char *recent_dir, char *save_dir)
@@ -92,6 +127,7 @@ int i, j,
     lead_spec[ISHNE_MAX_CHNS],
     amp_resolution[ISHNE_MAX_CHNS],
     sex,
+    pacemaker,
     edf_hdl=-99,
     birthdate_valid=0,
     total_blocks=0,
@@ -105,7 +141,7 @@ int i, j,
         *outbuf=NULL;
 
   char path[MAX_PATH_LENGTH]={""},
-       hdr[4096]={""},
+       hdr_4096[4096]={""},
        scratchpad_4096[4096]={""},
        str1_128[128]={""},
        rbuf[4]={0,0,0,0},
@@ -114,7 +150,11 @@ int i, j,
   const char *lead_label[20]={"Unknown","Generic bipolar","X bipolar","Y bipolar","Z bipolar","I","II","III","aVR","aVL",
                               "aVF","V1","V2","V3","V4","V5","V6","ES","AS","AI"};
 
-  FILE *inputfile=NULL;
+  const char *pacemaker_list[]={"No pacemaker","Pacemaker type not known","Single chamber unipolar",
+                                "Dual chamber unipolar","Single chamber bipolar","Dual chamber bipolar",""};
+
+  FILE *inputfile=NULL,
+       *annotfile=NULL;
 
   QProgressDialog progress("Converting ECG data ...", "Abort", 0, 0, myobjectDialog);
                   progress.reset();
@@ -159,6 +199,11 @@ struct
   snprintf(scratchpad_4096, 4096, "Processing ecg file:\n%s", path);
   textEdit1->append(QString::fromLocal8Bit(scratchpad_4096));
 
+  remove_extension_from_filename(path);
+  strlcat(path, ".ann", MAX_PATH_LENGTH);
+
+  annotfile = fopen(path, "rb");
+
   fseek(inputfile, 0, SEEK_END);
 
   file_sz = ftell(inputfile);
@@ -171,42 +216,42 @@ struct
 
   rewind(inputfile);
 
-  if(fread(hdr, 522, 1, inputfile) != 1)
+  if(fread(hdr_4096, 522, 1, inputfile) != 1)
   {
     textEdit1->append("A read error occurred when trying to read the header.");
     goto OUT_EXIT;
   }
 
-  if(strncmp(hdr, "ISHNE1.0", 8))
+////////////////////////////////// GET THE HEADER DATA ////////////////////////
+
+  if(strncmp(hdr_4096 + MAGICNUMBER_HDROFF, "ISHNE1.0", 8))
   {
     textEdit1->append("Error, wrong magic string in header.");
     goto OUT_EXIT;
   }
 
-////////////////////////////////// GET THE HEADER DATA ////////////////////////
-
-  var_block_sz = *((int *)(hdr + 10));
+  var_block_sz = *((int *)(hdr_4096 + VARLENBLCKSZ_HDROFF));
   if(var_block_sz < 0)
   {
     textEdit1->append("Error, parameter size of variable length block in header is lower than zero.");
     goto OUT_EXIT;
   }
 
-  ecg_smpl_sz = *((int *)(hdr + 14));
+  ecg_smpl_sz = *((int *)(hdr_4096 + ECGSMPLSZ_HDROFF));
   if(ecg_smpl_sz < 0)
   {
     textEdit1->append("Error, parameter ECG sample size in header is lower than zero.");
     goto OUT_EXIT;
   }
 
-  var_block_offset = *((int *)(hdr + 18));
+  var_block_offset = *((int *)(hdr_4096 + VARLENBLCKSTART_HDROFF));
   if(var_block_offset != 522)
   {
     textEdit1->append("Error, parameter offset of variable length block in header differs from 522");
     goto OUT_EXIT;
   }
 
-  ecg_block_offset = *((int *)(hdr + 22));
+  ecg_block_offset = *((int *)(hdr_4096 + ECGSMPLBLCKSTART_HDROFF));
   if(ecg_block_offset != (var_block_sz + 522))
   {
     textEdit1->append("Error, parameter offset of ECG block in header differs from 522 + variable length block");
@@ -219,7 +264,7 @@ struct
     goto OUT_EXIT;
   }
 
-  chns = *((short *)(hdr + 156));
+  chns = *((short *)(hdr_4096 + NUMLEADS_HDROFF));
   if(chns < 1)
   {
     textEdit1->append("Error, number of leads is less than 1.");
@@ -232,18 +277,23 @@ struct
     goto OUT_EXIT;
   }
 
-  sf = *((short *)(hdr + 272));
+  sf = *((short *)(hdr_4096 + SMPLRATE_HDROFF));
   if(sf < 1)
   {
     textEdit1->append("Error, sampling rate is less than 1Hz.");
     goto OUT_EXIT;
   }
 
-  sex = *((short *)(hdr + 128));
-  if((sex < 0) || (sex > 2))
+  sex = *((short *)(hdr_4096 + SUBJSEX_HDROFF));
+  if((sex != 1) && (sex != 2))
   {
-    textEdit1->append("Error, subject sex is out of range.");
-    goto OUT_EXIT;
+    sex = 0;
+  }
+
+  pacemaker = *((short *)(hdr_4096 + PACEMAKCODE_HDROFF));
+  if((pacemaker < 0) && (pacemaker > 5))
+  {
+    pacemaker = 0;
   }
 
   total_blocks = ecg_smpl_sz / sf;
@@ -269,7 +319,7 @@ struct
 
   for(i=0; i<chns; i++)
   {
-    lead_spec[i] = *((short *)(hdr + 158 + (i * 2)));
+    lead_spec[i] = *((short *)(hdr_4096 + 158 + (i * 2)));
     if((lead_spec[i] < 0) || (lead_spec[i] > 19))
     {
       snprintf(scratchpad_4096, 4096, "Error, lead specification of lead %i is out of range.", i + 1);
@@ -277,7 +327,7 @@ struct
       goto OUT_EXIT;
     }
 
-    amp_resolution[i] = *((short *)(hdr + 206 + (i * 2)));
+    amp_resolution[i] = *((short *)(hdr_4096 + 206 + (i * 2)));
     if(amp_resolution[i] < 1)
     {
       snprintf(scratchpad_4096, 4096, "Error, amplitude resolution of lead %i is less than 1nV.", i + 1);
@@ -288,42 +338,42 @@ struct
 
 /////////////////////////////////////// GET THE START DATE AND TIME /////////////////////
 
-  start_dt.day = *((short *)(hdr + 138));
+  start_dt.day = *((short *)(hdr_4096 + STARTDATE_HDROFF));
   if((start_dt.day < 1) || (start_dt.day > 31))
   {
     textEdit1->append("Error, illegal start date.");
     goto OUT_EXIT;
   }
 
-  start_dt.month = *((short *)(hdr + 140));
+  start_dt.month = *((short *)(hdr_4096 + STARTDATE_HDROFF + 2));
   if((start_dt.month < 1) || (start_dt.month > 12))
   {
     textEdit1->append("Error, illegal start date.");
     goto OUT_EXIT;
   }
 
-  start_dt.year = *((short *)(hdr + 142));
+  start_dt.year = *((short *)(hdr_4096 + STARTDATE_HDROFF + 4));
   if((start_dt.year < 1000) || (start_dt.year > 3000))
   {
     textEdit1->append("Error, illegal start date.");
     goto OUT_EXIT;
   }
 
-  start_dt.hour = *((short *)(hdr + 150));
+  start_dt.hour = *((short *)(hdr_4096 + STARTTIME_HDROFF));
   if((start_dt.hour < 0) || (start_dt.hour > 23))
   {
     textEdit1->append("Error, illegal start time.");
     goto OUT_EXIT;
   }
 
-  start_dt.minute = *((short *)(hdr + 152));
+  start_dt.minute = *((short *)(hdr_4096 + STARTTIME_HDROFF + 2));
   if((start_dt.minute < 0) || (start_dt.minute > 59))
   {
     textEdit1->append("Error, illegal start time.");
     goto OUT_EXIT;
   }
 
-  start_dt.second = *((short *)(hdr + 154));
+  start_dt.second = *((short *)(hdr_4096 + STARTTIME_HDROFF + 4));
   if((start_dt.second < 0) || (start_dt.second > 59))
   {
     textEdit1->append("Error, illegal start time.");
@@ -332,19 +382,19 @@ struct
 
   birthdate_valid = 1;
 
-  birth_d.year = *((short *)(hdr + 136));
+  birth_d.year = *((short *)(hdr_4096 + SUBJBIRTHDATE_HDROFF + 4));
   if((birth_d.year < 1000) || (birth_d.year > 3000))
   {
     birthdate_valid = 0;
   }
 
-  birth_d.month = *((short *)(hdr + 134));
+  birth_d.month = *((short *)(hdr_4096 + SUBJBIRTHDATE_HDROFF + 2));
   if((birth_d.month < 1) || (birth_d.month > 12))
   {
     birthdate_valid = 0;
   }
 
-  birth_d.day = *((short *)(hdr + 132));
+  birth_d.day = *((short *)(hdr_4096 + SUBJBIRTHDATE_HDROFF));
   if((birth_d.day < 1) || (birth_d.day > 31))
   {
     birthdate_valid = 0;
@@ -438,13 +488,13 @@ struct
     goto OUT_EXIT;
   }
 
-  strncpy(str1_128, hdr + 28, 40);
+  strncpy(str1_128, hdr_4096 + 28, 40);
   str1_128[40] = 0;
 
   trim_spaces(str1_128);
   strlcat(str1_128, " ", 128);
 
-  strncpy(scratchpad_4096, hdr + 68, 40);
+  strncpy(scratchpad_4096, hdr_4096 + 68, 40);
   scratchpad_4096[40] = 0;
 
   trim_spaces(scratchpad_4096);
@@ -461,7 +511,7 @@ struct
     }
   }
 
-  strncpy(str1_128, hdr + 108, 20);
+  strncpy(str1_128, hdr_4096 + 108, 20);
   str1_128[20] = 0;
 
   trim_spaces(str1_128);
@@ -501,7 +551,7 @@ struct
     }
   }
 
-  strncpy(str1_128, hdr + 232, 40);
+  strncpy(str1_128, hdr_4096 + 232, 40);
   str1_128[40] = 0;
 
   trim_spaces(str1_128);
@@ -515,11 +565,22 @@ struct
     }
   }
 
-  if(edf_set_number_of_annotation_signals(edf_hdl, 2))
+  if(edf_set_recording_additional(edf_hdl, pacemaker_list[pacemaker]))
   {
-    textEdit1->append("Error, edf_set_number_of_annotation_signals()\n");
+    fprintf(stderr, "Error, edf_set_recording_additional()\n");
     goto OUT_EXIT;
   }
+
+  if(annotfile)
+  {
+    if(edf_set_number_of_annotation_signals(edf_hdl, 2))
+    {
+      textEdit1->append("Error, edf_set_number_of_annotation_signals()\n");
+      goto OUT_EXIT;
+    }
+  }
+
+  edf_set_annot_chan_idx_pos(edf_hdl, EDF_ANNOT_IDX_POS_START);
 
 /////////////////// Start conversion //////////////////////////////////////////
 
@@ -584,13 +645,7 @@ struct
 
 /////// CHECK ANNOTATIONS FILE ///////////////////////////
 
-  remove_extension_from_filename(path);
-  strlcat(path, ".ann", MAX_PATH_LENGTH);
-
-  fclose(inputfile);
-
-  inputfile = fopen(path, "rb");
-  if(inputfile == NULL)
+  if(annotfile == NULL)
   {
     textEdit1->append("Done\n");
     goto OUT_EXIT;
@@ -599,9 +654,9 @@ struct
   snprintf(scratchpad_4096, 4096, "Processing annotations file:\n%s", path);
   textEdit1->append(QString::fromLocal8Bit(scratchpad_4096));
 
-  fseek(inputfile, 0, SEEK_END);
+  fseek(annotfile, 0, SEEK_END);
 
-  file_sz = ftell(inputfile);
+  file_sz = ftell(annotfile);
 
   if(file_sz < 522)
   {
@@ -609,15 +664,15 @@ struct
     goto OUT_EXIT;
   }
 
-  rewind(inputfile);
+  rewind(annotfile);
 
-  if(fread(hdr, 522, 1, inputfile) != 1)
+  if(fread(hdr_4096, 522, 1, annotfile) != 1)
   {
     textEdit1->append("A read error occurred when trying to read the header.");
     goto OUT_EXIT;
   }
 
-  if(strncmp(hdr, "ANN  1.0", 8))
+  if(strncmp(hdr_4096, "ANN  1.0", 8))
   {
     textEdit1->append("Error, wrong magic string in header.");
     goto OUT_EXIT;
@@ -625,14 +680,14 @@ struct
 
 ////////////////////////////////// GET THE HEADER DATA ////////////////////////
 
-  var_block_sz = *((int *)(hdr + 10));
+  var_block_sz = *((int *)(hdr_4096 + 10));
   if(var_block_sz < 0)
   {
     textEdit1->append("Error, parameter size of variable length block in header is lower than zero.");
     goto OUT_EXIT;
   }
 
-  ecg_smpl_sz = *((int *)(hdr + 14));
+  ecg_smpl_sz = *((int *)(hdr_4096 + 14));
   if(ecg_smpl_sz < 0)
   {
     textEdit1->append("Error, parameter ECG sample size in header is lower than zero.");
@@ -645,7 +700,7 @@ struct
   }
   else
   {
-    var_block_offset = *((int *)(hdr + 18));
+    var_block_offset = *((int *)(hdr_4096 + 18));
   }
 
   if(var_block_offset != 522)
@@ -654,7 +709,7 @@ struct
     goto OUT_EXIT;
   }
 
-  ecg_block_offset = *((int *)(hdr + 22));
+  ecg_block_offset = *((int *)(hdr_4096 + 22));
   if(ecg_block_offset != (var_block_sz + 522))
   {
     textEdit1->append("Error, parameter offset of ECG block in header differs from 522 + variable length block");
@@ -667,7 +722,7 @@ struct
     goto OUT_EXIT;
   }
 
-  chns = *((short *)(hdr + 156));
+  chns = *((short *)(hdr_4096 + 156));
   if(chns < 1)
   {
     textEdit1->append("Error, number of leads is less than 1.");
@@ -680,21 +735,21 @@ struct
     goto OUT_EXIT;
   }
 
-  sf = *((short *)(hdr + 272));
+  sf = *((short *)(hdr_4096 + 272));
   if(sf < 1)
   {
     textEdit1->append("Error, sampling rate is less than 1Hz.");
     goto OUT_EXIT;
   }
 
-  sex = *((short *)(hdr + 128));
+  sex = *((short *)(hdr_4096 + 128));
   if((sex < 0) || (sex > 2))
   {
     textEdit1->append("Error, subject sex is out of range.");
     goto OUT_EXIT;
   }
 
-  if(check_crc(inputfile, var_block_offset + var_block_sz))
+  if(check_crc(annotfile, var_block_offset + var_block_sz))
   {
     textEdit1->append("CRC error, file header is corrupt.");
     goto OUT_EXIT;
@@ -704,7 +759,7 @@ struct
 
   for(i=0; i<chns; i++)
   {
-    lead_spec[i] = *((short *)(hdr + 158 + (i * 2)));
+    lead_spec[i] = *((short *)(hdr_4096 + 158 + (i * 2)));
     if((lead_spec[i] < 0) || (lead_spec[i] > 19))
     {
       snprintf(scratchpad_4096, 4096, "Error, lead specification of lead %i is out of range.", i + 1);
@@ -712,7 +767,7 @@ struct
       goto OUT_EXIT;
     }
 
-    amp_resolution[i] = *((short *)(hdr + 206 + (i * 2)));
+    amp_resolution[i] = *((short *)(hdr_4096 + 206 + (i * 2)));
     if(amp_resolution[i] < 1)
     {
       snprintf(scratchpad_4096, 4096, "Error, amplitude resolution of lead %i is less than 1nV.", i + 1);
@@ -723,42 +778,42 @@ struct
 
 /////////////////////////////////////// GET THE START DATE AND TIME /////////////////////
 
-  start_dt.day = *((short *)(hdr + 138));
+  start_dt.day = *((short *)(hdr_4096 + 138));
   if((start_dt.day < 1) || (start_dt.day > 31))
   {
     textEdit1->append("Error, illegal start date.");
     goto OUT_EXIT;
   }
 
-  start_dt.month = *((short *)(hdr + 140));
+  start_dt.month = *((short *)(hdr_4096 + 140));
   if((start_dt.month < 1) || (start_dt.month > 12))
   {
     textEdit1->append("Error, illegal start date.");
     goto OUT_EXIT;
   }
 
-  start_dt.year = *((short *)(hdr + 142));
+  start_dt.year = *((short *)(hdr_4096 + 142));
   if((start_dt.year < 1000) || (start_dt.year > 3000))
   {
     textEdit1->append("Error, illegal start date.");
     goto OUT_EXIT;
   }
 
-  start_dt.hour = *((short *)(hdr + 150));
+  start_dt.hour = *((short *)(hdr_4096 + 150));
   if((start_dt.hour < 0) || (start_dt.hour > 23))
   {
     textEdit1->append("Error, illegal start time.");
     goto OUT_EXIT;
   }
 
-  start_dt.minute = *((short *)(hdr + 152));
+  start_dt.minute = *((short *)(hdr_4096 + 152));
   if((start_dt.minute < 0) || (start_dt.minute > 59))
   {
     textEdit1->append("Error, illegal start time.");
     goto OUT_EXIT;
   }
 
-  start_dt.second = *((short *)(hdr + 154));
+  start_dt.second = *((short *)(hdr_4096 + 154));
   if((start_dt.second < 0) || (start_dt.second > 59))
   {
     textEdit1->append("Error, illegal start time.");
@@ -767,19 +822,19 @@ struct
 
   birthdate_valid = 1;
 
-  birth_d.year = *((short *)(hdr + 136));
+  birth_d.year = *((short *)(hdr_4096 + 136));
   if((birth_d.year < 1000) || (birth_d.year > 3000))
   {
     birthdate_valid = 0;
   }
 
-  birth_d.month = *((short *)(hdr + 134));
+  birth_d.month = *((short *)(hdr_4096 + 134));
   if((birth_d.month < 1) || (birth_d.month > 12))
   {
     birthdate_valid = 0;
   }
 
-  birth_d.day = *((short *)(hdr + 132));
+  birth_d.day = *((short *)(hdr_4096 + 132));
   if((birth_d.day < 1) || (birth_d.day > 31))
   {
     birthdate_valid = 0;
@@ -787,11 +842,11 @@ struct
 
 /////////////////// Start conversion //////////////////////////////////////////
 
-  fseek(inputfile, ecg_block_offset, SEEK_SET);
+  fseek(annotfile, ecg_block_offset, SEEK_SET);
 
   while(1)
   {
-    if(fread(rbuf, 4, 1, inputfile) != 1)
+    if(fread(rbuf, 4, 1, annotfile) != 1)
     {
       break;
     }
@@ -851,6 +906,8 @@ OUT_EXIT:
   if(edf_hdl >= 0)  edfclose_file(edf_hdl);
 
   if(inputfile != NULL)  fclose(inputfile);
+
+  if(annotfile != NULL)  fclose(annotfile);
 
   free(inbuf);
   free(outbuf);
