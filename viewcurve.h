@@ -171,6 +171,7 @@ public:
   long long pan_mov_start_viewtime[MAXFILES];
 
   double original_screen_offset_pix,
+         original_screen_offset_unit,
          w_scaling,
          h_scaling;
 

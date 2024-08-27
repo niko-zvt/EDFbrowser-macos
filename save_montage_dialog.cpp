@@ -166,9 +166,11 @@ void UI_SaveMontagewindow::SaveButtonClicked()
 
       fprintf(mtgfile, "    <num_of_signals>%i</num_of_signals>\n", mainwindow->signalcomp[i]->num_of_signals);
 
-      fprintf(mtgfile, "    <voltpercm>%f</voltpercm>\n", mainwindow->signalcomp[i]->voltpercm);
+      fprintf(mtgfile, "    <voltpercm>%e</voltpercm>\n", mainwindow->signalcomp[i]->voltpercm);
 
-      fprintf(mtgfile, "    <screen_offset>%f</screen_offset>\n", mainwindow->signalcomp[i]->screen_offset_pix);
+      fprintf(mtgfile, "    <screen_offset>%e</screen_offset>\n", mainwindow->signalcomp[i]->screen_offset_pix);
+
+      fprintf(mtgfile, "    <screen_offset_unit>%e</screen_offset_unit>\n", mainwindow->signalcomp[i]->screen_offset_unit);
 
       fprintf(mtgfile, "    <polarity>%i</polarity>\n", mainwindow->signalcomp[i]->polarity);
 
@@ -346,7 +348,7 @@ void UI_SaveMontagewindow::SaveButtonClicked()
 
         fprintf(mtgfile, "      <type>1</type>\n");
 
-        fprintf(mtgfile, "      <crossoverfreq>%f</crossoverfreq>\n", mainwindow->signalcomp[i]->zratio_crossoverfreq);
+        fprintf(mtgfile, "      <crossoverfreq>%e</crossoverfreq>\n", mainwindow->signalcomp[i]->zratio_crossoverfreq);
 
         fprintf(mtgfile, "    </zratio_filter>\n");
       }

@@ -992,6 +992,8 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
         signalcomp[i]->voltpercm = value2;
 
         signalcomp[i]->screen_offset_pix *= (original_value / value2);
+
+        signalcomp[i]->screen_offset_unit *= (original_value / value2);
       }
 
       maincurve->drawCurve_stage_1();
@@ -1028,6 +1030,8 @@ int UI_Mainwindow::process_rc_cmd_signal(const char *cmd_args, int *cmds_parsed_
       signalcomp[n]->voltpercm = value2;
 
       signalcomp[n]->screen_offset_pix *= (original_value / value2);
+
+      signalcomp[n]->screen_offset_unit *= (original_value / value2);
 
       maincurve->drawCurve_stage_1();
 

@@ -132,7 +132,8 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
     remove_trailing_spaces(txtbuf_2048);
 
     snprintf(txtbuf_2048 + strlen(txtbuf_2048), 2048 - strlen(txtbuf_2048), "/cm offset: %f%s",
-            mainwindow->signalcomp[i]->screen_offset_pix * mainwindow->y_pixelsizefactor * mainwindow->signalcomp[i]->voltpercm,
+//            mainwindow->signalcomp[i]->screen_offset_pix * mainwindow->y_pixelsizefactor * mainwindow->signalcomp[i]->voltpercm,
+            mainwindow->signalcomp[i]->screen_offset_unit,
             mainwindow->signalcomp[i]->physdimension);
 
     remove_trailing_zeros(txtbuf_2048);

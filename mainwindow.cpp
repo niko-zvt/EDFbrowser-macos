@@ -1107,8 +1107,8 @@ void UI_Mainwindow::zoomback()
   for(i=0; i<signalcomps; i++)
   {
     zoomhistory->voltpercm[zoomhistory->idx][i] = signalcomp[i]->voltpercm;
-    zoomhistory->screen_offset_pix[zoomhistory->idx][i] = signalcomp[i]->screen_offset_pix;
     zoomhistory->sensitivity[zoomhistory->idx][i] = signalcomp[i]->sensitivity;
+    zoomhistory->screen_offset_unit[zoomhistory->idx][i] = signalcomp[i]->screen_offset_unit;
   }
 
   zoomhistory->idx--;
@@ -1124,8 +1124,9 @@ void UI_Mainwindow::zoomback()
   for(i=0; i<signalcomps; i++)
   {
     signalcomp[i]->voltpercm = zoomhistory->voltpercm[zoomhistory->idx][i];
-    signalcomp[i]->screen_offset_pix = zoomhistory->screen_offset_pix[zoomhistory->idx][i];
     signalcomp[i]->sensitivity = zoomhistory->sensitivity[zoomhistory->idx][i];
+    signalcomp[i]->screen_offset_unit = zoomhistory->screen_offset_unit[zoomhistory->idx][i];
+    signalcomp[i]->screen_offset_pix = -signalcomp[i]->screen_offset_unit / (y_pixelsizefactor * signalcomp[i]->voltpercm);
   }
 
   setup_viewbuf();
@@ -1157,8 +1158,9 @@ void UI_Mainwindow::forward()
   for(i=0; i<signalcomps; i++)
   {
     signalcomp[i]->voltpercm = zoomhistory->voltpercm[zoomhistory->idx][i];
-    signalcomp[i]->screen_offset_pix = zoomhistory->screen_offset_pix[zoomhistory->idx][i];
     signalcomp[i]->sensitivity = zoomhistory->sensitivity[zoomhistory->idx][i];
+    signalcomp[i]->screen_offset_unit = zoomhistory->screen_offset_unit[zoomhistory->idx][i];
+    signalcomp[i]->screen_offset_pix = -signalcomp[i]->screen_offset_unit / (y_pixelsizefactor * signalcomp[i]->voltpercm);
   }
 
   setup_viewbuf();
@@ -1449,6 +1451,7 @@ void UI_Mainwindow::shift_page_up()
   {
     signalcomp[i]->screen_offset_pix += (height() / 20.0);
 
+    signalcomp[i]->screen_offset_unit = -signalcomp[i]->screen_offset_pix * y_pixelsizefactor * signalcomp[i]->voltpercm;
   }
 
   maincurve->drawCurve_stage_1();
@@ -1465,6 +1468,7 @@ void UI_Mainwindow::shift_page_down()
   {
     signalcomp[i]->screen_offset_pix -= (height() / 20.0);
 
+    signalcomp[i]->screen_offset_unit = -signalcomp[i]->screen_offset_pix * y_pixelsizefactor * signalcomp[i]->voltpercm;
   }
 
   maincurve->drawCurve_stage_1();
@@ -3151,7 +3155,7 @@ void UI_Mainwindow::close_all_files()
     for(j=0; j<MAXSIGNALS; j++)
     {
       zoomhistory->voltpercm[i][j] = 70;
-      zoomhistory->screen_offset_pix[i][j] = 0.0;
+      zoomhistory->screen_offset_unit[i][j] = 0;
       zoomhistory->sensitivity[i][j] = 0.0475;
     }
   }
@@ -3781,11 +3785,11 @@ void UI_Mainwindow::fit_signals_to_pane(int n)
       signalcomp[i]->sensitivity = pane_size;
     }
 
-    signalcomp[i]->voltpercm =
-     signalcomp[i]->edfparam_0->bitvalue
-     / (signalcomp[i]->sensitivity * y_pixelsizefactor);
+    signalcomp[i]->voltpercm = signalcomp[i]->edfparam_0->bitvalue / (signalcomp[i]->sensitivity * y_pixelsizefactor);
 
     signalcomp[i]->screen_offset_pix = ((signalcomp[i]->max_dig_value + signalcomp[i]->min_dig_value) / 2.0) * signalcomp[i]->sensitivity * signalcomp[i]->polarity;
+
+    signalcomp[i]->screen_offset_unit = -signalcomp[i]->screen_offset_pix * y_pixelsizefactor * signalcomp[i]->voltpercm;
   }
 
   maincurve->drawCurve_stage_1();
@@ -3806,6 +3810,8 @@ void UI_Mainwindow::fit_signals_dc_offset(int n)
     }
 
     signalcomp[i]->screen_offset_pix = ((signalcomp[i]->max_dig_value + signalcomp[i]->min_dig_value) / 2.0) * signalcomp[i]->sensitivity * signalcomp[i]->polarity;
+
+    signalcomp[i]->screen_offset_unit = -signalcomp[i]->screen_offset_pix * y_pixelsizefactor * signalcomp[i]->voltpercm;
   }
 
   maincurve->drawCurve_stage_1();
@@ -3965,6 +3971,8 @@ void UI_Mainwindow::set_amplitude(QAction *action)
 
     signalcomp[i]->screen_offset_pix *= (signalcomp[i]->voltpercm / value);
 
+    signalcomp[i]->screen_offset_unit = -signalcomp[i]->screen_offset_pix * y_pixelsizefactor * signalcomp[i]->voltpercm;
+
     signalcomp[i]->voltpercm = value;
   }
 
@@ -4010,6 +4018,8 @@ void UI_Mainwindow::set_amplitude_mult2()
     }
 
     signalcomp[i]->sensitivity = (signalcomp[i]->edfparam_0->bitvalue / signalcomp[i]->voltpercm) / y_pixelsizefactor;
+
+    signalcomp[i]->screen_offset_unit = -signalcomp[i]->screen_offset_pix * y_pixelsizefactor * signalcomp[i]->voltpercm;
   }
 
   if(amplitude_doubler == 10)
@@ -4070,6 +4080,8 @@ void UI_Mainwindow::set_amplitude_div2()
     }
 
     signalcomp[i]->sensitivity = (signalcomp[i]->edfparam_0->bitvalue / signalcomp[i]->voltpercm) / y_pixelsizefactor;
+
+    signalcomp[i]->screen_offset_unit = -signalcomp[i]->screen_offset_pix * y_pixelsizefactor * signalcomp[i]->voltpercm;
   }
 
   if(amplitude_doubler == 10)
@@ -4556,6 +4568,8 @@ void UI_Mainwindow::set_dc_offset_to_zero(int n)
     }
 
     signalcomp[i]->screen_offset_pix = 0.0;
+
+    signalcomp[i]->screen_offset_unit = 0.0;
   }
 
   maincurve->drawCurve_stage_1();
@@ -5365,18 +5379,24 @@ void UI_Mainwindow::signalcomp_invert(int inv, int n)
       signalcomp[i]->polarity *= -1;
 
       signalcomp[i]->screen_offset_pix *= -1;
+
+      signalcomp[i]->screen_offset_unit *= -1;
     }
     else if((inv == 1) && (signalcomp[i]->polarity == 1))  /* inverted */
       {
         signalcomp[i]->polarity *= -1;
 
         signalcomp[i]->screen_offset_pix *= -1;
+
+        signalcomp[i]->screen_offset_unit *= -1;
       }
       else if(inv == 2)  /* toggle */
       {
         signalcomp[i]->polarity *= -1;
 
         signalcomp[i]->screen_offset_pix *= -1;
+
+        signalcomp[i]->screen_offset_unit *= -1;
       }
   }
 
@@ -5448,6 +5468,8 @@ void UI_Mainwindow::set_font_metrics(int starting_up)
       for(i=0; i<signalcomps; i++)
       {
         signalcomp[i]->screen_offset_pix = dpi_ratio * signalcomp[i]->screen_offset_pix;
+
+        signalcomp[i]->screen_offset_unit = -signalcomp[i]->screen_offset_pix * y_pixelsizefactor * signalcomp[i]->voltpercm;
       }
     }
   }

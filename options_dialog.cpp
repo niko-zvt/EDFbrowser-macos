@@ -3730,6 +3730,8 @@ void UI_OptionsDialog::update_interface(void)
       mainwindow->signalcomp[i]->screen_offset_pix *= (mainwindow->signalcomp[i]->voltpercm / value);
 
       mainwindow->signalcomp[i]->voltpercm = value;
+
+      mainwindow->signalcomp[i]->screen_offset_unit = -mainwindow->signalcomp[i]->screen_offset_pix * mainwindow->y_pixelsizefactor * mainwindow->signalcomp[i]->voltpercm;
     }
 
     mainwindow->pagetime = mainwindow->maincurve->width() * mainwindow->x_pixelsizefactor * TIME_FIXP_SCALING / 5.0;

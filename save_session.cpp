@@ -157,9 +157,11 @@ void UI_Mainwindow::save_session()
 
     fprintf(pro_file, "    <num_of_signals>%i</num_of_signals>\n", signalcomp[i]->num_of_signals);
 
-    fprintf(pro_file, "    <voltpercm>%f</voltpercm>\n", signalcomp[i]->voltpercm);
+    fprintf(pro_file, "    <voltpercm>%e</voltpercm>\n", signalcomp[i]->voltpercm);
 
-    fprintf(pro_file, "    <screen_offset>%f</screen_offset>\n", signalcomp[i]->screen_offset_pix);
+    fprintf(pro_file, "    <screen_offset>%e</screen_offset>\n", signalcomp[i]->screen_offset_pix);
+
+    fprintf(pro_file, "    <screen_offset_unit>%e</screen_offset_unit>\n", signalcomp[i]->screen_offset_unit);
 
     fprintf(pro_file, "    <polarity>%i</polarity>\n", signalcomp[i]->polarity);
 
@@ -337,7 +339,7 @@ void UI_Mainwindow::save_session()
 
       fprintf(pro_file, "      <type>1</type>\n");
 
-      fprintf(pro_file, "      <crossoverfreq>%f</crossoverfreq>\n", signalcomp[i]->zratio_crossoverfreq);
+      fprintf(pro_file, "      <crossoverfreq>%e</crossoverfreq>\n", signalcomp[i]->zratio_crossoverfreq);
 
       fprintf(pro_file, "    </zratio_filter>\n");
     }

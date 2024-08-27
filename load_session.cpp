@@ -363,6 +363,7 @@ int UI_Mainwindow::read_session_file(const char *path_session)
     newsignalcomp->hasoffsettracking = 0;
     newsignalcomp->hasgaintracking = 0;
     newsignalcomp->screen_offset_pix = 0;
+    newsignalcomp->screen_offset_unit = 0;
     newsignalcomp->filter_cnt = 0;
     newsignalcomp->ravg_filter_cnt = 0;
     newsignalcomp->fir_filter_cnt = 0;
@@ -403,16 +404,26 @@ int UI_Mainwindow::read_session_file(const char *path_session)
     if(newsignalcomp->voltpercm==0.0)  newsignalcomp->voltpercm = 0.000000001;
     xml_go_up(xml_hdl);
 
-    if(xml_goto_nth_element_inside(xml_hdl, "screen_offset", 0))
+    if(!xml_goto_nth_element_inside(xml_hdl, "screen_offset_unit", 0))
     {
-      return session_format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        return session_format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
+      }
+      newsignalcomp->screen_offset_unit = atof(result);
+      newsignalcomp->screen_offset_pix = -newsignalcomp->screen_offset_unit / (y_pixelsizefactor * newsignalcomp->voltpercm);
+      xml_go_up(xml_hdl);
     }
-    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
-    {
-      return session_format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
-    }
-    newsignalcomp->screen_offset_pix = atof(result);
-    xml_go_up(xml_hdl);
+    else if(!xml_goto_nth_element_inside(xml_hdl, "screen_offset", 0))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          return session_format_error(__FILE__, __LINE__, newsignalcomp, xml_hdl);
+        }
+        newsignalcomp->screen_offset_pix = atof(result);
+        newsignalcomp->screen_offset_unit = -newsignalcomp->screen_offset_pix * y_pixelsizefactor * newsignalcomp->voltpercm;
+        xml_go_up(xml_hdl);
+      }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "polarity", 0)))
     {

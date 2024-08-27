@@ -303,7 +303,7 @@ void ViewCurve::ECGdetectButton()
   {
     newsignalcomp->sensitivity = newsignalcomp->edfparam_0->bitvalue / -5.0 / mainwindow->y_pixelsizefactor;
 
-    newsignalcomp->voltpercm = -5.0;
+    newsignalcomp->voltpercm = -5;
   }
   else
   {
@@ -312,7 +312,9 @@ void ViewCurve::ECGdetectButton()
     newsignalcomp->voltpercm = 5.0;
   }
 
-  newsignalcomp->screen_offset_pix = 55.0 / (mainwindow->y_pixelsizefactor * newsignalcomp->voltpercm);
+  newsignalcomp->screen_offset_unit = -55.0;
+
+  newsignalcomp->screen_offset_pix = -newsignalcomp->screen_offset_unit / (mainwindow->y_pixelsizefactor * newsignalcomp->voltpercm);
 
   mainwindow->setup_viewbuf();
 }
@@ -646,7 +648,9 @@ void ViewCurve::ScaleBox2Changed(double value)
     return;
   }
 
-  mainwindow->signalcomp[signal_nr]->screen_offset_pix = -(value / (mainwindow->y_pixelsizefactor * mainwindow->signalcomp[signal_nr]->voltpercm));
+  mainwindow->signalcomp[signal_nr]->screen_offset_unit = value;
+
+  mainwindow->signalcomp[signal_nr]->screen_offset_pix = -value / (mainwindow->y_pixelsizefactor * mainwindow->signalcomp[signal_nr]->voltpercm);
 
   drawCurve_stage_1();
 }
@@ -673,6 +677,8 @@ void ViewCurve::ScaleBoxChanged(double value)
   mainwindow->signalcomp[signal_nr]->voltpercm = value;
 
   mainwindow->signalcomp[signal_nr]->screen_offset_pix *= (original_value / value);
+
+  mainwindow->signalcomp[signal_nr]->screen_offset_unit *= (original_value / value);
 
   drawCurve_stage_1();
 }

@@ -389,7 +389,7 @@ typedef struct
   long long pagetime[MAXZOOMHISTORY];
   double voltpercm[MAXZOOMHISTORY][MAXSIGNALS];
   double sensitivity[MAXZOOMHISTORY][MAXSIGNALS];
-  double screen_offset_pix[MAXZOOMHISTORY][MAXSIGNALS];
+  double screen_offset_unit[MAXZOOMHISTORY][MAXSIGNALS];
 } zoomhistblck_t;
 
 typedef struct

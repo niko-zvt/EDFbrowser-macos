@@ -597,6 +597,8 @@ void UI_SignalChooser::signalInvert()
     mainwindow->signalcomp[selected_signals[i]]->polarity *= -1;
 
     mainwindow->signalcomp[selected_signals[i]]->screen_offset_pix *= -1;
+
+    mainwindow->signalcomp[selected_signals[i]]->screen_offset_unit *= -1;
   }
 
   load_signalcomps();

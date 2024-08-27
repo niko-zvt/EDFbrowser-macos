@@ -107,7 +107,6 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       fir_filter_cnt=0,
       islpf,
       signalcomps,
-      screen_offset_pix,
       order,
       model,
       type,
@@ -151,7 +150,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
   double frequency,
          frequency2,
-         voltpercm,
+         voltpercm=1,
          ripple,
          d_tmp,
          velocity,
@@ -161,7 +160,9 @@ void UI_ViewSessionwindow::SelectButtonClicked()
          bp_min_hz=0,
          bp_max_hz=0,
          lp_hz=0,
-         scale_max_amp=0;
+         scale_max_amp=0,
+         screen_offset_pix=0,
+         screen_offset_unit=0;
 
   FILE *f_test=NULL;
 
@@ -472,20 +473,30 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       return;
     }
     voltpercm = atof(result);
+    xml_go_up(xml_hdl);
 
-    xml_go_up(xml_hdl);
-    if(xml_goto_nth_element_inside(xml_hdl, "screen_offset", 0))
+    if(!xml_goto_nth_element_inside(xml_hdl, "screen_offset_unit", 0))
     {
-      view_session_format_error(__FILE__, __LINE__, xml_hdl);
-      return;
+      if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+      {
+        view_session_format_error(__FILE__, __LINE__, xml_hdl);
+        return;
+      }
+      screen_offset_unit = atof(result);
+      screen_offset_pix = -screen_offset_unit / (mainwindow->y_pixelsizefactor * voltpercm);
+      xml_go_up(xml_hdl);
     }
-    if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
-    {
-      view_session_format_error(__FILE__, __LINE__, xml_hdl);
-      return;
-    }
-    screen_offset_pix = atoi(result);
-    xml_go_up(xml_hdl);
+    else if(!xml_goto_nth_element_inside(xml_hdl, "screen_offset", 0))
+      {
+        if(xml_get_content_of_element(xml_hdl, result, XML_STRBUFLEN))
+        {
+          view_session_format_error(__FILE__, __LINE__, xml_hdl);
+          return;
+        }
+        screen_offset_pix = atof(result);
+        screen_offset_unit = -screen_offset_pix * mainwindow->y_pixelsizefactor * voltpercm;
+        xml_go_up(xml_hdl);
+      }
 
     if(!(xml_goto_nth_element_inside(xml_hdl, "polarity", 0)))
     {
@@ -691,7 +702,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
 
     remove_trailing_zeros(composition_txt_2048);
 
-    snprintf(composition_txt_2048 + strlen(composition_txt_2048), 2048 - strlen(composition_txt_2048), "/cm  offset: %f", (double)screen_offset_pix * mainwindow->y_pixelsizefactor * voltpercm);
+    snprintf(composition_txt_2048 + strlen(composition_txt_2048), 2048 - strlen(composition_txt_2048), "/cm  offset: %f", screen_offset_unit);
 
     remove_trailing_zeros(composition_txt_2048);
 

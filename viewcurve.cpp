@@ -567,6 +567,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
         if((m_y<(baseline-(2*h_scaling)))&&(m_y>( baseline-(2*h_scaling)-mainwindow->mono_font_pixel_height))&&(m_x>(2*w_scaling))&&(m_x<((signallabel_strlen * mainwindow->mono_font_pixel_width) + (5 * w_scaling))))
         {
           original_screen_offset_pix = signalcomp[i]->screen_offset_pix;
+          original_screen_offset_unit = signalcomp[i]->screen_offset_unit;
           signalcomp[i]->hasoffsettracking = 1;
           signal_nr = i;
           pressed_on_label = i + 1;
@@ -619,6 +620,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
       {
         original_sensitivity = signalcomp[i]->sensitivity;
         original_screen_offset_pix = signalcomp[i]->screen_offset_pix;
+        original_screen_offset_unit = signalcomp[i]->screen_offset_unit;
         signalcomp[i]->hasgaintracking = 1;
         use_move_events = 1;
         setMouseTracking(true);
@@ -903,8 +905,8 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
             for(i=0; i<signalcomps; i++)
             {
               mainwindow->zoomhistory->voltpercm[mainwindow->zoomhistory->idx][i] = signalcomp[i]->voltpercm;
-              mainwindow->zoomhistory->screen_offset_pix[mainwindow->zoomhistory->idx][i] = signalcomp[i]->screen_offset_pix;
               mainwindow->zoomhistory->sensitivity[mainwindow->zoomhistory->idx][i] = signalcomp[i]->sensitivity;
+              mainwindow->zoomhistory->screen_offset_unit[mainwindow->zoomhistory->idx][i] = signalcomp[i]->screen_offset_unit;
             }
             mainwindow->zoomhistory->idx++;
             mainwindow->zoomhistory->idx %= MAXZOOMHISTORY;
@@ -936,6 +938,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
               mainwindow->signalcomp[i]->screen_offset_pix -= (sig_rect_select.y1 * v_zoomfactor) + (scroll_h_offset * (v_zoomfactor - 1));
               mainwindow->signalcomp[i]->voltpercm /= v_zoomfactor;
               mainwindow->signalcomp[i]->sensitivity *= v_zoomfactor;
+              mainwindow->signalcomp[i]->screen_offset_unit = -mainwindow->signalcomp[i]->screen_offset_pix * mainwindow->y_pixelsizefactor * mainwindow->signalcomp[i]->voltpercm;
             }
 
             mainwindow->zoomhistory->history_size_tail++;
@@ -1149,6 +1152,8 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
       if(signalcomp[i]->hasoffsettracking)
       {
         signalcomp[i]->screen_offset_pix = original_screen_offset_pix + delta_y;
+
+        signalcomp[i]->screen_offset_unit = -signalcomp[i]->screen_offset_pix * mainwindow->y_pixelsizefactor * signalcomp[i]->voltpercm;
       }
 
       if(signalcomp[i]->hasgaintracking)
@@ -1163,6 +1168,8 @@ void ViewCurve::mouseMoveEvent(QMouseEvent *move_event)
         }
 
         signalcomp[i]->screen_offset_pix = original_screen_offset_pix * (signalcomp[i]->sensitivity / original_sensitivity);
+
+        signalcomp[i]->screen_offset_unit = -signalcomp[i]->screen_offset_pix * mainwindow->y_pixelsizefactor * signalcomp[i]->voltpercm;
       }
     }
 
