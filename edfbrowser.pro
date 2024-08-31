@@ -61,9 +61,9 @@ win32 {
 }
 
 
-QMAKE_CFLAGS += -Wall -Wextra -Wshadow -Wformat-nonliteral -Wformat-security -Wtype-limits -Wfatal-errors -Wdeprecated-declarations -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -U_FORTIFY_SOURCE
+QMAKE_CFLAGS += -Wall -Wextra -Wshadow -Wformat-nonliteral -Wformat-security -Wtype-limits -Wfatal-errors -Wstringop-overflow=2 -Wdeprecated-declarations -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -U_FORTIFY_SOURCE
 
-QMAKE_CXXFLAGS += -Wextra -Wshadow -Wformat -Wformat-nonliteral -Wformat-security -Wtype-limits -Wfatal-errors -Wdeprecated-declarations -U_FORTIFY_SOURCE
+QMAKE_CXXFLAGS += -Wextra -Wshadow -Wformat -Wformat-nonliteral -Wformat-security -Wtype-limits -Wfatal-errors -Wstringop-overflow=2 -Wdeprecated-declarations -U_FORTIFY_SOURCE
 
 
 OBJECTS_DIR = ./objects
