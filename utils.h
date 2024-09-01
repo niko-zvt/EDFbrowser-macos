@@ -40,6 +40,7 @@ extern "C" {
 #include <stdio.h>
 #include <ctype.h>
 #include <math.h>
+#include <features.h>
 
 
 void remove_trailing_spaces(char *);
