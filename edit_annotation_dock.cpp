@@ -343,6 +343,8 @@ void UI_AnnotationEditwindow::deleteButtonClicked()
     return;
   }
 
+  file_num = mainwindow->get_filenum((edfhdrblck_t *)(annot->edfhdr));
+
   edfplus_annotation_remove_item(annot_list, annot_num);
 
   modifybutton->setEnabled(false);
@@ -353,7 +355,6 @@ void UI_AnnotationEditwindow::deleteButtonClicked()
 
   mainwindow->save_act->setEnabled(true);
 
-  file_num = mainwindow->get_filenum((edfhdrblck_t *)(annot->edfhdr));
   if(file_num >= 0)
   {
     mainwindow->annotations_dock[file_num]->updateList(0);

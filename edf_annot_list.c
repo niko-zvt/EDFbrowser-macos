@@ -92,6 +92,8 @@ void edfplus_annotation_remove_item(annotlist_t *list, int n)
   {
     list->idx[i] = list->idx[i+1];
   }
+
+  if(!list->sz)  edfplus_annotation_empty_list(list);
 }
 
 
@@ -129,11 +131,7 @@ void edfplus_annotation_empty_list(annotlist_t *list)
 
   free(list->items);
   free(list->idx);
-  list->items = NULL;
-  list->idx = NULL;
-  list->sz = 0;
-  list->mem_sz = 0;
-  list->used_sz = 0;
+  memset(list, 0, sizeof(annotlist_t));
 }
 
 
@@ -300,33 +298,32 @@ annotlist_t * edfplus_annotation_create_list_copy(annotlist_t *list)
     return NULL;
   }
 
-  if(list->sz > 0)
+  if(!list->sz)  return cpy;
+
+  cpy->items = (annotblck_t *)malloc(sizeof(annotblck_t) * list->mem_sz);
+  if(cpy->items == NULL)
   {
-    cpy->items = (annotblck_t *)calloc(1, sizeof(annotblck_t) * list->mem_sz);
-    if(cpy->items == NULL)
-    {
-      free(cpy);
-      return NULL;
-    }
-
-    cpy->idx = (int *)calloc(1, sizeof(int) * list->mem_sz);
-    if(cpy->idx == NULL)
-    {
-      free(cpy->items);
-      free(cpy);
-      return NULL;
-    }
-
-    cpy->mem_sz = list->mem_sz;
-
-    cpy->sz = list->sz;
-
-    cpy->used_sz = list->used_sz;
-
-    memcpy(cpy->items, list->items, cpy->mem_sz * sizeof(annotblck_t));
-
-    memcpy(cpy->idx, list->idx, cpy->mem_sz * sizeof(int));
+    free(cpy);
+    return NULL;
   }
+
+  cpy->idx = (int *)malloc(sizeof(int) * list->mem_sz);
+  if(cpy->idx == NULL)
+  {
+    free(cpy->items);
+    free(cpy);
+    return NULL;
+  }
+
+  cpy->mem_sz = list->mem_sz;
+
+  cpy->sz = list->sz;
+
+  cpy->used_sz = list->used_sz;
+
+  memcpy(cpy->items, list->items, cpy->used_sz * sizeof(annotblck_t));
+
+  memcpy(cpy->idx, list->idx, cpy->used_sz * sizeof(int));
 
   return cpy;
 }
@@ -336,30 +333,15 @@ void edfplus_annotation_copy_list(annotlist_t *destlist, annotlist_t *srclist)
 {
   if((destlist == NULL) || (srclist == NULL)) return;
 
-  if(destlist->sz > 0)
-  {
-    free(destlist->items);
+  edfplus_annotation_empty_list(destlist);
 
-    destlist->items = NULL;
-
-    free(destlist->idx);
-
-    destlist->idx = NULL;
-
-    destlist->sz = 0;
-
-    destlist->mem_sz = 0;
-
-    destlist->used_sz = 0;
-  }
-
-  destlist->items = (annotblck_t *)calloc(1, srclist->mem_sz * sizeof(annotblck_t));
+  destlist->items = (annotblck_t *)malloc(srclist->mem_sz * sizeof(annotblck_t));
   if(destlist->items == NULL)
   {
     return;
   }
 
-  destlist->idx = (int *)calloc(1, srclist->mem_sz * sizeof(int));
+  destlist->idx = (int *)malloc(srclist->mem_sz * sizeof(int));
   if(destlist->idx == NULL)
   {
     free(destlist->items);
@@ -373,9 +355,9 @@ void edfplus_annotation_copy_list(annotlist_t *destlist, annotlist_t *srclist)
 
   destlist->mem_sz = srclist->mem_sz;
 
-  memcpy(destlist->items, srclist->items, destlist->mem_sz * sizeof(annotblck_t));
+  memcpy(destlist->items, srclist->items, destlist->used_sz * sizeof(annotblck_t));
 
-  memcpy(destlist->idx, srclist->idx, destlist->mem_sz * sizeof(int));
+  memcpy(destlist->idx, srclist->idx, destlist->used_sz * sizeof(int));
 }
 
 
@@ -471,7 +453,7 @@ void edfplus_annotation_cancel_all_selected_in_dock(annotlist_t *list)
 
   if(list == NULL)  return;
 
-  for(i=0; i<(list->sz); i++)
+  for(i=0; i<(list->used_sz); i++)
   {
     list->items[i].selected_in_dock = 0;
   }

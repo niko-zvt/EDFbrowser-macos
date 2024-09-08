@@ -2,8 +2,11 @@
  version 2.12      to be defined
  --------------
 
- -  When dragging the main window to another screen with a different resolution (dpi),
-    maintain the same offset for traces.
+ - When dragging the main window to another screen with a different resolution (dpi),
+   maintain the same offset for traces.
+
+ - Annotation editor: fixed a bug where, after deleting some annotations and then creating new annotations,
+   the new annotaions' duration overlay color was wrong.
 
 
  version 2.11      August 24, 204
