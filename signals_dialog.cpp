@@ -839,9 +839,9 @@ void UI_Signalswindow::show_signals(int row)
   if(mainwindow->edfheaderlist[row]->starttime_subsec != 0LL)
   {
 #ifdef Q_OS_WIN32
-    __mingw_snprintf(str1_256 + strlen(str1_256), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_subsec);
+    __mingw_snprintf(str1_256 + strlen(str1_256), 256 - strlen(str1_256), ".%07lli", mainwindow->edfheaderlist[row]->starttime_subsec);
 #else
-    snprintf(str1_256 + strlen(str1_256), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_subsec);
+    snprintf(str1_256 + strlen(str1_256), 256 - strlen(str1_256), ".%07lli", mainwindow->edfheaderlist[row]->starttime_subsec);
 #endif
 
     remove_trailing_zeros(str1_256);
@@ -874,9 +874,9 @@ void UI_Signalswindow::show_signals(int row)
           date_time.minute,
           date_time.second);
 #ifdef Q_OS_WIN32
-  __mingw_snprintf(str1_256 + strlen(str1_256), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_subsec + file_duration) % TIME_FIXP_SCALING);
+  __mingw_snprintf(str1_256 + strlen(str1_256), 256 - strlen(str1_256), ".%07lli", (mainwindow->edfheaderlist[row]->starttime_subsec + file_duration) % TIME_FIXP_SCALING);
 #else
-  snprintf(str1_256 + strlen(str1_256), 100, ".%07lli", (mainwindow->edfheaderlist[row]->starttime_subsec + file_duration) % TIME_FIXP_SCALING);
+  snprintf(str1_256 + strlen(str1_256), 256 - strlen(str1_256), ".%07lli", (mainwindow->edfheaderlist[row]->starttime_subsec + file_duration) % TIME_FIXP_SCALING);
 #endif
   remove_trailing_zeros(str1_256);
 

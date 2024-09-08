@@ -253,11 +253,11 @@ void UI_EDFDwindow::SelectFileButton()
   remove_extension_from_filename(output_path);
   if(edfhdr->edfplus)
   {
-    snprintf(output_path + strlen(output_path), MAX_PATH_LENGTH, "_%04i.edf", file_number);
+    snprintf(output_path + strlen(output_path), MAX_PATH_LENGTH - strlen(output_path), "_%04i.edf", file_number);
   }
   else
   {
-    snprintf(output_path + strlen(output_path), MAX_PATH_LENGTH, "_%04i.bdf", file_number);
+    snprintf(output_path + strlen(output_path), MAX_PATH_LENGTH - strlen(output_path), "_%04i.bdf", file_number);
   }
 
   strlcpy(str1_2048, "Creating file ", 2048);
