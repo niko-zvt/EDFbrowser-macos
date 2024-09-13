@@ -559,6 +559,7 @@ void UI_EDFhdrwindow::load_signal_params(int row, int page)
     }
     signallist->setCellWidget(i%512, 6, ql);
     snprintf(str1_512, 512, "%e", mainwindow->edfheaderlist[row]->edfparam[i].bitvalue);
+    remove_trailing_zeros(str1_512);
     ql = new QLineEdit(str1_512);
     ql->setReadOnly(true);
     ql->setCursorPosition(0);
