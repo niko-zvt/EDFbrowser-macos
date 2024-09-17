@@ -558,12 +558,19 @@ void UI_EDFhdrwindow::load_signal_params(int row, int page)
       ql->setToolTip(str1_512);
     }
     signallist->setCellWidget(i%512, 6, ql);
-    snprintf(str1_512, 512, "%e", mainwindow->edfheaderlist[row]->edfparam[i].bitvalue);
-    remove_trailing_zeros(str1_512);
-    ql = new QLineEdit(str1_512);
+    if(mainwindow->edfheaderlist[row]->edfparam[i].annotation)
+    {
+      ql = new QLineEdit("n.a.");
+    }
+    else
+    {
+      snprintf(str1_512, 512, "%e", mainwindow->edfheaderlist[row]->edfparam[i].bitvalue);
+      remove_trailing_zeros(str1_512);
+      ql = new QLineEdit(str1_512);
+      ql->setToolTip("Computed as: (physical maximum - physical minimum) / (digital maximum - digital minimum)");
+    }
     ql->setReadOnly(true);
     ql->setCursorPosition(0);
-    ql->setToolTip("Computed as: (physical maximum - physical minimum) / (digital maximum - digital minimum)");
     signallist->setCellWidget(i%512, 7, ql);
     ql = new QLineEdit(mainwindow->edfheaderlist[row]->edfparam[i].physdimension);
     ql->setReadOnly(true);
