@@ -1,15 +1,15 @@
 
- version 2.12      to be defined
+ version 2.12      September 29, 2024
  --------------
 
  - When dragging the main window to another screen with a different resolution (dpi),
    maintain the same offset for traces.
 
  - Annotation editor: fixed a bug where, after deleting some annotations and then creating new annotations,
-   the new annotaions' duration overlay color was wrong.
+   the new annotations' duration overlay color was displayed wrong.
 
 
- version 2.11      August 24, 204
+ version 2.11      August 24, 2024
  --------------
 
  - Increased the maximum number of channels from 640 to 4096.
