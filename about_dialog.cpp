@@ -28,24 +28,35 @@
 
 
 #include "about_dialog.h"
+#ifdef __GLIBC__
+#include <gnu/libc-version.h>
+#endif
 
 UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
 {
-  char str[1024]={""};
+  char str1_2048[2048]={""};
 
-  strlcpy(str, " QT version at runtime is ", 1024);
-  strlcat(str, qVersion(), 1024);
-  strlcat(str, "\n QT version at compile time is ", 1024);
-  strlcat(str, QT_VERSION_STR, 1024);
-  strlcat(str, "\n Compiled on " __DATE__ " " __TIME__, 1024);
-  snprintf(str + strlen(str), 1024 - strlen(str), "\n CPU-cores detected on this system: %i", mainwindow->maincurve->cpu_cnt);
+  strlcpy(str1_2048, " QT version at runtime is ", 2048);
+  strlcat(str1_2048, qVersion(), 2048);
+  strlcat(str1_2048, "\n QT version at compile time is ", 2048);
+  strlcat(str1_2048, QT_VERSION_STR, 2048);
+#ifdef __GLIBC__
+  strlcat(str1_2048, "\n Glibc version at runtime is ", 2048);
+  strlcat(str1_2048, gnu_get_libc_version(), 2048);
+  strlcat(str1_2048, " ", 2048);
+  strlcat(str1_2048, gnu_get_libc_release(), 2048);
+  strlcat(str1_2048, "\n Glibc version at compile time is ", 2048);
+  snprintf(str1_2048 + strlen(str1_2048), 2048 - strlen(str1_2048), "%u.%u", __GLIBC__, __GLIBC_MINOR__);
+#endif
+  strlcat(str1_2048, "\n Compiled on " __DATE__ " " __TIME__, 2048);
+  snprintf(str1_2048 + strlen(str1_2048), 2048 - strlen(str1_2048), "\n CPU-cores detected on this system: %i", mainwindow->maincurve->cpu_cnt);
   if(mainwindow->use_threads == 1)
   {
-    strlcat(str, "\n Multi-Threading is enabled.", 1024);
+    strlcat(str1_2048, "\n Multi-Threading is enabled.", 2048);
   }
   else
   {
-    strlcat(str, "\n Multi-Threading is disabled.", 1024);
+    strlcat(str1_2048, "\n Multi-Threading is disabled.", 2048);
   }
 
   AboutDialog = new QDialog;
@@ -70,7 +81,7 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
         " Despite this software is intended to be useful, there is no warranty, use this software at your own risk!\n"
         " EDFbrowser may NOT be used in safety-critical applications, such as life-support medical systems.\n"
         " The author is NOT responsible for any consequences. For research and educational purpose only.\n");
-  textedit1->append(str);
+  textedit1->append(str1_2048);
   textedit1->append(
         "\n\n                    GNU GENERAL PUBLIC LICENSE\n"
         "                       Version 3, 29 June 2007\n\n"
