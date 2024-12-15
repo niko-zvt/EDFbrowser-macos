@@ -44,6 +44,7 @@ CONFIG += warn_on
 CONFIG += release
 CONFIG += static
 CONFIG += largefile
+CONFIG += silent
 QT += network
 
 contains(QT_MAJOR_VERSION, 6) {
