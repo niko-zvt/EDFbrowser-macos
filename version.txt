@@ -1,4 +1,14 @@
 
+ version 2.13      to be defined
+ --------------
+
+ - Show info about Glibc version.
+
+ - Make compiler output less verbose.
+
+ - Move settings from ~/.EDFbrowser/ to ~/.config/EDFbrowser/
+
+
  version 2.12      September 29, 2024
  --------------
 
