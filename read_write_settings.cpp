@@ -110,17 +110,7 @@ void UI_Mainwindow::read_color_settings()
 
   xml_hdl_t *xml_hdl=NULL;
 
-#ifdef Q_OS_WIN32
-  strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "\\", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
-  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH);
-#else
-  strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/.", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH);
-#endif
+  get_settings_path(cfg_path, MAX_PATH_LENGTH);
 
   xml_hdl = xml_get_handle(cfg_path);
   if(!xml_hdl)
@@ -408,17 +398,7 @@ void UI_Mainwindow::read_recent_file_settings()
 
   QAction *act=NULL;
 
-#ifdef Q_OS_WIN32
-  strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "\\", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
-  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH);
-#else
-  strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/.", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH);
-#endif
+  get_settings_path(cfg_path, MAX_PATH_LENGTH);
 
   xml_hdl = xml_get_handle(cfg_path);
   if(xml_hdl==NULL)
@@ -662,17 +642,7 @@ void UI_Mainwindow::read_general_settings()
 
   xml_hdl_t *xml_hdl=NULL;
 
-#ifdef Q_OS_WIN32
-  strlcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "\\", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
-  strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH);
-#else
-  strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/.", MAX_PATH_LENGTH);
-  strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH);
-#endif
+  get_settings_path(cfg_path, MAX_PATH_LENGTH);
 
   xml_hdl = xml_get_handle(cfg_path);
   if(xml_hdl==NULL)
@@ -3277,10 +3247,26 @@ void UI_Mainwindow::write_settings()
   mkdir(cfg_path);
   strlcat(cfg_path, "\\settings.xml", MAX_PATH_LENGTH);
 #else
-  strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
-  strlcat(cfg_path, "/.", MAX_PATH_LENGTH);
+  if(getenv("XDG_CONFIG_HOME") != NULL)
+  {
+    if(strlen(getenv("XDG_CONFIG_HOME")) > 0)
+    {
+      strlcpy(cfg_path, getenv("XDG_CONFIG_HOME"), MAX_PATH_LENGTH);
+    }
+    else
+    {
+      strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
+      strlcat(cfg_path, "/.config", MAX_PATH_LENGTH);
+    }
+  }
+  else
+  {
+    strlcpy(cfg_path, getenv("HOME"), MAX_PATH_LENGTH);
+    strlcat(cfg_path, "/.config", MAX_PATH_LENGTH);
+  }
+  strlcat(cfg_path, "/", MAX_PATH_LENGTH);
   strlcat(cfg_path, PROGRAM_NAME, MAX_PATH_LENGTH);
-  mkdir(cfg_path,  S_IRWXU);
+  mkdir(cfg_path, S_IRWXU);
   strlcat(cfg_path, "/settings.xml", MAX_PATH_LENGTH);
 #endif
 
@@ -3938,6 +3924,49 @@ void UI_Mainwindow::write_settings()
   }
 }
 
+
+void UI_Mainwindow::get_settings_path(char *s, int len)
+{
+  if(!s)  return;
+
+  if(len < 1)  return;
+
+#ifdef Q_OS_WIN32
+  strlcpy(s, specialFolder(CSIDL_APPDATA).toLocal8Bit().data(), len);
+  strlcat(s, "\\", len);
+  strlcat(s, PROGRAM_NAME, len);
+  strlcat(s, "\\settings.xml", len);
+#else
+  if(getenv("XDG_CONFIG_HOME") != NULL)
+  {
+    if(strlen(getenv("XDG_CONFIG_HOME")) > 0)
+    {
+      strlcpy(s, getenv("XDG_CONFIG_HOME"), len);
+    }
+    else
+    {
+      strlcpy(s, getenv("HOME"), len);
+      strlcat(s, "/.config", len);
+    }
+  }
+  else
+  {
+    strlcpy(s, getenv("HOME"), len);
+    strlcat(s, "/.config", len);
+  }
+  strlcat(s, "/", len);
+  strlcat(s, PROGRAM_NAME, len);
+  strlcat(s, "/settings.xml", len);
+
+  if(QFileInfo::exists(s) == false)
+  {
+    strlcpy(s, getenv("HOME"), len);
+    strlcat(s, "/.", len);
+    strlcat(s, PROGRAM_NAME, len);
+    strlcat(s, "/settings.xml", len);
+  }
+#endif
+}
 
 
 

@@ -130,6 +130,7 @@
 #include <QModelIndex>
 #include <QAbstractItemModel>
 #include <QMutex>
+#include <QFileInfo>
 #if QT_VERSION >= 0x050200
 #include <QFontDatabase>
 #endif

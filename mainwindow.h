@@ -675,6 +675,7 @@ private:
   void read_recent_file_settings();
   void read_general_settings();
   void write_settings();
+  void get_settings_path(char *, int);
   int read_session_file(const char *);
   int session_format_error(const char *, int, sigcompblck_t *, xml_hdl_t *);
   long long check_edf_file_datarecords(edfhdrblck_t *);
