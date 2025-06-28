@@ -2,6 +2,8 @@
  version 2.13      to be defined
  --------------
 
+ - Apply predefined overlay colors also to channel linked annotations.
+
  - Show info about Glibc version.
 
  - Make compiler output less verbose.

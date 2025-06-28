@@ -534,7 +534,7 @@ void ViewCurve::draw_default_horizontal_hr_graticule(QPainter *painter, long lon
 
 void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, int print_linewidth, int print_format)
 {
-  int i, j, k, n, p, x_tmp,
+  int i, j, k, n, p, x_tmp, len,
       signalcomps=0,
       baseline=0,
       p_decimals=0,
@@ -719,6 +719,8 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                 {
                   if(strlen(chp) > 2)
                   {
+                    len = chp - str4_1024;
+
                     chp += 2;
                     if(mainwindow->strip_label_types)
                     {
@@ -732,13 +734,34 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                       {
                         baseline = (vertical_distance * (k + 1)) + signalcomp[k]->screen_offset_pix;
 
-                        if(annot->selected_in_dock)
+                        for(p=0; p<MAX_MC_ANNOT_OV_COLORS; p++)
                         {
-                          painter->fillRect(marker_x, baseline - (vertical_distance / 2) - scroll_h_offset, marker_x2, vertical_distance, annot_duration_color_selected);
+                          if(!strncmp(annot->description, mainwindow->mc_annot_ov_name_predefined[p], len))
+                          {
+                            if(annot->selected_in_dock)
+                            {
+                              painter->fillRect(marker_x, baseline - (vertical_distance / 2) - scroll_h_offset, marker_x2, vertical_distance,
+                                                annot_duration_color_selected);
+                            }
+                            else
+                            {
+                              painter->fillRect(marker_x, baseline - (vertical_distance / 2) - scroll_h_offset, marker_x2, vertical_distance,
+                                                mainwindow->mc_annot_ov_color_predefined[p]);
+                            }
+
+                            break;
+                          }
                         }
-                        else
+                        if(p == MAX_MC_ANNOT_OV_COLORS)
                         {
-                          painter->fillRect(marker_x, baseline - (vertical_distance / 2) - scroll_h_offset, marker_x2, vertical_distance, annot_duration_color);
+                          if(annot->selected_in_dock)
+                          {
+                            painter->fillRect(marker_x, baseline - (vertical_distance / 2) - scroll_h_offset, marker_x2, vertical_distance, annot_duration_color_selected);
+                          }
+                          else
+                          {
+                            painter->fillRect(marker_x, baseline - (vertical_distance / 2) - scroll_h_offset, marker_x2, vertical_distance, annot_duration_color);
+                          }
                         }
 
                         break;
