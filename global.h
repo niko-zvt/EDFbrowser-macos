@@ -67,7 +67,7 @@
 #endif
 
 #define PROGRAM_NAME                "EDFbrowser"
-#define PROGRAM_VERSION                   "2.12"
+#define PROGRAM_VERSION                   "2.13"
 #define PROGRAM_BETA_SUFFIX                   ""
 #define MINIMUM_QT4_VERSION           (0x040807)
 #define MINIMUM_QT5_VERSION           (0x050C06)

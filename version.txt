@@ -1,5 +1,5 @@
 
- version 2.13      to be defined
+ version 2.13      July 2, 2025
  --------------
 
  - Apply predefined overlay colors also to channel linked annotations.
