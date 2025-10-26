@@ -134,7 +134,9 @@ void UI_AsciiExportwindow::ExportButtonClicked()
   long long data_record_duration,
             elapsedtime,
             time_tmp,
-            d_tmp;
+            d_tmp,
+            onset_tmp,
+            starttime_subsecond=0LL;
 
   double value_tmp;
 
@@ -353,14 +355,12 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
   free(scratchpad);
 
-  max_tal_ln = 0;
+  max_tal_ln = 128;
 
   for(r=0; r<nr_annot_chns; r++)
   {
     if(max_tal_ln<edfparamascii[annot_ch[r]].smp_per_record * samplesize)  max_tal_ln = edfparamascii[annot_ch[r]].smp_per_record * samplesize;
   }
-
-  if(max_tal_ln<128)  max_tal_ln = 128;
 
   scratchpad = (char *)calloc(1, max_tal_ln + 3);
   if(scratchpad==NULL)
@@ -655,6 +655,10 @@ void UI_AsciiExportwindow::ExportButtonClicked()
       }
       scratchpad[k] = 0;
       elapsedtime = atoll_x(scratchpad, FP_SCALING);
+      if(i == 0)
+      {
+        starttime_subsecond = elapsedtime % FP_SCALING;
+      }
 
 /* process annotations */
 
@@ -735,6 +739,16 @@ void UI_AsciiExportwindow::ExportButtonClicked()
                        {
                          scratchpad[m] = '.';
                        }
+                     }
+                     if(starttime_subsecond)
+                     {
+                       onset_tmp = atoll_x(time_in_txt, FP_SCALING) - starttime_subsecond;
+#ifdef Q_OS_WIN32
+                       __mingw_snprintf(time_in_txt, max_tal_ln + 3, "%lli.%09lli", onset_tmp / FP_SCALING, onset_tmp % FP_SCALING);
+#else
+                       snprintf(time_in_txt, max_tal_ln + 3, "%lli.%09lli", onset_tmp / FP_SCALING, onset_tmp % FP_SCALING);
+#endif
+                       remove_trailing_zeros(time_in_txt);
                      }
                      fprintf(annotationfile, "%s,%s,%s\n", time_in_txt, duration_in_txt, scratchpad);
                    }

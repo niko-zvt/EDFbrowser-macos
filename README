@@ -43,7 +43,7 @@ Compiling and installing on Fedora
 ====================================
 
 sudo dnf update
-sudo dnf groupinstall "Development Tools" "Development Libraries"
+sudo dnf group install "development-tools"
 sudo dnf install g++ qt5-qtbase qt5-qtbase-devel
 git clone https://gitlab.com/Teuniz/EDFbrowser.git
 cd EDFbrowser

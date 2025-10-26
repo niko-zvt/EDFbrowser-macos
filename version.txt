@@ -1,4 +1,11 @@
 
+ version 2.14      October 26, 2025
+ --------------
+
+ - Fixed a bug in the EDF to ASCII converter that caused wrong onset times for the annotations
+   in case the starttime of the recording had a decimal fraction for the seconds.
+
+
  version 2.13      July 2, 2025
  --------------
 
