@@ -1252,7 +1252,11 @@ UI_Mainwindow::UI_Mainwindow()
 #if defined(Q_OS_LINUX) || defined(Q_OS_WIN32)
   helpmenu->addAction("Manual", this, SLOT(show_help()));
 #endif
-  helpmenu->addAction("Keyboard shortcuts", this, SLOT(show_kb_shortcuts()));
+#if QT_VERSION < 0x060000
+  helpmenu->addAction("Keyboard shortcuts", this, SLOT(show_kb_shortcuts()), Qt::CTRL + Qt::Key_F1);
+#else
+  helpmenu->addAction("Keyboard shortcuts", Qt::CTRL + Qt::Key_F1, this, SLOT(show_kb_shortcuts()));
+#endif
   helpmenu->addAction("About EDFbrowser", this, SLOT(show_about_dialog()));
   helpmenu->addAction("Show splashscreen", this, SLOT(show_splashscreen()));
   menubar->addMenu(helpmenu);
