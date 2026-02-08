@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2010 - 2025 Teunis van Beelen
+* Copyright (C) 2010 - 2026 Teunis van Beelen
 *
 * Email: teuniz@protonmail.com
 *
@@ -1072,7 +1072,7 @@ void UI_headerEditorWindow::read_header()
 
 void UI_headerEditorWindow::save_hdr()
 {
-  int i, j, p, len, hassign, digmin=0, digmax=0, dig_ok, dots, commas;
+  int i, j, p, len, hassign, digmin=0, digmax=0, dig_ok, dots, commas, tmp, old_digmin=-1, old_digmax=1;
 
   char scratchpad1_256[256]={""},
        scratchpad2_256[256]={""},
@@ -1081,6 +1081,7 @@ void UI_headerEditorWindow::save_hdr()
   long long filesize=0LL,
             l_tmp=0LL;
 
+  double physmin=-1, physmax=1;
 
   if(file == NULL)
   {
@@ -1563,6 +1564,8 @@ void UI_headerEditorWindow::save_hdr()
         digmax = atoi(scratchpad2_256);
         dig_ok++;
       }
+      old_digmin = digmin;
+      old_digmax = digmax;
       if(dig_ok == 2)
       {
         if(digmax < digmin)
@@ -1574,6 +1577,48 @@ void UI_headerEditorWindow::save_hdr()
 
           fseeko(file, (long long)(256 + (edfsignals * 128) + (i * 8)), SEEK_SET);
           fprintf(file, "%s", scratchpad1_256);
+
+          tmp = digmax;
+          digmax = digmin;
+          digmin = tmp;
+        }
+        if(edf)
+        {
+          if((digmin < -32768) && (digmax > -32768))
+          {
+            digmin = -32768;
+            snprintf(scratchpad1_256, 256, "-32768  ");
+
+            fseeko(file, (long long)(256 + (edfsignals * 120) + (i * 8)), SEEK_SET);
+            fprintf(file, "%s", scratchpad1_256);
+          }
+          if((digmax > 32767) && (digmin < 32767))
+          {
+            digmax = 32767;
+            snprintf(scratchpad2_256, 256, "32767   ");
+
+            fseeko(file, (long long)(256 + (edfsignals * 128) + (i * 8)), SEEK_SET);
+            fprintf(file, "%s", scratchpad2_256);
+          }
+        }
+        if(bdf)
+        {
+          if((digmin < -8388608) && (digmax > -8388608))
+          {
+            digmin = -8388608;
+            snprintf(scratchpad1_256, 256, "-8388608");
+
+            fseeko(file, (long long)(256 + (edfsignals * 128) + (i * 8)), SEEK_SET);
+            fprintf(file, "%s", scratchpad1_256);
+          }
+          if((digmax > 8388607) && (digmin < 8388607))
+          {
+            digmax = 8388607;
+            snprintf(scratchpad2_256, 256, "8388607 ");
+
+            fseeko(file, (long long)(256 + (edfsignals * 120) + (i * 8)), SEEK_SET);
+            fprintf(file, "%s", scratchpad2_256);
+          }
         }
         if(digmax == digmin)
         {
@@ -1656,6 +1701,7 @@ void UI_headerEditorWindow::save_hdr()
 
       fseeko(file, (long long)(256 + (edfsignals * 104) + (i * 8)), SEEK_SET);
       fprintf(file, "%s", scratchpad1_256);
+      physmin = atof(scratchpad1_256);
 
       strncpy(scratchpad2_256, hdr + 256 + (edfsignals * 112) + (i * 8), 8);  // physical maximum
       for(p=7; p>0; p--)
@@ -1688,14 +1734,40 @@ void UI_headerEditorWindow::save_hdr()
           }
         }
       }
+      physmax = atof(scratchpad2_256);
 
-      if(atof(scratchpad1_256) == atof(scratchpad2_256))
+      if(edf)
+      {
+        if((old_digmax > 32767) && (old_digmin == 0))
+        {
+          physmax *= 32767.0 / old_digmax;
+          snprintf(scratchpad2_256, 256, "%.8f", physmax);
+          convert_trailing_zeros_to_spaces(scratchpad2_256);
+          scratchpad2_256[8] = 0;
+          fseeko(file, (long long)(256 + (edfsignals * 112) + (i * 8)), SEEK_SET);
+          fprintf(file, "%s", scratchpad2_256);
+        }
+      }
+      if(bdf)
+      {
+        if((old_digmax > 8388607) && (old_digmin == 0))
+        {
+          physmax *= 8388607.0 / old_digmax;
+          snprintf(scratchpad2_256, 256, "%.8f", physmax);
+          convert_trailing_zeros_to_spaces(scratchpad2_256);
+          scratchpad2_256[8] = 0;
+          fseeko(file, (long long)(256 + (edfsignals * 112) + (i * 8)), SEEK_SET);
+          fprintf(file, "%s", scratchpad2_256);
+        }
+      }
+
+      if(fabs(physmax - physmin) < 1e-9 )
       {
         fseeko(file, (long long)(256 + (edfsignals * 104) + (i * 8)), SEEK_SET);
-        fprintf(file, "-1       ");
+        fprintf(file, "-1      ");
 
         fseeko(file, (long long)(256 + (edfsignals * 112) + (i * 8)), SEEK_SET);
-        fprintf(file, "1        ");
+        fprintf(file, "1       ");
       }
       else
       {
