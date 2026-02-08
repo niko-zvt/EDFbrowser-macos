@@ -1147,7 +1147,7 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->setTitle("T&ools");
   toolsmenu->addAction("Check EDF/BDF compatibility", this, SLOT(check_edf_compatibility()));
   toolsmenu->addSeparator();
-  toolsmenu->addAction("Header editor & repair", this, SLOT(edit_header()));
+  toolsmenu->addAction("Header editor/repair", this, SLOT(edit_header()));
   toolsmenu->addAction("Reduce signals, duration or samplerate", this, SLOT(reduce_signals()));
   toolsmenu->addAction("Remove duplicates in annotations", this, SLOT(edfplus_remove_duplicate_annotations()));
   toolsmenu->addSeparator();
