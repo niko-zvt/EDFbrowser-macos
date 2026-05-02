@@ -71,7 +71,8 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
        *cnv_buf=NULL,
        *time_in_txt=NULL,
        *duration_in_txt=NULL,
-       nk_triggerlabel[16][32]={0,};
+       nk_triggerlabel[16][32]={0,},
+       str1_2048[2048]={""};
 
   long long data_record_duration,
             elapsedtime,
@@ -531,8 +532,9 @@ int EDF_annotations::get_annotations(edfhdrblck_t *edf_hdr, int read_nk_trigger_
       if(error)
       {
         progress.reset();
-        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Cannot read annotations because there is an EDF or BDF incompatibility in this file.\n"
-                                                                  "For more information, run the EDF/BDF compatibility checker in the Tools menu.");
+        snprintf(str1_2048, 2048, "Cannot read annotations because there is an EDF or BDF incompatibility in this file. (%i)\n"
+                                  "For more information, run the EDF/BDF compatibility checker in the Tools menu.", error);
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", str1_2048);
         messagewindow.exec();
         free(cnv_buf);
         free(scratchpad);

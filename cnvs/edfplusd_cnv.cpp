@@ -79,7 +79,7 @@ void UI_EDFDwindow::SelectFileButton()
   FILE *inputfile=NULL,
        *outputfile=NULL;
 
-  int i, j,
+  int err, i, j,
       file_number,
       offset,
       offset_2,
@@ -165,13 +165,15 @@ void UI_EDFDwindow::SelectFileButton()
 
   EDF_annotations annotations_func;
 
-  if(annotations_func.get_annotations(edfhdr, 0))
+  err = annotations_func.get_annotations(edfhdr, 0);
+  if(err)
   {
     edfplus_annotation_empty_list(&edfhdr->annot_list);
     free(edfhdr->edfparam);
     free(edfhdr);
     fclose(inputfile);
-    textEdit1->append("Error, there is an incompatibility with the annotations.\n");
+    snprintf(str1_2048, 2048, "Error, there is an incompatibility with the annotations (%i)\n", err);
+    textEdit1->append(str1_2048);
     pushButton1->setEnabled(true);
     return;
   }
