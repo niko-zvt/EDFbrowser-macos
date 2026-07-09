@@ -127,7 +127,7 @@ int i, j,
     lead_spec[ISHNE_MAX_CHNS],
     amp_resolution[ISHNE_MAX_CHNS],
     sex,
-    pacemaker,
+    pacemaker=0,
     edf_hdl=-99,
     birthdate_valid=0,
     total_blocks=0,
@@ -291,7 +291,7 @@ struct
   }
 
   pacemaker = *((short *)(hdr_4096 + PACEMAKCODE_HDROFF));
-  if((pacemaker < 0) && (pacemaker > 5))
+  if((pacemaker < 0) || (pacemaker > 5))
   {
     pacemaker = 0;
   }
