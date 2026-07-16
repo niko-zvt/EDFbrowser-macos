@@ -310,41 +310,44 @@ void ViewCurve::annot_sidemenu_act_by_crosshair(bool)
 
 void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
 {
-  int i;
+  int i, delta;
 
   if(mainwindow->mousewheelsens < 1)  return;
 
   if(mainwindow->files_open == 0)  return;
 
+#if QT_VERSION >= 0x050C00
+  delta = -wheel_event->angleDelta().x();
+  if(!delta)
+  {
+    delta = wheel_event->angleDelta().y();
+  }
+#else
+  delta = wheel_event->delta();
+#endif
+
+  if(!delta)  return;
+
   if(QApplication::keyboardModifiers() == Qt::ControlModifier)
   {
-#if QT_VERSION >= 0x050C00
-    if(wheel_event->angleDelta().y() > 0)
-#else
-    if(wheel_event->delta() > 0)
-#endif
+    if(delta > 0)
     {
       mainwindow->set_page_div2();
     }
-    else
+    else if(delta < 0)
     {
       mainwindow->set_page_mult2();
-
     }
   }
   else
   {
     if((mainwindow->video_player->status == VIDEO_STATUS_PLAYING) || (mainwindow->video_player->status == VIDEO_STATUS_PAUSED))
     {
-#if QT_VERSION >= 0x050C00
-      if(wheel_event->angleDelta().y() > 0)
-#else
-      if(wheel_event->delta() > 0)
-#endif
+      if(delta > 0)
       {
         mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime - (mainwindow->pagetime / mainwindow->mousewheelsens)) / TIME_FIXP_SCALING));
       }
-      else
+      else if(delta < 0)
       {
         mainwindow->video_player_seek((int)((mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime + (mainwindow->pagetime / mainwindow->mousewheelsens)) / TIME_FIXP_SCALING));
       }
@@ -356,35 +359,27 @@ void ViewCurve::wheelEvent(QWheelEvent *wheel_event)
     {
       for(i=0; i<mainwindow->files_open; i++)
       {
-#if QT_VERSION >= 0x050C00
-        if(wheel_event->angleDelta().y() > 0)
-#else
-        if(wheel_event->delta() > 0)
-#endif
+        if(delta > 0)
         {
           mainwindow->edfheaderlist[i]->viewtime -= (mainwindow->pagetime / mainwindow->mousewheelsens);
         }
-        else
-        {
-          mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime / mainwindow->mousewheelsens);
-        }
+        else if(delta < 0)
+          {
+            mainwindow->edfheaderlist[i]->viewtime += (mainwindow->pagetime / mainwindow->mousewheelsens);
+          }
       }
     }
 
     if(mainwindow->viewtime_sync==VIEWTIME_UNSYNCED)
     {
-#if QT_VERSION >= 0x050C00
-      if(wheel_event->angleDelta().y() > 0)
-#else
-      if(wheel_event->delta() > 0)
-#endif
+      if(delta > 0)
       {
         mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime -= (mainwindow->pagetime / mainwindow->mousewheelsens);
       }
-      else
-      {
-        mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime / mainwindow->mousewheelsens);
-      }
+      else if(delta < 0)
+        {
+          mainwindow->edfheaderlist[mainwindow->sel_viewtime]->viewtime += (mainwindow->pagetime / mainwindow->mousewheelsens);
+        }
     }
   }
 
