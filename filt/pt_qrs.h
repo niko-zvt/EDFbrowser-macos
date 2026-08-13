@@ -45,6 +45,10 @@ extern "C" {
 
 typedef struct
 {
+/******** parameters ********/
+  double ds_sf_in;
+  double sense;
+
 /******** begin down sampling section ********/
   double ds_ratio;
   double ds_smpl_pos;
@@ -130,6 +134,7 @@ typedef struct
 ptqrsset_t * create_pt_qrs(double, double);
 void free_pt_qrs(ptqrsset_t *);
 int run_pt_qrs(double, ptqrsset_t *);
+void reset_pt_qrs(ptqrsset_t *);
 
 #ifdef __cplusplus
 } /* extern "C" */

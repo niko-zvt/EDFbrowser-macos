@@ -60,6 +60,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 #include "pt_qrs.h"
@@ -119,16 +120,18 @@ static inline int pt_qrs_search_back(ptqrsset_t *);
  * if your input samples are expressed in mVolts, set it to 1000
  * Returns a pointer to the qrs detector object.
  */
-ptqrsset_t * create_pt_qrs(double ds_sf_in, double sense)
+
+void reset_pt_qrs(ptqrsset_t *st)
 {
-  int i;
+  double ds_sf_in = st->ds_sf_in;
+  double sense = st->sense;
+  double *ds_ravg_buf = st->ds_ravg_buf;
 
-  ptqrsset_t *st;
+  memset(st, 0, sizeof(ptqrsset_t));
 
-  if((ds_sf_in < 199.999999) || (sense < 1e-6))  return NULL;  /* sanity check */
-
-  st = (ptqrsset_t *)calloc(1, sizeof(ptqrsset_t));
-  if(st==NULL)  return NULL;
+  st->ds_sf_in = ds_sf_in;
+  st->sense = sense;
+  st->ds_ravg_buf = ds_ravg_buf;
 
 /* The compensation for the delay of the filters.
  */
@@ -138,7 +141,7 @@ ptqrsset_t * create_pt_qrs(double ds_sf_in, double sense)
   st->rr_high_limit = 1.16 * SMPL_FREQ;
   st->rr_missed_limit = 1.66 * SMPL_FREQ;
 
-  for(i=0; i<PT_QRS_RR_AVG_LEN; i++)
+  for(int i=0; i<PT_QRS_RR_AVG_LEN; i++)
   {
     st->rr_avg_x1[i] = SMPL_FREQ;
     st->rr_avg_x2[i] = SMPL_FREQ + 10;
@@ -160,6 +163,32 @@ ptqrsset_t * create_pt_qrs(double ds_sf_in, double sense)
 
   st->ds_sf_out = SMPL_FREQ;
 
+  if((st->ds_ravg_len > 1) && (st->ds_ravg_buf != NULL))
+  {
+    memset(st->ds_ravg_buf, 0, sizeof(double) * st->ds_ravg_len);
+  }
+/******** end down sampling section ********/
+}
+
+ptqrsset_t * create_pt_qrs(double ds_sf_in, double sense)
+{
+  ptqrsset_t *st;
+
+  if((ds_sf_in < 199.999999) || (sense < 1e-6))  return NULL;  /* sanity check */
+
+  st = (ptqrsset_t *)calloc(1, sizeof(ptqrsset_t));
+  if(st==NULL)  return NULL;
+
+  st->ds_sf_in = ds_sf_in;
+  st->sense = sense;
+
+/******** begin down sampling section ********/
+  st->ds_ratio = ds_sf_in / SMPL_FREQ;
+
+  st->ds_ravg_len = st->ds_ratio;
+
+  st->ds_sf_out = SMPL_FREQ;
+
   if(st->ds_ravg_len > 1)
   {
     st->ds_ravg_buf = (double *)calloc(1, st->ds_ravg_len * sizeof(double));
@@ -167,6 +196,8 @@ ptqrsset_t * create_pt_qrs(double ds_sf_in, double sense)
       goto CREATE_OUT_ERROR;
   }
 /******** end down sampling section ********/
+
+  reset_pt_qrs(st);
 
   return st;
 

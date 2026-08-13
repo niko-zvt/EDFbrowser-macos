@@ -201,6 +201,8 @@ void ecg_filter_restore_buf(ecgfiltset_t *st)
 
   st->stat_buf_idx = 0;
 
+  st->smpl_n = 0;
+
   st->sample_cntr = 0;
 
   if(st->bu_filled == 0)  return;
@@ -238,6 +240,10 @@ void reset_ecg_filter(ecgfiltset_t *st)
   st->stat_buf_idx = 0;
 
   st->sample_cntr = 0;
+
+  if(st->pt_qrs == NULL)  return;
+
+  reset_pt_qrs(st->pt_qrs);
 }
 
 

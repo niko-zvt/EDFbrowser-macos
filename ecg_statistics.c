@@ -34,7 +34,8 @@ int ecg_get_hr_statistics(double *beat_interval_list, int beat_cnt, ecg_hr_stati
 {
   int i,
       NN20=0,
-      NN50=0;
+      NN50=0,
+      skip=1;
 
   double d_tmp,
          average_bpm=0,
@@ -42,7 +43,8 @@ int ecg_get_hr_statistics(double *beat_interval_list, int beat_cnt, ecg_hr_stati
          sdnn_bpm=0,
          sdnn_rr=0,
          rmssd_rr=0,
-         *buf_bpm=NULL;
+         *buf_bpm=NULL,
+         *ival_list;
 
   if(beat_interval_list == NULL)  return -1;
 
@@ -56,32 +58,36 @@ int ecg_get_hr_statistics(double *beat_interval_list, int beat_cnt, ecg_hr_stati
     return -4;
   }
 
+  beat_cnt -= skip;
+  /* skip (ignore) the first interval because it's not valid! (intervals = beats - 1) */
+  ival_list = beat_interval_list + skip;
+
   for(i=0; i<beat_cnt; i++)
   {
-    if(beat_interval_list[i] < 1e-15)
+    if(ival_list[i] < 1e-15)
     {
       free(buf_bpm);
       buf_bpm = NULL;
       return -5;
     }
 
-    buf_bpm[i] = 60.0 / beat_interval_list[i];
+    buf_bpm[i] = 60.0 / ival_list[i];
 
     average_bpm += buf_bpm[i];
-    average_rr += beat_interval_list[i];
+    average_rr += ival_list[i];
 
     if(i < (beat_cnt - 1))
     {
-      d_tmp = (beat_interval_list[i] - beat_interval_list[i + 1]) * 1000.0;
+      d_tmp = (ival_list[i] - ival_list[i + 1]) * 1000.0;
 
       rmssd_rr += (d_tmp * d_tmp);
 
-      if(((beat_interval_list[i] - beat_interval_list[i + 1]) > 0.02 ) || ((beat_interval_list[i + 1] - beat_interval_list[i]) > 0.02 ))
+      if(((ival_list[i] - ival_list[i + 1]) > 0.02 ) || ((ival_list[i + 1] - ival_list[i]) > 0.02 ))
       {
         NN20++;
       }
 
-      if(((beat_interval_list[i] - beat_interval_list[i + 1]) > 0.05 ) || ((beat_interval_list[i + 1] - beat_interval_list[i]) > 0.05 ))
+      if(((ival_list[i] - ival_list[i + 1]) > 0.05 ) || ((ival_list[i + 1] - ival_list[i]) > 0.05 ))
       {
         NN50++;
       }
@@ -96,13 +102,13 @@ int ecg_get_hr_statistics(double *beat_interval_list, int beat_cnt, ecg_hr_stati
   for(i=0; i<beat_cnt; i++)
   {
     sdnn_bpm += (buf_bpm[i] - average_bpm) * (buf_bpm[i] - average_bpm);
-    sdnn_rr += (beat_interval_list[i] - average_rr) * (beat_interval_list[i] - average_rr);
+    sdnn_rr += (ival_list[i] - average_rr) * (ival_list[i] - average_rr);
   }
 
   sdnn_bpm = sqrt(sdnn_bpm / beat_cnt);
   sdnn_rr = sqrt(sdnn_rr / beat_cnt);
 
-  ecg_stats->beat_cnt = beat_cnt;
+  ecg_stats->beat_cnt = beat_cnt + skip;
   ecg_stats->mean_rr = average_rr * 1000.0;
   ecg_stats->sdnn_rr = sdnn_rr * 1000.0;
   ecg_stats->rmssd_rr = rmssd_rr;

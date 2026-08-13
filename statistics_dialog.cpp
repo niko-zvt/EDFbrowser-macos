@@ -417,7 +417,8 @@ UI_StatisticWindow::UI_StatisticWindow(sigcompblck_t *signalcomp,
               hr_stat.NN50,
               hr_stat.pNN50);
 
-      for(i=0; i<beat_cnt; i++)
+      /* skip (ignore) the first interval because it's not valid! (intervals = beats - 1) */
+      for(i=1; i<beat_cnt; i++)
       {
         tmp = 60.0 / beat_interval_list[i];
 
