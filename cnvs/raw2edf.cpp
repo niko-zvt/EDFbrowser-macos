@@ -212,7 +212,6 @@ void UI_RAW2EDFapp::gobuttonpressed()
       chns,
       sf,
       *buf,
-      datarecords,
       tmp,
       tmp1,
       tmp2,
@@ -221,7 +220,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
       skipblocksize,
       skipbytes,
       skipblockcntr,
-      bytecntr,
+//      bytecntr,
       big_endian,
       odd_even=0;
 
@@ -484,8 +483,6 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
   fseeko(inputfile, d_offset, SEEK_SET);
 
-  datarecords = 0;
-
   union{
          int one[1];
          signed short two[2];
@@ -494,7 +491,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
   skipblockcntr = 0;
 
-  bytecntr = 0;
+//  bytecntr = 0;
 
   if(samplesize > 0)
   {
@@ -525,7 +522,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
             {
               goto END_1;
             }
-            bytecntr++;
+//            bytecntr++;
 
   //           printf("1: skipblockcntr is %i    tmp is %02X   bytecntr is %i\n", skipblockcntr, tmp, bytecntr);
 
@@ -570,7 +567,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
           {
             goto END_1;
           }
-          bytecntr++;
+//          bytecntr++;
 
   //         printf("3: skipblockcntr is %i    tmp is %02X   bytecntr is %i\n", skipblockcntr, tmp, bytecntr);
 
@@ -585,7 +582,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
                 {
                   goto END_1;
                 }
-                bytecntr++;
+//                bytecntr++;
 
   //               printf("4: skipblockcntr is %i    tmp is %02X   bytecntr is %i\n", skipblockcntr, tmp, bytecntr);
 
@@ -634,9 +631,6 @@ void UI_RAW2EDFapp::gobuttonpressed()
         free(buf);
         return;
       }
-
-      datarecords++;
-  //    if(datarecords == 1)  break;
     }
   }
 
@@ -787,8 +781,6 @@ void UI_RAW2EDFapp::gobuttonpressed()
         free(buf);
         return;
       }
-
-      datarecords++;
     }
   }
 

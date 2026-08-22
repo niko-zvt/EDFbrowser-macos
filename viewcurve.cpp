@@ -1438,7 +1438,7 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
   char *viewbuf=NULL;
 
-  unsigned long long s, s2, total_samples_processed;
+  unsigned long long s, s2;
 
   double dig_value=0,
          f_tmp=0;
@@ -1579,15 +1579,15 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 //   printf("start:  signalcomp is %08X      screensamples is %08X\n---------------------\n", (int)(signalcomp[i]), (int)(&screensamples[i]));
 // }
 
-    for(i=0, total_samples_processed=0LL; i<signalcomps; i++)
-    {
-      if(signalcomp[i]->sample_stop > signalcomp[i]->sample_start)
-      {
-        total_samples_processed += (signalcomp[i]->sample_stop - signalcomp[i]->sample_start);
-      }
-    }
-
-//    printf("total_samples_processed: %llu\n", total_samples_processed);
+    // for(i=0, total_samples_processed=0LL; i<signalcomps; i++)
+    // {
+    //   if(signalcomp[i]->sample_stop > signalcomp[i]->sample_start)
+    //   {
+    //     total_samples_processed += (signalcomp[i]->sample_stop - signalcomp[i]->sample_start);
+    //   }
+    // }
+    //
+    // printf("total_samples_processed: %llu\n", total_samples_processed);
 
     for(i=0; i<n; i++)
     {

@@ -753,7 +753,6 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
       annot_code,
       tc=0,
       skip,
-      total_annots=0,
       ignore_consecutive=0,
       import_std_annots=1,
       import_aux_info=1,
@@ -918,8 +917,6 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
               return 1;
             }
 
-            total_annots++;
-
             strlcpy(last_description_256_aux_256, aux_str_256, 256);
           }
         }
@@ -955,8 +952,6 @@ int UI_ImportAnnotationswindow::import_from_mitwfdb(void)
                 fclose(inputfile);
                 return 1;
               }
-
-              total_annots++;
 
               last_std_code = annot_code;
             }

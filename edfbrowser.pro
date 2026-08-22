@@ -66,6 +66,13 @@ QMAKE_CFLAGS += -Wall -Wextra -Wshadow -Wformat-nonliteral -Wformat-security -Wt
 
 QMAKE_CXXFLAGS += -Wextra -Wshadow -Wformat -Wformat-nonliteral -Wformat-security -Wtype-limits -Wfatal-errors -Wstringop-overflow=2 -Wdeprecated-declarations -U_FORTIFY_SOURCE
 
+linux-g++ {
+    GCC_VERSION = $$system(g++ -dumpversion)
+    LIST = 15 16 17 18 19 20 21 22 23
+    for(a, LIST):contains( GCC_VERSION, $$a ) {
+        QMAKE_CXXFLAGS += -Wno-sfinae-incomplete
+        }
+}
 
 OBJECTS_DIR = ./objects
 MOC_DIR = ./moc

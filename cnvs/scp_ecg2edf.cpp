@@ -1523,7 +1523,7 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
 
   offset = sp[1].file_offset + 16LL;
 
-  for(int k=0; ; k++)
+  while(1)
   {
     fseeko(inputfile, offset, SEEK_SET);
 

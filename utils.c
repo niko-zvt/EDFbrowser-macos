@@ -1364,7 +1364,7 @@ long long atoll_x(const char *str, int dimension)
 
 int is_integer_number(const char *str)
 {
-  int i=0, l, hasspace = 0, hassign=0, digit=0;
+  int i=0, l, hasspace=0, digit=0;
 
   l = strlen(str);
 
@@ -1372,7 +1372,6 @@ int is_integer_number(const char *str)
 
   if((str[0]=='+')||(str[0]=='-'))
   {
-    hassign++;
     i++;
   }
 
@@ -1410,7 +1409,7 @@ int is_integer_number(const char *str)
 
 int is_number(const char *str)
 {
-  int i=0, len, hasspace=0, hassign=0, digit=0, hasdot=0, hasexp=0;
+  int i=0, len, hasspace=0, digit=0, hasdot=0, hasexp=0;
 
   len = strlen(str);
 
@@ -1418,7 +1417,6 @@ int is_number(const char *str)
 
   if((str[0]=='+')||(str[0]=='-'))
   {
-    hassign++;
     i++;
   }
 
@@ -1431,7 +1429,6 @@ int is_number(const char *str)
         return 1;
       }
       hasexp++;
-      hassign = 0;
       digit = 0;
 
       break;
@@ -1479,7 +1476,6 @@ int is_number(const char *str)
 
     if((str[i]=='+')||(str[i]=='-'))
     {
-      hassign++;
       i++;
     }
 

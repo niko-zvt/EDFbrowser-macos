@@ -724,8 +724,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
 int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
 {
-  int i,
-      order=0,
+  int order=0,
       startsmpl,
       durationsmpl,
       ev_cnt=0,
@@ -795,7 +794,7 @@ int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int se
 
       if(!(strncmp(linebuf, "string integer integer", 22)))
       {
-        for(i=0; ; i++)
+        while(1)
         {
           if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
           {

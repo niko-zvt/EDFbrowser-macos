@@ -717,7 +717,7 @@ int UI_EDFCompatwindow::is_onset_number(char *str)
 
 int UI_EDFCompatwindow::is_integer_number(char *str)
 {
-  int i=0, l, hasspace = 0, hassign=0, digit=0;
+  int i=0, l, hasspace=0, digit=0;
 
   l = strlen(str);
 
@@ -725,7 +725,6 @@ int UI_EDFCompatwindow::is_integer_number(char *str)
 
   if((str[0]=='+')||(str[0]=='-'))
   {
-    hassign++;
     i++;
   }
 

@@ -106,7 +106,6 @@ void UI_ViewMontagewindow::SelectButtonClicked()
       fir_filter_cnt=0,
       fidfilter_cnt=0,
       islpf,
-      signalcomps,
       order,
       model,
       type,
@@ -205,7 +204,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 
   parentItem = t_model->invisibleRootItem();
 
-  for(signalcomps=0; ; signalcomps++)
+  while(1)
   {
     xml_goto_root(xml_hdl);
 

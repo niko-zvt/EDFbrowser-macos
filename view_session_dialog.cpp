@@ -106,7 +106,6 @@ void UI_ViewSessionwindow::SelectButtonClicked()
       fidfilter_cnt=0,
       fir_filter_cnt=0,
       islpf,
-      signalcomps,
       order,
       model,
       type,
@@ -415,7 +414,7 @@ void UI_ViewSessionwindow::SelectButtonClicked()
   }
   xml_go_up(xml_hdl);
 
-  for(signalcomps=0; ; signalcomps++)
+  while(1)
   {
     xml_goto_root(xml_hdl);
 

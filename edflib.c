@@ -2642,7 +2642,7 @@ static edfhdrblock_t * edflib_check_edf_file(FILE *inputfile, int *edf_error)
 
 static int edflib_is_integer_number(char *str)
 {
-  int i=0, l, hasspace = 0, hassign=0, digit=0;
+  int i=0, l, hasspace=0, digit=0;
 
   l = strlen(str);
 
@@ -2650,7 +2650,6 @@ static int edflib_is_integer_number(char *str)
 
   if((str[0]=='+')||(str[0]=='-'))
   {
-    hassign++;
     i++;
   }
 
@@ -2689,7 +2688,7 @@ static int edflib_is_integer_number(char *str)
 
 static int edflib_is_number(char *str)
 {
-  int i=0, l, hasspace = 0, hassign=0, digit=0, hasdot=0, hasexp=0;
+  int i=0, l, hasspace=0, digit=0, hasdot=0, hasexp=0;
 
   l = strlen(str);
 
@@ -2697,7 +2696,6 @@ static int edflib_is_number(char *str)
 
   if((str[0]=='+')||(str[0]=='-'))
   {
-    hassign++;
     i++;
   }
 
@@ -2710,7 +2708,6 @@ static int edflib_is_number(char *str)
         return 1;
       }
       hasexp++;
-      hassign = 0;
       digit = 0;
 
       break;
@@ -2758,7 +2755,6 @@ static int edflib_is_number(char *str)
 
     if((str[i]=='+')||(str[i]=='-'))
     {
-      hassign++;
       i++;
     }
 
