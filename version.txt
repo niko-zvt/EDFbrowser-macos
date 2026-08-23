@@ -1,5 +1,5 @@
 
- version 2.15      to be defined
+ version 2.15      August 23, 2026
  --------------
 
  - Added shortcut Ctrl+F1 for Help->Keyboard Shortcuts.
@@ -8,7 +8,7 @@
 
  - Show error numbers in case of EDF annotation errors when opening or converting a file.
 
- - ISHNE to EDF converter: fixed a bug that potentially could create
+ - ISHNE to EDF converter: fixed a bug that potentially could cause
    a segfault in case of a malformattted ISHNE file.
 
  - Signal window: horizontal scrolling: fixed a bug that caused to always
@@ -19,6 +19,9 @@
    detector with samples from the part before the viewport.
 
  - ECG RR-interval: ignore the interval before the first R-peak in the viewport.
+
+ - Fixed some compiler warnings introduced by GCC 15 & 16.
+
 
  version 2.14      October 26, 2025
  --------------
