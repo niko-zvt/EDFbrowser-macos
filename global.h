@@ -67,7 +67,7 @@
 #endif
 
 #define PROGRAM_NAME                "EDFbrowser"
-#define PROGRAM_VERSION                   "2.15"
+#define PROGRAM_VERSION                   "2.16"
 #define PROGRAM_BETA_SUFFIX                   ""
 #define MINIMUM_QT4_VERSION           (0x040807)
 #define MINIMUM_QT5_VERSION           (0x050C06)
@@ -247,7 +247,7 @@ typedef struct
   int       edfsignals;
   long long datarecords;
   int       recordsize;
-  int       annot_ch[256];
+  int       annot_ch[MAXSIGNALS];
   int       nr_annot_chns;
   int       edf;
   int       edfplus;

@@ -1,4 +1,11 @@
 
+ version 2.16      November 5, 2026
+ --------------
+
+ - Fixed an out of bounds write causing a segfault when opening an EDF+ or BDF+ file
+   that contains more than 256 annotation channels.
+
+
  version 2.15      August 23, 2026
  --------------
 
