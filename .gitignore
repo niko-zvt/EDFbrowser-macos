@@ -1,0 +1,13 @@
+.DS_Store
+
+# qmake / make output
+Makefile
+.qmake.stash
+moc/
+objects/
+qrc_images.cpp
+edf.icns
+
+# packaged app
+EDFbrowser.app/
+*.dmg
