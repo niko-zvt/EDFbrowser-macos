@@ -4,6 +4,7 @@
 * Author: Teunis van Beelen
 *
 * Copyright (C) 2007 - 2026 Teunis van Beelen
+* Copyright (C) 2026 Nikolai Zhivotenko
 *
 * Email: teuniz@protonmail.com
 *
@@ -68,6 +69,7 @@
 
 #define PROGRAM_NAME                "EDFbrowser"
 #define PROGRAM_VERSION                   "2.16"
+#define PROGRAM_MACOS_VERSION             "2.16.1"
 #define PROGRAM_BETA_SUFFIX                   ""
 #define MINIMUM_QT4_VERSION           (0x040807)
 #define MINIMUM_QT5_VERSION           (0x050C06)

@@ -4,6 +4,7 @@
 * Author: Teunis van Beelen
 *
 * Copyright (C) 2007 - 2026 Teunis van Beelen
+* Copyright (C) 2026 Nikolai Zhivotenko
 *
 * Email: teuniz@protonmail.com
 *
@@ -2263,7 +2264,7 @@ void UI_Mainwindow::setMainwindowTitle(edfhdrblck_t *edfhdr)
 
   if(edfhdr==NULL)
   {
-    setWindowTitle(PROGRAM_NAME);
+    setWindowTitle(PROGRAM_NAME " " PROGRAM_MACOS_VERSION);
 
     return;
   }
@@ -3171,7 +3172,7 @@ void UI_Mainwindow::close_all_files()
 
   dig_min_max_overflow_warning_showed = 0;
 
-  setWindowTitle(PROGRAM_NAME);
+  setWindowTitle(PROGRAM_NAME " " PROGRAM_MACOS_VERSION);
 
   close_filemenu->clear();
 

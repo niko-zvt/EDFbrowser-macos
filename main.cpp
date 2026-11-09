@@ -4,6 +4,7 @@
 * Author: Teunis van Beelen
 *
 * Copyright (C) 2013 - 2026 Teunis van Beelen
+* Copyright (C) 2026 Nikolai Zhivotenko
 *
 * Email: teuniz@protonmail.com
 *
@@ -128,7 +129,7 @@ int main(int argc, char *argv[])
   p.setPen(Qt::black);
   if(!strcmp(PROGRAM_BETA_SUFFIX, ""))
   {
-    p.drawText(250, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION "    " THIS_APP_BITS_W);
+    p.drawText(250, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_MACOS_VERSION "    " THIS_APP_BITS_W);
   }
   else
   {

@@ -4,6 +4,7 @@
 * Author: Teunis van Beelen
 *
 * Copyright (C) 2007 - 2026 Teunis van Beelen
+* Copyright (C) 2026 Nikolai Zhivotenko
 *
 * Email: teuniz@protonmail.com
 *
@@ -64,7 +65,7 @@ UI_Mainwindow::UI_Mainwindow()
   startup_timer = NULL;
 
   setMinimumSize(640, 480);
-  setWindowTitle(PROGRAM_NAME);
+  setWindowTitle(PROGRAM_NAME " " PROGRAM_MACOS_VERSION);
   setWindowIcon(QIcon(":/images/edf.png"));
   setDockNestingEnabled(true);
 
@@ -1555,7 +1556,7 @@ UI_Mainwindow::UI_Mainwindow()
   p.setPen(Qt::black);
   if(!strcmp(PROGRAM_BETA_SUFFIX, ""))
   {
-    p.drawText(250, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_VERSION "    " THIS_APP_BITS_W);
+    p.drawText(250, 260, 300, 30, Qt::AlignLeft | Qt::TextSingleLine, "version " PROGRAM_MACOS_VERSION "    " THIS_APP_BITS_W);
   }
   else
   {

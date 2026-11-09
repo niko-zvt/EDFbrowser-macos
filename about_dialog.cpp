@@ -4,6 +4,7 @@
 * Author: Teunis van Beelen
 *
 * Copyright (C) 2007 - 2026 Teunis van Beelen
+* Copyright (C) 2026 Nikolai Zhivotenko
 *
 * Email: teuniz@protonmail.com
 *
@@ -71,11 +72,14 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
   textedit1->setReadOnly(true);
   textedit1->setLineWrapMode(QTextEdit::NoWrap);
   textedit1->setPlainText(
-        "\n " PROGRAM_NAME " version " PROGRAM_VERSION " " PROGRAM_BETA_SUFFIX "    " THIS_APP_BITS_W "\n"
+        "\n " PROGRAM_NAME " version " PROGRAM_MACOS_VERSION " " PROGRAM_BETA_SUFFIX "    " THIS_APP_BITS_W "\n"
         "\n This program is made by Teunis van Beelen.\n"
         " Copyright (C) 2007 - 2026 Teunis van Beelen.\n"
+        "\n macOS version " PROGRAM_MACOS_VERSION " fixes by Nikolai Zhivotenko.\n"
+        " Copyright (C) 2026 Nikolai Zhivotenko.\n"
         "\n website: https://www.teuniz.net/edfbrowser/\n"
         " git repo: https://gitlab.com/Teuniz/EDFbrowser\n"
+        " macOS repo: https://github.com/niko-zvt/EDFbrowser-macos\n"
         " email: teuniz@protonmail.com\n"
         "\n Disclaimer:\n"
         " Despite this software is intended to be useful, there is no warranty, use this software at your own risk!\n"
