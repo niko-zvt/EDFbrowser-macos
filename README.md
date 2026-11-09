@@ -1,10 +1,11 @@
 # EDFbrowser for macOS
 
-Unofficial macOS build of [EDFbrowser](https://gitlab.com/Teuniz/EDFbrowser).
+Unofficial macOS build of [EDFbrowser](https://gitlab.com/Teuniz/EDFbrowser) by Teunis van Beelen.
+The macOS packaging is maintained by [Nikolai Zhivotenko](https://github.com/niko-zvt).
 
-EDFbrowser is Copyright (C) 2007–2026 Teunis van Beelen and is licensed under the GNU GPL v3 (`LICENSE`).
-
-macOS packaging and `build_edfbrowser.sh` are Copyright (C) 2026 Nikolai Zhivotenko, also under the GNU GPL v3. These files were added in 2026 so the program can be built and signed on current macOS. The original copyright notices are unchanged.
+EDFbrowser is Copyright (C) 2007–2026 Teunis van Beelen.
+`build_edfbrowser.sh` and the other packaging files are Copyright (C) 2026 Nikolai Zhivotenko.
+Both are licensed under the GNU GPL v3 (`LICENSE`). The original copyright notices are unchanged.
 
 This repository follows upstream `master` on the `main` branch. Application docs stay in `README`.
 
