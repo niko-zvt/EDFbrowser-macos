@@ -136,6 +136,8 @@ find_qmake() {
   return 1
 }
 
+GLOBAL_H_PATCHED=false
+
 maybe_patch_global_h() {
   local global_h="${SOURCE_DIR}/global.h"
   if [[ ! -f "$global_h" ]]; then
@@ -145,7 +147,18 @@ maybe_patch_global_h() {
   if grep -q '^[[:space:]]*#error[[:space:]]*"configuration error"' "$global_h"; then
     log "Applying safety patch to global.h (commenting out #error \"configuration error\")"
     sed -i '' 's/^[[:space:]]*#error[[:space:]]*"configuration error"/\/\/ #error "configuration error"/' "$global_h"
+    GLOBAL_H_PATCHED=true
   fi
+}
+
+restore_global_h() {
+  local global_h="${SOURCE_DIR}/global.h"
+  if [[ "$GLOBAL_H_PATCHED" != true || ! -f "$global_h" ]]; then
+    return 0
+  fi
+
+  sed -i '' 's|^// #error "configuration error"|#error "configuration error"|' "$global_h"
+  GLOBAL_H_PATCHED=false
 }
 
 clone_or_update_sources() {
@@ -435,6 +448,9 @@ EOF
 main() {
   local qmake_bin
   local app_path
+
+  # Put global.h back even when the build stops early, so the checkout stays clean.
+  trap restore_global_h EXIT
 
   log "Checking dependencies"
   require_command git "Install git, for example: brew install git"
