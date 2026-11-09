@@ -4,6 +4,7 @@
 * Author: Teunis van Beelen
 *
 * Copyright (C) 2007 - 2025 Teunis van Beelen
+* Copyright (C) 2026 Nikolai Zhivotenko
 *
 * Email: teuniz@protonmail.com
 *
@@ -27,6 +28,7 @@
 
 
 #include "ascii_export.h"
+#include "edf_recordsize.h"
 
 
 #define FP_SCALING   (1000000000LL)
@@ -131,7 +133,8 @@ void UI_AsciiExportwindow::ExportButtonClicked()
        *outputfile=NULL,
        *annotationfile=NULL;
 
-  long long data_record_duration,
+  long long sample_sum,
+            data_record_duration,
             elapsedtime,
             time_tmp,
             d_tmp,
@@ -224,6 +227,14 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
   scratchpad[4] = 0;
   edfsignals = atoi(scratchpad);
+  if(edfsignals<1)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The number of signals in the header is invalid.");
+    messagewindow.exec();
+    free(scratchpad);
+    AsciiExportDialog->close();
+    return;
+  }
 
   edf_hdr = (char *)calloc(1, (edfsignals + 1) * 256);
   if(edf_hdr==NULL)
@@ -275,9 +286,17 @@ void UI_AsciiExportwindow::ExportButtonClicked()
       {
         if(!(strncmp(edf_hdr + 256 + i * 16, "BDF Annotations ", 16)))
         {
+          if(edf_annotation_channel_fits(nr_annot_chns, EDF_ANNOTATION_CHANNEL_CAPACITY))
+          {
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", "The file contains more than 256 annotation channels.");
+            messagewindow.exec();
+            free(edf_hdr);
+            free(scratchpad);
+            AsciiExportDialog->close();
+            return;
+          }
           annot_ch[nr_annot_chns] = i;
           nr_annot_chns++;
-          if(nr_annot_chns>255)  break;
         }
       }
     }
@@ -298,9 +317,17 @@ void UI_AsciiExportwindow::ExportButtonClicked()
       {
         if(!(strncmp(edf_hdr + 256 + i * 16, "EDF Annotations ", 16)))
         {
+          if(edf_annotation_channel_fits(nr_annot_chns, EDF_ANNOTATION_CHANNEL_CAPACITY))
+          {
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", "The file contains more than 256 annotation channels.");
+            messagewindow.exec();
+            free(edf_hdr);
+            free(scratchpad);
+            AsciiExportDialog->close();
+            return;
+          }
           annot_ch[nr_annot_chns] = i;
           nr_annot_chns++;
-          if(nr_annot_chns>255)  break;
         }
       }
     }
@@ -317,14 +344,35 @@ void UI_AsciiExportwindow::ExportButtonClicked()
   }
 
   recordsize = 0;
+  sample_sum = 0LL;
 
   for(i=0; i<edfsignals; i++)
   {
     strncpy(scratchpad, edf_hdr + 256 + edfsignals * 216 + i * 8, 8);
     scratchpad[8] = 0;
     edfparamascii[i].smp_per_record = atoi(scratchpad);
-    edfparamascii[i].buf_offset = recordsize;
-    recordsize += edfparamascii[i].smp_per_record;
+    if(edfparamascii[i].smp_per_record<1)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "The number of samples per datarecord is invalid.");
+      messagewindow.exec();
+      free(edfparamascii);
+      free(edf_hdr);
+      free(scratchpad);
+      AsciiExportDialog->close();
+      return;
+    }
+    if(sample_sum > (2147483647LL - edfparamascii[i].smp_per_record))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "The datarecord size does not fit in a signed 32-bit integer.");
+      messagewindow.exec();
+      free(edfparamascii);
+      free(edf_hdr);
+      free(scratchpad);
+      AsciiExportDialog->close();
+      return;
+    }
+    edfparamascii[i].buf_offset = (int)sample_sum;
+    sample_sum += edfparamascii[i].smp_per_record;
     strncpy(scratchpad, edf_hdr + 256 + edfsignals * 104 + i * 8, 8);
     scratchpad[8] = 0;
     edfparamascii[i].phys_min = atof(scratchpad);
@@ -337,12 +385,59 @@ void UI_AsciiExportwindow::ExportButtonClicked()
     strncpy(scratchpad, edf_hdr + 256 + edfsignals * 128 + i * 8, 8);
     scratchpad[8] = 0;
     edfparamascii[i].dig_max = atoi(scratchpad);
+    if(edf_physical_scale(edfparamascii[i].phys_min, edfparamascii[i].phys_max,
+                          edfparamascii[i].dig_min, edfparamascii[i].dig_max,
+                          &edfparamascii[i].sense, &edfparamascii[i].offset))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "The digital minimum and maximum in the header are invalid.");
+      messagewindow.exec();
+      free(edfparamascii);
+      free(edf_hdr);
+      free(scratchpad);
+      AsciiExportDialog->close();
+      return;
+    }
     edfparamascii[i].time_step = data_record_duration / edfparamascii[i].smp_per_record;
-    edfparamascii[i].sense = (edfparamascii[i].phys_max - edfparamascii[i].phys_min) / (edfparamascii[i].dig_max - edfparamascii[i].dig_min);
-    edfparamascii[i].offset = edfparamascii[i].phys_max / edfparamascii[i].sense - edfparamascii[i].dig_max;
   }
 
-  cnv_buf = (char *)calloc(1, recordsize * samplesize);
+  {
+    int *samples_tmp = (int *)malloc((size_t)edfsignals * sizeof(int));
+    int record_bytes = 0;
+    int record_limit = bdf ? BDF_MAX_RECORD_BYTES : EDF_MAX_RECORD_BYTES;
+
+    if(samples_tmp==NULL)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Malloc error! (samples_tmp)");
+      messagewindow.exec();
+      free(edfparamascii);
+      free(edf_hdr);
+      free(scratchpad);
+      AsciiExportDialog->close();
+      return;
+    }
+
+    for(i=0; i<edfsignals; i++)
+    {
+      samples_tmp[i] = edfparamascii[i].smp_per_record;
+    }
+
+    if(edf_record_bytes(samples_tmp, edfsignals, samplesize, record_limit, &record_bytes))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "The datarecord size is invalid or exceeds the limit.");
+      messagewindow.exec();
+      free(samples_tmp);
+      free(edfparamascii);
+      free(edf_hdr);
+      free(scratchpad);
+      AsciiExportDialog->close();
+      return;
+    }
+
+    free(samples_tmp);
+    recordsize = (int)sample_sum;
+  }
+
+  cnv_buf = (char *)calloc(1, (size_t)recordsize * (size_t)samplesize);
   if(cnv_buf==NULL)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Malloc error! (cnv_buf)");
@@ -607,7 +702,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
 
     for(j=0; j<edfsignals; j++)  edfparamascii[j].smp_written = 0;
 
-    if(fread(cnv_buf, recordsize * samplesize, 1, inputfile)!=1)
+    if(fread(cnv_buf, (size_t)recordsize * (size_t)samplesize, 1, inputfile)!=1)
     {
       progress.reset();
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred when reading inputfile during export.");

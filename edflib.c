@@ -2,6 +2,7 @@
 *****************************************************************************
 *
 * Copyright (c) 2009 - 2026 Teunis van Beelen
+* Copyright (c) 2026 Nikolai Zhivotenko
 * All rights reserved.
 *
 * Email: teuniz@protonmail.com
@@ -34,6 +35,7 @@
 /* compile with options "-D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE" */
 
 #include "edflib.h"
+#include "edf_recordsize.h"
 
 #define EDFLIB_VERSION  (127)
 #define EDFLIB_MAXFILES  (64)
@@ -2131,14 +2133,20 @@ static edfhdrblock_t * edflib_check_edf_file(FILE *inputfile, int *edf_error)
       return NULL;
     }
     edfhdr->edfparam[i].smp_per_record = n;
-    edfhdr->recordsize += n;
   }
 
-  if(edfhdr->bdf)
   {
-    edfhdr->recordsize *= 3;
+    int samples_tmp[EDFLIB_MAXSIGNALS];
+    int record_bytes = 0;
+    int bytes_per_sample = edfhdr->bdf ? 3 : 2;
+    int record_limit = edfhdr->bdf ? BDF_MAX_RECORD_BYTES : EDF_MAX_RECORD_BYTES;
 
-    if(edfhdr->recordsize > (15 * 1024 * 1024))
+    for(i=0; i<edfhdr->edfsignals; i++)
+    {
+      samples_tmp[i] = edfhdr->edfparam[i].smp_per_record;
+    }
+
+    if(edf_record_bytes(samples_tmp, edfhdr->edfsignals, bytes_per_sample, record_limit, &record_bytes))
     {
       *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS;
       free(edf_hdr);
@@ -2146,19 +2154,8 @@ static edfhdrblock_t * edflib_check_edf_file(FILE *inputfile, int *edf_error)
       free(edfhdr);
       return NULL;
     }
-  }
-  else
-  {
-    edfhdr->recordsize *= 2;
 
-    if(edfhdr->recordsize > (10 * 1024 * 1024))
-    {
-      *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS;
-      free(edf_hdr);
-      free(edfhdr->edfparam);
-      free(edfhdr);
-      return NULL;
-    }
+    edfhdr->recordsize = record_bytes;
   }
 
 /**************************** RESERVED FIELDS *************************************/

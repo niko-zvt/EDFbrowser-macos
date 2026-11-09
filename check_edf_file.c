@@ -4,6 +4,7 @@
 * Author: Teunis van Beelen
 *
 * Copyright (C) 2007 - 2026 Teunis van Beelen
+* Copyright (C) 2026 Nikolai Zhivotenko
 *
 * Email: teuniz@protonmail.com
 *
@@ -27,6 +28,7 @@
 
 
 #include "check_edf_file.h"
+#include "edf_recordsize.h"
 
 
 static long long get_long_duration(char *);
@@ -1233,7 +1235,6 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
       return NULL;
     }
     edfhdr->edfparam[i].smp_per_record = n;
-    edfhdr->recordsize += n;
 
     if(edfhdr->long_data_record_duration == 0)
     {
@@ -1275,33 +1276,27 @@ edfhdrblck_t * check_edf_file(FILE *inputfile, char *txt_string, int txt_len, in
     }
   }
 
-  if(edfhdr->bdf)
   {
-    edfhdr->recordsize *= 3;
+    int samples_tmp[MAXSIGNALS];
+    int record_bytes = 0;
+    int bytes_per_sample = edfhdr->bdf ? 3 : 2;
+    int record_limit = edfhdr->bdf ? BDF_MAX_RECORD_BYTES : EDF_MAX_RECORD_BYTES;
 
-    if(edfhdr->recordsize > 15728640)
+    for(i=0; i<edfhdr->edfsignals; i++)
     {
-      snprintf(txt_string, txt_len, "Error, the datarecordsize is %i bytes. The datarecordsize should not exceed 15 MB.",
-                          edfhdr->recordsize);
+      samples_tmp[i] = edfhdr->edfparam[i].smp_per_record;
+    }
+
+    if(edf_record_bytes(samples_tmp, edfhdr->edfsignals, bytes_per_sample, record_limit, &record_bytes))
+    {
+      snprintf(txt_string, txt_len, "Error, the datarecordsize is invalid or exceeds %i bytes.", record_limit);
       free(edf_hdr);
       free(edfhdr->edfparam);
       free(edfhdr);
       return NULL;
     }
-  }
-  else
-  {
-    edfhdr->recordsize *= 2;
 
-    if(edfhdr->recordsize > 10485760)
-    {
-      snprintf(txt_string, txt_len, "Error, the datarecordsize is %i bytes. The datarecordsize should not exceed 10 MB.",
-                          edfhdr->recordsize);
-      free(edf_hdr);
-      free(edfhdr->edfparam);
-      free(edfhdr);
-      return NULL;
-    }
+    edfhdr->recordsize = record_bytes;
   }
 
 /**************************** RESERVED FIELDS *************************************/
