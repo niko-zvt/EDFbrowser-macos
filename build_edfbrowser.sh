@@ -181,6 +181,56 @@ bundle_qt_libraries() {
 
   log "Bundling Qt dependencies with macdeployqt"
   "$macdeployqt_bin" "$app_path" -no-strip
+  bundle_qtdbus "$app_path"
+}
+
+# Qt 6 macdeployqt leaves QtDBus out. QtGui loads it at startup.
+bundle_qtdbus() {
+  local app_path="$1"
+  local frameworks="${app_path}/Contents/Frameworks"
+  local dest="${frameworks}/QtDBus.framework"
+  local bin="${dest}/Versions/A/QtDBus"
+  local qt_prefix=""
+  local qt_lib=""
+  local dbus_ref=""
+  local dbus_name=""
+
+  if [[ -f "$bin" ]]; then
+    return 0
+  fi
+
+  if ! command -v brew >/dev/null 2>&1; then
+    log "QtDBus.framework is missing and Homebrew is not available"
+    return 0
+  fi
+
+  qt_prefix="$(brew --prefix qt 2>/dev/null || true)"
+  qt_lib="${qt_prefix}/lib/QtDBus.framework"
+  if [[ ! -d "$qt_lib" ]]; then
+    log "QtDBus.framework was not found, skipping"
+    return 0
+  fi
+
+  log "Copying QtDBus.framework into the app"
+  ditto "$qt_lib" "$dest"
+
+  dbus_ref="$(otool -L "$bin" | awk '/libdbus-/{print $1; exit}')"
+  if [[ -n "$dbus_ref" && -f "$dbus_ref" ]]; then
+    dbus_name="$(basename "$dbus_ref")"
+    cp -f "$dbus_ref" "${frameworks}/${dbus_name}"
+    chmod u+w "${frameworks}/${dbus_name}" "$bin"
+    install_name_tool -id "@executable_path/../Frameworks/${dbus_name}" "${frameworks}/${dbus_name}"
+    install_name_tool -change "$dbus_ref" "@executable_path/../Frameworks/${dbus_name}" "$bin"
+  fi
+
+  chmod u+w "$bin"
+  install_name_tool -id "@executable_path/../Frameworks/QtDBus.framework/Versions/A/QtDBus" "$bin"
+  if otool -L "$bin" | grep -q '@rpath/QtCore.framework/Versions/A/QtCore'; then
+    install_name_tool \
+      -change "@rpath/QtCore.framework/Versions/A/QtCore" \
+      "@executable_path/../Frameworks/QtCore.framework/Versions/A/QtCore" \
+      "$bin"
+  fi
 }
 
 sign_app_bundle() {
