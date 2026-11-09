@@ -2,6 +2,16 @@
 #
 # build_edfbrowser.sh — clone and build EDFbrowser from source on macOS
 #
+# Copyright (C) 2026 Nikolai Zhivotenko
+#
+# This build script is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# EDFbrowser itself is Copyright (C) 2007-2026 Teunis van Beelen
+# and remains under the GNU GPL v3. This script does not replace that notice.
+#
 # Usage:
 #   ./build_edfbrowser.sh              # build and open the app
 #   ./build_edfbrowser.sh --no-open    # build only
@@ -42,7 +52,7 @@ for arg in "$@"; do
       OPEN_APP=false
       ;;
     -h|--help)
-      sed -n '3,13p' "$0" | sed 's/^# \{0,1\}//'
+      sed -n '15,21p' "$0" | sed 's/^# \{0,1\}//'
       exit 0
       ;;
     *)
